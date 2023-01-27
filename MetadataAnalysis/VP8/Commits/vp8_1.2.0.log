@@ -1,0 +1,978 @@
+Searching between v1.1.0 and v1.2.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: bitrate,pass
+Keywords: slow fast time perf optim regression speed bitrate pass
+For keyword slow:
+[33mcommit 606ac45b2f16094540ad0616a1b79ae3c8f7ec79[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Jul 10 15:43:44 2012 -0700
+
+    keyframe_test: use a fixed speed step for realtime
+    
+    The lower complexity modes may not generate a keyframe automatically.
+    This behavior was found when running under Valgrind, as the [1;31mslow[m
+    performance caused the speed selection to pick lower complexities than
+    when running natively. Instead, use a fixed complexity for the
+    realtime auto keyframe test.
+    
+    Affected tests:
+      AllModes/KeyframeTest.TestAutoKeyframe/0
+    
+    Change-Id: I44e3f44e125ad587c293ab5ece29511d7023be9b
+For keyword fast:
+[33mcommit 836f8e98839c92932201c650c9fd5c58cf878224[m
+Author: Martin Storsjö <martin@martin.st>
+Date:   Wed Nov 28 22:05:42 2012 +0200
+
+    Disable [1;31mfast[m unaligned on armv5te
+    
+    This is enabled by default in the main configure.sh, but apparently
+    is supposed to be disabled if the hardware doesn't support it.
+    Unaligned reads is only supported on armv6 and newer.
+    
+    Change-Id: Ie1412e36a14036bbb4fe7b89aa36a178f35b2228
+
+[33mcommit 4c53bacce4a97d98a4e73262bb3517d38ddd3514[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Sep 28 10:13:07 2012 -0700
+
+    post-proc: deblock filter optimization
+    
+    1. Algorithm modification:
+    Instead of having same filter threshold for a whole frame, now we
+    allow the thresholds to be adjusted for each macroblock. In current
+    implementation, to avoid excessive blur on background as reported
+    in issue480(http://code.google.com/p/webm/issues/detail?id=480), we
+    reduce the thresholds for skipped macroblocks.
+    
+    2. SSE2 optimization:
+    As started in issue479(http://code.google.com/p/webm/issues/detail?id=479),
+    the filter calculation was adjusted for better performance. The c
+    code was also modified accordingly. This made the deblock filter
+    2x [1;31mfast[mer, and the decoder was 1.2x [1;31mfast[mer overall.
+    
+    Next, the demacroblock filter will be modified similarly.
+    
+    Change-Id: I05e54c3f580ccd427487d085096b3174f2ab7e86
+
+[33mcommit 64075c9b0129efcdba8c85d7519dbe385dbc56c5[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Aug 10 12:35:55 2012 -0700
+
+    Encoder denoiser performance improvement
+    
+    The denoiser function was modified to reduce the computational
+    complexity.
+    
+    1. The denoiser c function modification:
+    The original implementation calculated pixel's filter_coefficient
+    based on the pixel value difference between current raw frame and last
+    denoised raw frame, and stored them in lookup tables. For each pixel c,
+    find its coefficient using
+        filter_coefficient[c] = LUT[abs_diff[c]];
+    and then apply filtering operation for the pixel.
+    
+    The denoising filter costed about 12% of encoding time when it was
+    turned on, and half of the time was spent on finding coefficients in
+    lookup tables. In order to simplify the process, a short cut was taken.
+    The pixel adjustments vs. pixel diff value were calculated ahead of time.
+        adjustment = filtered_value - current_raw
+                   = (filter_coefficient * diff + 128) >> 8
+    
+    The adjustment vs. diff curve becomes flat very quick when diff increases.
+    This allowed us to use only several levels to get a close approximation
+    of the curve. Following the denoiser algorithm, the adjustments are
+    further modified according to how big the motion magnitude is.
+    
+    2. The sse2 function was rewritten.
+    
+    This change made denoiser filter function 3x [1;31mfast[mer, and improved the
+    encoder performance by 7% ~ 10% with the denoiser on.
+    
+    Change-Id: I93a4308963b8e80c7307f96ffa8b8c667425bf50
+For keyword time:
+[33mcommit 000c8414b510dcaeb1ab7a52bec78c4a6b97cafd[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Fri Dec 7 12:19:52 2012 -0800
+
+    Moved denoiser frame copy/updates out of loopfilter thread
+    
+    The loopfilter thread from the previous frame can be running while
+    starting the current frame.  cpi->Source will change during this [1;31mtime[m causing
+    the wrong data to be copied.  The refresh_x_frame flags also change, which
+    will cause incorrect updates of the denoised buffers.
+    
+    Change-Id: I7d982b4fcb40a0610801332aa85f3b792c64e4c3
+
+[33mcommit 9a3de881c0e681ba1a79a166a86308bbc84b4acd[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Wed Dec 5 13:24:52 2012 -0800
+
+    Disable background update on non-base layer frames
+    
+    Multi-threaded code was not updated to disable background
+    refresh for non base-layer frames at the [1;31mtime[m it was
+    disabled in the main C-code.
+    
+    Change-Id: Id6cc376130b7def046942121cfd0526b4f0a71d4
+
+[33mcommit 861a6bbbfdbaf7e1aedff0be9078b76fd0f214b1[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Mon Oct 22 14:21:59 2012 -0700
+
+    postproc: allocate enough memory for limits buffer
+    
+    The vp8_post_proc_down_and_across_mb_row_sse2() needs space for an
+    even number of macroblocks, as they are read two at a [1;31mtime[m for the
+    chroma planes. Round up the width during the allocation of
+    pp_limits_buffer to support this.
+    
+    Change-Id: Ibfc10c7be290d961ab23ac3dde12a7bb96c12af0
+
+[33mcommit 4206c6dd01c33ff19b8eedc595aaac9b72105172[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Tue Oct 2 11:03:09 2012 -0700
+
+    Add initialization and per frame flag members
+    
+    Modified EncoderTest class to have separate member variables
+    for initialization [1;31mtime[m and per-frame.
+    
+    Change-Id: I08a1901f8f3ec16e45f96297e08e7f6df0f4aa0b
+
+[33mcommit 6f35b1958e0a767240ee20f8e2cece59b1dc1e12[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Mon Oct 1 14:17:43 2012 -0700
+
+    Disable keyframe in real [1;31mtime[m that's placed one frame after a cut.
+    
+    The codec as it stood placed a keyframe one frame after a
+    real cut scene - and ignored datarate and other considerations.
+    
+    TODO: Its possible that we should detect a keyframe and recode
+    the frame ( in certain circumstances) to improve quality.
+    
+    Change-Id: Ia1fd6d90103f4da4d21ca5ab62897d22e0b888a8
+
+[33mcommit e278673c8eae8993eaec30d50e0dd5b25cbacd4a[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Wed Sep 19 12:30:44 2012 -0700
+
+    Moved vp8dx_get_raw_frame() call to vp8_get_frame()
+    
+    This change is necessary for the frame-based multithreading
+    implementation.
+    Since the postproc occurs in this call, vpxdec was modified to [1;31mtime[m around
+    vpx_codec_get_frame()
+    
+    Change-Id: I389acf78b6003cd35e41becc16c893f7d3028523
+
+[33mcommit 7b7ca65bfc15b1dc47a0f1063b66d0e85fba849b[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Tue Sep 11 16:30:19 2012 -0700
+
+    fix valgrind mem leak on garbage decode
+    
+    Multiple decoders were getting allocated per frame.
+    If the decoder crashed we exitted with out freeing
+    them and the next [1;31mtime[m in we'd allocate over.
+    
+    This fix removes the allocation and just has 8
+    boolcoders in the pbi structure
+    
+    Change-Id: I638b5bda23b622b43b7992aec21dd7cf6f6278da
+
+[33mcommit 64075c9b0129efcdba8c85d7519dbe385dbc56c5[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Aug 10 12:35:55 2012 -0700
+
+    Encoder denoiser performance improvement
+    
+    The denoiser function was modified to reduce the computational
+    complexity.
+    
+    1. The denoiser c function modification:
+    The original implementation calculated pixel's filter_coefficient
+    based on the pixel value difference between current raw frame and last
+    denoised raw frame, and stored them in lookup tables. For each pixel c,
+    find its coefficient using
+        filter_coefficient[c] = LUT[abs_diff[c]];
+    and then apply filtering operation for the pixel.
+    
+    The denoising filter costed about 12% of encoding [1;31mtime[m when it was
+    turned on, and half of the [1;31mtime[m was spent on finding coefficients in
+    lookup tables. In order to simplify the process, a short cut was taken.
+    The pixel adjustments vs. pixel diff value were calculated ahead of [1;31mtime[m.
+        adjustment = filtered_value - current_raw
+                   = (filter_coefficient * diff + 128) >> 8
+    
+    The adjustment vs. diff curve becomes flat very quick when diff increases.
+    This allowed us to use only several levels to get a close approximation
+    of the curve. Following the denoiser algorithm, the adjustments are
+    further modified according to how big the motion magnitude is.
+    
+    2. The sse2 function was rewritten.
+    
+    This change made denoiser filter function 3x faster, and improved the
+    encoder performance by 7% ~ 10% with the denoiser on.
+    
+    Change-Id: I93a4308963b8e80c7307f96ffa8b8c667425bf50
+
+[33mcommit b0cfcb2ca875eeab1188e405a6980726ffa9b8b9[m
+Merge: 1829d0390 9f0b42247
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Mon Aug 20 13:44:56 2012 -0700
+
+    Merge "real[1;31mtime[m turndown loopfilter for 00"
+
+[33mcommit 1829d039063dc3832964bc0526dcddfe1638aa35[m
+Merge: d71ba0382 985f09fdc
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Mon Aug 20 13:40:53 2012 -0700
+
+    Merge "static threshold fix for real[1;31mtime[m"
+
+[33mcommit 9f0b42247d9d57901168d4c6ba8c8169a8a0968f[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Mon Aug 20 13:04:53 2012 -0700
+
+    real[1;31mtime[m turndown loopfilter for 00
+    
+    Loop filter producing wierd artifacts when
+    repeatedly applied in noisy video.   This
+    mitigates the effect.
+    
+    Change-Id: If4b1a8543912d186a486f84e11d8b01f7436fa5f
+
+[33mcommit 985f09fdca14c74fbd6c6dcffe260bf3132c4b7e[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Mon Aug 20 12:58:31 2012 -0700
+
+    static threshold fix for real[1;31mtime[m
+    
+    This code allows us to skip encoding if the sse
+    is less than the error we could possibly encode.
+    
+    Change-Id: Iefb590dc0ee30b660495218398c7969f7d5fd19f
+
+[33mcommit 429743c56b77f5f9e3d0599ea0b7ffa42d867e3d[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Aug 7 17:12:10 2012 -0700
+
+    fix [1;31mtime[mstamp calculation rollover w/altref
+    
+    using large values for the [1;31mtime[mbase, e.g., {33333, 1000000} could
+    rollover the [1;31mtime[mstamp calculation in vp8e_encode as it was not using
+    64-bit math.
+    
+    originally reported on ffmpeg's trac:
+      https://ffmpeg.org/trac/ffmpeg/ticket/1014
+    
+    BUG=468
+    
+    Change-Id: Iedb4e11de086a3dda75097bfaf08f2488e2088d8
+
+[33mcommit 51ebb9a39671f3a9743fb4cd0b155d577d2f8a65[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Aug 8 14:16:08 2012 -0700
+
+    EncoderTest: check that [1;31mtime[mstamps are monotonic
+    
+    Change-Id: I813fa94c83df6282f382b24bbaccb1fe2fa94276
+
+[33mcommit 336ca9a43ac26795d3d9548a04091c81e4cb8f75[m
+Merge: aa165c8c5 606ac45b2
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed Aug 8 11:23:49 2012 -0700
+
+    Merge "keyframe_test: use a fixed speed step for real[1;31mtime[m"
+
+[33mcommit cbc249ba00dbbaffc630499cd992def96a9eb6f4[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Tue Jul 31 11:52:10 2012 +0300
+
+    Fix encoder mem allocation when picture size is changed
+    
+    After the picture size was changed to a bigger one, the internal memory was
+    corrupted and multithreaded encoder was deadlocking.
+    
+    Memory for last frame's MVs, segmentation map and active map were allocated when
+    the compressor was created (vp8_create_compressor). Buffers need to be
+    reallocated when picture size is changed, so, the allocation was moved to
+    vp8_alloc_compressor_data, which is called every [1;31mtime[m the picture is resized.
+    
+    Change-Id: I7ce16b8e69bbf0386d7997df57add155aada2240
+
+[33mcommit 606ac45b2f16094540ad0616a1b79ae3c8f7ec79[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Jul 10 15:43:44 2012 -0700
+
+    keyframe_test: use a fixed speed step for real[1;31mtime[m
+    
+    The lower complexity modes may not generate a keyframe automatically.
+    This behavior was found when running under Valgrind, as the slow
+    performance caused the speed selection to pick lower complexities than
+    when running natively. Instead, use a fixed complexity for the
+    real[1;31mtime[m auto keyframe test.
+    
+    Affected tests:
+      AllModes/KeyframeTest.TestAutoKeyframe/0
+    
+    Change-Id: I44e3f44e125ad587c293ab5ece29511d7023be9b
+
+[33mcommit 3897b48aba4cbea65c340d92c67b0a0d84d3f99c[m
+Merge: c7acd6db5 c8c71f1fb
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Jun 22 11:47:02 2012 -0700
+
+    Merge "Run[1;31mtime[m CPU detection for unit tests"
+
+[33mcommit c8c71f1fbf772eaa1c9a7f8bd6ac23f271b464d6[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Jun 22 10:57:05 2012 -0700
+
+    Run[1;31mtime[m CPU detection for unit tests
+    
+    Filter out tests that require SIMD extensions if the host doesn't
+    support them.
+    
+    Change-Id: Ifac4b73e98e64f9f1b082cc0ffbf5c2faffb0834
+
+[33mcommit 5daaa838a62921ad1f5c6e48dc7db180a55fdf3e[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Thu Apr 12 12:50:19 2012 +0300
+
+    Enables building examples with Android NDK
+    
+    Soft enable run[1;31mtime[m cpu detect for armv7-android target, so that it
+    can be disabled and remove dependency on 'cpufeatures' lib.
+    Change the arm_cpu_caps implementation selection such that 'no rtcd' takes
+    precedence over system type.
+    
+    Switch to use -mtune instead of -mcpu. NDK was complaining about
+    -mcpu=cortex-a8 conflicting with -march=armv7-a, not sure why.
+    
+    Add a linker flag to fix some cortex-a8 bug, as suggested by NDK Dev
+    Guide.
+    
+    Examples:
+    Configure for armv7+neon:
+    
+    ./configure --target=armv7-android-gcc \
+                --sdk-path=/path/to/android/ndk \
+                --disable-run[1;31mtime[m-cpu-detect \
+                --enable-real[1;31mtime[m-only \
+                --disable-unit-tests
+    
+    ...armv7 w/o neon:
+    
+    ./configure --target=armv7-android-gcc \
+                --sdk-path=/path/to/android/ndk \
+                --disable-run[1;31mtime[m-cpu-detect \
+                --enable-real[1;31mtime[m-only \
+                --disable-neon \
+                --cpu=cortex-a9 \
+                --disable-unit-tests
+    
+    Change-Id: I37e2c0592745208979deec38f7658378d4bd6cfa
+
+[33mcommit 7b0b6a2c414a7e8947d37c817d5b312a7ec844f7[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Jun 13 11:59:12 2012 -0700
+
+    disable lagged encoding in one-pass
+    
+    This currently has no effect and can create an artificial lag in e.g.,
+    real[1;31mtime[m.
+    
+    Change-Id: Ia1c7c6dbe7c6fe82a944f087f1b0d1dbbc0aa1b6
+
+[33mcommit e82d261d10729b08ebe3e75fd6927d9993fc9182[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed May 16 16:25:51 2012 -0700
+
+    Build unit tests monolithically
+    
+    Rework unit tests  to have a single executable rather than many, which
+    should avoid pollution of the visual studio project namespace, improve
+    build [1;31mtime[ms, and make it easier to use the gtest test sharding system
+    when we get these going on the continuous build cluster.
+    
+    Change-Id: If4c3e5d4b3515522869de6c89455c2a64697cca6
+
+[33mcommit b41c17d625dc269eef8d0fbcc971f17523057e3b[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Tue Apr 17 10:40:56 2012 +0300
+
+    Shares one set of RD costs tables between all encoding threads
+    
+    RD costs were local to MACROBLOCK data and had to be copied all the
+    [1;31mtime[m to each thread's MACROBLOCK data. Tables moved to a common place
+    and only pointers are setup for each encoding thread.
+    
+    vp8_cost_tokens() generates 'int' costs so changed all types to be
+    int (i.e. removed unsigned).
+    
+    NOTE: Could do some more cleaning in vp8cx_init_mbrthread_data().
+    
+    Change-Id: Ifa4de4c6286dffaca7ed3082041fe5af1345ddc0
+
+[33mcommit 317d4244cb6f16cb7c925b01b50b462f7844a69f[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Thu Apr 19 17:35:20 2012 -0400
+
+    Makes all mode token tables const part 2
+    
+    (see Change I9b2ccc88: Makes all mode token tables const)
+    Further remove run[1;31mtime[m table initialization and use
+    precalculated const data.  Data footprint reduced
+    by 4112 bytes.
+    
+    Change-Id: Ia3ae9fc19f77316b045cabff01f6e5f0876a86ab
+
+[33mcommit b35a0db0e76806554c8e22c48d358d4c33563b37[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Mon Apr 16 14:47:40 2012 +0300
+
+    Makes all global data in tokenize.c const
+    
+    Removes all run[1;31mtime[m initialization of global data in tokenize.c.
+    DCT token and cost tabels are pre-generated.
+    
+    Second patch in a series to make sure code is reentrant.
+    
+    Change-Id: Iab48b5fe290129823947b669413101f22a1bcac0
+
+[33mcommit a91b42f0229ad9b9809b8245a92155154d6164f8[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Mon Apr 16 10:23:57 2012 +0300
+
+    Makes all global data in entropy.c const
+    
+    Removes all run[1;31mtime[m initialization of global data in entropy.c.
+    Precalculated values are used for initializing all entropy related
+    tabels.
+    
+    First patch in a series to make sure code is reentrant.
+    
+    Change-Id: I9aac91a2a26f96d73c6470d772a343df63bfe633
+For keyword perf:
+[33mcommit 4c53bacce4a97d98a4e73262bb3517d38ddd3514[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Sep 28 10:13:07 2012 -0700
+
+    post-proc: deblock filter optimization
+    
+    1. Algorithm modification:
+    Instead of having same filter threshold for a whole frame, now we
+    allow the thresholds to be adjusted for each macroblock. In current
+    implementation, to avoid excessive blur on background as reported
+    in issue480(http://code.google.com/p/webm/issues/detail?id=480), we
+    reduce the thresholds for skipped macroblocks.
+    
+    2. SSE2 optimization:
+    As started in issue479(http://code.google.com/p/webm/issues/detail?id=479),
+    the filter calculation was adjusted for better [1;31mperf[mormance. The c
+    code was also modified accordingly. This made the deblock filter
+    2x faster, and the decoder was 1.2x faster overall.
+    
+    Next, the demacroblock filter will be modified similarly.
+    
+    Change-Id: I05e54c3f580ccd427487d085096b3174f2ab7e86
+
+[33mcommit 7e9a519fbbf1b67965537da91e712f846be6c48e[m
+Merge: 90625c3bc 64075c9b0
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Aug 31 13:51:30 2012 -0700
+
+    Merge "Encoder denoiser [1;31mperf[mormance improvement"
+
+[33mcommit 64075c9b0129efcdba8c85d7519dbe385dbc56c5[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Aug 10 12:35:55 2012 -0700
+
+    Encoder denoiser [1;31mperf[mormance improvement
+    
+    The denoiser function was modified to reduce the computational
+    complexity.
+    
+    1. The denoiser c function modification:
+    The original implementation calculated pixel's filter_coefficient
+    based on the pixel value difference between current raw frame and last
+    denoised raw frame, and stored them in lookup tables. For each pixel c,
+    find its coefficient using
+        filter_coefficient[c] = LUT[abs_diff[c]];
+    and then apply filtering operation for the pixel.
+    
+    The denoising filter costed about 12% of encoding time when it was
+    turned on, and half of the time was spent on finding coefficients in
+    lookup tables. In order to simplify the process, a short cut was taken.
+    The pixel adjustments vs. pixel diff value were calculated ahead of time.
+        adjustment = filtered_value - current_raw
+                   = (filter_coefficient * diff + 128) >> 8
+    
+    The adjustment vs. diff curve becomes flat very quick when diff increases.
+    This allowed us to use only several levels to get a close approximation
+    of the curve. Following the denoiser algorithm, the adjustments are
+    further modified according to how big the motion magnitude is.
+    
+    2. The sse2 function was rewritten.
+    
+    This change made denoiser filter function 3x faster, and improved the
+    encoder [1;31mperf[mormance by 7% ~ 10% with the denoiser on.
+    
+    Change-Id: I93a4308963b8e80c7307f96ffa8b8c667425bf50
+
+[33mcommit 1746b2adc6a9f1e3e0f70a1a6a992f1af6851b5d[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Thu Aug 2 11:58:09 2012 -0700
+
+    Added row based loopfilter
+    
+    Interleaved loopfiltering with decode.  For 1080p clips, up to 1%
+    [1;31mperf[mormance gain.  For 4k clips, up to 10% seen.  This patch is required
+    for better "frame-based" multithreading.
+    
+    Change-Id: Ic834cf32297cc04f27e8205652fb9f70cbe290db
+
+[33mcommit 606ac45b2f16094540ad0616a1b79ae3c8f7ec79[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Jul 10 15:43:44 2012 -0700
+
+    keyframe_test: use a fixed speed step for realtime
+    
+    The lower complexity modes may not generate a keyframe automatically.
+    This behavior was found when running under Valgrind, as the slow
+    [1;31mperf[mormance caused the speed selection to pick lower complexities than
+    when running natively. Instead, use a fixed complexity for the
+    realtime auto keyframe test.
+    
+    Affected tests:
+      AllModes/KeyframeTest.TestAutoKeyframe/0
+    
+    Change-Id: I44e3f44e125ad587c293ab5ece29511d7023be9b
+
+[33mcommit dd6134b472f755112391bc6197d87c868a67f132[m
+Author: Stefan Holmer <holmer@google.com>
+Date:   Wed May 30 12:17:06 2012 +0200
+
+    Added another denoising threshold for finding DC shifts.
+    
+    Compares the sum of differences between the input block and the averaged
+    block. If they differ too much the block will not be filtered. Negligible
+    [1;31mperf[momance hit.
+    
+    Change-Id: Ib1c31a265efd4d100b3abc4a1ea6675038c8ddde
+
+[33mcommit d8500344430112d794ae6858802c628c79ce20d8[m
+Author: Stefan Holmer <holmer@google.com>
+Date:   Wed May 30 12:17:06 2012 +0200
+
+    Added another denoising threshold for finding DC shifts.
+    
+    Compares the sum of differences between the input block and the averaged
+    block. If they differ too much the block will not be filtered. Negligible
+    [1;31mperf[momance hit.
+    
+    Change-Id: Ib1c31a265efd4d100b3abc4a1ea6675038c8ddde
+
+[33mcommit 1e1799c9cb5060246b09021810b2a0e0651611a6[m
+Author: James Zern <jzern@google.com>
+Date:   Fri May 18 19:22:26 2012 -0700
+
+    examples: use alignment > 1 w/vpx_img_alloc
+    
+    aligned buffers improve [1;31mperf[mormace. this change brings vpxenc &
+    vp8_scalable_patterns in line with the other examples.
+    
+    Change-Id: I4cf9f3e4728b901161905dd7ccb092e774ffb15f
+For keyword optim:
+[33mcommit 8b698e8cb17a709251d38d7fc5b1c1c678ddbb6c[m
+Merge: 107f14bcf 4c53bacce
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Tue Oct 9 09:26:36 2012 -0700
+
+    Merge "post-proc: deblock filter [1;31moptim[mization"
+
+[33mcommit 4c53bacce4a97d98a4e73262bb3517d38ddd3514[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Sep 28 10:13:07 2012 -0700
+
+    post-proc: deblock filter [1;31moptim[mization
+    
+    1. Algorithm modification:
+    Instead of having same filter threshold for a whole frame, now we
+    allow the thresholds to be adjusted for each macroblock. In current
+    implementation, to avoid excessive blur on background as reported
+    in issue480(http://code.google.com/p/webm/issues/detail?id=480), we
+    reduce the thresholds for skipped macroblocks.
+    
+    2. SSE2 [1;31moptim[mization:
+    As started in issue479(http://code.google.com/p/webm/issues/detail?id=479),
+    the filter calculation was adjusted for better performance. The c
+    code was also modified accordingly. This made the deblock filter
+    2x faster, and the decoder was 1.2x faster overall.
+    
+    Next, the demacroblock filter will be modified similarly.
+    
+    Change-Id: I05e54c3f580ccd427487d085096b3174f2ab7e86
+
+[33mcommit de6ddefa9fbd80704e1911f298793cf8afb53dd9[m
+Author: Dragan Mrdjan <dmrdjan@mips.com>
+Date:   Fri Jul 20 09:10:52 2012 -0700
+
+    Disabling MIPS [1;31moptim[mizations for big endian platforms
+    
+    Change-Id: Idae399ecbd10e287ef30b2e0b95822dc9175ce0a
+
+[33mcommit a591209afd6733c9c1c71388fe21808e35d931af[m
+Merge: b25ebf7dd 07ff7fa81
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Tue Jul 10 16:01:41 2012 -0700
+
+    Merge "VP8 [1;31moptim[mizations for MIPS dspr2"
+
+[33mcommit 07ff7fa8114d1d569e5b08d665c887af9bb9495f[m
+Author: Dragan Mrdjan <dmrdjan@mips.com>
+Date:   Wed Apr 11 09:53:15 2012 -0700
+
+    VP8 [1;31moptim[mizations for MIPS dspr2
+    
+    Signed-off-by: Raghu Gandham <raghu@mips.com>
+    
+    Change-Id: I3a8bca425cd3dab746a6328c8fc8843c8e87aea6
+
+[33mcommit e61573c5f4571d68af66e315e7d629483d664a51[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Jun 28 10:37:53 2012 -0700
+
+    Add unit test for vp8_sixtap_predict functions
+    
+    This unit test tests vp8_sixtap_predict function against preset
+    data and random generated data. The test against preset data
+    checks the correctness of the functions, and the test against
+    random data checks if the [1;31moptim[mized six-tap predictor functions
+    generate matching result as the c functions. It tests the
+    following functions:
+    vp8_sixtap_predict16x16_c
+    vp8_sixtap_predict16x16_mmx
+    vp8_sixtap_predict16x16_sse2
+    vp8_sixtap_predict16x16_ssse3
+    
+    vp8_sixtap_predict8x8_c
+    vp8_sixtap_predict8x8_mmx
+    vp8_sixtap_predict8x8_sse2
+    vp8_sixtap_predict8x8_ssse3
+    
+    vp8_sixtap_predict8x4_c
+    vp8_sixtap_predict8x4_mmx
+    vp8_sixtap_predict8x4_sse2
+    vp8_sixtap_predict8x4_ssse3
+    
+    vp8_sixtap_predict4x4_c
+    vp8_sixtap_predict4x4_mmx
+    vp8_sixtap_predict4x4_ssse3
+    
+    Change-Id: I6de097898ebca34a4c8020aed1e8dde5cd3e493b
+
+[33mcommit 5715c39cf80f400f68132b0e9d0b33dc21016cbf[m
+Author: Christian Duvivier <cduvivier@google.com>
+Date:   Mon May 21 07:54:20 2012 -0700
+
+    Inline Intrinsic [1;31moptim[mized Denoiser
+    
+    Faster version of denoiser, cut cost by 1.7x for C path, by 3.3x for
+    SSE2 path.
+    
+    Change-Id: I154786308550763bc0e3497e5fa5bfd1ce651beb
+
+[33mcommit 0fe79aab19b73befa23063fc570a2091330b44c1[m
+Merge: c1b417c6b 38ddb426d
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Mon May 21 13:30:19 2012 -0700
+
+    Merge "Inline Intrinsic [1;31moptim[mized Denoiser"
+
+[33mcommit 38ddb426d097349c0926977068f97655d2d77f26[m
+Author: Christian Duvivier <cduvivier@google.com>
+Date:   Mon May 21 07:54:20 2012 -0700
+
+    Inline Intrinsic [1;31moptim[mized Denoiser
+    
+    Faster version of denoiser, cut cost by 1.7x for C path, by 3.3x for
+    SSE2 path.
+    
+    Change-Id: I154786308550763bc0e3497e5fa5bfd1ce651beb
+For keyword regression:
+For keyword speed:
+[33mcommit d21070a538f615f6e762ce37e1771a1b99362c0e[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Mon Oct 8 15:58:04 2012 -0700
+
+    multi-res: disable intra on forced ref frames
+    
+    If a reference frame is forced because of low dissimilarity, then
+    shut off the search of intra modes. This change has mixed results. On
+    one clip (QVGA), it hurt quality by ~1.5% with negligible [1;31mspeed[m impact.
+    On another (VGA) it had negligible affect on quality, but a ~0.2% [1;31mspeed[m
+    impact.
+    
+    Change-Id: Ic8b07648979d732f489de5f094957e140f84d2eb
+
+[33mcommit 336ca9a43ac26795d3d9548a04091c81e4cb8f75[m
+Merge: aa165c8c5 606ac45b2
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed Aug 8 11:23:49 2012 -0700
+
+    Merge "keyframe_test: use a fixed [1;31mspeed[m step for realtime"
+
+[33mcommit 606ac45b2f16094540ad0616a1b79ae3c8f7ec79[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Jul 10 15:43:44 2012 -0700
+
+    keyframe_test: use a fixed [1;31mspeed[m step for realtime
+    
+    The lower complexity modes may not generate a keyframe automatically.
+    This behavior was found when running under Valgrind, as the slow
+    performance caused the [1;31mspeed[m selection to pick lower complexities than
+    when running natively. Instead, use a fixed complexity for the
+    realtime auto keyframe test.
+    
+    Affected tests:
+      AllModes/KeyframeTest.TestAutoKeyframe/0
+    
+    Change-Id: I44e3f44e125ad587c293ab5ece29511d7023be9b
+For keyword bitrate:
+[33mcommit cd7f6841aa2f2ae0c7795e5b1c22b41155e24f01[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Nov 14 15:05:06 2012 -0800
+
+    Update to datarate_test.
+    
+    Exlcude key frame from buffer underrun check, and increase
+    lowest [1;31mbitrate[m in BasicBufferModel.
+    Both changes are needed because of a known issue (#495).
+    
+    Change-Id: If5e994f813d7d5ae870c1a72be404c8f7dbbdf27
+
+[33mcommit 25a36d6b3c6d206ad19d47f9999eb71109f87dea[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Thu Apr 19 10:00:33 2012 -0700
+
+    multi-res: restore v1.0.0 API
+    
+    Move the notion of 0 [1;31mbitrate[m implying skip deeper into the codec,
+    rather than doing it at the multi-encoder API level. This preserves
+    v1.0.0 ABI compatibility, rather than forcing a bump to v2.0.0 over a
+    minor change. Also, this allows the case where the application can
+    selectively enable and disable the larger resolution(s) without having
+    to reinitialize the codec instace (for instance, if no target is
+    receiving the full resolution stream).
+    
+    It's not clear how deep to push this check. It may be valuable to
+    allow the framerate adaptation code to run, for example. Currently put
+    the check as early as possible for simplicity, should reevaluate this
+    as this feature gains real use.
+    
+    Change-Id: I371709b8c6b52185a1c71a166a131ecc244582f0
+For keyword pass:
+[33mcommit cc91d655e4573eda35307b8f888dd53d4c0f6471[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Mon Dec 10 15:23:11 2012 -0800
+
+    Update correct macroblock quantize_b function ptrs
+    
+    WIP: Fixing unsafe threading in VP8 encoder.
+    Use the [1;31mpass[med in macroblock instead of the macroblock located in
+    cpi.
+    
+    Change-Id: I1bfa07de6ea463f2baeaae1bae5d950691bc4afc
+
+[33mcommit 4d9791e2b1de23538dbe1cc8b123f414ba3b9a7d[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Tue Nov 6 17:35:02 2012 -0800
+
+    Incorrect parameter [1;31mpass[med into vp8_stuff_mb
+    
+    Should be MACROBLOCK, not MACROBLOCKD
+    
+    Change-Id: I0353bbdf085a181ae2ac1f0b96849b38566e9f6a
+
+[33mcommit cc017ca8df6def5d010020bb7f6b465b6a88c602[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Tue Oct 2 12:16:27 2012 -0700
+
+    Unit Test for Error Resilience Mode
+    
+    This unit test compares the difference in quality with
+    error resilience enabled and disabled. The test runs
+    for all of the one-[1;31mpass[m encoding modes.
+    
+    The test ensures that the effect of turning on error
+    resilience makes less than a 10% difference in PSNR.
+    
+    Further cases should be added to do a more comprehensive
+    test.
+    
+    Change-Id: I1fc747fc78c9459bc6c74494f4b38308dbed0c32
+
+[33mcommit f199bab7ab0cf29bf7a53cd8e10821f200255f7f[m
+Merge: 7ca59827e 30f58b526
+Author: Adrian Grange <agrange@google.com>
+Date:   Wed Oct 3 13:45:46 2012 -0700
+
+    Merge "Added Reset method to Two[1;31mpass[mStatsStore"
+
+[33mcommit 30f58b526d0b3c58af45c64eee16efbc7f3fe897[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Tue Oct 2 09:36:41 2012 -0700
+
+    Added Reset method to Two[1;31mpass[mStatsStore
+    
+    The stats buffer needs to be reset between runs of the
+    encoder. I added a Reset() function to Two[1;31mpass[mStatsStore
+    and called it at the beginning of each encode.
+    
+    This enables us to run multiple encodes which was
+    previously not possible since there was no way to reset
+    the stats between runs.
+    
+    Change-Id: Iebb18dab83ba9331f009f764cc858609738a27f9
+
+[33mcommit 12ddb75a9a0bc7d3af8112813db2bf9dd46a340c[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Aug 15 11:54:41 2012 -0700
+
+    sad_test: fix msvc build
+    
+    [1;31mpass[m a variable to make_tuple() rather than a function, fixes type
+    errors
+    
+    Change-Id: Ic0cbd25d0ca35ad08c672040b4141b3b81695752
+
+[33mcommit e57394aa1d201ea2c02f5c6c0dce613b5d26ab88[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Aug 15 11:54:41 2012 -0700
+
+    sixtap_predict_test: fix msvc build
+    
+    [1;31mpass[m a variable to make_tuple() rather than a function, fixes type
+    errors
+    
+    Change-Id: I5e04b61b5ab58cc0090ef21119486ca04853af61
+
+[33mcommit b4ab43f12cc44a24e8161eb2d0857b78c756b18c[m
+Author: Mike Frysinger <vapier@chromium.org>
+Date:   Tue Aug 14 14:24:28 2012 -0400
+
+    do not error out on generic-gnu + --enable-shared
+    
+    If you build with --enabled-shared on a Linux arch not explicitly
+    listed, the configure script will abort because it didn't detect
+    "linux" in the fallback generic-gnu tuple.
+    
+    Since this is the fallback tuple and people are [1;31mpass[ming
+    --enable-shared, assume the user knows what they're in for.
+    
+    Change-Id: Ia35b657e7247c8855e3a94fca424c9884d4241e3
+
+[33mcommit e3e63fbcbae81c1244b638e74bde4f895fb92c58[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Mon Jul 23 14:55:32 2012 -0700
+
+    Make random streams consistant
+    
+    Reset the seed so the second [1;31mpass[m stream matches the first
+    
+    Change-Id: Id0c0f73abb835b5ca92d76b14e0b02f6239a6ee3
+
+[33mcommit b29369856198c911a0e6a658d361936c178047d0[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Mon Jul 2 14:47:47 2012 -0700
+
+    Fix subpixel_predict initialization
+    
+    xd->subpixel_predict16x16 is called in first [1;31mpass[m, but isn't
+    initialized in first [1;31mpass[m, which causes segfault. This patch
+    fixed that problem.
+    
+    Change-Id: Ibd2cad4e2d32ea589fc3e0876d60d3079ae836e7
+
+[33mcommit acd147c50c02e43b1426450033b71d8ad28e6b98[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Jun 29 12:15:00 2012 -0700
+
+    Build unit test driver from the default target
+    
+    We need an easy way to build the unit test driver without running the
+    tests. This enables [1;31mpass[ming options like --gtest_filter to the
+    executable, which can't be done very cleanly when running under
+    `make test`.
+    
+    Fixed a number of compiler errors/warnings when building the tests
+    in various configurations by Jenkins.
+    
+    Change-Id: I9198122600bcf02520688e5f052ab379f963b77b
+
+[33mcommit b178fe7bfb96379d6dda6351b5739378d5c9f4d2[m
+Merge: 5eaa9bcfe 7b0b6a2c4
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Jun 19 14:50:46 2012 -0700
+
+    Merge "disable lagged encoding in one-[1;31mpass[m"
+
+[33mcommit 7b0b6a2c414a7e8947d37c817d5b312a7ec844f7[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Jun 13 11:59:12 2012 -0700
+
+    disable lagged encoding in one-[1;31mpass[m
+    
+    This currently has no effect and can create an artificial lag in e.g.,
+    realtime.
+    
+    Change-Id: Ia1c7c6dbe7c6fe82a944f087f1b0d1dbbc0aa1b6
+
+[33mcommit caf0f14f84b7d66a614bc6f83ca7b311dcda437b[m
+Merge: d708e7fbb 2fb29ff7f
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Thu May 24 12:22:34 2012 -0700
+
+    Merge changes I231c062e,Idadc42c7
+    
+    * changes:
+      Add external resize tests
+      Prevent external frame size changes in two-[1;31mpass[m
+
+[33mcommit 410ae576e733674a66b6f7963a60a25b4310d3b4[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed May 23 12:07:53 2012 -0700
+
+    Prevent external frame size changes in two-[1;31mpass[m
+    
+    The two-[1;31mpass[m code does not support the case where the application
+    changes the frame size dynamically. Add this case to the validation
+    checks in the vpx_codec_enc_config_set() path.
+    
+    Change-Id: Idadc42c7c3bd566ecdbce30d8dd720add097f992
+
+[33mcommit 357800e7cd5b6b71a2960c4f685e2c2bfff10212[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Fri May 4 13:32:43 2012 +0300
+
+    Fix multi-resolution threaded encoding
+    
+    mb_row and mb_col was not [1;31mpass[med to vp8cx_encode_inter_macroblock in
+    threaded encoding.
+    
+    Change-Id: If4321cc59bf91e991aa31e772f882ed5f2bbb201
+
+[33mcommit 414b5eaedeb51fc120c43e7bee83f4a813c0ae36[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Fri Apr 27 11:06:14 2012 -0700
+
+    Reset output frames counter for second [1;31mpass[m
+    
+    The frame counter was not being reset at the start of
+    the first [1;31mpass[m.
+    
+    Change-Id: I2ef7c6edf027e43f83f470c52cbcf95bf152e430

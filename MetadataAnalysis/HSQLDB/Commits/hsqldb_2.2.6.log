@@ -1,0 +1,167 @@
+Searching between 2.2.5 and 2.2.6
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: mvcc
+Keywords: slow fast time perf optim regression speed mvcc
+For keyword slow:
+For keyword fast:
+For keyword time:
+commit 81bde6c2222d1bbfa66fd9e826baa10ade8d213f
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Tue Nov 15 01:16:19 2011 +0000
+
+    Added much detail to dependency-specification section
+    
+    This should save application integrators a ton of time.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4767 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit e22274b0698d9034a857e37c1932984f6ca16827
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Sun Nov 13 02:31:17 2011 +0000
+
+    Restored better Gradle file nesting, this time for mvn-pub.gradle.
+    These two commits result in less unnecessary code evaluation and simpler command lines.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4752 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit 00a8fdbe0877a39302c67300e6a4c9fbb026204c
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Sat Oct 22 22:46:53 2011 +0000
+
+    Implemented reference-time timestamp automatic PL variable
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4607 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit f92e85de293c60f3a68a930d69113a9f8466152e
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Tue Oct 18 13:49:14 2011 +0000
+
+    Due to complicated Ant scoping, the -ivy-setup target was executing superfluously many times, just when executed via direct Ant invocation.
+    Performed extra Ivy resolves plus really cluttered build screen output.
+    This work eliminates the superflous executions.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4556 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit 5d65f78f253838cd4df319c254993e13f664aa4d
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Fri Oct 14 04:35:27 2011 +0000
+
+    Incremental progress on getting Docbooks build working with Gradle.
+    Very close but it's bed time.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4531 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit 229dd59c74d5071736b06aac5acf5ee47a3374e9
+Author: fredt <fredt@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Sat Sep 17 10:38:53 2011 +0000
+
+    core code updates - datetime function improvements
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4413 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit 843a2f0dfcb8a4c0122820071a8f456a40a50494
+Author: fredt <fredt@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Sat Sep 10 22:10:37 2011 +0000
+
+    core code updates - datetime function improvements
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4411 7c7dc5f5-a22d-0410-a3af-b41755a11667
+For keyword perf:
+commit 235c131e3d4b2aa168cf1756f5325634f329a470
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Fri Nov 11 22:34:32 2011 +0000
+
+    Enhanced internal methods, perfect some REs
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4738 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit 9530579b889f956ef4e742bc1c41dfa0c777321d
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Fri Nov 11 12:39:32 2011 +0000
+
+    Made temporary change to how build-dist.gradle is nested
+    
+    This is to work around problem due to combination of HyperSQL's unconventional
+    decision to not perform builds in the project root directory, Gradle's
+    temporary (pre-1.0-version) requirements for setting project name.
+    These changes need to be committed before they can be tested by a
+    distribution build, so adjustment commits may come shortly.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4733 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit f92e85de293c60f3a68a930d69113a9f8466152e
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Tue Oct 18 13:49:14 2011 +0000
+
+    Due to complicated Ant scoping, the -ivy-setup target was executing superfluously many times, just when executed via direct Ant invocation.
+    Performed extra Ivy resolves plus really cluttered build screen output.
+    This work eliminates the superflous executions.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4556 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit cd8926d073bd33f7a034a96b27d7fdfaf866b688
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Fri Oct 14 20:58:21 2011 +0000
+
+    Fixed several mistakes with skip properties, both internal and external, so
+    that now Docbook gen dependsets and explicit skipping are working perfectly,
+    greatly speeding up developer doc rebuilds and partial doc builds.
+    Finalized public Gradle task list (have not done dist targets yet).
+    Gradle and Ant both working perfeclty for Docbook building now AFAIK.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4538 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit bff49b59b20162edf23b4fee71ba4acd0db00876
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Thu Oct 13 00:32:22 2011 +0000
+
+    Enhanced 'gradlew tasks --all' emulation to point where it is very consistent with OOTB but much more useful.
+    Just need Gradle team support for bug GRADLE-1828 to make this perfect.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4524 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit 5484edd472ba4c02312d4282455ff30408c7176d
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Sat Oct 8 05:41:01 2011 +0000
+
+    Unnecessary added perfection :)
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4476 7c7dc5f5-a22d-0410-a3af-b41755a11667
+For keyword optim:
+commit b319a01a567c84221231bb58911098f9c6bdf4e7
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Wed Nov 2 00:16:40 2011 +0000
+
+    Cleaned up and optimized Ivy configs
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4671 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit 889b11a2f7e7c88761667d60097655becf1849b6
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Thu Oct 20 01:25:10 2011 +0000
+
+    Modify Gradle-only task descriptions to optimize for Gui
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4571 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+commit 04db897bbc6cb443c74d001fa40ef479a0ecde25
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Sun Oct 9 21:37:56 2011 +0000
+
+    optimization
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4501 7c7dc5f5-a22d-0410-a3af-b41755a11667
+For keyword regression:
+For keyword speed:
+commit cd8926d073bd33f7a034a96b27d7fdfaf866b688
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Fri Oct 14 20:58:21 2011 +0000
+
+    Fixed several mistakes with skip properties, both internal and external, so
+    that now Docbook gen dependsets and explicit skipping are working perfectly,
+    greatly speeding up developer doc rebuilds and partial doc builds.
+    Finalized public Gradle task list (have not done dist targets yet).
+    Gradle and Ant both working perfeclty for Docbook building now AFAIK.
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4538 7c7dc5f5-a22d-0410-a3af-b41755a11667
+For keyword mvcc:

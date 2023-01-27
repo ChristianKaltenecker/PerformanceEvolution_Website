@@ -1,0 +1,25 @@
+Searching between v1.0.3 and v1.0.4
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,compression
+Keywords: slow fast time perf optim regression quality compression
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword quality:
+For keyword compression:
+commit 0f3c84e7458d2ef91a29fdf269e8ad016ae694ba
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Mar 27 22:29:22 2018 +0200
+
+    Update (#656)
+    
+     * proper fix for the "fall through" warning"
+     * automatic NDIRECT/NPOSTFIX tuning (better compression)
+     * fix unaligned access for `aarch64`-cross-`armhf` build
+     * fix `aarch64` detection (10% decoder speedup)
+     * expose `large_window` CLI option
+     * make default window size 16MiB
+     * ramp up version to 1.0.4

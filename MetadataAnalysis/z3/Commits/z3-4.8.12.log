@@ -1,0 +1,19 @@
+Searching between z3-4.8.11 and z3-4.8.12
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: LRA
+Keywords: slow fast time perf optim regression speed LRA
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+[33mcommit 8a33391708b282f93d0418ea0235f56a1e6fd265[m
+Author: Marc Mosko <mmosko@users.noreply.github.com>
+Date:   Tue Jul 6 01:22:00 2021 -0700
+
+    Expose [1;31moptim[mize.assertAndTrack to Java (#5387)
+    
+    Co-authored-by: Marc Mosko <mmosko@parc.com>
+For keyword regression:
+For keyword speed:
+For keyword LRA:

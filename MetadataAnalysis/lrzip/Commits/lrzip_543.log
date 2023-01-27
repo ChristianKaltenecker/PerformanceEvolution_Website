@@ -1,0 +1,67 @@
+Searching between v0.530 and v0.543
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compressoion,processor,multi,level
+Keywords: slow fast time perf optim regression lzo lzma gzip bzip compressoion processor multi level
+For keyword slow:
+commit 6929492874933dd2cf68346e037abcabed79c0c8
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Nov 20 09:44:54 2010 +1100
+
+    Fix the sliding mmap buffer not working on 2nd pass onwards which was causing a slowdon of death.
+
+commit 2b08c6e280ef2dbc369b5cbef531287674c0056f
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Nov 16 21:25:32 2010 +1100
+
+    Implement massive multithreading decompression.
+    This is done by taking each stream of data on read in into separate buffers for up to as many threads as CPUs.
+    As each thread's data becomes available, feed it into runzip once it is requests more of the stream.
+    Provided there are enough chunks in the originally compressed data, this provides a massive speedup potentially proportional to the number of CPUs. The slower the backend compression, the better the speed up (i.e. zpaq is the best sped up).
+    Fix the output of zpaq compress and decompress from trampling on itself and racing and consuming a lot of CPU time printing to the console.
+    When limiting cwindow to 6 on 32 bits, ensure that control.window is also set.
+    When testing for the maximum size of testmalloc, the multiple used was out by one, so increase it.
+    Minor output tweaks.
+For keyword fast:
+For keyword time:
+commit 2b08c6e280ef2dbc369b5cbef531287674c0056f
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Nov 16 21:25:32 2010 +1100
+
+    Implement massive multithreading decompression.
+    This is done by taking each stream of data on read in into separate buffers for up to as many threads as CPUs.
+    As each thread's data becomes available, feed it into runzip once it is requests more of the stream.
+    Provided there are enough chunks in the originally compressed data, this provides a massive speedup potentially proportional to the number of CPUs. The slower the backend compression, the better the speed up (i.e. zpaq is the best sped up).
+    Fix the output of zpaq compress and decompress from trampling on itself and racing and consuming a lot of CPU time printing to the console.
+    When limiting cwindow to 6 on 32 bits, ensure that control.window is also set.
+    When testing for the maximum size of testmalloc, the multiple used was out by one, so increase it.
+    Minor output tweaks.
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword lzo:
+For keyword lzma:
+commit 6f2b94be3be4981e55d68e6a0993189c3d58f2f1
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Nov 24 20:12:19 2010 +1100
+
+    Fix the case where a compressed file has more than one stream 0 entry per block.
+    Limit lzma windows to 300MB in the right place on 32 bit only.
+    Make the main process less nice than the backend threads since it tends to be the rate limiting step.
+For keyword gzip:
+For keyword bzip:
+For keyword compressoion:
+For keyword processor:
+For keyword multi:
+commit 2b08c6e280ef2dbc369b5cbef531287674c0056f
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Nov 16 21:25:32 2010 +1100
+
+    Implement massive multithreading decompression.
+    This is done by taking each stream of data on read in into separate buffers for up to as many threads as CPUs.
+    As each thread's data becomes available, feed it into runzip once it is requests more of the stream.
+    Provided there are enough chunks in the originally compressed data, this provides a massive speedup potentially proportional to the number of CPUs. The slower the backend compression, the better the speed up (i.e. zpaq is the best sped up).
+    Fix the output of zpaq compress and decompress from trampling on itself and racing and consuming a lot of CPU time printing to the console.
+    When limiting cwindow to 6 on 32 bits, ensure that control.window is also set.
+    When testing for the maximum size of testmalloc, the multiple used was out by one, so increase it.
+    Minor output tweaks.
+For keyword level:

@@ -1,0 +1,1021 @@
+Searching between z3-4.5.0 and z3-4.6.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: QF_FP,proof,QF_UFLRA
+Keywords: slow fast time perf optim regression speed QF_FP proof QF_UFLRA
+For keyword slow:
+[33mcommit d47aea398730634444bd31172fd2a04739a9efa7[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Fri Oct 6 11:23:44 2017 +0100
+
+    [TravisCI] Workaround [1;31mslow[m unit test execution for Debug builds.
+    
+    Unit tests execute very [1;31mslow[mly in Debug (i.e. unoptimized) builds.  This
+    causes TravisCI to terminate the job due to no console output being
+    seen.
+    
+    To workaround this for the debug builds the tests are just compiled
+    but not executed. To implement this the `RUN_UNIT_TESTS` environment
+    variable now can take on the values `BUILD_ONLY`, `BUILD_AND_RUN`,
+    and `SKIP` rather than `0` or `1`.
+
+[33mcommit 850c2ebc0ca1bfbe11c3fa2040a367e89cc987d2[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sat Aug 12 13:52:30 2017 +0100
+
+    [TravisCI] Add scripts to build and test Z3 on macOS (OSX) and
+    add a single configuration to TravisCI to test.
+    
+    TravisCI is very [1;31mslow[m at running macOS jobs so just have one
+    configuration for now.
+
+[33mcommit d4b7b489d072daaf268ee15f3f1517c4388cf8b3[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Tue Apr 25 14:16:14 2017 +0100
+
+    [CMake] Teach CMake to build the documentation for the API bindings
+    and install them. The target for building the documentation is
+    `api_docs`.
+    
+    This is off by default but can be enabled with the
+    `BUILD_DOCUMENTATION` option. The C and C++ API documentation
+    is always built but the Python, ".NET", and Java documentation are
+    only built if they are enabled in the build system. The rationale
+    for this is that it would be confusing to install documentation
+    for API bindings that are not installed.
+    
+    By default `ALWAYS_BUILD_DOCS` is on which will [1;31mslow[m down builds
+    significantly but will ensure that when the `install` target is
+    invoked the documentation is up-to-date. Unfortunately I couldn't
+    find a better way to do this. `ALWAYS_BUILD_DOCS` can be disabled
+    to get faster builds and still have the `api_docs` target available.
+
+[33mcommit 61d1d5e8b0a87381ac429a06786c3db28c4e9aa2[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Tue Nov 8 15:20:47 2016 -0500
+
+    add cache for length terms to theory_str, but it seems to [1;31mslow[m things down so I disabled it
+For keyword fast:
+[33mcommit 2a63c56ae0aa3e68052247d2c934d7c6a9840e5a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue May 9 14:03:30 2017 -0700
+
+    A [1;31mfast[mer and more scalable LRA solver by Lev Nachmanson. It is disabled in the initial merge pending a few bug fixes
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d4b7b489d072daaf268ee15f3f1517c4388cf8b3[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Tue Apr 25 14:16:14 2017 +0100
+
+    [CMake] Teach CMake to build the documentation for the API bindings
+    and install them. The target for building the documentation is
+    `api_docs`.
+    
+    This is off by default but can be enabled with the
+    `BUILD_DOCUMENTATION` option. The C and C++ API documentation
+    is always built but the Python, ".NET", and Java documentation are
+    only built if they are enabled in the build system. The rationale
+    for this is that it would be confusing to install documentation
+    for API bindings that are not installed.
+    
+    By default `ALWAYS_BUILD_DOCS` is on which will slow down builds
+    significantly but will ensure that when the `install` target is
+    invoked the documentation is up-to-date. Unfortunately I couldn't
+    find a better way to do this. `ALWAYS_BUILD_DOCS` can be disabled
+    to get [1;31mfast[mer builds and still have the `api_docs` target available.
+
+[33mcommit 2babd192b8d1dd1645c28731cb331b2bdbf634b4[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Nov 28 14:43:47 2016 +0000
+
+    small optimization in compilation of multi-patterns
+    also make the path [1;31mfast[mer for single patterns
+
+[33mcommit 4452ac0d6d13001b95bba65ace9704b2857be5cc[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Nov 28 13:48:15 2016 +0000
+
+    optimize pattern matching code generator for DAG patterns
+    generated code now uses COMPARE instructions to compare subtrees instead of diving into both subtrees. Code is thus smaller and fails [1;31mfast[mer.
+
+[33mcommit a61e1f17e872075cc784e06de4061a5b24941d5e[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Wed Nov 2 12:35:14 2016 -0400
+
+    fix crash in gen_len_test_options when [1;31mfast[m length testers are disabled
+
+[33mcommit 4433417b6ebdf34384e46462fbe5c2f647437200[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Tue Sep 20 16:25:28 2016 -0400
+
+    [1;31mfast[mer push_scope in theory_str
+
+[33mcommit 7aeeb599ef6ed05ab8eb0f06fc4fb279585c981e[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Tue Jun 14 18:43:51 2016 -0400
+
+    very very basic Contains support in theory_str
+    not included: the 1200 lines of code that make it very [1;31mfast[m
+For keyword time:
+[33mcommit ead6e56d15432384ece80361dd1969c2367a0fe2[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sun Oct 15 17:41:40 2017 +0100
+
+    [TravisCI] Swap `run_quiet` and `run_non_native_binding`. In the
+    previous order `grep` inside `run_quiet` would get ASan LD_PRELOAD'ed
+    which would some[1;31mtime[ms fail.
+
+[33mcommit 35f6746c60a40eeb3c3356e6a8652f72792a1c30[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sun Oct 15 13:21:40 2017 +0100
+
+    Workaround `regressions/smt2/error.smt2` test timing out.
+    
+    When ASan's LeakSanitizer is enabled leak checking is triggered
+    when `exit()` is called and it returns so many false positives that
+    it takes a long [1;31mtime[m to write them to the console.
+    
+    To workaround this we simply call `_Exit()` instead.
+
+[33mcommit 9455391f1f60d0f4ff958dd95fb0f74cbe399ad8[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Fri Oct 6 16:46:26 2017 +0100
+
+    [TravisCI] Don't run the python binding system tests when building
+    with UBSan.
+    
+    This is a workaround. We can't fix this unless we build libz3 with
+    a shared UBSan run[1;31mtime[m.
+
+[33mcommit f15766baee334b2d045e72b392712ef133c28c3a[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Fri Oct 6 15:56:43 2017 +0100
+
+    [TravisCI] Don't run the non-native example when building with UBSan.
+    
+    This a workaround. Right now `libz3` gets linked against a static
+    UBSan run[1;31mtime[m which means none of the non-native language bindings
+    (e.g. python) can load `libz3` due to undefined symbols. We need
+    to link `libz3` against a shared UBSan run[1;31mtime[m to fix this.
+
+[33mcommit 7a977f0106fe0ae07c90d1566a8a75e2d430f2f9[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Aug 18 14:54:54 2017 -0700
+
+    ensure that [1;31mtime[mouts are distinguished from other cancel events #848
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c2f69ae9fbdcad143557309dd021aa7cafb21d36[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Wed Aug 2 11:58:47 2017 +0100
+
+    [TravisCI] Try to make the LTO build more reliable.
+    
+    TravisCI kills builds that don't show output for over 10 minutes [1].
+    This some[1;31mtime[ms causes LTO builds to fail because gcc shows no output
+    during linking which can take many minutes to complete.
+    
+    To workaround this we use the `travis_wait` command to allow at
+    most 45 minutes for the build to run. This command will force output
+    to appear at regular intervals.
+    
+    The change is made in the top-level `.travis.yml` file rather than
+    the other scripts because I don't want to pollute them with TravisCI
+    specific details.
+    
+    [1] https://docs.travis-ci.com/user/common-build-problems/#Build-[1;31mtime[ms-out-because-no-output-was-received
+
+[33mcommit 8310fed528622a3a91f65d223e2165b6a46dc234[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sun Jun 25 22:36:03 2017 +0100
+
+    [TravisCI] Implement TravisCI build and testing infrastructure for Linux
+    
+    The Linux builds rely on Docker (using Ubuntu 16.04LTS and Ubuntu
+    14.04LTS) to build and test Z3 so that builds are easily reproducible.
+    
+    A build status button has been added to `README.md` so that it is
+    easy to see the current build status.
+    
+    More documentation can be found in `contrib/ci/README.md`.
+    
+    This implementation currently tests 13 different configurations. If
+    build [1;31mtime[ms become too long we can remove some of them.
+    
+    Although it would be nice to test macOS builds that requires
+    significantly more work so I have left this as future work.
+
+[33mcommit 4b517b96df66c87b46a1f9c9b2e8a2d26ed0195b[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Mon Jun 12 10:21:50 2017 +0100
+
+    [CMake] Move CMake files into their intended location so the
+    `contrib/cmake/bootstrap.py` script no longer needs to be executed.
+    
+    The previous location of the CMake files was a compromise proposed
+    by @agurfinkel in #461. While this has served us well (allowing progress
+    to be made) over [1;31mtime[m limitations of this approach have appeared.
+    
+    The main problem is that doing many git operations (e.g. pull, rebase)
+    means the CMake files don't get updated unless the user remembers to
+    run the script. This can lead to broken and confusing build system
+    behaviour.
+    
+    This commit only does the file moving and necessary changes to
+    `.gitignore`. Other changes will be done in subsequent commits.
+
+[33mcommit 23ff580a67518d2ef2d10a0e8c2ca4377f099928[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue May 23 12:16:43 2017 -0700
+
+    get rid of [1;31mtime[mb dependencies, pull request #1040
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b782ec35ccaf59cac1294b7bb2f7714dd9854ac2[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun May 21 10:35:59 2017 -0700
+
+    avoid print statements from assertions when the assertion does not trigger. Stackoverflow question http://stackoverflow.com/questions/44094927/creating-formula-taking-too-much-[1;31mtime[m-in-z3py
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0e1343e78db9d396240151af436a1a2028cc40fa[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sat Apr 29 01:21:49 2017 +0100
+
+    [CMake] Add support for link [1;31mtime[m optimization (LTO).
+    
+    This analogous to the `--optimize` flag in the Python/Makefile
+    build system except that we now support doing LTO with Clang/GCC
+    as well. However it is probably best to avoid doing LTO with
+    Clang or GCC for now because I see a bunch of warnings about
+    ODR violations when building with LTO.
+    
+    LTO can be enabled with the new `LINK_TIME_OPTIMIZATION` option
+    which is off by default.
+
+[33mcommit b4f8b001cecb9a341ddacb4e590b1dcaa01889fd[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Mon Apr 24 22:55:41 2017 +0100
+
+    [Doxygen] Teach `mk_api_doc.py` a new command line option
+    (`--output-dir`) to control where output files are emitted.
+    
+    This is implemented by making `z3api.dox` a template file
+    (renamed `z3api.cfg.in`) and populating the template at build
+    [1;31mtime[m with the required settings.
+
+[33mcommit e4b9080165dce794561f26d4008fd9c9a0eb9bde[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Apr 15 15:04:13 2017 +0800
+
+    include [1;31mtime[mout/rlimit parameters in optmize
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2cb4223979cc94e2ebc4e49a9e83adbdcd2b6979[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sun Mar 12 12:29:26 2017 +0100
+
+    [CMake] Support including Git hash and description into the build.
+    CMake will automatically pick up changes in git's HEAD so that
+    the necessary code is rebuilt when the build system is invoked.
+    
+    Two new options `INCLUDE_GIT_HASH` and `INCLUDE_GIT_DESCRIBE` have been
+    added that enable/disable including the git hash and the output of `git
+    describe` respectively. By default if the source tree is a git
+    repository both options are on, otherwise they are false by default.
+    
+    To support the `Z3GITHASH` macro a different implementation is used from
+    the old build system. In that build system the define is passed on the
+    command line. This would not work well for CMake because CMake
+    conservatively (and correctly) rebuilds *everything* if the flags given
+    to the compiler change. This would result in the entire project being
+    rebuilt every[1;31mtime[m git's `HEAD` changed.  Instead in this implementation
+    a CMake specific version of `version.h.in` (named `version.h.cmake.in`)
+    is added that uses the `#cmakedefine` feature of CMake's
+    `configure_file()` command to define `Z3GITHASH` if it is available and
+    not define it otherwise. This way only object files that depend on
+    `version.h` get re-built rather than the whole project.
+    
+    It is unfortunate that the build systems now have different `version.h`
+    file templates. However they are very simple and I don't want to
+    modify how templates are handled in the python/Makefile build system.
+
+[33mcommit 74d3de01b3ef16d59d316c84b49f30a3e4a683b2[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jan 2 10:07:02 2017 -0800
+
+    enable incremental consequence finding with restart [1;31mtime[mout
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 7378362e816caac87c9dbdf2e6e7f2811310f9aa[m
+Merge: 251d1ec03 b5aa6d5eb
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Dec 21 09:13:00 2016 -0800
+
+    Merge pull request #853 from delcypher/scoped_[1;31mtime[mr_linux_perf_fix
+    
+    Fix issue with bd1f07f864a7f1790cec08a306ccc17507f7e5a8
+
+[33mcommit b5aa6d5eb5d9d71a55d51ee2eef5cde952cf3a51[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Mon Dec 19 22:36:42 2016 +0000
+
+    Fix issue with bd1f07f864a7f1790cec08a306ccc17507f7e5a8 pointed out by
+    @nunolopes .
+    
+    If `pthread_cond_signal()` is called while `m_mutex` is held then the
+    timing thread might be woken up twice due to waking up from
+    `pthread_cond_[1;31mtime[mout()` (due to being signaled) but then being forced
+    to sleep again because the thread calling `~imp()` is still holding
+    `m_mutex` (which the timing thread needs to acquire).
+
+[33mcommit 0c6c104f9a751ee1df4819a4ef012a48a3c17a7a[m
+Merge: 08f95bedf bd1f07f86
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Dec 19 08:22:03 2016 -0800
+
+    Merge pull request #841 from delcypher/scope_[1;31mtime[mr_spurious_wakes
+    
+    Make `scoped_[1;31mtime[mr` robust to spurious wakes under Linux.
+
+[33mcommit e85f9d33c4dceccded5436955a84f125a1e712d8[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Fri Dec 16 15:50:03 2016 -0500
+
+    add "legacy" support for theory case splits
+    
+    this replicates what was done in theory_str to add axioms excluding each
+    pair of literals from being assigned True at the same [1;31mtime[m;
+    no new heuristics are being used in smt_context (yet)
+
+[33mcommit bd1f07f864a7f1790cec08a306ccc17507f7e5a8[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sun Dec 11 23:07:48 2016 +0000
+
+    Fix implementation of `scoped_[1;31mtime[mr` under Linux where it was
+    incorrectly assumed that `pthread_cond_[1;31mtime[mdwait()` would exit
+    due to a condition variable being signaled or a [1;31mtime[mout occuring.
+    
+    According to the documentation `pthread_cond_[1;31mtime[mdwait()` might
+    spuriously wake so we introduce a new variable `m_signal_sent` (that is
+    guarded by an existing mutex) that is used as the variable to check that
+    the thread wake was not spurious.
+    
+    This is intended to partially fix #839 .
+
+[33mcommit facc3215da30df6ed65ef639236539dd0051bb61[m
+Merge: 1d417f652 762e5fd09
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Nov 23 08:49:38 2016 -0800
+
+    Merge pull request #805 from MartinNowack/feat_unlimited_[1;31mtime[mout
+    
+    Do not request [1;31mtime[m stamp if not needed
+
+[33mcommit 762e5fd09303b7755abe1eb29b3b7146dc9aa02a[m
+Author: Martin Nowack <martin_nowack@tu-dresden.de>
+Date:   Wed Nov 23 16:38:21 2016 +0100
+
+    Do not request [1;31mtime[m stamp if not needed
+    
+    If no [1;31mtime[mout is needed for solving queries, [1;31mtime[m stamps do not
+    need to be acquired.
+
+[33mcommit e9db934f1a3199cc69748333bdc115f4010d0eda[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 17 04:26:17 2016 +0200
+
+    improving perf of mutex finding, revert semantics of 0 [1;31mtime[mout to no-[1;31mtime[mout. Issue #791
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit aea0032aa7d5c2ed5022517217383becf861db24[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Tue Sep 13 18:01:45 2016 -0400
+
+    manage our own union-find structure in theory_str
+    concat-086.smt2 passes with this, for the first [1;31mtime[m ever
+
+[33mcommit 481e97a274c994d66f9c34bd615c8b4af214439d[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Fri Aug 19 22:53:36 2016 -0400
+
+    propagate early in theory_str to set up contains/regex maps
+    this fixes an unsat-as-sat error in a regex test and flips around some [1;31mtime[mouts
+    so more work will be required to track this down
+For keyword perf:
+[33mcommit 77008dc4115221cccd7c79c5cd530c919d07873c[m
+Merge: 1d6f53c31 070c699ff
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Sep 11 00:40:51 2017 +0300
+
+    Merge pull request #1226 from NikolajBjorner/master
+    
+    removing dependencies on simplifier, support SMTLIB2 parametric algebraic datatypes.
+    This is a breaking change. It introduces two substantial changes:
+    1. The legacy simplifier is removed. It was obsoleted with the introduction of the rewriter facilities, but many dependencies made it a major change to remove the legacy simplifier. All uses of the legacy simplifier have now been replaced by corresponding calls to the rewriter. It means that some normalization may behave differently. At this point, Z3 passes regressions and passes [1;31mperf[mormance tests without regressing.
+    2. Algebraic datatypes in the form of SMT-LIB2.6 are now supported. These generalize the datatypes supported so far as parametric datatype constructors may be applied to different arguments within a recursive definition.
+
+[33mcommit fff54d5d08e610c856ba5651ab0a1276079445aa[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Sep 3 03:56:10 2017 -0700
+
+    fix [1;31mperf[m regression with negative polynomial normalization, adding new datatype plugin
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 244cbc263831823096359f4745db259f6de5845b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 26 10:04:50 2017 -0700
+
+    ensure that auxiliary PB booleans are recognized during rewriting. Fixes segementation fault #1113, but does not address [1;31mperf[mormance issues with quantifiers and optimization combinations
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e0ac5bd585ad8bb35ab6a84b159a02d930dfe51e[m
+Merge: 085d31dca 2a63c56ae
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue May 9 14:07:33 2017 -0700
+
+    Merge pull request #1013 from NikolajBjorner/master
+    
+    Integrate new LRA solver capabilities by Lev Nachmanson.
+    
+    The LRA solver relies on a portfolio of Simplex implementations.
+    For large problems it resorts to revised Simplex with different search options. It uses doubles for large systems. For smaller problems it uses a Dual Simplex tableau representation that out[1;31mperf[morms the scalable solver when many small calls are used. It uses infinite precision rationals by default.
+    The theory_lra class provides the interface to the scalable Simplex solver.
+
+[33mcommit 7e1fae418a766532f99cea06a1c6021268661864[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri May 5 10:59:47 2017 -0400
+
+    fix #1005, disable expansion of regular expression range to union as it degrades [1;31mperf[mormance significantly
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 7378362e816caac87c9dbdf2e6e7f2811310f9aa[m
+Merge: 251d1ec03 b5aa6d5eb
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Dec 21 09:13:00 2016 -0800
+
+    Merge pull request #853 from delcypher/scoped_timer_linux_[1;31mperf[m_fix
+    
+    Fix issue with bd1f07f864a7f1790cec08a306ccc17507f7e5a8
+
+[33mcommit 1600823435a0058851368eda73582e3f89a66361[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 17 05:38:52 2016 +0200
+
+    fix [1;31mperf[m bug reported in #790
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e9db934f1a3199cc69748333bdc115f4010d0eda[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 17 04:26:17 2016 +0200
+
+    improving [1;31mperf[m of mutex finding, revert semantics of 0 timeout to no-timeout. Issue #791
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit fbaee080b202380b65a5df39c5c038ca68ed0442[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Fri Nov 11 00:32:50 2016 -0500
+
+    fix [1;31mperf[mormance regression introduced with theory_str str.from-int
+    more investigation is required to understand why this works.
+
+[33mcommit b3fddf47076faa65964735c5c64963dfe202af11[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Mon Sep 12 16:41:35 2016 -0400
+
+    [1;31mperf[mormance optimization in theory_str::classify_ast_by_type
+For keyword optim:
+[33mcommit dbb35b951c3260c628e178fc509384893577f46b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Nov 13 08:51:16 2017 -0800
+
+    make .NET and Java bindings for [1;31moptim[mization use Expr instead of ArithExpr to accomodate bit-vector [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d47aea398730634444bd31172fd2a04739a9efa7[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Fri Oct 6 11:23:44 2017 +0100
+
+    [TravisCI] Workaround slow unit test execution for Debug builds.
+    
+    Unit tests execute very slowly in Debug (i.e. un[1;31moptim[mized) builds.  This
+    causes TravisCI to terminate the job due to no console output being
+    seen.
+    
+    To workaround this for the debug builds the tests are just compiled
+    but not executed. To implement this the `RUN_UNIT_TESTS` environment
+    variable now can take on the values `BUILD_ONLY`, `BUILD_AND_RUN`,
+    and `SKIP` rather than `0` or `1`.
+
+[33mcommit 43c2ccb29a5fc13cd7328ce54e2febdecd0901bb[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Aug 16 16:38:48 2017 -0700
+
+    add missing functions to serialize [1;31moptim[mize benchmarks for Java #1215
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 4b759fd865ab45643b404bff9270463ef1ef3d4b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Aug 16 16:18:19 2017 -0700
+
+    add missing functions to serialize [1;31moptim[mize benchmarks for Java #1215
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 000796c25cbc06ef008c4701305a3b1bea3bdf4b[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Aug 14 20:12:00 2017 +0100
+
+    micro-[1;31moptim[mization in tactics' cleanup(): avoid dealloc+alloc traffic
+
+[33mcommit bc3d8580c9bf0c28e7aa2b4b9eadac59480dd0bd[m
+Author: Bernhard Gleiss <bgleiss@forsyte.tuwien.ac.at>
+Date:   Tue Aug 1 10:12:29 2017 +0200
+
+    fixed typo in [1;31moptim[mized unsat core plugin code
+
+[33mcommit 244cbc263831823096359f4745db259f6de5845b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 26 10:04:50 2017 -0700
+
+    ensure that auxiliary PB booleans are recognized during rewriting. Fixes segementation fault #1113, but does not address performance issues with quantifiers and [1;31moptim[mization combinations
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 85c7f5d8655b6a1e3721fa8ec308c51ffe87ead2[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Wed Jun 7 18:22:38 2017 +0100
+
+    [Doxygen] Fix some Doxygen warnings for `z3_[1;31moptim[mization.h`
+
+[33mcommit 0e1343e78db9d396240151af436a1a2028cc40fa[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sat Apr 29 01:21:49 2017 +0100
+
+    [CMake] Add support for link time [1;31moptim[mization (LTO).
+    
+    This analogous to the `--[1;31moptim[mize` flag in the Python/Makefile
+    build system except that we now support doing LTO with Clang/GCC
+    as well. However it is probably best to avoid doing LTO with
+    Clang or GCC for now because I see a bunch of warnings about
+    ODR violations when building with LTO.
+    
+    LTO can be enabled with the new `LINK_TIME_OPTIMIZATION` option
+    which is off by default.
+
+[33mcommit a048d74bae705b38c9155cf9758b606704f00942[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Apr 26 14:05:33 2017 -0700
+
+    adding interval designator to output of non-[1;31moptim[mal objectives, fix python doc test
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit ec4770622690fc29b2eb0557b7d644651a92b90c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Mar 24 02:23:50 2017 -0700
+
+    fix constant offset and handling of ite in difference logic [1;31moptim[mizer code-path. Issue  #946
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 829519b83747992056953cd4d5a69163982e4aac[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Mar 8 10:19:35 2017 +0100
+
+    fix bug for bit-vector [1;31moptim[mization. Issue #928
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 41e6fafc58f44e379a04e0650ddbb25c84350350[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Mar 8 10:07:31 2017 +0100
+
+    fix bug for bit-vector [1;31moptim[mization. Issue #919
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 873d975c77abeeb58fc170e8c8e03e671ff39bd4[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jan 17 13:41:15 2017 -0800
+
+    fix bug in consequence extraction: the order of bcp is not fixed between restarts, so the order of unit literals may not be preserved. This is relatively rare, so we [1;31moptim[mize for the case where we assume bcp preserves order (and maybe miss some consequences)
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0ab2067b69d876914a79ae7467db41a698f9a3ca[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Dec 9 13:15:40 2016 +0100
+
+    produce error message for cores with [1;31moptim[mization. Issue #825
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b57f04e2d2c74d124d72765964cae95475287f3b[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Tue Dec 6 12:59:40 2016 -0500
+
+    [1;31moptim[mize generate_mutual_exclusion in theory_str to make only half as many subterms
+
+[33mcommit 2babd192b8d1dd1645c28731cb331b2bdbf634b4[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Nov 28 14:43:47 2016 +0000
+
+    small [1;31moptim[mization in compilation of multi-patterns
+    also make the path faster for single patterns
+
+[33mcommit 4452ac0d6d13001b95bba65ace9704b2857be5cc[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Nov 28 13:48:15 2016 +0000
+
+    [1;31moptim[mize pattern matching code generator for DAG patterns
+    generated code now uses COMPARE instructions to compare subtrees instead of diving into both subtrees. Code is thus smaller and fails faster.
+
+[33mcommit b3fddf47076faa65964735c5c64963dfe202af11[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Mon Sep 12 16:41:35 2016 -0400
+
+    performance [1;31moptim[mization in theory_str::classify_ast_by_type
+
+[33mcommit 799fd07c85f8ec89552454334fe8a3e4c3f0273e[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Mon Sep 7 19:51:52 2015 -0400
+
+    [1;31moptim[mization: return integer consts for strlen() over constant strings
+For keyword regression:
+[33mcommit 21f685fa5a4a6f20e27bb0eb86828c0e553138dc[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Dec 15 06:54:02 2017 -0800
+
+    fix nlsat [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d67f3c14668b8f6f679f361575ad6cd3461dfa6f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 24 03:08:56 2017 -0700
+
+    create proofs folder, move proof-post-order utility to proofs directory, fix [1;31mregression[m with proofs
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 72c9134424c973f8fae47d40806bbf8a3d43bfda[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 24 02:26:39 2017 -0700
+
+    fixing [1;31mregression[ms introduced when reducing astm proof dependencies
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 7c99721b60e9f5a8e6a2fe502ff56380e808916b[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Mon Oct 16 13:21:03 2017 +0100
+
+    [TravisCI] Don't run Python [1;31mregression[m tests under ASan for now.
+    The script that runs them doesn't propagate LD_PRELOAD and so the
+    tests fail.
+
+[33mcommit a1b6316e2e3ae19e9e8f67af6e17c13771d73c81[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Mon Oct 16 09:49:54 2017 +0100
+
+    [TravisCI] Try to unbreak running Python [1;31mregression[m tests under ASan.
+
+[33mcommit ad2a0a0085773e1279526dce7b7bfaf167caeb40[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sun Oct 15 15:27:10 2017 +0100
+
+    [TravisCI] Don't print sanitizer suppressions by default because
+    that breaks Z3's [1;31mregression[m tests.
+
+[33mcommit 35f6746c60a40eeb3c3356e6a8652f72792a1c30[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sun Oct 15 13:21:40 2017 +0100
+
+    Workaround `[1;31mregression[ms/smt2/error.smt2` test timing out.
+    
+    When ASan's LeakSanitizer is enabled leak checking is triggered
+    when `exit()` is called and it returns so many false positives that
+    it takes a long time to write them to the console.
+    
+    To workaround this we simply call `_Exit()` instead.
+
+[33mcommit 77008dc4115221cccd7c79c5cd530c919d07873c[m
+Merge: 1d6f53c31 070c699ff
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Sep 11 00:40:51 2017 +0300
+
+    Merge pull request #1226 from NikolajBjorner/master
+    
+    removing dependencies on simplifier, support SMTLIB2 parametric algebraic datatypes.
+    This is a breaking change. It introduces two substantial changes:
+    1. The legacy simplifier is removed. It was obsoleted with the introduction of the rewriter facilities, but many dependencies made it a major change to remove the legacy simplifier. All uses of the legacy simplifier have now been replaced by corresponding calls to the rewriter. It means that some normalization may behave differently. At this point, Z3 passes [1;31mregression[ms and passes performance tests without regressing.
+    2. Algebraic datatypes in the form of SMT-LIB2.6 are now supported. These generalize the datatypes supported so far as parametric datatype constructors may be applied to different arguments within a recursive definition.
+
+[33mcommit 7f127cdd5dfc2a21433e64e19a5e91ab344648c4[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Sep 6 09:48:10 2017 -0700
+
+    adding declarations for [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 93474c0263502e9c7575d9c53ade310fccb78bba[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Sep 4 09:43:25 2017 -0700
+
+    aligning simplifier and rewriter for [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f12a4f04fdf5bcd16a120ffe1c1d64a5b4f02359[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Sep 4 09:28:40 2017 -0700
+
+    aligning simplifier and rewriter for [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c6722859c271723760b20188bf75a6201ad33af7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Sep 3 14:36:03 2017 -0700
+
+    update rewriting of equalities and monomials for [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit fff54d5d08e610c856ba5651ab0a1276079445aa[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Sep 3 03:56:10 2017 -0700
+
+    fix perf [1;31mregression[m with negative polynomial normalization, adding new datatype plugin
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2ede4b2c805a97ddd63f0205d4ba5c2940295a5c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Aug 27 09:31:16 2017 -0700
+
+    fixes based on [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f7ca7409cec5ce622725a9e35eb3ff935bdc890e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Aug 22 17:05:40 2017 -0700
+
+    fix [1;31mregression[ms introduced when modifying macro_util
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit ebe9db14d58ac3fc3f15009f56becbe69b36e56e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Aug 21 14:13:43 2017 -0700
+
+    fix [1;31mregression[m exposed by segfault2.smt2 crash
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 70f6280bf1c683e8c569dc0f1a08a35e17165697[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jul 25 10:18:21 2017 -0700
+
+    fix [1;31mregression[m reported in #1159
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e9ed3af45587900ea179d0393635a0509a5669dc[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jun 1 09:35:35 2017 -0700
+
+    fix [1;31mregression[m in str
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 7fab6707190c2342643fcc3a27f9d2833a495c17[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue May 16 08:21:32 2017 -0700
+
+    fix [1;31mregression[m, issue #1028
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 7e004fe331878e1f507806be4c39f47353c1ce64[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu May 11 09:28:59 2017 -0700
+
+    fix build warnings part 7, disable LRA for [1;31mregression[m t201.smt2
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 60783e5696e4a741e7ff4aaeb4eb979d3c4bd77c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jan 25 13:26:58 2017 -0800
+
+    fix [1;31mregression[m for z3num
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 725e79e9eb5fdb6d321ad7763ed3f8f8c5f13f48[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Nov 20 06:24:47 2016 -0800
+
+    re-enable ematching on recursive function definitions, disabling ematching breaks [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit fbaee080b202380b65a5df39c5c038ca68ed0442[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Fri Nov 11 00:32:50 2016 -0500
+
+    fix performance [1;31mregression[m introduced with theory_str str.from-int
+    more investigation is required to understand why this works.
+
+[33mcommit dc8062ba6727e59dc789ba1a4e27c2fe48eecbb5[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Thu Sep 22 20:14:42 2016 -0400
+
+    patch out contains check for substr reduction
+    fixes all [1;31mregression[ms in release build, we may want to revisit this later
+
+[33mcommit 1061cdf58ab4f3a95675fc13530df3b1aa259136[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Thu Sep 22 15:40:43 2016 -0400
+
+    fix value tester theory var reuse in theory_str
+    fixes release [1;31mregression[m in charAt-007
+
+[33mcommit f1d7ffcdced6635717911f18c57d46b2af0c69bf[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Tue Sep 20 00:14:38 2016 -0400
+
+    fix [1;31mregression[m regex-020
+
+[33mcommit a294c145dc0a4c55e5c89a6b5573ca8c1f84795a[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Wed Sep 14 16:18:03 2016 -0400
+
+    add theory_str::try_eval_concat to work around rewriter behaviour
+    this fixes a [1;31mregression[m in concat-013.smt2
+
+[33mcommit c83e39d3b8ab55ab0309bfc160ee951f244979e3[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Mon Sep 5 17:45:10 2016 -0400
+
+    fix incorrect axiom in theory_str for Contains check
+    this partially fixes a [1;31mregression[m in contains-034.smt2, which now
+    is at least not a SAT-as-UNSAT
+
+[33mcommit d3062a8eff28019af492691c6030235ffe18cff1[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Fri Sep 2 18:23:41 2016 -0400
+
+    omit out-of-scope length testers from axiom premise in theory_str::gen_len_test_options
+    this fixes a [1;31mregression[m in charAt-007.smt2
+
+[33mcommit f7ba3ff0843c8ebd9df440678266c7614abac344[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Tue Aug 9 20:11:25 2016 -0400
+
+    crash avoidance in theory_str search start, fixes length-001.smt2 [1;31mregression[m
+
+[33mcommit 9eead64d03a3e9c58313d5116a2891a031edb567[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Wed Jul 6 17:31:37 2016 -0400
+
+    prevent assertion of basic string axioms on variables that go out of scope (theory_str)
+    this is testing a crash avoidance feature, the [1;31mregression[m is tests/z3str/regex-026.smt2
+    
+    this also adds some debugging code for a substr() crash but that is WIP
+For keyword speed:
+For keyword QF_FP:
+For keyword proof:
+[33mcommit 0f2b1ae7c81f1c381332a5aafddd29c73856f0c4[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Nov 6 02:35:10 2017 -0800
+
+    fix [1;31mproof[m mode related segfaults #1241
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 16bab71df21f60f2cdb0faab438802f7a8c66128[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Nov 6 02:18:55 2017 -0800
+
+    remove asserts for [1;31mproof[m generation to enable mode switch in spacer virtual solver
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 60b970b9babafae7dfdaa888709f280c1cb82b32[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Oct 28 16:23:13 2017 -0700
+
+    add [1;31mproof[ms dependency to solver
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit db65cc007ad91bccb8815d0012be00c3b061290e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 24 10:27:48 2017 -0700
+
+    move more [1;31mproof[m utils
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit fc822af707ebe1c80708587d524a838849743464[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 24 09:59:55 2017 -0700
+
+    move [1;31mproof[m utils under ast
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit bce143b2b26ec8326b13a803202b8c678e7f837d[m
+Merge: 70f7846af 607eba172
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 24 03:28:04 2017 -0700
+
+    Merge pull request #1323 from c-cube/pp-[1;31mproof[m-graphviz
+    
+    print [1;31mproof[ms in graphviz
+
+[33mcommit d67f3c14668b8f6f679f361575ad6cd3461dfa6f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 24 03:08:56 2017 -0700
+
+    create [1;31mproof[ms folder, move [1;31mproof[m-post-order utility to [1;31mproof[ms directory, fix regression with [1;31mproof[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 72c9134424c973f8fae47d40806bbf8a3d43bfda[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 24 02:26:39 2017 -0700
+
+    fixing regressions introduced when reducing astm [1;31mproof[m dependencies
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit ed526b808d402e5b66bfcb8962ae58568993d00b[m
+Author: Simon Cruanes <simon.cruanes.2007@m4x.org>
+Date:   Tue Oct 24 10:16:22 2017 +0200
+
+    add parameter to specify the file into which dot [1;31mproof[ms are to be printed
+
+[33mcommit 24edb8fb47db0c680438c9473212160c93aac2db[m
+Author: Simon Cruanes <simon.cruanes.2007@m4x.org>
+Date:   Tue Oct 24 09:51:47 2017 +0200
+
+    add some colors to the [1;31mproof[m output
+
+[33mcommit d630838b38f6956aa418c81036c7b60d7d0e4163[m
+Author: Simon Cruanes <simon.cruanes.2007@m4x.org>
+Date:   Tue Oct 24 09:39:16 2017 +0200
+
+    add a basic printer into graphviz (http://graphviz.org/) for [1;31mproof[ms
+    
+    - [1;31mproof[ms are output into file `[1;31mproof[m.dot` if `(get-[1;31mproof[m-graph)` is
+      in the input
+    - use `dot -Txlib [1;31mproof[m.dot` to see the [1;31mproof[m
+    - use `dot -Tsvg [1;31mproof[m.dot` to get a svg file
+
+[33mcommit f63439603d3704f26b1d8e6030a7088840d0c314[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Oct 23 21:16:46 2017 -0700
+
+    streamlining [1;31mproof[m generation (initial step of removing ast-manager dependency). Detect error in model creation when declaring constant with non-zero arity. See #1223
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5db349f6fafc5b117dd49e11d7f2cd42531732af[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Aug 27 23:52:27 2017 -0700
+
+    raise an exception if trying [1;31mproof[m generation for the SAT solver. Stackoverflow question  https://stackoverflow.com/questions/45885321/check-function-while-qf-fd-logic-is-set-throws-accessviolationexception
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b269e6b35bba4fc09d3177024cde8424a7c18073[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon Jul 31 15:11:46 2017 -0400
+
+    comments on [1;31mproof[m_utils
+
+[33mcommit be1df279ecac4bb3a9a07008368540d1b860faba[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon Jul 31 14:11:07 2017 -0400
+
+    make [1;31mproof[m_checker less verbose
+For keyword QF_UFLRA:

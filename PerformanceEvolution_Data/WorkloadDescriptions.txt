@@ -1,0 +1,23 @@
+Video Encoding (VP9, VP8):
+We used the Sintel trailer as a well-established workload when assessing the quality of different encoders.
+The Sintel trailer is listed in the Xiph repository (https://media.xiph.org/) and used by different publications (e.g., https://ieeexplore.ieee.org/abstract/document/6607555 outside software engineering, or https://dl.acm.org/doi/abs/10.1145/3358960.3379137 in the software engineering domain).
+
+Compression (brotli, lrzip):
+We used the tool uiq2 to generate a large text compression workload by Matt Mahoney (http://mattmahoney.net/dc/text.html and http://mattmahoney.net/dc/uiq/). This tool creates a generic and general purpose compression benchmark of any size. The generated data was the same for both case studies and has a size of about 100 MB. This data was used to benchmark different archivers (http://web.archive.org/web/20090417231731/http://www.metacompressor.com/; unfortunately, the web site is no longer available. Instead, we provide an internet archive link)
+
+VPN (OpenVPN):
+Similar to compression, we created a generic general purpose file using uiq2 with a size of 1.400 MB. The rationale behind using uiq2 was that one configuration option also enabled lzo compression. Because of the compression, we sticked to the general purpose compression benchmark generator, but adjusted the size by sticking to a community guide for performance testing (https://community.openvpn.net/openvpn/wiki/PerformanceTesting#Testcases).
+
+Database (HSQLDB, MariaDB, MySQL, PostgreSQL):
+Each of the database systems supports SQL queries. We used the SQL benchmark PolePosition (http://polepos.org/), which was also used in multiple publications (https://onlinelibrary.wiley.com/doi/full/10.1002/spe.2107, https://dl.acm.org/doi/abs/10.1145/1216262.1216263) and allows us to query different types of queries (SELECT, UPDATE, nested queries, complex queries, etc.). 
+We acknowledge that this benchmark is old and, unfortunately, not maintained anymore, which is why we will stick to a more recent benchmark. However, the idea was to use an established and diverse benchmark for SQL databases which allows us to create and issue different types of queries to cover as much code as possible.
+
+Audio Encoding (Opus):
+For the audio encoding, we used the testvectors provided by the developers of the tool (https://opus-codec.org/docs/opus_testvectors-rfc8251.tar.gz, visit https://datatracker.ietf.org/doc/rfc8251/ for further information).
+
+Solver (z3):
+We used the Satisfiability Modulo Theories Library (SMT-LIB, https://smtlib.cs.uiowa.edu/benchmarks.shtml) to select benchmarks and selected one benchmark using different types of logics LRA, QF_FP, QF_LRA, and QF_UFLRA. Here, we selected multiple benchmarks since we could not find a general benchmark for z3.
+We included these workloads in our models and were even able to identify optimizations to some of these logic types during the commit analysis, since some of them are also included in the performance tests of z3.
+
+Planning System (Fast Downward):
+In this planning system, we used the workload that was suggested by one of the developers of Fast Downward.

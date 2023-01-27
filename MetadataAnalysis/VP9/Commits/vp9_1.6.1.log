@@ -1,0 +1,2851 @@
+Searching between v1.6.0 and v1.6.1
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,tiling
+Keywords: slow fast time perf optim regression speed quality tiling
+For keyword slow:
+[33mcommit f6921412d4daeef4148944d462e25948be0857d7[m
+Author: James Zern <jzern@google.com>
+Date:   Thu Nov 17 12:28:57 2016 -0800
+
+    partial_idct_test: s/SingleLargeCoef/SingleExtremeCoeff/
+    
+    tests with 'Large' in the name are reserved for [1;31mslow[m running tests which
+    may not be run on all platforms
+    
+    Change-Id: I2a7d6dd46b29b50469893e46433844132fb727c2
+
+[33mcommit 0421d8e318016758942107c1bab820f480eb1be2[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Mon Sep 26 15:35:23 2016 +0100
+
+    Limit max arf boost and scale motion breakout for image size.
+    
+    Added a cap on the maximum boost for an arf based on interval length.
+    Fixed bug where by the image size was not accounted for in determining
+    two of the motion breakout thresholds.
+    
+    Overall small gains of 0.2-0.4% psnr but on large image format clips with
+    [1;31mslow[m zooms the gain may be as much as 20% or more (e.g. in_to_tree
+    at 1080P)
+    
+    Change-Id: Id0a47391203026742daa9c97afac5705fd8c4dfb
+
+[33mcommit d9dce2f48eed1368a44c368fa87a506bd89ffec5[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Fri Sep 2 11:29:20 2016 -0700
+
+    Restore vp8_sixtap_predict4x4_neon
+    
+    This function was removed when clang started introducing alignment hints
+    which caused the 32 bit vld1_lane_u32/vst1_lane_u32 to fail:
+    https://llvm.org/bugs/show_bug.cgi?id=24421
+    
+    The load has been rendered safe with an implementation ~indiscernible
+    performance-wise that uses _u8 and over-reads just a touch.
+    
+    The store, when unaligned, has a version that is ~25% [1;31mslow[mer but safe
+    when xoffset = 0 (second pass filter only). When the first pass filter
+    (or both) are in play, the new version is almost identical in speed.
+    
+    Worst case performance (both filters, unaligned stores) is roughly 3-4x
+    faster than C.
+    
+    BUG=webm:817
+    BUG=webm:1273
+    
+    Change-Id: I1e490e94453e0872151fe0dafb05557463f6247d
+
+[33mcommit 2678aefc4820162aecf17348a6cfde4b3650383f[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Wed Jul 6 10:57:15 2016 -0700
+
+    vp9: Choose the scheme for modeling rd for 32x32 based on skin color.
+    
+    For real time CBR mode, use model_rd_for_sb_y for 32x32 if the sb is
+    a skin sb to avoid visual regression on the [1;31mslow[mly moving face.
+    
+    Refer to the cl: https://chromium-review.googlesource.com/#/c/356020/
+    
+    Change-Id: I42c36666b2b474ce5ee274239d52ae8ab400fd46
+For keyword fast:
+[33mcommit 41b0888a84d12926c66cb7f235ed0e850e0ca99e[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Mon Dec 12 16:47:05 2016 -0800
+
+    postproc: neon down and across macroblock filter
+    
+    Implement vpx_post_proc_down_and_across_mb_row in NEON.
+    Runs about 6-7x [1;31mfast[mer than C.
+    
+    BUG=webm:1320
+    
+    Change-Id: Ic5c7d3552a88cfcf999ec5bf2bd46fee460642c2
+
+[33mcommit 9720b58aacaaec301404b4fafa2e46f94c60c5f1[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Wed Oct 12 15:27:47 2016 -0700
+
+    Optimize idct32x32_34_add for NEON
+    
+    Approximately 3 times [1;31mfast[mer than the 1024 version which was used
+    previously.
+    
+    BUG=webm:1295
+    
+    Change-Id: Id15fb3d096029ec38ef01c53e5f6eb08254347c9
+
+[33mcommit 9dbb3ad39662ef872f1e902284503892f9bf0bda[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Oct 19 21:04:12 2016 -0700
+
+    remove idct32x32*_add_neon.asm
+    
+    the intrinsics are neutral to ~20% [1;31mfast[mer on cros/android
+    devices when using gcc-4.9/clang-3.8.1 and gcc-4.9/clang-3.8.x from the
+    r13 ndk. neutral results typically came with gcc-4.9 while larger
+    positive gains were achieved with clang 3.8.x.
+    
+    BUG=webm:1303
+    
+    Change-Id: I4d31f9c017944681b881493525d4573a7a5b1e16
+
+[33mcommit 57c6bf291e41d4e857df621bd3a9d00341a23a02[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Aug 2 17:37:32 2016 -0700
+
+    1 pass vbr: Allow for lookahead alt-ref in real-time mode.
+    
+    For 1 pass vbr real-time mode:
+    Allow for the usage of alt-ref frame when non-zero lag-in-frames is used.
+    Use non-filtered alt-ref, and select usage based on [1;31mfast[m scene/content
+    analysis/detection within the lag of frames.
+    
+    Positive gains on ytlive set: overall avgPSNR ~3-4%.
+    Several clips are up between 5-14%, a few clips are neutral/small change.
+    
+    Current speed decrease is about ~5-10%.
+    
+    Use the flag USE_ALTREF_FOR_ONE_PASS to enable this feature
+    (off by default for now).
+    
+    Change-Id: I802d2bf3d44f9cf01f6d15c76be9c90192314769
+
+[33mcommit 7481edb33f5ea82e29f12e0e872d04ea1a5373cb[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Sep 27 19:43:03 2016 -0700
+
+    vpx_dsp/get_prob: make clip_prob branchless
+    
+    + inline the function directly as there was only one consumer
+    (get_prob())
+    
+    this is an attempt to reduce the amount of branches to workaround an amd
+    bug. this change is mildly [1;31mfast[mer or neutral across x86-64, arm.
+    
+    http://support.amd.com/TechDocs/44739_12h_Rev_Gd.pdf
+    665 Integer Divide Instruction May Cause Unpredictable Behavior
+    
+    BUG=chromium:639712
+    
+    Suggested-by: Pascal Massimino <pascal.massimino@gmail.com>
+    Change-Id: Ia91823aded79aab469dd68095d44300e8df04ed2
+
+[33mcommit 43743b1d3efd99642e8669e864b882628eaca176[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Fri Sep 2 15:21:35 2016 -0700
+
+    Restore vp8_bilinear_predict4x4_neon
+    
+    This function was removed when clang started introducing alignment hints
+    which caused the 32 bit vld1_lane_u32/vst1_lane_u32 to fail:
+    https://llvm.org/bugs/show_bug.cgi?id=24421
+    
+    The load has been rendered safe with an implementation ~indiscernible
+    performance-wise that uses _u8 and over-reads just a touch.
+    
+    It is still ~5x [1;31mfast[mer than C in the unaligned case and doing both
+    filters.
+    
+    BUG=webm:892
+    BUG=webm:1273
+    
+    Change-Id: Icf7167189391b46202f47233bb585c24c42bcc36
+
+[33mcommit d9dce2f48eed1368a44c368fa87a506bd89ffec5[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Fri Sep 2 11:29:20 2016 -0700
+
+    Restore vp8_sixtap_predict4x4_neon
+    
+    This function was removed when clang started introducing alignment hints
+    which caused the 32 bit vld1_lane_u32/vst1_lane_u32 to fail:
+    https://llvm.org/bugs/show_bug.cgi?id=24421
+    
+    The load has been rendered safe with an implementation ~indiscernible
+    performance-wise that uses _u8 and over-reads just a touch.
+    
+    The store, when unaligned, has a version that is ~25% slower but safe
+    when xoffset = 0 (second pass filter only). When the first pass filter
+    (or both) are in play, the new version is almost identical in speed.
+    
+    Worst case performance (both filters, unaligned stores) is roughly 3-4x
+    [1;31mfast[mer than C.
+    
+    BUG=webm:817
+    BUG=webm:1273
+    
+    Change-Id: I1e490e94453e0872151fe0dafb05557463f6247d
+
+[33mcommit 5d881770e59498075218e81244b9a07b774bab5a[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Aug 10 14:00:52 2016 +0100
+
+    Change default recode rule for good speed 0 and best.
+    
+    Changes the default recode rule for Speed 0 and best quality
+    from ALLOW_RECODE to ALLOW_RECODE_KFARFGF.
+    
+    Tested on the NF, hdres, midres and lowres test sets, this setting
+    when combined with patch I40cb559... now performs "as well" in
+    metrics terms (in fact it came out a tiny amount better overall)
+    but encode time is 9.6%  [1;31mfast[mer (measured as the average
+    from 27 mid rate local encodes on clips in the derf/lowres set.
+    
+    Change-Id: I8c781c0cdfa3a9929cd9406d15582fce47d6ae3b
+
+[33mcommit 05fe0f20a653c579f93545403815f12bbda5254f[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Feb 17 12:03:57 2016 -0800
+
+    vp9: Allow usage of lookahead for real-time, 1 pass vbr.
+    
+    Allow usage of lookahead for VBR in real-time mode, for 1 pass vbr.
+    
+    Current usage is for [1;31mfast[m checking of future scene cuts/changes,
+    and adjusting rate control (gf interval and active_worst/target size).
+    
+    Added unittests (datarate) for 1 pass vbr mode, with non-zero lag.
+    
+    Added an experimental option to limit QP based on lookahead.
+    
+    Overall positive gain in metrics on ytlive set:
+    avgPNSR/SSIM up on average ~1-3%; several clips up by 5, 7%.
+    
+    Change-Id: I960d57dfc89de121c4824b9a9bf88d2814e74b56
+
+[33mcommit 8cbd4f87011efff05efab2fd99c18abd5baaaa2a[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Thu Jun 23 09:40:49 2016 -0700
+
+    vp9: Increase thr_var for 32x32 blocks in var-based partitioning.
+    
+    For real-time mode, increase variance threshold for 32x32 blocks in
+    var-based partitioning for resolution >= 720p, so that it is more
+    likely to stay at 32x32 for high resolution which accelerates the
+    encoding speed with little/no PSNR drop.
+    
+    PSNR effect on different speed settings:
+    speed 8 rtc: 0.02 overall PSNR drop, 0.285% SSIM drop
+    speed 7 rtc: 0.196% overall PSNR increase, 0.066% SSIM increase
+    speed 5 rtc_derf: no effect.
+    
+    Speed up:
+    gips_motion_WHD, 1mbps: 2.5% [1;31mfast[mer on speed 7, 2.6% [1;31mfast[mer on speed8
+    gips_stat_WHD, 1mbps: 4.6% [1;31mfast[mer on speed 7, 5.6% [1;31mfast[mer on speed8
+    
+    Change-Id: Ie7c33c4d2dd7d09294917e031357fc5476c3a4bb
+For keyword time:
+[33mcommit afc8c4836fa711501f81a6d54cf0ffa49a2fb99f[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Wed Jan 4 16:19:42 2017 -0800
+
+    vp9: Compute source sad for every superblock when partition copy is on.
+    
+    The source sad could be used to copy the partition without going into
+    choose_partitioning function to speed up vp9 encoding. Computing source
+    sad takes little [1;31mtime[m. Speed test on Android and Linux shows little
+    encoding [1;31mtime[m gain (less than 1.4%).
+    
+    Turned off for now since partition copy is turned off.
+    
+    Change-Id: I61c9d5b8f22329760cb29a4ee30a7f9c232ce8d3
+
+[33mcommit 3fcd595dfbed102d516080c41778a562dffef53d[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Dec 19 14:07:49 2016 -0800
+
+    vp9: Add datarate test for denoiser, for high noise case.
+    
+    Also breakout the denoiser tests, as the denoiser only
+    runs for real-[1;31mtime[m speed >=5.
+    
+    Change-Id: I921b785860c35e9d1ebfad0833673a98490186c2
+
+[33mcommit fce163cd54ce95651ae568d63d5bd4fc6605f202[m
+Author: Gabriel Marin <gmx@chromium.org>
+Date:   Wed Dec 14 11:07:50 2016 -0800
+
+    Remove superfluous conditional on 'shortcut'
+    
+    Remove superfluous test. Produces a small improvement in instruction scheduling.
+    Measured a 1% to 1.5% reduction in execution [1;31mtime[m for routine vp9_optimize_b
+    with different compilers.
+    
+    No change in behavior.
+    
+    TEST=Verified that encoded files match bit for bit, with and without this
+    change.
+    BUG=b/33678225
+    
+    Change-Id: I2bf248d4c25fc0256147d7a8766ff9108ae9cba3
+
+[33mcommit 1d5ca84df600ab610d14c0356b038ad4c395a6fd[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Mon Dec 19 10:39:04 2016 -0800
+
+    vp9: Add feature to copy partition from the last frame.
+    
+    Add feature to copy partition from the last frame.
+    The copy is only done under certain conditions that SAD is below threshold.
+    Feature is currently disabled, until threshold is tuned.
+    Feature will be initially used for Speed 8 (ARM).
+    
+    Under extreme case of always copying partition for speed 8:
+    Encode [1;31mtime[m is reduced by 5.4% on rtc_derf and 7.8% on rtc.
+    Overall PSNR reduced by 2.1 on rtc_derf and 0.968 on rtc.
+    
+    Change-Id: I1bcab515af3088e4d60675758f72613c2d3dc7a5
+
+[33mcommit 0549f5aae91b7d2f1265cea7e2edf34fda8f0433[m
+Author: Gabriel Marin <gmx@chromium.org>
+Date:   Tue Dec 13 16:22:48 2016 -0800
+
+    Simplify address arithmetic in vp9_optimize_b
+    
+    Simplify address arithmetic on token_costs to reduce the number of generated
+    instructions that are used for address arithmetic inside routine
+    vp9_optimize_b. It also helps improve instruction scheduling depending on
+    compiler and optimization level.
+    
+    Measured a 9.3% reduction in retired instructions and 5.3% reduction in
+    execution [1;31mtime[m for this routine with GCC v4.8.4 and optimization flags -O3,
+    and a reduction of up to 11.6% in execution [1;31mtime[m with other compilers.
+    
+    No change in behavior.
+    
+    TEST=Verified that encoded files match bit for bit, with and without this
+    change.
+    BUG=b/33678225
+    
+    Change-Id: I6098650fb5cd2aa04e014fe6e68ca20761f3a21f
+
+[33mcommit 318a1ff5ecddd6d60fcf87147f1ff741d39b3dc4[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Fri Dec 16 08:50:55 2016 -0800
+
+    vp8 : use threading mutex's for tsan only.
+    
+    To avoid decode performance hit of 2% when running on hyperthreaded
+    cores.
+    
+    This patch only uses the mutex's when we are running tsan.
+    
+    This is safe because 32 bit operations like read and store are atomic
+    on all the platforms we care about. Tsan warns about race situations,
+    but in this case either situation ( read occurs before write or write
+    before read) the worst case is that we go around one extra [1;31mtime[m in the
+    loop.  So the ordering doesn't really matter.
+    
+    That said a few other things have been tried :
+    
+    for instance as per here:
+    webrtc/base/atomicops.h#52
+    
+    In this patch they use:
+    __atomic_load_n(i, __ATOMIC_ACQUIRE);
+    __atomic_store_n(i, value, __ATOMIC_RELEASE);
+    
+    This code works on gcc, clang ( replacing protected write and read), and
+    avoids tsan errors. Incurring no penalty in performance.  In C11 its
+    replaced by straight atomic operands.
+    
+    However there is no equivalent in the visual studio's we support as
+    int32 on all windows platforms is already atomic.  To avoid tsan like
+    warnings on windows we'd need to use interlocked exchange and the
+    end result doesn't gain us any thing.
+    
+    Change-Id: I2066e3c7f42641ebb23d53feb1f16f23f85bcf59
+
+[33mcommit a58e0b2a74b76fc218ac6a4ceffe7a8ec77557d7[m
+Author: James Zern <jzern@google.com>
+Date:   Thu Nov 24 17:51:10 2016 -0800
+
+    build/make/Android.mk: correct rtcd template var refs
+    
+    the expansion of findstring and rtcd_dep_template_CONFIG_ASM_ABIS needs
+    to be deferred until the block is parsed as makefile syntax rather than
+    eval [1;31mtime[m where rtcd_dep_template_CONFIG_ASM_ABIS will be unset. this
+    ensures vpx_config.asm is properly created.
+    
+    Change-Id: I7c38c6c082da78397936467482789dd468adc316
+
+[33mcommit d793950ec8fe8dd445c3215a44c5d0842606bfe1[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Nov 21 16:37:32 2016 -0800
+
+    vp9: Adjust cyclic refresh parameters for low bitrates.
+    
+    Increase the motion threshold and qp-delta for segment#2 boost.
+    This can increase the frame-drop at low bitrates, but generally
+    better spatial quality.
+    
+    Only affects real-[1;31mtime[m mode with aq-mode=3, at very low bitrates.
+    
+    Change-Id: I5ccb784667f70d0c27d369806b93b1f93d5605d1
+
+[33mcommit 719f39f44e4a87efc811dcc6a88a6311e36ddb2c[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Tue Nov 22 07:31:04 2016 -0800
+
+    vp9-tests : split VpxEncoderThreadTest into two tests.
+    
+    VpxEncoderThreadTest was taking a very long [1;31mtime[m for some runs and
+    timing out a lot.   This is an attempt to split the test into runs
+    that can be run nightly ( speeds 2 through 9) and runs that can
+    be run weekly ( speeds 0-1 ).
+    
+    Change-Id: Iee6f61a561006d3a30381dd3b52b9a4dce07a70c
+
+[33mcommit 7317ce8bd4bd1c9d59dce938dbbc36a72eb49c26[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Nov 18 18:53:22 2016 -0800
+
+    build/make/Android.mk: use -fPIC w/ENABLE_SHARED=1
+    
+    fixes reloc errors like:
+    R_X86_64_PC32
+    vpx_dsp/x86/deblock_sse2.o:
+    requires dynamic R_X86_64_PC32 reloc against 'vpx_rv' which may overflow
+    at run[1;31mtime[m
+    
+    Change-Id: I218fc0e7c8258197f890d395f335e5a4fe82dccb
+
+[33mcommit f09c687ea913ba246fc98752d0415026a11f5f9c[m
+Merge: 011fdec1e 2218a4c29
+Author: James Zern <jzern@google.com>
+Date:   Tue Nov 15 23:41:18 2016 +0000
+
+    Merge changes I3950c883,I2b679b04
+    
+    * changes:
+      partial_idct_test: use <limits> for int16_min/max
+      vpx_[1;31mtime[mr.h,x86.h: define NOMINMAX for windows.h
+
+[33mcommit 360217a233bf67f78a3ab60a6a36e75b20cef816[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Tue Nov 15 10:37:12 2016 -0800
+
+    vp9: Speed 8: More aggresive golden skip for low res.
+    
+    Add a new, more aggresive short circuit: short_circuit_low_temp_var = 3 to skip
+    golden of any mode when variance is lower than threshold for low res.
+    This change only affects speed = 8, low resolution.
+    
+    Metrics for avgPSNR/SSIM on rtc_derf (low resolution) show loss of
+    0.27/0.31%.
+    On Nexus 6, the encoding [1;31mtime[m is reduced by ~2.3% on average across all
+    low-res clips.
+    
+    Visually little change on rtc_derf clips.
+    
+    Change-Id: Ia8f7366fc2d49181a96733a380b4dbd7390246ec
+
+[33mcommit 0412193bb9775f6be0f9f6c74b90ff705e584d92[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Nov 15 12:16:14 2016 -0800
+
+    vpx_[1;31mtime[mr.h,x86.h: define NOMINMAX for windows.h
+    
+    avoids the definition of min/max macros in headers that may appear in
+    c++ unit tests. the codebase uses VPXMIN/MAX for this purpose in any
+    case
+    
+    Change-Id: I2b679b045d64fb34fd8780f704e3caf10a758d82
+
+[33mcommit eff68a3a4df99b8f475a1e3e5eb842bcb928fe00[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Mon Nov 14 10:22:00 2016 -0800
+
+    vp9: Speed 8: Turn off 4x4avg for low-res non-key frames.
+    
+    Changes only affects speed = 8 for low resolutions.
+    
+    Metrics for avgPSNR/SSIM on rtc_derf (low resolutions) show loss of
+    0.5/0.6%.
+    On Nexus 6, the encoding [1;31mtime[m is reduced by ~5.9% on average across all
+    low-res clips.
+    Visually little/no change on rtc_derf clips.
+    
+    Change-Id: I68dd50e558d72dcc1af8317d224bfae5e3bd872d
+
+[33mcommit 9720b58aacaaec301404b4fafa2e46f94c60c5f1[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Wed Oct 12 15:27:47 2016 -0700
+
+    Optimize idct32x32_34_add for NEON
+    
+    Approximately 3 [1;31mtime[ms faster than the 1024 version which was used
+    previously.
+    
+    BUG=webm:1295
+    
+    Change-Id: Id15fb3d096029ec38ef01c53e5f6eb08254347c9
+
+[33mcommit 5deffa1175420c09b89e998b60bf3e26f8379397[m
+Author: Vignesh Venkatasubramanian <vigneshv@google.com>
+Date:   Wed Oct 19 11:07:41 2016 -0700
+
+    vp9_bitstream: Encode tiles in parallel
+    
+    Re-use the tile worker threads to pack the bitstream in parallel
+    on a per-tile basis.  Restricting this to real-[1;31mtime[m only for now
+    (further testing is needed to ensure this does not make 2-pass
+    worse in any case).
+    
+    BUG=webm:1309
+    
+    Change-Id: I8a80da7c5089b837d0df79a5c49d5e3022dfc8ec
+
+[33mcommit a7d116aa67797b7dc14ad735bb75fe499b0b76ff[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Oct 20 17:02:16 2016 -0700
+
+    vp9: Speed=8 real-[1;31mtime[m: Keep the bias_golden feature on.
+    
+    Small/no change in metrics on RTC set, speed increase by 2-3%.
+    
+    Change-Id: Iee997bd7433e8e508216e9267b1c31c5a9aa5121
+
+[33mcommit 68833c7f85781e8c667e37bc012ea322d88b2dc1[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Oct 18 18:11:36 2016 -0700
+
+    third_party: roll libwebm snapshot
+    
+    git log --no-merges 32d5ac4..9732ae9
+    9732ae9 EbmlElementSize: quiet uint64->int32 conv warning
+    da04eba SetProjectionPrivate: quiet uint64->size_t conv warning
+    6db32d5 mkvparser,Projection::Parse: fix int->bool conv
+    3bb0dfa cosmetics: fix a couple lint warnings
+    0e179d6 update .clang-format
+    fc5f88d Fix temp files being left on system.
+    c04a134 Add support for overriding PixelWidth and PixelHeight.
+    c0160e0 Add support to explicitly set segment duration.
+    02bc809 Add support to estimate file duration.
+    c97e3e7 Add support to output sub-sample encryption information.
+    26f4344 MakeUID: quiet unused param warning in Android builds
+    d6af52a Change check to fix compile error.
+    1720020 webm_parser: Add Mesh value for ProjectionType
+    78f2c5a webm_parser: Use ./ prefix for includes
+    da62f65 webm_parser: Remove webm/ prefix from public includes
+    e15e8f2 webm_parser: Update README build instructions
+    5023f2b mkvmuxer: Fix Colour::Valid()
+    cf16204 mkvmuxer_tests: Actually test cue points in the cue point test.
+    93e9fb3 Validate Colour element values.
+    8036925 mkvparser_tests: Add Projection element test.
+    f52d38c mkvparser_tests: Add Colour element test.
+    826436a mkvparser: minor SeekHead::Entry clean up.
+    24fb44a mkvmuxer_tests: Add Projection element test.
+    1e0a8ea mkvmuxer_tests: Add Colour element test.
+    0278616 mkvmuxer: Colour accessors/mutators.
+    2346f8f Add mkvparser wrapper functions.
+    54d6b6b webm_info: Add Projection element support.
+    65fee06 mkvmuxer_sample: Add support for Projection element.
+    9a3f2b5 mkvparser_sample: Add support for Projection element.
+    41e814a mkvparser: Add Projection element support.
+    483a0ff mkvmuxer: Add Projection element support.
+    676a713 Add support for the Projection element
+    725f362 mkvmuxer: Fix memory leak when Colour is set multiple [1;31mtime[ms.
+    fa182de mkvparser_sample: Add output of audio track codec private size.
+    8f521f2 mkvparser_tests: Add invalid BlockGroup test.
+    39137d7 Remove docs saying binary elements default to 0
+    80685d3 Do not skip over unknown elements at the root level
+    c147504 Fix legacy Makefile.
+    58711e8 mkvparser_sample: Fix version info string.
+    837746f mkvparser_tests: Add invalid block test.
+    207cd80 Disambiguate sample sources and targets.
+    a112d71 mkvparser_tests: Refactor invalid file loading code.
+    5dea33e Disambiguate test source and target names.
+    125049e parser_tests: Add another truncated chapter string test.
+    1de8d4c parser_tests: Add truncated chapter string test.
+    ff8c2b6 parser_tests: Move cue validation to test_util.
+    4b0690f parser_tests: Add invalid lacing test.
+    9828e39 mkvmuxer: Set default doc type version to 4.
+    5495a59 webm_parser: Reference more files in CMakeLists.txt.
+    0c0ecd0 vpxpes_parser: Add start code emulation prevention support.
+    639a4bc webm2pes: Remove debug printfs().
+    9a51102 webm2pes: fflush() in the correct conversion function.
+    dc7f155 webm2pes: Track total bytes written.
+    d518128 webm_parser: Enable usage of werror.
+    e1fe762 webm2pes: Add test for mux/demux of large input.
+    1b24a79 vpxpes_parser: Read and store PTS when present.
+    6cf0a0f vpxpes_parser: Store frame payloads.
+    25d2602 webm_parser: Convert style to match the rest of libwebm
+    24be76d webm2pes: Replace VpxFrame with VideoFrame.
+    b451c3b Add a basic video frame storage class.
+    05c90eb libwebm_util: Clarify error text in superframe parser.
+    e6415af webm2pes: Make WritePesPacket() a public method.
+    8f840dd webm2pes: Move frame read out of PES packet write method.
+    448af97 webm2pes: Restore frame fragmentation support.
+    f8bb714 cmake: Integrate new parsing API and tests.
+    cb8ce0b Add a new incremental parsing API
+    900d322 vpxpes_parser/webm2pes: BCMV and PTS fixes.
+    4b73545 webm2pes: Add start code emulation prevention.
+    82903f3 Add column tiles and frame parallel to webm_info
+    5d91edf style_clean_up: Remove unnecessary parentheses
+    a95aa4b vp9_level_stats: correct total_uncompressed_bits_ calculation
+    f46566f mkvreader: Fix shorten-64-to-32 warning in 32 bit builds.
+    76630ca mkvwriter: Fix shorten-64-to-32 warning in 32 bit builds.
+    a8ffbd4 webm2pes: Fix format specifier warnings.
+    faf89d4 Add MaxLumaSampleRate grace percent to stats.
+    d31e6c9 Fix profile 2 in vp9_header_parser.
+    bd3ab3a Add flag to estimate last frame's duration to stats.
+    c182ed9 Fix lint issue in hdr_util.h
+    cc62ecd Add test for Cluster memory leak
+    196708a Change MaxLumaSampleRate to be based on frame resolution.
+    cbd676b mkvmuxer: Fix leak when a Cluster isn't finalized
+    9a235e0 mkvmuxer: Set doctype to matroska when muxing non-WebM codecs.
+    47f2843 Add parsing support for new features in CodecPrivate.
+    e3c9576 Add VP9 level output to webm_info.
+    5cf549f cmake: Log compiler flag at check [1;31mtime[m.
+    bbaaf2d Add class to gather VP9 level stats.
+    8bb68c2 Add file to parse data from VP9 frames.
+    296429a Add support to parse VP9 profile.
+    df3412f Add support for setting VP9 profile and level to sample_muxer.
+    87832d4 mkvmuxer: Fix Segment::Finalize in kLive mode
+    6df3e56 mkvmuxerutil.hpp: Add using directives for overloaded size utils.
+    ec47928 mkvmuxerutil: Revert to using mkvmuxertypes.
+    a1dc4f2 Fix parsing of VP9 level.
+    4e3d037 Add support to output Colour elements to webm_info.
+    d3656fd muxer_tests: ignore iwyu re gtest-message.h
+    e76dd5e Fix file name in mkvmuxertypes shim.
+    1be5889 Add temporary include shims at old file locations.
+    039df94 Add TEST_TMPDIR environment variable
+    
+    Change-Id: I84bc1401b0aad71ad6727b687f1bede9953a7a08
+
+[33mcommit 808a560be6a71dd0d27f29c26f9fefb5e809d373[m
+Author: Frank Galligan <fgalligan@google.com>
+Date:   Mon Oct 17 12:41:39 2016 -0700
+
+    third_party: Roll libwebm snapshot.
+    
+    fc5f88d Fix temp files being left on system.
+    c04a134 Add support for overriding PixelWidth and PixelHeight.
+    c0160e0 Add support to explicitly set segment duration.
+    02bc809 Add support to estimate file duration.
+    c97e3e7 Add support to output sub-sample encryption information.
+    26f4344 MakeUID: quiet unused param warning in Android builds
+    d6af52a Change check to fix compile error.
+    1720020 webm_parser: Add Mesh value for ProjectionType
+    78f2c5a webm_parser: Use ./ prefix for includes
+    da62f65 webm_parser: Remove webm/ prefix from public includes
+    e15e8f2 webm_parser: Update README build instructions
+    5023f2b mkvmuxer: Fix Colour::Valid()
+    cf16204 mkvmuxer_tests: Actually test cue points in the cue point test.
+    93e9fb3 Validate Colour element values.
+    8036925 mkvparser_tests: Add Projection element test.
+    f52d38c mkvparser_tests: Add Colour element test.
+    826436a mkvparser: minor SeekHead::Entry clean up.
+    24fb44a mkvmuxer_tests: Add Projection element test.
+    1e0a8ea mkvmuxer_tests: Add Colour element test.
+    0278616 mkvmuxer: Colour accessors/mutators.
+    2346f8f Add mkvparser wrapper functions.
+    54d6b6b webm_info: Add Projection element support.
+    65fee06 mkvmuxer_sample: Add support for Projection element.
+    9a3f2b5 mkvparser_sample: Add support for Projection element.
+    41e814a mkvparser: Add Projection element support.
+    483a0ff mkvmuxer: Add Projection element support.
+    676a713 Add support for the Projection element
+    725f362 mkvmuxer: Fix memory leak when Colour is set multiple [1;31mtime[ms.
+    fa182de mkvparser_sample: Add output of audio track codec private size.
+    8f521f2 mkvparser_tests: Add invalid BlockGroup test.
+    39137d7 Remove docs saying binary elements default to 0
+    c147504 Fix legacy Makefile.
+    80685d3 Do not skip over unknown elements at the root level
+    58711e8 mkvparser_sample: Fix version info string.
+    837746f mkvparser_tests: Add invalid block test.
+    207cd80 Disambiguate sample sources and targets.
+    a112d71 mkvparser_tests: Refactor invalid file loading code.
+    5dea33e Disambiguate test source and target names.
+    125049e parser_tests: Add another truncated chapter string test.
+    1de8d4c parser_tests: Add truncated chapter string test.
+    ff8c2b6 parser_tests: Move cue validation to test_util.
+    4b0690f parser_tests: Add invalid lacing test.
+    9828e39 mkvmuxer: Set default doc type version to 4.
+    5495a59 webm_parser: Reference more files in CMakeLists.txt.
+    0c0ecd0 vpxpes_parser: Add start code emulation prevention support.
+    639a4bc webm2pes: Remove debug printfs().
+    9a51102 webm2pes: fflush() in the correct conversion function.
+    dc7f155 webm2pes: Track total bytes written.
+    d518128 webm_parser: Enable usage of werror.
+    e1fe762 webm2pes: Add test for mux/demux of large input.
+    1b24a79 vpxpes_parser: Read and store PTS when present.
+    6cf0a0f vpxpes_parser: Store frame payloads.
+    25d2602 webm_parser: Convert style to match the rest of libwebm
+    24be76d webm2pes: Replace VpxFrame with VideoFrame.
+    b451c3b Add a basic video frame storage class.
+    05c90eb libwebm_util: Clarify error text in superframe parser.
+    e6415af webm2pes: Make WritePesPacket() a public method.
+    8f840dd webm2pes: Move frame read out of PES packet write method.
+    448af97 webm2pes: Restore frame fragmentation support.
+    f8bb714 cmake: Integrate new parsing API and tests.
+    cb8ce0b Add a new incremental parsing API
+    900d322 vpxpes_parser/webm2pes: BCMV and PTS fixes.
+    4b73545 webm2pes: Add start code emulation prevention.
+    82903f3 Add column tiles and frame parallel to webm_info
+    5d91edf style_clean_up: Remove unnecessary parentheses
+    a95aa4b vp9_level_stats: correct total_uncompressed_bits_ calculation
+    f46566f mkvreader: Fix shorten-64-to-32 warning in 32 bit builds.
+    76630ca mkvwriter: Fix shorten-64-to-32 warning in 32 bit builds.
+    a8ffbd4 webm2pes: Fix format specifier warnings.
+    faf89d4 Add MaxLumaSampleRate grace percent to stats.
+    d31e6c9 Fix profile 2 in vp9_header_parser.
+    bd3ab3a Add flag to estimate last frame's duration to stats.
+    c182ed9 Fix lint issue in hdr_util.h
+    cc62ecd Add test for Cluster memory leak
+    196708a Change MaxLumaSampleRate to be based on frame resolution.
+    cbd676b mkvmuxer: Fix leak when a Cluster isn't finalized
+    47f2843 Add parsing support for new features in CodecPrivate.
+    9a235e0 mkvmuxer: Set doctype to matroska when muxing non-WebM codecs.
+    e3c9576 Add VP9 level output to webm_info.
+    bbaaf2d Add class to gather VP9 level stats.
+    5cf549f cmake: Log compiler flag at check [1;31mtime[m.
+    8bb68c2 Add file to parse data from VP9 frames.
+    df3412f Add support for setting VP9 profile and level to sample_muxer.
+    296429a Add support to parse VP9 profile.
+    87832d4 mkvmuxer: Fix Segment::Finalize in kLive mode
+    6df3e56 mkvmuxerutil.hpp: Add using directives for overloaded size utils.
+    ec47928 mkvmuxerutil: Revert to using mkvmuxertypes.
+    4e3d037 Add support to output Colour elements to webm_info.
+    a1dc4f2 Fix parsing of VP9 level.
+    039df94 Add TEST_TMPDIR environment variable
+    d3656fd muxer_tests: ignore iwyu re gtest-message.h
+    e76dd5e Fix file name in mkvmuxertypes shim.
+    1be5889 Add temporary include shims at old file locations.
+    
+    Change-Id: I6a1026814560be80d604a5ecb9b66406a1186dd9
+
+[33mcommit 9e8efa5b189a5abf78b1bcbc8076893728129d1e[m
+Author: Vignesh Venkatasubramanian <vigneshv@google.com>
+Date:   Fri Oct 7 10:24:50 2016 -0700
+
+    vp9_bitstream: Encode tiles in parallel
+    
+    Re-use the tile worker threads to pack the bitstream in parallel
+    on a per-tile basis.  Restricting this to real-[1;31mtime[m only for now
+    (further testing is needed to ensure this does not make 2-pass
+    worse in any case).
+    
+    BUG=webm:1309
+    
+    Change-Id: Ia2c982da56697756e12f02643f589189b3271d98
+
+[33mcommit 4c3d539baa456a37ebd03f11865ea597f4724355[m
+Merge: 6c309c1f5 acd21e053
+Author: Jerome Jiang <jianj@google.com>
+Date:   Sat Oct 15 06:01:40 2016 +0000
+
+    Merge "VP8: Add real[1;31mtime[m speed to datarate_test.cc"
+
+[33mcommit acd21e053a17cee5b2ed2a590c8c40523e2c1741[m
+Author: Jerome Jiang <jianj@jianj0.mtv.corp.google.com>
+Date:   Thu Oct 13 15:27:47 2016 -0700
+
+    VP8: Add real[1;31mtime[m speed to datarate_test.cc
+    
+    Change-Id: Ia56f0e8dfba20143be3e69666d9184dd3ca5b563
+
+[33mcommit 57c6bf291e41d4e857df621bd3a9d00341a23a02[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Aug 2 17:37:32 2016 -0700
+
+    1 pass vbr: Allow for lookahead alt-ref in real-[1;31mtime[m mode.
+    
+    For 1 pass vbr real-[1;31mtime[m mode:
+    Allow for the usage of alt-ref frame when non-zero lag-in-frames is used.
+    Use non-filtered alt-ref, and select usage based on fast scene/content
+    analysis/detection within the lag of frames.
+    
+    Positive gains on ytlive set: overall avgPSNR ~3-4%.
+    Several clips are up between 5-14%, a few clips are neutral/small change.
+    
+    Current speed decrease is about ~5-10%.
+    
+    Use the flag USE_ALTREF_FOR_ONE_PASS to enable this feature
+    (off by default for now).
+    
+    Change-Id: I802d2bf3d44f9cf01f6d15c76be9c90192314769
+
+[33mcommit cdbd89197ec878c9c9fed8876c5c3f436ae8994d[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Oct 10 11:42:47 2016 -0700
+
+    vp9: 1 pass vbr: some adjustments to gf interval.
+    
+    Put limit on gf interval based on lag, and allow
+    for the adjustment on next gf group also on key frame.
+    
+    Small/neutral change on ytlive metrics.
+    
+    Change only affects 1 pass vbr real-[1;31mtime[m mode.
+    
+    Change-Id: I339c8f4398848698b6e10fe9482c52ca661b94a5
+
+[33mcommit 5e908aff341e9c400f898b3d9c117e0eb63ef6fe[m
+Merge: b6277a47c d017548be
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Sep 30 21:42:04 2016 +0000
+
+    Merge "vp9 real-[1;31mtime[m mode: Change loopfilter speed feature at speed 8."
+
+[33mcommit e765435293a4aa88fe28fa67b17c581f385475a6[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Sep 29 11:15:26 2016 -0700
+
+    vp9: On change_config() only call update_frame_size if needed.
+    
+    change_config() may be called often in real-[1;31mtime[m application,
+    to update bitrate/framerate or qp-max/min.
+    No need to do update_frame_size() unless frame size has changed.
+    
+    Change-Id: I23a51deade1e03adc91c468f9ffde3235298770c
+
+[33mcommit d017548be614dfdb79335fc33b729a36dd254f5c[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Sep 26 16:52:26 2016 -0700
+
+    vp9 real-[1;31mtime[m mode: Change loopfilter speed feature at speed 8.
+    
+    For real-[1;31mtime[m mode at speed 8: turn off MINIMAL_LF at speed 8,
+    for non-screen content mode.
+    
+    Visually better, avgPSNR/SSIM on rtc set go up by ~4-5%.
+    Speed decrease of about ~3%.
+    
+    Change-Id: I8eb69330f02e0ceece1507d43cfc8a049a1d8291
+
+[33mcommit 421f376568b2b07a43a93fb055f7e2c48d111a0a[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Sep 9 09:03:22 2016 -0700
+
+    vp8: Set the skin model to mode 1.
+    
+    This change was reverted before due to a hangouts encode-[1;31mtime[m
+    regression investigation. But since then this change has been
+    cleared of causing any noticeable regression.
+    
+    This mode reduces some false detection, and uses the
+    same model as in vp9.
+    
+    Change-Id: I9c82a748c5f601d0aca9f61ee218abfbd58c62bd
+
+[33mcommit 1139f0dbc22d228bc1e295dc76819da6333daa99[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Wed Aug 31 22:38:27 2016 -0700
+
+    Define VP8_TEMPORAL_ALT_REF to !CONFIG_REALTIME_ONLY
+    
+    Previously VP8_TEMPORAL_ALT_REF was only defined for non-real[1;31mtime[m-only
+    builds. However, its value was checked with #if, not #ifdef.
+    
+    Fixes -Wundef warnings.
+    
+    BUG=webm:1069
+    
+    Change-Id: If78d8731298f3f0d3662ffa25f973e7adaf67152
+
+[33mcommit 292d221fed21a84b3a9902bcaecda00cc08e6029[m
+Author: Yury Gitman <yuryg@google.com>
+Date:   Mon Jul 18 15:44:40 2016 -0700
+
+    Create interface for the ALT_REF_AQ class
+    
+    Current commit is just an API template  for the rest of the code, and
+    I will add inner logic later.
+    
+    Altref  frames  generate a  lot  of  bitrate  and  at the  same  [1;31mtime[m
+    other  frames  refer to  them  a  lot, so  it  makes  sense to  apply
+    special  compensation-based adaptive  quantization scheme  for altref
+    frames. E.g.,  for blocks  that are  good predictors  for the  future
+    apply rate-control  chosen quantizer  while for bad  predictors apply
+    worse one.
+    
+    Change-Id: Iba3f8ec349470673b7249f6a125f6859336a47c8
+
+[33mcommit 28c6207bcdf63a35355d302a6e850bacaf204d75[m
+Author: Urvang Joshi <urvang@google.com>
+Date:   Tue Jul 26 12:02:37 2016 -0700
+
+    vpx_realloc correction.
+    
+    vpx_realloc was allocating 1 byte more than needed every [1;31mtime[m.
+    Fixed this, and took this opportunity to do a small refactoring.
+    
+    Change-Id: I38fcb62b698894acbbab43466c1decd12f906789
+    (cherry picked from aom: 2a876b4 aom_realloc correction.)
+
+[33mcommit 0f42d1fa8569532b5bed322bd1662e3d06161544[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Aug 23 15:51:32 2016 -0700
+
+    vp8: fix decoder crash with invalid leading keyframes
+    
+    decoding the same invalid keyframe twice would result in a crash as the
+    second [1;31mtime[m through the decoder would be assumed to have been
+    initialized as there was no resolution change. in this case the
+    resolution was itself invalid (0x6), but vp8_peek_si() was only failing
+    in the case of 0x0.
+    invalid-vp80-00-comprehensive-018.ivf.2kf_0x6.ivf tests this case by
+    duplicating the first keyframe and additionally adds a valid one to
+    ensure decoding can resume without error.
+    
+    BUG=b/30593765
+    
+    Change-Id: If0859035908b7870d67a7f3f646b5a080252eb6d
+
+[33mcommit 5d881770e59498075218e81244b9a07b774bab5a[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Aug 10 14:00:52 2016 +0100
+
+    Change default recode rule for good speed 0 and best.
+    
+    Changes the default recode rule for Speed 0 and best quality
+    from ALLOW_RECODE to ALLOW_RECODE_KFARFGF.
+    
+    Tested on the NF, hdres, midres and lowres test sets, this setting
+    when combined with patch I40cb559... now performs "as well" in
+    metrics terms (in fact it came out a tiny amount better overall)
+    but encode [1;31mtime[m is 9.6%  faster (measured as the average
+    from 27 mid rate local encodes on clips in the derf/lowres set.
+    
+    Change-Id: I8c781c0cdfa3a9929cd9406d15582fce47d6ae3b
+
+[33mcommit 343b6b09a121f5106281ac3fe9052b2f2c670491[m
+Author: Aleksey Vasenev <margtu-fivt@ya.ru>
+Date:   Fri Jul 29 11:28:50 2016 +0300
+
+    Align thread entry point stack
+    
+    _beginthreadex does not align the stack on 16-byte boundary as expected
+    by gcc.
+    
+    On x86 targets, the force_align_arg_pointer attribute may be applied to
+    individual function definitions, generating an alternate prologue and
+    epilogue that realigns the run-[1;31mtime[m stack if necessary. This supports
+    mixing legacy codes that run with a 4-byte aligned stack with modern
+    codes that keep a 16-byte stack for SSE compatibility.
+    https://gcc.gnu.org/onlinedocs/gcc/x86-Function-Attributes.html
+    
+    Change-Id: Ie4e4ab32948c238fa87054d5664189972ca6708e
+    Signed-off-by: Aleksey Vasenev <margtu-fivt@ya.ru>
+
+[33mcommit e90d4f0a03e7e167d10e0f2c3eaf9d63bf85e6cc[m
+Merge: 451211cb0 05fe0f20a
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Jul 19 17:17:16 2016 +0000
+
+    Merge "vp9: Allow usage of lookahead for real-[1;31mtime[m, 1 pass vbr."
+
+[33mcommit 05fe0f20a653c579f93545403815f12bbda5254f[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Feb 17 12:03:57 2016 -0800
+
+    vp9: Allow usage of lookahead for real-[1;31mtime[m, 1 pass vbr.
+    
+    Allow usage of lookahead for VBR in real-[1;31mtime[m mode, for 1 pass vbr.
+    
+    Current usage is for fast checking of future scene cuts/changes,
+    and adjusting rate control (gf interval and active_worst/target size).
+    
+    Added unittests (datarate) for 1 pass vbr mode, with non-zero lag.
+    
+    Added an experimental option to limit QP based on lookahead.
+    
+    Overall positive gain in metrics on ytlive set:
+    avgPNSR/SSIM up on average ~1-3%; several clips up by 5, 7%.
+    
+    Change-Id: I960d57dfc89de121c4824b9a9bf88d2814e74b56
+
+[33mcommit 110a2ddc9b6c0c53ceb037a42bf24b4a4ff4597d[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Mon Jul 11 17:06:10 2016 -0700
+
+    vp9 svc: Reuse scaled_temp in two stage downscaling.
+    
+    This change eliminates redundant computation in the two stage
+    downscaling, which saves ~1% encoding [1;31mtime[m in 3-layer svc encoding.
+    
+    Change-Id: Ib4b218811b68499a740af1f9b7b5a5445e28d671
+
+[33mcommit dc008cc17d78165f5fa053de391238373c4bb989[m
+Merge: a75965fa9 884c2ddc4
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Thu Jul 7 22:32:48 2016 +0000
+
+    Merge "Enable HBD support in real [1;31mtime[m encoding path"
+
+[33mcommit 884c2ddc48677dc9384f51dcebfaa298266aac9e[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Wed Jul 6 13:58:34 2016 -0700
+
+    Enable HBD support in real [1;31mtime[m encoding path
+    
+    BUG=webm:1223
+    
+    Change-Id: If83a613784e3b2a33c9c93f9ad0ba39dd4d23056
+
+[33mcommit 2678aefc4820162aecf17348a6cfde4b3650383f[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Wed Jul 6 10:57:15 2016 -0700
+
+    vp9: Choose the scheme for modeling rd for 32x32 based on skin color.
+    
+    For real [1;31mtime[m CBR mode, use model_rd_for_sb_y for 32x32 if the sb is
+    a skin sb to avoid visual regression on the slowly moving face.
+    
+    Refer to the cl: https://chromium-review.googlesource.com/#/c/356020/
+    
+    Change-Id: I42c36666b2b474ce5ee274239d52ae8ab400fd46
+
+[33mcommit 5fc2d6cb9fb1262880e237bfd6873f7c3c4dd8c9[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Wed Jun 29 16:22:12 2016 -0700
+
+    vp9: Change the scheme for modeling rd for 32x32 on newmv_last mode.
+    
+    For real [1;31mtime[m CBR mode, use model_rd_for_sb_y for 32x32 if the mode is
+    newmv last, which is less aggressive in skipping transform and
+    quantization, to avoid quality regression in some conditions.
+    
+    Change-Id: Ifa30be587f2a8a4a7f182a172de6ce277c0f8556
+
+[33mcommit 8cbd4f87011efff05efab2fd99c18abd5baaaa2a[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Thu Jun 23 09:40:49 2016 -0700
+
+    vp9: Increase thr_var for 32x32 blocks in var-based partitioning.
+    
+    For real-[1;31mtime[m mode, increase variance threshold for 32x32 blocks in
+    var-based partitioning for resolution >= 720p, so that it is more
+    likely to stay at 32x32 for high resolution which accelerates the
+    encoding speed with little/no PSNR drop.
+    
+    PSNR effect on different speed settings:
+    speed 8 rtc: 0.02 overall PSNR drop, 0.285% SSIM drop
+    speed 7 rtc: 0.196% overall PSNR increase, 0.066% SSIM increase
+    speed 5 rtc_derf: no effect.
+    
+    Speed up:
+    gips_motion_WHD, 1mbps: 2.5% faster on speed 7, 2.6% faster on speed8
+    gips_stat_WHD, 1mbps: 4.6% faster on speed 7, 5.6% faster on speed8
+    
+    Change-Id: Ie7c33c4d2dd7d09294917e031357fc5476c3a4bb
+For keyword perf:
+[33mcommit f1909d26f8bfcbf2726a4977151715c4c628b83b[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Jan 6 15:28:21 2017 -0800
+
+    vp9: 1 pass cbr mode: increase threshold for gf_cbr_boost_pct usage.
+    
+    Increase the boost threshold below which GOLDEN update will use same
+    rate correction factor as INTER_NORMAL.
+    
+    Improves [1;31mperf[mormance when gf_cbr_boost_pct is set (between 0 and 100)
+    in CBR mode.
+    
+    Change-Id: I9f54cc18664786a100b13a416b7137ae03bd0cab
+
+[33mcommit e6b9609fc0c66cd1f1b4db2f70bb58ee800a0bf7[m
+Merge: 3c47a0dc6 fce163cd5
+Author: Gabriel Marin <gmx@chromium.org>
+Date:   Thu Dec 29 06:03:43 2016 +0000
+
+    Merge "Remove su[1;31mperf[mluous conditional on 'shortcut'"
+
+[33mcommit fce163cd54ce95651ae568d63d5bd4fc6605f202[m
+Author: Gabriel Marin <gmx@chromium.org>
+Date:   Wed Dec 14 11:07:50 2016 -0800
+
+    Remove su[1;31mperf[mluous conditional on 'shortcut'
+    
+    Remove su[1;31mperf[mluous test. Produces a small improvement in instruction scheduling.
+    Measured a 1% to 1.5% reduction in execution time for routine vp9_optimize_b
+    with different compilers.
+    
+    No change in behavior.
+    
+    TEST=Verified that encoded files match bit for bit, with and without this
+    change.
+    BUG=b/33678225
+    
+    Change-Id: I2bf248d4c25fc0256147d7a8766ff9108ae9cba3
+
+[33mcommit 318a1ff5ecddd6d60fcf87147f1ff741d39b3dc4[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Fri Dec 16 08:50:55 2016 -0800
+
+    vp8 : use threading mutex's for tsan only.
+    
+    To avoid decode [1;31mperf[mormance hit of 2% when running on hyperthreaded
+    cores.
+    
+    This patch only uses the mutex's when we are running tsan.
+    
+    This is safe because 32 bit operations like read and store are atomic
+    on all the platforms we care about. Tsan warns about race situations,
+    but in this case either situation ( read occurs before write or write
+    before read) the worst case is that we go around one extra time in the
+    loop.  So the ordering doesn't really matter.
+    
+    That said a few other things have been tried :
+    
+    for instance as per here:
+    webrtc/base/atomicops.h#52
+    
+    In this patch they use:
+    __atomic_load_n(i, __ATOMIC_ACQUIRE);
+    __atomic_store_n(i, value, __ATOMIC_RELEASE);
+    
+    This code works on gcc, clang ( replacing protected write and read), and
+    avoids tsan errors. Incurring no penalty in [1;31mperf[mormance.  In C11 its
+    replaced by straight atomic operands.
+    
+    However there is no equivalent in the visual studio's we support as
+    int32 on all windows platforms is already atomic.  To avoid tsan like
+    warnings on windows we'd need to use interlocked exchange and the
+    end result doesn't gain us any thing.
+    
+    Change-Id: I2066e3c7f42641ebb23d53feb1f16f23f85bcf59
+
+[33mcommit 394020383d3da02e602050f9d5e8e671a6e3cb8b[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Dec 7 10:00:36 2016 -0800
+
+    Remove an unused first pass statistic
+    
+    One of the first pass stats "new_mv_count" is no longer used in VP9,
+    and is removed. This also makes it easy to implement a multi-threaded
+    first pass. This change doesn't affect the coding [1;31mperf[mormance, which
+    has been verified by borg tests.
+    
+    Change-Id: I4c7c7bf9465fda838eb230814ef0c631c068c903
+
+[33mcommit 44f8ee7258c5e9bac9a4e25d265aa34eb47e08fb[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Nov 11 16:10:01 2016 -0800
+
+    Enable asymptotic closed-loop encoding decision
+    
+    This commit enables asymptotic closed-loop encoding decision for
+    the key frame and alternate reference frame. It follows the regular
+    rate control scheme, but leaves out additional iteration on the
+    updated frame level probability model. It is enabled for speed 0.
+    
+    The compression [1;31mperf[mormance is improved:
+    
+    lowres 0.2%
+    midres 0.35%
+    hdres  0.4%
+    
+    Change-Id: I905ffa057c9a1ef2e90ef87c9723a6cf7dbe67cb
+
+[33mcommit 68833c7f85781e8c667e37bc012ea322d88b2dc1[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Oct 18 18:11:36 2016 -0700
+
+    third_party: roll libwebm snapshot
+    
+    git log --no-merges 32d5ac4..9732ae9
+    9732ae9 EbmlElementSize: quiet uint64->int32 conv warning
+    da04eba SetProjectionPrivate: quiet uint64->size_t conv warning
+    6db32d5 mkvparser,Projection::Parse: fix int->bool conv
+    3bb0dfa cosmetics: fix a couple lint warnings
+    0e179d6 update .clang-format
+    fc5f88d Fix temp files being left on system.
+    c04a134 Add support for overriding PixelWidth and PixelHeight.
+    c0160e0 Add support to explicitly set segment duration.
+    02bc809 Add support to estimate file duration.
+    c97e3e7 Add support to output sub-sample encryption information.
+    26f4344 MakeUID: quiet unused param warning in Android builds
+    d6af52a Change check to fix compile error.
+    1720020 webm_parser: Add Mesh value for ProjectionType
+    78f2c5a webm_parser: Use ./ prefix for includes
+    da62f65 webm_parser: Remove webm/ prefix from public includes
+    e15e8f2 webm_parser: Update README build instructions
+    5023f2b mkvmuxer: Fix Colour::Valid()
+    cf16204 mkvmuxer_tests: Actually test cue points in the cue point test.
+    93e9fb3 Validate Colour element values.
+    8036925 mkvparser_tests: Add Projection element test.
+    f52d38c mkvparser_tests: Add Colour element test.
+    826436a mkvparser: minor SeekHead::Entry clean up.
+    24fb44a mkvmuxer_tests: Add Projection element test.
+    1e0a8ea mkvmuxer_tests: Add Colour element test.
+    0278616 mkvmuxer: Colour accessors/mutators.
+    2346f8f Add mkvparser wrapper functions.
+    54d6b6b webm_info: Add Projection element support.
+    65fee06 mkvmuxer_sample: Add support for Projection element.
+    9a3f2b5 mkvparser_sample: Add support for Projection element.
+    41e814a mkvparser: Add Projection element support.
+    483a0ff mkvmuxer: Add Projection element support.
+    676a713 Add support for the Projection element
+    725f362 mkvmuxer: Fix memory leak when Colour is set multiple times.
+    fa182de mkvparser_sample: Add output of audio track codec private size.
+    8f521f2 mkvparser_tests: Add invalid BlockGroup test.
+    39137d7 Remove docs saying binary elements default to 0
+    80685d3 Do not skip over unknown elements at the root level
+    c147504 Fix legacy Makefile.
+    58711e8 mkvparser_sample: Fix version info string.
+    837746f mkvparser_tests: Add invalid block test.
+    207cd80 Disambiguate sample sources and targets.
+    a112d71 mkvparser_tests: Refactor invalid file loading code.
+    5dea33e Disambiguate test source and target names.
+    125049e parser_tests: Add another truncated chapter string test.
+    1de8d4c parser_tests: Add truncated chapter string test.
+    ff8c2b6 parser_tests: Move cue validation to test_util.
+    4b0690f parser_tests: Add invalid lacing test.
+    9828e39 mkvmuxer: Set default doc type version to 4.
+    5495a59 webm_parser: Reference more files in CMakeLists.txt.
+    0c0ecd0 vpxpes_parser: Add start code emulation prevention support.
+    639a4bc webm2pes: Remove debug printfs().
+    9a51102 webm2pes: fflush() in the correct conversion function.
+    dc7f155 webm2pes: Track total bytes written.
+    d518128 webm_parser: Enable usage of werror.
+    e1fe762 webm2pes: Add test for mux/demux of large input.
+    1b24a79 vpxpes_parser: Read and store PTS when present.
+    6cf0a0f vpxpes_parser: Store frame payloads.
+    25d2602 webm_parser: Convert style to match the rest of libwebm
+    24be76d webm2pes: Replace VpxFrame with VideoFrame.
+    b451c3b Add a basic video frame storage class.
+    05c90eb libwebm_util: Clarify error text in su[1;31mperf[mrame parser.
+    e6415af webm2pes: Make WritePesPacket() a public method.
+    8f840dd webm2pes: Move frame read out of PES packet write method.
+    448af97 webm2pes: Restore frame fragmentation support.
+    f8bb714 cmake: Integrate new parsing API and tests.
+    cb8ce0b Add a new incremental parsing API
+    900d322 vpxpes_parser/webm2pes: BCMV and PTS fixes.
+    4b73545 webm2pes: Add start code emulation prevention.
+    82903f3 Add column tiles and frame parallel to webm_info
+    5d91edf style_clean_up: Remove unnecessary parentheses
+    a95aa4b vp9_level_stats: correct total_uncompressed_bits_ calculation
+    f46566f mkvreader: Fix shorten-64-to-32 warning in 32 bit builds.
+    76630ca mkvwriter: Fix shorten-64-to-32 warning in 32 bit builds.
+    a8ffbd4 webm2pes: Fix format specifier warnings.
+    faf89d4 Add MaxLumaSampleRate grace percent to stats.
+    d31e6c9 Fix profile 2 in vp9_header_parser.
+    bd3ab3a Add flag to estimate last frame's duration to stats.
+    c182ed9 Fix lint issue in hdr_util.h
+    cc62ecd Add test for Cluster memory leak
+    196708a Change MaxLumaSampleRate to be based on frame resolution.
+    cbd676b mkvmuxer: Fix leak when a Cluster isn't finalized
+    9a235e0 mkvmuxer: Set doctype to matroska when muxing non-WebM codecs.
+    47f2843 Add parsing support for new features in CodecPrivate.
+    e3c9576 Add VP9 level output to webm_info.
+    5cf549f cmake: Log compiler flag at check time.
+    bbaaf2d Add class to gather VP9 level stats.
+    8bb68c2 Add file to parse data from VP9 frames.
+    296429a Add support to parse VP9 profile.
+    df3412f Add support for setting VP9 profile and level to sample_muxer.
+    87832d4 mkvmuxer: Fix Segment::Finalize in kLive mode
+    6df3e56 mkvmuxerutil.hpp: Add using directives for overloaded size utils.
+    ec47928 mkvmuxerutil: Revert to using mkvmuxertypes.
+    a1dc4f2 Fix parsing of VP9 level.
+    4e3d037 Add support to output Colour elements to webm_info.
+    d3656fd muxer_tests: ignore iwyu re gtest-message.h
+    e76dd5e Fix file name in mkvmuxertypes shim.
+    1be5889 Add temporary include shims at old file locations.
+    039df94 Add TEST_TMPDIR environment variable
+    
+    Change-Id: I84bc1401b0aad71ad6727b687f1bede9953a7a08
+
+[33mcommit 808a560be6a71dd0d27f29c26f9fefb5e809d373[m
+Author: Frank Galligan <fgalligan@google.com>
+Date:   Mon Oct 17 12:41:39 2016 -0700
+
+    third_party: Roll libwebm snapshot.
+    
+    fc5f88d Fix temp files being left on system.
+    c04a134 Add support for overriding PixelWidth and PixelHeight.
+    c0160e0 Add support to explicitly set segment duration.
+    02bc809 Add support to estimate file duration.
+    c97e3e7 Add support to output sub-sample encryption information.
+    26f4344 MakeUID: quiet unused param warning in Android builds
+    d6af52a Change check to fix compile error.
+    1720020 webm_parser: Add Mesh value for ProjectionType
+    78f2c5a webm_parser: Use ./ prefix for includes
+    da62f65 webm_parser: Remove webm/ prefix from public includes
+    e15e8f2 webm_parser: Update README build instructions
+    5023f2b mkvmuxer: Fix Colour::Valid()
+    cf16204 mkvmuxer_tests: Actually test cue points in the cue point test.
+    93e9fb3 Validate Colour element values.
+    8036925 mkvparser_tests: Add Projection element test.
+    f52d38c mkvparser_tests: Add Colour element test.
+    826436a mkvparser: minor SeekHead::Entry clean up.
+    24fb44a mkvmuxer_tests: Add Projection element test.
+    1e0a8ea mkvmuxer_tests: Add Colour element test.
+    0278616 mkvmuxer: Colour accessors/mutators.
+    2346f8f Add mkvparser wrapper functions.
+    54d6b6b webm_info: Add Projection element support.
+    65fee06 mkvmuxer_sample: Add support for Projection element.
+    9a3f2b5 mkvparser_sample: Add support for Projection element.
+    41e814a mkvparser: Add Projection element support.
+    483a0ff mkvmuxer: Add Projection element support.
+    676a713 Add support for the Projection element
+    725f362 mkvmuxer: Fix memory leak when Colour is set multiple times.
+    fa182de mkvparser_sample: Add output of audio track codec private size.
+    8f521f2 mkvparser_tests: Add invalid BlockGroup test.
+    39137d7 Remove docs saying binary elements default to 0
+    c147504 Fix legacy Makefile.
+    80685d3 Do not skip over unknown elements at the root level
+    58711e8 mkvparser_sample: Fix version info string.
+    837746f mkvparser_tests: Add invalid block test.
+    207cd80 Disambiguate sample sources and targets.
+    a112d71 mkvparser_tests: Refactor invalid file loading code.
+    5dea33e Disambiguate test source and target names.
+    125049e parser_tests: Add another truncated chapter string test.
+    1de8d4c parser_tests: Add truncated chapter string test.
+    ff8c2b6 parser_tests: Move cue validation to test_util.
+    4b0690f parser_tests: Add invalid lacing test.
+    9828e39 mkvmuxer: Set default doc type version to 4.
+    5495a59 webm_parser: Reference more files in CMakeLists.txt.
+    0c0ecd0 vpxpes_parser: Add start code emulation prevention support.
+    639a4bc webm2pes: Remove debug printfs().
+    9a51102 webm2pes: fflush() in the correct conversion function.
+    dc7f155 webm2pes: Track total bytes written.
+    d518128 webm_parser: Enable usage of werror.
+    e1fe762 webm2pes: Add test for mux/demux of large input.
+    1b24a79 vpxpes_parser: Read and store PTS when present.
+    6cf0a0f vpxpes_parser: Store frame payloads.
+    25d2602 webm_parser: Convert style to match the rest of libwebm
+    24be76d webm2pes: Replace VpxFrame with VideoFrame.
+    b451c3b Add a basic video frame storage class.
+    05c90eb libwebm_util: Clarify error text in su[1;31mperf[mrame parser.
+    e6415af webm2pes: Make WritePesPacket() a public method.
+    8f840dd webm2pes: Move frame read out of PES packet write method.
+    448af97 webm2pes: Restore frame fragmentation support.
+    f8bb714 cmake: Integrate new parsing API and tests.
+    cb8ce0b Add a new incremental parsing API
+    900d322 vpxpes_parser/webm2pes: BCMV and PTS fixes.
+    4b73545 webm2pes: Add start code emulation prevention.
+    82903f3 Add column tiles and frame parallel to webm_info
+    5d91edf style_clean_up: Remove unnecessary parentheses
+    a95aa4b vp9_level_stats: correct total_uncompressed_bits_ calculation
+    f46566f mkvreader: Fix shorten-64-to-32 warning in 32 bit builds.
+    76630ca mkvwriter: Fix shorten-64-to-32 warning in 32 bit builds.
+    a8ffbd4 webm2pes: Fix format specifier warnings.
+    faf89d4 Add MaxLumaSampleRate grace percent to stats.
+    d31e6c9 Fix profile 2 in vp9_header_parser.
+    bd3ab3a Add flag to estimate last frame's duration to stats.
+    c182ed9 Fix lint issue in hdr_util.h
+    cc62ecd Add test for Cluster memory leak
+    196708a Change MaxLumaSampleRate to be based on frame resolution.
+    cbd676b mkvmuxer: Fix leak when a Cluster isn't finalized
+    47f2843 Add parsing support for new features in CodecPrivate.
+    9a235e0 mkvmuxer: Set doctype to matroska when muxing non-WebM codecs.
+    e3c9576 Add VP9 level output to webm_info.
+    bbaaf2d Add class to gather VP9 level stats.
+    5cf549f cmake: Log compiler flag at check time.
+    8bb68c2 Add file to parse data from VP9 frames.
+    df3412f Add support for setting VP9 profile and level to sample_muxer.
+    296429a Add support to parse VP9 profile.
+    87832d4 mkvmuxer: Fix Segment::Finalize in kLive mode
+    6df3e56 mkvmuxerutil.hpp: Add using directives for overloaded size utils.
+    ec47928 mkvmuxerutil: Revert to using mkvmuxertypes.
+    4e3d037 Add support to output Colour elements to webm_info.
+    a1dc4f2 Fix parsing of VP9 level.
+    039df94 Add TEST_TMPDIR environment variable
+    d3656fd muxer_tests: ignore iwyu re gtest-message.h
+    e76dd5e Fix file name in mkvmuxertypes shim.
+    1be5889 Add temporary include shims at old file locations.
+    
+    Change-Id: I6a1026814560be80d604a5ecb9b66406a1186dd9
+
+[33mcommit 43743b1d3efd99642e8669e864b882628eaca176[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Fri Sep 2 15:21:35 2016 -0700
+
+    Restore vp8_bilinear_predict4x4_neon
+    
+    This function was removed when clang started introducing alignment hints
+    which caused the 32 bit vld1_lane_u32/vst1_lane_u32 to fail:
+    https://llvm.org/bugs/show_bug.cgi?id=24421
+    
+    The load has been rendered safe with an implementation ~indiscernible
+    [1;31mperf[mormance-wise that uses _u8 and over-reads just a touch.
+    
+    It is still ~5x faster than C in the unaligned case and doing both
+    filters.
+    
+    BUG=webm:892
+    BUG=webm:1273
+    
+    Change-Id: Icf7167189391b46202f47233bb585c24c42bcc36
+
+[33mcommit d9dce2f48eed1368a44c368fa87a506bd89ffec5[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Fri Sep 2 11:29:20 2016 -0700
+
+    Restore vp8_sixtap_predict4x4_neon
+    
+    This function was removed when clang started introducing alignment hints
+    which caused the 32 bit vld1_lane_u32/vst1_lane_u32 to fail:
+    https://llvm.org/bugs/show_bug.cgi?id=24421
+    
+    The load has been rendered safe with an implementation ~indiscernible
+    [1;31mperf[mormance-wise that uses _u8 and over-reads just a touch.
+    
+    The store, when unaligned, has a version that is ~25% slower but safe
+    when xoffset = 0 (second pass filter only). When the first pass filter
+    (or both) are in play, the new version is almost identical in speed.
+    
+    Worst case [1;31mperf[mormance (both filters, unaligned stores) is roughly 3-4x
+    faster than C.
+    
+    BUG=webm:817
+    BUG=webm:1273
+    
+    Change-Id: I1e490e94453e0872151fe0dafb05557463f6247d
+
+[33mcommit d7c20079a67c5d44f35db5e991982a4705f1800f[m
+Author: Yury Gitman <yuryg@google.com>
+Date:   Mon Jul 18 12:17:58 2016 -0700
+
+    Add --alt-ref-aq=<int> option
+    
+    In the future this option will activate adaptive quantization special
+    for altref frames. Encoder will  create the adaptive quantization map
+    on the basis of lookahead buffers similarity which is the estimate of
+    the future motion compensation [1;31mperf[mormance.
+    
+    Change-Id: Ia0088b3babb0f9a4899c79d8d819947ba5a03df2
+
+[33mcommit 5d881770e59498075218e81244b9a07b774bab5a[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Aug 10 14:00:52 2016 +0100
+
+    Change default recode rule for good speed 0 and best.
+    
+    Changes the default recode rule for Speed 0 and best quality
+    from ALLOW_RECODE to ALLOW_RECODE_KFARFGF.
+    
+    Tested on the NF, hdres, midres and lowres test sets, this setting
+    when combined with patch I40cb559... now [1;31mperf[morms "as well" in
+    metrics terms (in fact it came out a tiny amount better overall)
+    but encode time is 9.6%  faster (measured as the average
+    from 27 mid rate local encodes on clips in the derf/lowres set.
+    
+    Change-Id: I8c781c0cdfa3a9929cd9406d15582fce47d6ae3b
+
+[33mcommit cfd92dab18639c7f1198393ce04613e6d2b126eb[m
+Merge: 6a8d4631a 2c17d5468
+Author: James Zern <jzern@google.com>
+Date:   Mon Aug 8 20:12:42 2016 +0000
+
+    Merge changes from topic 'clang-tidy'
+    
+    * changes:
+      *_[1;31mperf[m_test.cc: correct DoDecode signature
+      test: apply clang-tidy google-readability-braces-around-statements
+
+[33mcommit 2c17d54681bf6f529fac713d37075e8060e0c72a[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Aug 5 20:21:02 2016 -0700
+
+    *_[1;31mperf[m_test.cc: correct DoDecode signature
+    
+    + delete unused kMaxPsnr from decode_[1;31mperf[m_test.cc
+    
+    Change-Id: Id93347631e7870491069a8b7c5bb1f6b2828425f
+
+[33mcommit 87c6c5224d4fb261fad4f3c56336ef57b27acd47[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Jul 14 14:50:52 2016 -0700
+
+    Revert "Amend and improve VP8 multithreading implementation"
+    
+    Reverted the patch because of possible [1;31mperf[mormance issue.
+    
+    Change-Id: I49944f827ccd38ed194c9f8d9cb9036fa9bf79e1
+
+[33mcommit 2f28f9072e30f04cd16395733c8e6adc19b1a358[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 13:56:02 2016 -0700
+
+    Enable coeff optimization for intra modes
+    
+    This further improves the coding [1;31mperf[mormance by
+    lowres 0.3%
+    midres 0.5%
+    hdres  0.6%
+    
+    Change-Id: I6a03b6da210b9cbc261474bad4a103e0ba021c68
+
+[33mcommit 44354ee7bfa01caf97e6c0a92c4a39c474fa5a7e[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 12:46:48 2016 -0700
+
+    Use precise context to estimate coeff rate cost
+    
+    Use the precise context to estimate the zero token cost in trellis
+    optimization process. This improves the speed 0 coding [1;31mperf[mormance
+    by 0.15% for lowres and 0.1% for midres. It improves the speed 1
+    coding [1;31mperf[mormance by 0.2% for midres and hdres.
+    
+    Change-Id: I59c7c08702fc79dc4f8534b64ca594da909e2c91
+
+[33mcommit 62aa642d71bbbdc72dc01da4fb0416be550cd2e2[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 10:05:51 2016 -0700
+
+    Enable uniform quantization with trellis optimization in speed 0
+    
+    This commit allows the inter prediction residual to use uniform
+    quantization followed by trellis coefficient optimization in
+    speed 0. It improves the coding [1;31mperf[mormance by
+    
+    lowres 0.79%
+    midres 1.07%
+    hdres  1.44%
+    
+    Change-Id: I46ef8cfe042a4ccc7a0055515012cd6cbf5c9619
+
+[33mcommit e357b9efe08eca4c878e2a43dcde4bd4f7fb39a7[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Jul 1 16:02:41 2016 -0700
+
+    Support measure distortion in the pixel domain
+    
+    Use pixel domain distortion metric in speed 0. This improves the
+    compression [1;31mperf[mormance by 0.3% for both low and high resolution
+    test sets.
+    
+    Change-Id: I5b5b7115960de73f0b5e5d0c69db305e490e6f1d
+For keyword optim:
+[33mcommit fce163cd54ce95651ae568d63d5bd4fc6605f202[m
+Author: Gabriel Marin <gmx@chromium.org>
+Date:   Wed Dec 14 11:07:50 2016 -0800
+
+    Remove superfluous conditional on 'shortcut'
+    
+    Remove superfluous test. Produces a small improvement in instruction scheduling.
+    Measured a 1% to 1.5% reduction in execution time for routine vp9_[1;31moptim[mize_b
+    with different compilers.
+    
+    No change in behavior.
+    
+    TEST=Verified that encoded files match bit for bit, with and without this
+    change.
+    BUG=b/33678225
+    
+    Change-Id: I2bf248d4c25fc0256147d7a8766ff9108ae9cba3
+
+[33mcommit 85aead1790c067d47eed0f85bc8fa5e4f6852596[m
+Merge: 80474bf65 0549f5aae
+Author: Gabriel Marin <gmx@chromium.org>
+Date:   Mon Dec 19 23:25:38 2016 +0000
+
+    Merge "Simplify address arithmetic in vp9_[1;31moptim[mize_b"
+
+[33mcommit 0549f5aae91b7d2f1265cea7e2edf34fda8f0433[m
+Author: Gabriel Marin <gmx@chromium.org>
+Date:   Tue Dec 13 16:22:48 2016 -0800
+
+    Simplify address arithmetic in vp9_[1;31moptim[mize_b
+    
+    Simplify address arithmetic on token_costs to reduce the number of generated
+    instructions that are used for address arithmetic inside routine
+    vp9_[1;31moptim[mize_b. It also helps improve instruction scheduling depending on
+    compiler and [1;31moptim[mization level.
+    
+    Measured a 9.3% reduction in retired instructions and 5.3% reduction in
+    execution time for this routine with GCC v4.8.4 and [1;31moptim[mization flags -O3,
+    and a reduction of up to 11.6% in execution time with other compilers.
+    
+    No change in behavior.
+    
+    TEST=Verified that encoded files match bit for bit, with and without this
+    change.
+    BUG=b/33678225
+    
+    Change-Id: I6098650fb5cd2aa04e014fe6e68ca20761f3a21f
+
+[33mcommit 174528de1e56538d2f930251b23272fdc012be1c[m
+Merge: f16a0a1aa 018a2adcb
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Wed Dec 7 21:03:21 2016 +0000
+
+    Merge "Update idct NEON [1;31moptim[mization to not use narrowing saturating shift"
+
+[33mcommit 018a2adcb1b14a8f12fae6342c627c41e8b28ef1[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Tue Nov 22 14:21:36 2016 -0800
+
+    Update idct NEON [1;31moptim[mization to not use narrowing saturating shift
+    
+    Change-Id: Iae517017217dbacd638d40fcfeeb0f4bba7b8b8b
+
+[33mcommit cbeae53e765fa47d2e5d21d0682812663fd0f963[m
+Merge: 7adeccb33 1338c71df
+Author: James Zern <jzern@google.com>
+Date:   Sat Nov 19 01:29:37 2016 +0000
+
+    Merge "Clean horizontal intra prediction NEON [1;31moptim[mization"
+
+[33mcommit 011fdec1e69c462767844877f6e3651b338215ad[m
+Merge: 4ddae8f52 85c1ee434
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Tue Nov 15 23:30:48 2016 +0000
+
+    Merge "Add high bitdepth intra prediction NEON [1;31moptim[mization (mode tm)"
+
+[33mcommit 85c1ee434d51994844125a18bf6b98fd0510b827[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Fri Oct 28 15:04:45 2016 -0700
+
+    Add high bitdepth intra prediction NEON [1;31moptim[mization (mode tm)
+    
+    BUG=webm:1316
+    
+    Change-Id: Ib014de06836ac12726f4a2c9f0833ec4eb4d233b
+
+[33mcommit a3128ad33af5a348269c01c3fd3c30a1d8d53f39[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Fri Oct 28 09:42:11 2016 -0700
+
+    Add high bitdepth intra prediction NEON [1;31moptim[mization (h and v)
+    
+    BUG=webm:1316
+    
+    Change-Id: I47eeac698a98a31d1af5f72441052302e9fa4f46
+
+[33mcommit 40ab0424d4884190a3450b1e7edf8155c60f011d[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Thu Oct 27 16:06:07 2016 -0700
+
+    Add high bitdepth intra prediction NEON [1;31moptim[mization (mode d45 and d135)
+    
+    BUG=webm:1316
+    
+    Change-Id: I6a330874348df04df24a6d9efdc06f567e04bf8e
+
+[33mcommit f5141ea45fee014b529a264c1fa3bdedd42d038c[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Sep 29 17:57:51 2016 -0700
+
+    Refine vp8_refining_search_sadx4 targeting
+    
+    This uses the same sdx4df pointers as vp8_diamond_search_sadx4 and
+    should therefore target the same [1;31moptim[mizations.
+    
+    See e4ddf9db6a37eee59c079f5ae427643ae3424fcf
+    
+    Change-Id: Ic298e9b25c34bbe6b7a0799509355b0addb56675
+
+[33mcommit 64a5a8fd6f3b8098b00dcdf3b074352c2661acd7[m
+Merge: 3fdfbcb73 3b74066b1
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Tue Nov 8 16:53:41 2016 +0000
+
+    Merge "Add high bitdepth intra prediction NEON [1;31moptim[mization (mode dc)"
+
+[33mcommit 1338c71dfb6fa8e7c5d8aa52cd1d4958bcbe1721[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Wed Nov 2 11:28:33 2016 -0700
+
+    Clean horizontal intra prediction NEON [1;31moptim[mization
+    
+    Change-Id: I1ef0a5b2655cbc7e1cc2a4a1a72e0eed9aa41f05
+
+[33mcommit 3b74066b10e5af032918fadc0add83370bec1449[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Tue Oct 25 14:48:32 2016 -0700
+
+    Add high bitdepth intra prediction NEON [1;31moptim[mization (mode dc)
+    
+    BUG=webm:1316
+    
+    Change-Id: I984d6004ea2445e86f213fb6fa4d794a9955af8f
+
+[33mcommit 05ee241493536d534fda46ca336f5f1c442e474f[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Tue Oct 25 14:24:16 2016 -0700
+
+    Add high bitdepth intra prediction [1;31moptim[mization speed test
+    
+    BUG=webm:1316
+    
+    Change-Id: I99feec867d5b8ea06b43cdd3fcd7c90238f5efdb
+
+[33mcommit 0c880145928f4ddae719eed02288ba349718bfff[m
+Merge: 84dcfced5 cc5f49767
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Tue Nov 1 19:38:06 2016 +0000
+
+    Merge "Refine 8-bit intra prediction NEON [1;31moptim[mization (mode tm)"
+
+[33mcommit cc5f49767a514686c90a29781a50b0ce5a7da6fe[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Fri Oct 21 12:38:49 2016 -0700
+
+    Refine 8-bit intra prediction NEON [1;31moptim[mization (mode tm)
+    
+    Change-Id: I98b9577ec51367df5e5d564bedf7c3ea0606de4c
+
+[33mcommit cde5d5db136775b4b64213250ffe278e2d4397f5[m
+Merge: 702b3e1ee a347118f3
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Mon Oct 31 19:57:22 2016 +0000
+
+    Merge "Refine 8-bit intra prediction NEON [1;31moptim[mization (mode h and v)"
+
+[33mcommit a347118f3c1710ba3238c4894d7ffb19bf1388fa[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Fri Oct 21 11:44:49 2016 -0700
+
+    Refine 8-bit intra prediction NEON [1;31moptim[mization (mode h and v)
+    
+    Change-Id: I45e1454c3a85e081bfa14386e0248f57e2a91854
+
+[33mcommit 4d305dab34acbc7eac699b0c6b15a23128461edd[m
+Merge: 4f7a59c80 4ae9f5c09
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Fri Oct 28 15:57:55 2016 +0000
+
+    Merge "Refine 8-bit intra prediction NEON [1;31moptim[mization (mode d45 and d135)"
+
+[33mcommit 4ae9f5c092ae31d4f3b7e66d9e2bed7778af0f17[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Fri Oct 21 10:44:22 2016 -0700
+
+    Refine 8-bit intra prediction NEON [1;31moptim[mization (mode d45 and d135)
+    
+    dst += stride behaving better with gcc/clang.
+    Unroll loops.
+    
+    Change-Id: I83f85df2bc9f17c6159542f57680b509395db2b1
+
+[33mcommit 9c0680bd4363bdd50dc11e843c91b0e0093e4572[m
+Merge: 9720b58aa ce88b8f5c
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Wed Oct 26 16:51:44 2016 +0000
+
+    Merge "Refine 8-bit intra prediction NEON [1;31moptim[mization (mode dc)"
+
+[33mcommit ce88b8f5c50085c829d115ea95509e8cd1d60b7f[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Wed Oct 19 13:37:26 2016 -0700
+
+    Refine 8-bit intra prediction NEON [1;31moptim[mization (mode dc)
+    
+    dst += stride behaving better with gcc/clang
+    Expanding inline function dc_SIZExSIZE() save intructions for
+    vpx_dc_predictor_SIZExSIZE_neon().
+    
+    Change-Id: Id0ccbd58b6a31df539141fd33bdf28633339150d
+
+[33mcommit b0cc8d5cc688fd1a63e3eb89b7c47046e5258c24[m
+Merge: 808a560be 9c8981c66
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Mon Oct 17 23:57:13 2016 +0000
+
+    Merge "add vpx high bitdepth convolve8 NEON intrinsics [1;31moptim[mization"
+
+[33mcommit 9c8981c666b82c11a4ca725c3a01c576bf24f5ca[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Wed Oct 12 17:20:53 2016 -0700
+
+    add vpx high bitdepth convolve8 NEON intrinsics [1;31moptim[mization
+    
+    BUG=webm:1299
+    
+    Change-Id: I236bfa0441e357b6ff05add8269a2cfb543924d1
+
+[33mcommit c435b7fbdd28bb0d017576ea92b151e5770d0736[m
+Merge: bde905cba b3cb065ee
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Fri Sep 30 15:56:30 2016 +0000
+
+    Merge "Refine vpx convolve8 NEON intrinsics [1;31moptim[mization"
+
+[33mcommit b3cb065ee4ba8320f54dae0c69e9b27042e7f75a[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Thu Sep 29 12:48:59 2016 -0700
+
+    Refine vpx convolve8 NEON intrinsics [1;31moptim[mization
+    
+    BUG=webm:1290
+    
+    Change-Id: I5d7fce62270f9d76ef9ce98b3d188ad11fb21873
+
+[33mcommit b46243d7ff0f0d02d66010fb7830bb767046508b[m
+Merge: 60624aa53 761e5ec2f
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Mon Sep 26 16:11:11 2016 +0000
+
+    Merge "Refactor lpf (size 4 and 8) NEON intrinsics [1;31moptim[mization"
+
+[33mcommit 761e5ec2f6cdbbe50f0827024d4351165a0dff13[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Mon Sep 19 11:37:16 2016 -0700
+
+    Refactor lpf (size 4 and 8) NEON intrinsics [1;31moptim[mization
+    
+    Also check in 8x8 8-bit transpose NEON intrinsics [1;31moptim[mization
+    transpose_u8_8x8()
+    
+    Change-Id: I32d321cf97ea21eab158ac4896990fc9a51681c4
+
+[33mcommit 5d73639d8f15141664abfab641a369b5ecfff907[m
+Merge: 112eb54c1 810736800
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Sat Sep 17 00:33:30 2016 +0000
+
+    Merge "Refactor lpf (size 16) NEON intrinsics [1;31moptim[mization"
+
+[33mcommit 810736800018f4deadcb1df510d356034ecfd21b[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Thu Sep 15 16:49:47 2016 -0700
+
+    Refactor lpf (size 16) NEON intrinsics [1;31moptim[mization
+    
+    Extract shared code so later lpf size 4 and 8 functions can reuse.
+    
+    Change-Id: Ibb43ef1fd8651bd2e32fcc4c56cf6fa7ca237401
+
+[33mcommit 129814fcb487696264199ef4fe18049dd09a8b66[m
+Merge: 3a3169be5 635ae8bdc
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Tue Aug 30 16:54:39 2016 +0000
+
+    Merge "Adjust  coefficient [1;31moptim[mization  and tx_domain rd speed features."
+
+[33mcommit 635ae8bdc1f5f1fe9e94c2f14144ad4c8750b627[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Aug 18 14:15:25 2016 +0100
+
+    Adjust  coefficient [1;31moptim[mization  and tx_domain rd speed features.
+    
+    Previously Tx domain rd was used in all cases above speed 0.
+    Coefficient [1;31moptim[mization was only enabled for best and speed 0.
+    
+    This patch selectively sets these features at other speed settings
+    based on block complexity.
+    
+    For the Netflix and HD sets in particular the quality gains are
+    large compared to the speed hit. At speed 1 the average psnr
+    gain in the NF set  is > 2.5% with one clip coming in at 18%
+    and some points almost 30%.  Average gains for the lower
+    resolution test sets are around 1%.
+    
+    The gains are biggest at low Q so some further [1;31moptim[mization
+    may be possible.
+    
+    Change-Id: I340376c7b2a78e5389a34b7ebdc41072808d0576
+
+[33mcommit d393885af195a58e37e6966352708b3b04892c90[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Tue Aug 23 16:58:07 2016 -0700
+
+    Remove halfpix specialization
+    
+    This function only exists as a shortcut to subpixel variance with
+    predefined offsets. xoffset = 4 for horizontal, yoffset = 4 for vertical
+    and both for "hv"
+    
+    Removing this allows the existing [1;31moptim[mizations for the variance
+    functions to be called. Instead of having only sse2 [1;31moptim[mizations, this
+    gives sse2, ssse3, msa and neon.
+    
+    BUG=webm:1273
+    
+    Change-Id: Ieb407b423b91b87d33c4263c6a1ad5e673b0efd6
+
+[33mcommit 2c3807b89f18cde63aa42f8aeecc31e5bfe12554[m
+Merge: d4ab23486 e446ffda4
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Mon Aug 1 16:30:05 2016 +0000
+
+    Merge "Cache [1;31moptim[mizations in [1;31moptim[mize_b()."
+
+[33mcommit e446ffda45b61f0900a8063a004c7ceef0b4ffa2[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Fri Jul 29 12:06:49 2016 -0700
+
+    Cache [1;31moptim[mizations in [1;31moptim[mize_b().
+    
+    Move best index into the token state. Shrink it down to one byte. This
+    is more cache friendly (access are group together) and uses less total
+    memory.
+    
+    Results in 4% fewer cycles in [1;31moptim[mize_b().
+    
+    Change-Id: I75db484fb3dc82f59928d54b659d79c80ee40452
+
+[33mcommit fed14a3e949d27f0484c5f4901994f846d7b7474[m
+Merge: e93f2fdb8 efccbc9fb
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 13 16:01:01 2016 +0000
+
+    Merge "Disable trellis [1;31moptim[mization when lossless is on"
+
+[33mcommit efccbc9fb5df834316bc4c620b76e85a19fe7c52[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Jul 12 08:58:39 2016 -0700
+
+    Disable trellis [1;31moptim[mization when lossless is on
+    
+    Disable trellis coefficient [1;31moptim[mization when the lossless mode
+    is turned on.
+    
+    Change-Id: I9001bf626e86dc3c8c32331ede04fd39036e5f7c
+
+[33mcommit 2f28f9072e30f04cd16395733c8e6adc19b1a358[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 13:56:02 2016 -0700
+
+    Enable coeff [1;31moptim[mization for intra modes
+    
+    This further improves the coding performance by
+    lowres 0.3%
+    midres 0.5%
+    hdres  0.6%
+    
+    Change-Id: I6a03b6da210b9cbc261474bad4a103e0ba021c68
+
+[33mcommit 44354ee7bfa01caf97e6c0a92c4a39c474fa5a7e[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 12:46:48 2016 -0700
+
+    Use precise context to estimate coeff rate cost
+    
+    Use the precise context to estimate the zero token cost in trellis
+    [1;31moptim[mization process. This improves the speed 0 coding performance
+    by 0.15% for lowres and 0.1% for midres. It improves the speed 1
+    coding performance by 0.2% for midres and hdres.
+    
+    Change-Id: I59c7c08702fc79dc4f8534b64ca594da909e2c91
+
+[33mcommit 62aa642d71bbbdc72dc01da4fb0416be550cd2e2[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 10:05:51 2016 -0700
+
+    Enable uniform quantization with trellis [1;31moptim[mization in speed 0
+    
+    This commit allows the inter prediction residual to use uniform
+    quantization followed by trellis coefficient [1;31moptim[mization in
+    speed 0. It improves the coding performance by
+    
+    lowres 0.79%
+    midres 1.07%
+    hdres  1.44%
+    
+    Change-Id: I46ef8cfe042a4ccc7a0055515012cd6cbf5c9619
+
+[33mcommit 541eb7899409914dd0c530bebb2307102f7694a8[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 09:58:22 2016 -0700
+
+    Refactor coeff_cost() function
+    
+    Move the operations that update the context buffers outside this
+    function. The coeff_cost() takes all input as const value and returns
+    the coefficient cost.
+    
+    This makes preparation for the next coefficient [1;31moptim[mization CLs.
+    
+    Change-Id: I850eec6e5470b91ea84646ff26b9231b09f70a0c
+For keyword regression:
+[33mcommit 72746c079d0b8631dad90f7c172ae19193405571[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Wed Jan 4 11:22:51 2017 -0800
+
+    vp9: Set short circuit to level 3 for VGA for speed 8.
+    
+    vp9: Set short circuit to level 3 for VGA for speed 8. Also change the
+    threshold_32x32 to 5/8*thresholds[1] to improve quality [1;31mregression[m
+    caused to VGA clips.
+    
+    Change-Id: Ia1590e91e7cb22be78d5b85013387bb1be4272e3
+
+[33mcommit 421f376568b2b07a43a93fb055f7e2c48d111a0a[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Sep 9 09:03:22 2016 -0700
+
+    vp8: Set the skin model to mode 1.
+    
+    This change was reverted before due to a hangouts encode-time
+    [1;31mregression[m investigation. But since then this change has been
+    cleared of causing any noticeable [1;31mregression[m.
+    
+    This mode reduces some false detection, and uses the
+    same model as in vp9.
+    
+    Change-Id: I9c82a748c5f601d0aca9f61ee218abfbd58c62bd
+
+[33mcommit 039f9e08f04bc7919c7db4fe4be93a7ac3cc1f84[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Tue Aug 2 11:01:39 2016 -0700
+
+    change HBD pixel value from uint8_t to uint16_t
+    
+    This fixes a [1;31mregression[m in 10/12 bit encoding results.
+    
+    Change-Id: I438877352a41aae0a864a8d9979afe4aa2061d81
+
+[33mcommit 2678aefc4820162aecf17348a6cfde4b3650383f[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Wed Jul 6 10:57:15 2016 -0700
+
+    vp9: Choose the scheme for modeling rd for 32x32 based on skin color.
+    
+    For real time CBR mode, use model_rd_for_sb_y for 32x32 if the sb is
+    a skin sb to avoid visual [1;31mregression[m on the slowly moving face.
+    
+    Refer to the cl: https://chromium-review.googlesource.com/#/c/356020/
+    
+    Change-Id: I42c36666b2b474ce5ee274239d52ae8ab400fd46
+
+[33mcommit 5fc2d6cb9fb1262880e237bfd6873f7c3c4dd8c9[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Wed Jun 29 16:22:12 2016 -0700
+
+    vp9: Change the scheme for modeling rd for 32x32 on newmv_last mode.
+    
+    For real time CBR mode, use model_rd_for_sb_y for 32x32 if the mode is
+    newmv last, which is less aggressive in skipping transform and
+    quantization, to avoid quality [1;31mregression[m in some conditions.
+    
+    Change-Id: Ifa30be587f2a8a4a7f182a172de6ce277c0f8556
+For keyword speed:
+[33mcommit 4dca92345467fea3c4461152f1847352271ec883[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Wed Dec 21 14:19:25 2016 -0800
+
+    postproc: vpx_mbpost_proc_across_ip_neon
+    
+    The [1;31mspeed[mup is pretty poor. I would be concerned except the SSE2 is
+    worse:
+    Existing SSE2 improvement: 22%
+    New neon improvement: 35%
+    
+    BUG=webm:1320
+    
+    Change-Id: Ied598a261134aa6cbe69f96f58589d2bae17bf62
+
+[33mcommit 316071d79c8f2404a8fe9b9b664510cf91cc40d3[m
+Merge: b632626ec 267e73446
+Author: Jerome Jiang <jianj@google.com>
+Date:   Fri Jan 6 22:38:39 2017 +0000
+
+    Merge "vp9: Enable more aggresive short circuit for [1;31mspeed[m 8."
+
+[33mcommit 267e73446c09a28aee5b361a3d03f55380a9480b[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Fri Jan 6 10:06:37 2017 -0800
+
+    vp9: Enable more aggresive short circuit for [1;31mspeed[m 8.
+    
+    Set short_circuit_low_temp_var to 3 for [1;31mspeed[m 8 for all res.
+    No strong visual difference on all clips.
+    
+    Change-Id: Ia6d9a314291ab1c14d5421bbdd769974083aeb2a
+
+[33mcommit afc8c4836fa711501f81a6d54cf0ffa49a2fb99f[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Wed Jan 4 16:19:42 2017 -0800
+
+    vp9: Compute source sad for every superblock when partition copy is on.
+    
+    The source sad could be used to copy the partition without going into
+    choose_partitioning function to [1;31mspeed[m up vp9 encoding. Computing source
+    sad takes little time. Speed test on Android and Linux shows little
+    encoding time gain (less than 1.4%).
+    
+    Turned off for now since partition copy is turned off.
+    
+    Change-Id: I61c9d5b8f22329760cb29a4ee30a7f9c232ce8d3
+
+[33mcommit 72746c079d0b8631dad90f7c172ae19193405571[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Wed Jan 4 11:22:51 2017 -0800
+
+    vp9: Set short circuit to level 3 for VGA for [1;31mspeed[m 8.
+    
+    vp9: Set short circuit to level 3 for VGA for [1;31mspeed[m 8. Also change the
+    threshold_32x32 to 5/8*thresholds[1] to improve quality regression
+    caused to VGA clips.
+    
+    Change-Id: Ia1590e91e7cb22be78d5b85013387bb1be4272e3
+
+[33mcommit e7c453b613ffc2baab4b04cc514fd4a0a15c8927[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Dec 15 16:10:30 2016 -0800
+
+    vp9: 1 pass vbr: Skip find_predictors in pickmode when source is altref.
+    
+    When source frame is altref, we only do zero-mv mode, so we can skip
+    the find_predictors(). No change in compression.
+    Small [1;31mspeed[m gain, ~1%.
+    
+    Only affects 1 pass vbr with lookhead altref, for ytlive with
+    the macro flag USE_ALTREF_FOR_ONE_PASS on.
+    
+    Change-Id: I9318c5da8521f017bf54919cd652438b3a6313d1
+
+[33mcommit 3fcd595dfbed102d516080c41778a562dffef53d[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Dec 19 14:07:49 2016 -0800
+
+    vp9: Add datarate test for denoiser, for high noise case.
+    
+    Also breakout the denoiser tests, as the denoiser only
+    runs for real-time [1;31mspeed[m >=5.
+    
+    Change-Id: I921b785860c35e9d1ebfad0833673a98490186c2
+
+[33mcommit 1d5ca84df600ab610d14c0356b038ad4c395a6fd[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Mon Dec 19 10:39:04 2016 -0800
+
+    vp9: Add feature to copy partition from the last frame.
+    
+    Add feature to copy partition from the last frame.
+    The copy is only done under certain conditions that SAD is below threshold.
+    Feature is currently disabled, until threshold is tuned.
+    Feature will be initially used for Speed 8 (ARM).
+    
+    Under extreme case of always copying partition for [1;31mspeed[m 8:
+    Encode time is reduced by 5.4% on rtc_derf and 7.8% on rtc.
+    Overall PSNR reduced by 2.1 on rtc_derf and 0.968 on rtc.
+    
+    Change-Id: I1bcab515af3088e4d60675758f72613c2d3dc7a5
+
+[33mcommit 076d4bd91ad0ec042924d2772b2002c9e7d3d48b[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Dec 7 09:50:27 2016 -0800
+
+    vp9: Fix to crash in svc code.
+    
+    use_base_mv assumes 2x2 scaling, so fix is to shutoff
+    this feature unless spatial scale factors are 2.
+    
+    Added svc unittest for 2 spatial layers with 5x5 scaling,
+    which generates the issue without this fix.
+    
+    Also fix some settings in svc unittest:
+    let the [1;31mspeed[m setting vary (from 5 to 8), and enable static threshold.
+    
+    BUG=webm:1344
+    
+    Change-Id: Idfd0a6c633c21b49a0479601506302cfe974e30e
+
+[33mcommit d757d7e998d2e247a6fea424e8cb67e5f2b17951[m
+Merge: f63eb66ec 6cc76ec73
+Author: James Zern <jzern@google.com>
+Date:   Thu Nov 24 03:31:25 2016 +0000
+
+    Merge changes Icc4ead05,Ib019964b,I3b5fd3b3,Ieedadee2
+    
+    * changes:
+      Update vpx_idct4x4_16_add_neon() to pass SingleExtremeCoeff test
+      Refine 8-bit 4x4 idct NEON intrinsics
+      Add idct [1;31mspeed[m test.
+      Update partial_idct_test.cc to support high bitdepth
+
+[33mcommit b6597745f9dcec807b225b67e8069d5a3287e46e[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Nov 22 10:10:06 2016 -0800
+
+    vp9: Use more aggressive skip when short_circuit_low_temp_var = 1.
+    
+    Use the same feature as https://chromium-review.googlesource.com/#/c/411327/,
+    but allow it to be used for [1;31mspeed[m  = 6 and 7, where
+    short_circuit_low_temp_var = 1.
+    
+    Speed up of ~2-3% for [1;31mspeed[m 7, with little/no loss in compression.
+    
+    Change-Id: I263a0f261ad9929034392d68f0153dc6376fdb5f
+
+[33mcommit 45876b455065a6ddba9cd089eb8e680b687ed22e[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Mon Nov 7 17:23:38 2016 -0800
+
+    Add idct [1;31mspeed[m test.
+    
+    Change-Id: I3b5fd3b36cac1fb3a93e27fd8fd0781c91d412ce
+
+[33mcommit 719f39f44e4a87efc811dcc6a88a6311e36ddb2c[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Tue Nov 22 07:31:04 2016 -0800
+
+    vp9-tests : split VpxEncoderThreadTest into two tests.
+    
+    VpxEncoderThreadTest was taking a very long time for some runs and
+    timing out a lot.   This is an attempt to split the test into runs
+    that can be run nightly ( [1;31mspeed[ms 2 through 9) and runs that can
+    be run weekly ( [1;31mspeed[ms 0-1 ).
+    
+    Change-Id: Iee6f61a561006d3a30381dd3b52b9a4dce07a70c
+
+[33mcommit 360217a233bf67f78a3ab60a6a36e75b20cef816[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Tue Nov 15 10:37:12 2016 -0800
+
+    vp9: Speed 8: More aggresive golden skip for low res.
+    
+    Add a new, more aggresive short circuit: short_circuit_low_temp_var = 3 to skip
+    golden of any mode when variance is lower than threshold for low res.
+    This change only affects [1;31mspeed[m = 8, low resolution.
+    
+    Metrics for avgPSNR/SSIM on rtc_derf (low resolution) show loss of
+    0.27/0.31%.
+    On Nexus 6, the encoding time is reduced by ~2.3% on average across all
+    low-res clips.
+    
+    Visually little change on rtc_derf clips.
+    
+    Change-Id: Ia8f7366fc2d49181a96733a380b4dbd7390246ec
+
+[33mcommit eff68a3a4df99b8f475a1e3e5eb842bcb928fe00[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Mon Nov 14 10:22:00 2016 -0800
+
+    vp9: Speed 8: Turn off 4x4avg for low-res non-key frames.
+    
+    Changes only affects [1;31mspeed[m = 8 for low resolutions.
+    
+    Metrics for avgPSNR/SSIM on rtc_derf (low resolutions) show loss of
+    0.5/0.6%.
+    On Nexus 6, the encoding time is reduced by ~5.9% on average across all
+    low-res clips.
+    Visually little/no change on rtc_derf clips.
+    
+    Change-Id: I68dd50e558d72dcc1af8317d224bfae5e3bd872d
+
+[33mcommit 44f8ee7258c5e9bac9a4e25d265aa34eb47e08fb[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Nov 11 16:10:01 2016 -0800
+
+    Enable asymptotic closed-loop encoding decision
+    
+    This commit enables asymptotic closed-loop encoding decision for
+    the key frame and alternate reference frame. It follows the regular
+    rate control scheme, but leaves out additional iteration on the
+    updated frame level probability model. It is enabled for [1;31mspeed[m 0.
+    
+    The compression performance is improved:
+    
+    lowres 0.2%
+    midres 0.35%
+    hdres  0.4%
+    
+    Change-Id: I905ffa057c9a1ef2e90ef87c9723a6cf7dbe67cb
+
+[33mcommit 05ee241493536d534fda46ca336f5f1c442e474f[m
+Author: Linfeng Zhang <linfengz@google.com>
+Date:   Tue Oct 25 14:24:16 2016 -0700
+
+    Add high bitdepth intra prediction optimization [1;31mspeed[m test
+    
+    BUG=webm:1316
+    
+    Change-Id: I99feec867d5b8ea06b43cdd3fcd7c90238f5efdb
+
+[33mcommit ee1b3f34c032f6ec8fe2bb0e899ae03234fd98c6[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Oct 21 11:11:34 2016 -0700
+
+    vp9: Nonrd variance partition: increase threshold for using 4x4 avg.
+    
+    In variance partition low resolutions may use varianace based on
+    4x4 average for better partitioning.
+    Increase the threshold for doing this at [1;31mspeed[m = 8.
+    
+    Improves [1;31mspeed[m by ~5%, with little loss, < 1%, on RTC_derf set.
+    
+    Change-Id: Ib5ec420832ccff887a06cb5e1d2c73199b093941
+
+[33mcommit a7d116aa67797b7dc14ad735bb75fe499b0b76ff[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Oct 20 17:02:16 2016 -0700
+
+    vp9: Speed=8 real-time: Keep the bias_golden feature on.
+    
+    Small/no change in metrics on RTC set, [1;31mspeed[m increase by 2-3%.
+    
+    Change-Id: Iee997bd7433e8e508216e9267b1c31c5a9aa5121
+
+[33mcommit 4c3d539baa456a37ebd03f11865ea597f4724355[m
+Merge: 6c309c1f5 acd21e053
+Author: Jerome Jiang <jianj@google.com>
+Date:   Sat Oct 15 06:01:40 2016 +0000
+
+    Merge "VP8: Add realtime [1;31mspeed[m to datarate_test.cc"
+
+[33mcommit acd21e053a17cee5b2ed2a590c8c40523e2c1741[m
+Author: Jerome Jiang <jianj@jianj0.mtv.corp.google.com>
+Date:   Thu Oct 13 15:27:47 2016 -0700
+
+    VP8: Add realtime [1;31mspeed[m to datarate_test.cc
+    
+    Change-Id: Ia56f0e8dfba20143be3e69666d9184dd3ca5b563
+
+[33mcommit 57c6bf291e41d4e857df621bd3a9d00341a23a02[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Aug 2 17:37:32 2016 -0700
+
+    1 pass vbr: Allow for lookahead alt-ref in real-time mode.
+    
+    For 1 pass vbr real-time mode:
+    Allow for the usage of alt-ref frame when non-zero lag-in-frames is used.
+    Use non-filtered alt-ref, and select usage based on fast scene/content
+    analysis/detection within the lag of frames.
+    
+    Positive gains on ytlive set: overall avgPSNR ~3-4%.
+    Several clips are up between 5-14%, a few clips are neutral/small change.
+    
+    Current [1;31mspeed[m decrease is about ~5-10%.
+    
+    Use the flag USE_ALTREF_FOR_ONE_PASS to enable this feature
+    (off by default for now).
+    
+    Change-Id: I802d2bf3d44f9cf01f6d15c76be9c90192314769
+
+[33mcommit 5e908aff341e9c400f898b3d9c117e0eb63ef6fe[m
+Merge: b6277a47c d017548be
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Sep 30 21:42:04 2016 +0000
+
+    Merge "vp9 real-time mode: Change loopfilter [1;31mspeed[m feature at [1;31mspeed[m 8."
+
+[33mcommit d017548be614dfdb79335fc33b729a36dd254f5c[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Sep 26 16:52:26 2016 -0700
+
+    vp9 real-time mode: Change loopfilter [1;31mspeed[m feature at [1;31mspeed[m 8.
+    
+    For real-time mode at [1;31mspeed[m 8: turn off MINIMAL_LF at [1;31mspeed[m 8,
+    for non-screen content mode.
+    
+    Visually better, avgPSNR/SSIM on rtc set go up by ~4-5%.
+    Speed decrease of about ~3%.
+    
+    Change-Id: I8eb69330f02e0ceece1507d43cfc8a049a1d8291
+
+[33mcommit e4ddf9db6a37eee59c079f5ae427643ae3424fcf[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Mon Sep 26 16:20:32 2016 -0700
+
+    Hook up vp8_diamond_search_sad_sse3
+    
+    The original commit never set any 'specialize' line:
+    61311e61039c300ae872ccba22304e9e60dc0205
+    
+    It appears the sadx4 version of function uses sdx4df calls to [1;31mspeed[m up
+    the search. There are no sse3 versions of the sdx4df functions, but
+    there are sse2 and msa versions.
+    
+    There is a neon version of vpx_sad16x16x4d but not any of the smaller
+    versions. Perhaps if they existed this function could be expanded to use
+    them.
+    
+    Change-Id: I936d7d6b1a3ff6dcd5a4d2322272708c47cdec13
+
+[33mcommit d9dce2f48eed1368a44c368fa87a506bd89ffec5[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Fri Sep 2 11:29:20 2016 -0700
+
+    Restore vp8_sixtap_predict4x4_neon
+    
+    This function was removed when clang started introducing alignment hints
+    which caused the 32 bit vld1_lane_u32/vst1_lane_u32 to fail:
+    https://llvm.org/bugs/show_bug.cgi?id=24421
+    
+    The load has been rendered safe with an implementation ~indiscernible
+    performance-wise that uses _u8 and over-reads just a touch.
+    
+    The store, when unaligned, has a version that is ~25% slower but safe
+    when xoffset = 0 (second pass filter only). When the first pass filter
+    (or both) are in play, the new version is almost identical in [1;31mspeed[m.
+    
+    Worst case performance (both filters, unaligned stores) is roughly 3-4x
+    faster than C.
+    
+    BUG=webm:817
+    BUG=webm:1273
+    
+    Change-Id: I1e490e94453e0872151fe0dafb05557463f6247d
+
+[33mcommit bcbc4761fa72117be4ba32889ea79fca94c21956[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Sep 7 10:51:33 2016 -0700
+
+    vpx_mem.c: remove unnecessary inline
+    
+    these aren't overly [1;31mspeed[m critical, best to leave it to the compiler.
+    
+    Change-Id: I231c14abee5b845d7b8e8454832f2feb22c6ce45
+
+[33mcommit 6fc07a217da53554e56321ead7437cc67f627492[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Mon Aug 8 15:08:21 2016 +0100
+
+    Modified resize loop constraints.
+    
+    Using a tighter resize constraint on undershoot seems to help
+    results (especially SSIM) as significant undershoot on a frame
+    seems to have more of a damaging impact than overshoot.
+    
+    This patch has been tuned so that in local testing using the
+    derf set it is encode [1;31mspeed[m neutral for [1;31mspeed[m  setting 2.
+    
+    Average quality result for [1;31mspeed[m 2 (psnr,ssim) were  as follows:-
+    
+     lowres  0.039,  0.453
+     midres  0.249, 0.853
+     hdres  0.159, 0.659
+     NetFlix -0.241, 0.360
+    
+    Change-Id: Ie8d3a0d7d6f7ea89d9965d1821be17f8bda85062
+
+[33mcommit 129814fcb487696264199ef4fe18049dd09a8b66[m
+Merge: 3a3169be5 635ae8bdc
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Tue Aug 30 16:54:39 2016 +0000
+
+    Merge "Adjust  coefficient optimization  and tx_domain rd [1;31mspeed[m features."
+
+[33mcommit badd32d91417d780d4eee465c212b755a8f1307b[m
+Merge: a91fe33c6 dc42f343a
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Fri Aug 26 15:46:45 2016 +0000
+
+    Merge "Add ALLOW_RECODE_FIRST [1;31mspeed[m mode."
+
+[33mcommit dc42f343ae4365d68a096498ecdd8a960414905a[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Fri Aug 26 11:43:47 2016 +0100
+
+    Add ALLOW_RECODE_FIRST [1;31mspeed[m mode.
+    
+    This patch is to address concerns that changes to allow
+    recodes on the first frame in each ARF group do not give a
+    good enough [1;31mspeed[m quality trade off for [1;31mspeed[m 2. Though the
+    average impact  on encode [1;31mspeed[m is 1-2%, for some hard clips
+    it is > 5% rise.  For [1;31mspeed[m 1 this is less an issue and for Speed 0
+    the previous patch actually  improves [1;31mspeed[m.
+    
+    Change-Id: Ie1bcefdbfdf846d3f4428590173f621465dffe3a
+
+[33mcommit 635ae8bdc1f5f1fe9e94c2f14144ad4c8750b627[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Aug 18 14:15:25 2016 +0100
+
+    Adjust  coefficient optimization  and tx_domain rd [1;31mspeed[m features.
+    
+    Previously Tx domain rd was used in all cases above [1;31mspeed[m 0.
+    Coefficient optimization was only enabled for best and [1;31mspeed[m 0.
+    
+    This patch selectively sets these features at other [1;31mspeed[m settings
+    based on block complexity.
+    
+    For the Netflix and HD sets in particular the quality gains are
+    large compared to the [1;31mspeed[m hit. At [1;31mspeed[m 1 the average psnr
+    gain in the NF set  is > 2.5% with one clip coming in at 18%
+    and some points almost 30%.  Average gains for the lower
+    resolution test sets are around 1%.
+    
+    The gains are biggest at low Q so some further optimization
+    may be possible.
+    
+    Change-Id: I340376c7b2a78e5389a34b7ebdc41072808d0576
+
+[33mcommit ef98f49cb003a695361a08e4e392075a6d7ef3d5[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Mon Aug 22 19:46:44 2016 -0700
+
+    Disable split mode in 4k video encoding
+    
+    Disabled the split mode while encoding 4k video to [1;31mspeed[m
+    up the encoder.
+    
+    Borg test result on 4k set:
+    Overall PSNR: +0.029%; SSIM: +0.009%.
+    Average encoder [1;31mspeed[mup at [1;31mspeed[m 2 is 2.5%.
+    
+    Change-Id: I1519c658f07c3ac838affbe5aff0ed9b94f3f8f4
+
+[33mcommit 37169c0bd41ff110d004a0bf27cb218cc68a6ea8[m
+Merge: 149d08237 fe488ccef
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Aug 19 23:11:05 2016 +0000
+
+    Merge "Adjust [1;31mspeed[m features for 4k video encoding"
+
+[33mcommit fe488ccefff1730e2b9d0cc16650fc512e5d61b6[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Aug 19 09:30:32 2016 -0700
+
+    Adjust [1;31mspeed[m features for 4k video encoding
+    
+    Adjusted [1;31mspeed[m 2 features to [1;31mspeed[m up 4k video encoding.
+    BDBR results from borg test:
+    PSNR: +0.313%; SSIM: +0.268%.
+    Average [1;31mspeed[mup: 8.5%
+    
+    Change-Id: I1e2695a01fb3f3817c1df4480e184c2aed8f2eba
+
+[33mcommit 52db2b1690952edabf15e1ece08dcc2e2ec23f7e[m
+Merge: 33dedd062 8be7e572a
+Author: Jacky Chen <jackychen@google.com>
+Date:   Thu Aug 18 21:21:29 2016 +0000
+
+    Merge "vp9 svc: SVC encoder [1;31mspeed[m up."
+
+[33mcommit 8be7e572a70ebe98693762868e2a72673e74feb9[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Fri Aug 5 11:10:29 2016 -0700
+
+    vp9 svc: SVC encoder [1;31mspeed[m up.
+    
+    Bias towards base_mv and skip 1/4 pixel motion search when using base mv.
+    2~3% [1;31mspeed[m up for 2 spatial layers, 3~5% [1;31mspeed[m up for 3 spatial layers.
+    PSNR loss:
+    (2 layers) 0.07dB for gips_stationary, 0.04dB for gips_motion;
+    (3 layers) 0.07dB for gips_stationary, 0.06dB for gips_motion.
+    
+    Change-Id: I773acbda080c301cabe8cd259f842bcc5b8bc999
+
+[33mcommit 7eb7d6b22742ed0436f52c7e9dae4ce7d90b0ccd[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Aug 15 10:22:40 2016 -0700
+
+    vp9 non-rd pickmode: Add limit on newmv-last and golden bias.
+    
+    Add option, for newmv-last, to limit the rd-threshold update for early exit,
+    under a source varianace condition.
+    This can improve visual quality in low texture moving areas,
+    like forehead/faces.
+    
+    Also add bias against golden to improve the [1;31mspeed[m/fps,
+    will little/negligible loss in quality.
+    
+    Only affects CBR mode, non-svc, non-screen-content.
+    
+    Change-Id: I3a5229eee860c71499a6fd464c450b167b07534d
+
+[33mcommit 5d881770e59498075218e81244b9a07b774bab5a[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Aug 10 14:00:52 2016 +0100
+
+    Change default recode rule for good [1;31mspeed[m 0 and best.
+    
+    Changes the default recode rule for Speed 0 and best quality
+    from ALLOW_RECODE to ALLOW_RECODE_KFARFGF.
+    
+    Tested on the NF, hdres, midres and lowres test sets, this setting
+    when combined with patch I40cb559... now performs "as well" in
+    metrics terms (in fact it came out a tiny amount better overall)
+    but encode time is 9.6%  faster (measured as the average
+    from 27 mid rate local encodes on clips in the derf/lowres set.
+    
+    Change-Id: I8c781c0cdfa3a9929cd9406d15582fce47d6ae3b
+
+[33mcommit f7032713af6271f7aab16165c437b6d89e4e8f52[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Tue Aug 2 15:45:44 2016 -0700
+
+    vp9 svc: Fix a valgrind error.
+    
+    This error was introduced by the patch:
+    8ce67d7 vp9 svc: Enable different [1;31mspeed[m setting for each spatial layer.
+    To use svc, svc_param should be cleared to 0 at the beginning.
+    
+    Change-Id: I222f03ddae8a50e84b4690b78263abb742fae91e
+
+[33mcommit 6fbb4c3061e86f876c9856d0ed292c96f78841b2[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Thu Jul 28 13:27:08 2016 -0700
+
+    vp8: Switch skin model to mode 0 to save some cycle.
+    
+    This change will [1;31mspeed[m up vp8 encoder by 1.5% ~ 2% on linux. No
+    much [1;31mspeed[m change on Mac.
+    
+    Change-Id: Id957f19ddd89805baa2af84c5027d52d9a48553f
+
+[33mcommit 462a7c9f0a62780602d3979c3cfa968e38e45306[m
+Merge: 4508eb312 8ce67d714
+Author: Jacky Chen <jackychen@google.com>
+Date:   Thu Jul 28 20:21:30 2016 +0000
+
+    Merge "vp9 svc: Enable different [1;31mspeed[m setting for each spatial layer."
+
+[33mcommit 8ce67d714a6f1be586dcdd26524756d113b203f5[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Wed Jul 13 15:58:11 2016 -0700
+
+    vp9 svc: Enable different [1;31mspeed[m setting for each spatial layer.
+    
+    This change only affects 1 pass cbr svc mode.
+    
+    Change-Id: If0da87bb200f7e7762755340c40c8157cc7a16ca
+
+[33mcommit 3a986eac5734d15c24fb4e2421aaebf5f558a0f6[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Mon Jul 11 11:45:52 2016 +0100
+
+    Sample points to reduce encode overhead.
+    
+    Only noise filter sampled points in first pass to reduce
+    any first pass [1;31mspeed[m overhead.
+    
+    Change-Id: Ic80d4400e59146d1c3332336c4350faf28ff8b17
+
+[33mcommit 44354ee7bfa01caf97e6c0a92c4a39c474fa5a7e[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 12:46:48 2016 -0700
+
+    Use precise context to estimate coeff rate cost
+    
+    Use the precise context to estimate the zero token cost in trellis
+    optimization process. This improves the [1;31mspeed[m 0 coding performance
+    by 0.15% for lowres and 0.1% for midres. It improves the [1;31mspeed[m 1
+    coding performance by 0.2% for midres and hdres.
+    
+    Change-Id: I59c7c08702fc79dc4f8534b64ca594da909e2c91
+
+[33mcommit 62aa642d71bbbdc72dc01da4fb0416be550cd2e2[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 6 10:05:51 2016 -0700
+
+    Enable uniform quantization with trellis optimization in [1;31mspeed[m 0
+    
+    This commit allows the inter prediction residual to use uniform
+    quantization followed by trellis coefficient optimization in
+    [1;31mspeed[m 0. It improves the coding performance by
+    
+    lowres 0.79%
+    midres 1.07%
+    hdres  1.44%
+    
+    Change-Id: I46ef8cfe042a4ccc7a0055515012cd6cbf5c9619
+
+[33mcommit e357b9efe08eca4c878e2a43dcde4bd4f7fb39a7[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Jul 1 16:02:41 2016 -0700
+
+    Support measure distortion in the pixel domain
+    
+    Use pixel domain distortion metric in [1;31mspeed[m 0. This improves the
+    compression performance by 0.3% for both low and high resolution
+    test sets.
+    
+    Change-Id: I5b5b7115960de73f0b5e5d0c69db305e490e6f1d
+
+[33mcommit 8cc525e82b639932870e4666c524420ff2c8536a[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Jul 1 14:29:04 2016 -0700
+
+    vpx_thread: use native windows cond var if available
+    
+    BUG=b/29583578
+    
+    original webp change:
+    
+    commit 110ad5835ecd66995d0e7f66dca1b90dea595f5a
+    Author: James Zern <jzern@google.com>
+    Date:   Mon Nov 23 19:49:58 2015 -0800
+    
+        thread: use native windows cond var if available
+    
+        Vista / Server 2008 and up. no [1;31mspeed[m difference observed.
+    
+        Change-Id: Ice19704777cb679b290dc107a751a0f36dd0c0a9
+    
+    100644 blob 4fc372b7bc6980a9ed3618c8cce5b67ed7b0f412 src/utils/thread.c
+    100644 blob 840831185502d42a3246e4b7ff870121c8064791 src/utils/thread.h
+    
+    Change-Id: Iede7ae8a7184e4b17a4050b33956918fc84e15b5
+
+[33mcommit 8cbd4f87011efff05efab2fd99c18abd5baaaa2a[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Thu Jun 23 09:40:49 2016 -0700
+
+    vp9: Increase thr_var for 32x32 blocks in var-based partitioning.
+    
+    For real-time mode, increase variance threshold for 32x32 blocks in
+    var-based partitioning for resolution >= 720p, so that it is more
+    likely to stay at 32x32 for high resolution which accelerates the
+    encoding [1;31mspeed[m with little/no PSNR drop.
+    
+    PSNR effect on different [1;31mspeed[m settings:
+    [1;31mspeed[m 8 rtc: 0.02 overall PSNR drop, 0.285% SSIM drop
+    [1;31mspeed[m 7 rtc: 0.196% overall PSNR increase, 0.066% SSIM increase
+    [1;31mspeed[m 5 rtc_derf: no effect.
+    
+    Speed up:
+    gips_motion_WHD, 1mbps: 2.5% faster on [1;31mspeed[m 7, 2.6% faster on [1;31mspeed[m8
+    gips_stat_WHD, 1mbps: 4.6% faster on [1;31mspeed[m 7, 5.6% faster on [1;31mspeed[m8
+    
+    Change-Id: Ie7c33c4d2dd7d09294917e031357fc5476c3a4bb
+For keyword quality:
+[33mcommit 72746c079d0b8631dad90f7c172ae19193405571[m
+Author: Jerome Jiang <jianj@google.com>
+Date:   Wed Jan 4 11:22:51 2017 -0800
+
+    vp9: Set short circuit to level 3 for VGA for speed 8.
+    
+    vp9: Set short circuit to level 3 for VGA for speed 8. Also change the
+    threshold_32x32 to 5/8*thresholds[1] to improve [1;31mquality[m regression
+    caused to VGA clips.
+    
+    Change-Id: Ia1590e91e7cb22be78d5b85013387bb1be4272e3
+
+[33mcommit d793950ec8fe8dd445c3215a44c5d0842606bfe1[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Nov 21 16:37:32 2016 -0800
+
+    vp9: Adjust cyclic refresh parameters for low bitrates.
+    
+    Increase the motion threshold and qp-delta for segment#2 boost.
+    This can increase the frame-drop at low bitrates, but generally
+    better spatial [1;31mquality[m.
+    
+    Only affects real-time mode with aq-mode=3, at very low bitrates.
+    
+    Change-Id: I5ccb784667f70d0c27d369806b93b1f93d5605d1
+
+[33mcommit c327b3f0b04f9d99756d0ef208b2d9e025958e64[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Tue Oct 25 10:47:21 2016 -0700
+
+    Modify the encoder multi-thread unit test
+    
+    Modified the encoder multi-thread test so that it included cpu-used=0 and
+    frame-parallel=0.
+    
+    frame_parallel_decoding_mode is 1 by default, which disables probability
+    updating and gives lower encoding [1;31mquality[m. Current VP9 multi-threading
+    encoder and decoder support probability updating. To test this part, we
+    should turn on it in the unit test, namely, setting frame-parallel to 0.
+    
+    Change-Id: Ia1f86e01f0de628f50d819ae31509de3e1b6c755
+
+[33mcommit 6fc07a217da53554e56321ead7437cc67f627492[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Mon Aug 8 15:08:21 2016 +0100
+
+    Modified resize loop constraints.
+    
+    Using a tighter resize constraint on undershoot seems to help
+    results (especially SSIM) as significant undershoot on a frame
+    seems to have more of a damaging impact than overshoot.
+    
+    This patch has been tuned so that in local testing using the
+    derf set it is encode speed neutral for speed  setting 2.
+    
+    Average [1;31mquality[m result for speed 2 (psnr,ssim) were  as follows:-
+    
+     lowres  0.039,  0.453
+     midres  0.249, 0.853
+     hdres  0.159, 0.659
+     NetFlix -0.241, 0.360
+    
+    Change-Id: Ie8d3a0d7d6f7ea89d9965d1821be17f8bda85062
+
+[33mcommit dc42f343ae4365d68a096498ecdd8a960414905a[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Fri Aug 26 11:43:47 2016 +0100
+
+    Add ALLOW_RECODE_FIRST speed mode.
+    
+    This patch is to address concerns that changes to allow
+    recodes on the first frame in each ARF group do not give a
+    good enough speed [1;31mquality[m trade off for speed 2. Though the
+    average impact  on encode speed is 1-2%, for some hard clips
+    it is > 5% rise.  For speed 1 this is less an issue and for Speed 0
+    the previous patch actually  improves speed.
+    
+    Change-Id: Ie1bcefdbfdf846d3f4428590173f621465dffe3a
+
+[33mcommit 635ae8bdc1f5f1fe9e94c2f14144ad4c8750b627[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Aug 18 14:15:25 2016 +0100
+
+    Adjust  coefficient optimization  and tx_domain rd speed features.
+    
+    Previously Tx domain rd was used in all cases above speed 0.
+    Coefficient optimization was only enabled for best and speed 0.
+    
+    This patch selectively sets these features at other speed settings
+    based on block complexity.
+    
+    For the Netflix and HD sets in particular the [1;31mquality[m gains are
+    large compared to the speed hit. At speed 1 the average psnr
+    gain in the NF set  is > 2.5% with one clip coming in at 18%
+    and some points almost 30%.  Average gains for the lower
+    resolution test sets are around 1%.
+    
+    The gains are biggest at low Q so some further optimization
+    may be possible.
+    
+    Change-Id: I340376c7b2a78e5389a34b7ebdc41072808d0576
+
+[33mcommit 7eb7d6b22742ed0436f52c7e9dae4ce7d90b0ccd[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Aug 15 10:22:40 2016 -0700
+
+    vp9 non-rd pickmode: Add limit on newmv-last and golden bias.
+    
+    Add option, for newmv-last, to limit the rd-threshold update for early exit,
+    under a source varianace condition.
+    This can improve visual [1;31mquality[m in low texture moving areas,
+    like forehead/faces.
+    
+    Also add bias against golden to improve the speed/fps,
+    will little/negligible loss in [1;31mquality[m.
+    
+    Only affects CBR mode, non-svc, non-screen-content.
+    
+    Change-Id: I3a5229eee860c71499a6fd464c450b167b07534d
+
+[33mcommit 5d881770e59498075218e81244b9a07b774bab5a[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Aug 10 14:00:52 2016 +0100
+
+    Change default recode rule for good speed 0 and best.
+    
+    Changes the default recode rule for Speed 0 and best [1;31mquality[m
+    from ALLOW_RECODE to ALLOW_RECODE_KFARFGF.
+    
+    Tested on the NF, hdres, midres and lowres test sets, this setting
+    when combined with patch I40cb559... now performs "as well" in
+    metrics terms (in fact it came out a tiny amount better overall)
+    but encode time is 9.6%  faster (measured as the average
+    from 27 mid rate local encodes on clips in the derf/lowres set.
+    
+    Change-Id: I8c781c0cdfa3a9929cd9406d15582fce47d6ae3b
+
+[33mcommit 5fc2d6cb9fb1262880e237bfd6873f7c3c4dd8c9[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Wed Jun 29 16:22:12 2016 -0700
+
+    vp9: Change the scheme for modeling rd for 32x32 on newmv_last mode.
+    
+    For real time CBR mode, use model_rd_for_sb_y for 32x32 if the mode is
+    newmv last, which is less aggressive in skipping transform and
+    quantization, to avoid [1;31mquality[m regression in some conditions.
+    
+    Change-Id: Ifa30be587f2a8a4a7f182a172de6ce277c0f8556
+For keyword tiling:

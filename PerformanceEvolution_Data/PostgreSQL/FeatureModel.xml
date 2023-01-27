@@ -1,0 +1,261 @@
+<vm name="postgresql-evo">
+  <binaryOptions>
+    <configurationOption>
+      <name>root</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>
+      </parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>fsync</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>synchronousCommit</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>fullPageWrites</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>trackActivities</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>trackCounts</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>sharedBuffers</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>sharedBuffers_64</name>
+      <outputString>64</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>sharedBuffers</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>sharedBuffers_128</options>
+        <options>sharedBuffers_256</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>sharedBuffers_128</name>
+      <outputString>128</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>sharedBuffers</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>sharedBuffers_64</options>
+        <options>sharedBuffers_256</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>sharedBuffers_256</name>
+      <outputString>256</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>sharedBuffers</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>sharedBuffers_64</options>
+        <options>sharedBuffers_128</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>tempBuffers</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>tempBuffers_2</name>
+      <outputString>2</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>tempBuffers</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>tempBuffers_8</options>
+        <options>tempBuffers_32</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>tempBuffers_8</name>
+      <outputString>8</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>tempBuffers</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>tempBuffers_2</options>
+        <options>tempBuffers_32</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>tempBuffers_32</name>
+      <outputString>32</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>tempBuffers</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>tempBuffers_2</options>
+        <options>tempBuffers_8</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>workMem</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>workMem_256</name>
+      <outputString>256</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>workMem</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>workMem_1024</options>
+        <options>workMem_4096</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>workMem_1024</name>
+      <outputString>1024</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>workMem</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>workMem_256</options>
+        <options>workMem_4096</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>workMem_4096</name>
+      <outputString>4096</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>workMem</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>workMem_256</options>
+        <options>workMem_1024</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+  </binaryOptions>
+  <numericOptions />
+  <booleanConstraints />
+  <nonBooleanConstraints />
+  <mixedConstraints />
+</vm>

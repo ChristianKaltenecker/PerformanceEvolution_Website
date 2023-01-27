@@ -1,0 +1,707 @@
+Searching between v1.0.0 and v1.1.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,pass
+Keywords: slow fast time perf optim regression speed quality pass
+For keyword slow:
+For keyword fast:
+[33mcommit 52cf4dcaea10f97d25d8a3585704a1e47b384751[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Thu Feb 9 12:37:03 2012 +0200
+
+    Packing bitstream on-the-fly with delayed context updates
+    
+    Produce the token partitions on-the-fly, while processing each MB.
+    Context is updated at the beginning of each frame based on the
+    previoud frame's counters. Optimally encoder outputs partitions in
+    separate buffers. For frame based output, partitions are concatenated
+    internally.
+    
+    Limitations:
+        - enabled just in combination with realtime-only mode
+        - number of encoding threads has to be equal or less than the
+        number of token partitions. For this reason, by default the encoder
+        will do 8 token partitions.
+        - vpxenc supports partition output (-P) just in combination with
+        IVF output format (--ivf)
+    
+    Performance:
+        - Realtime encoder can be up to 13% [1;31mfast[mer (ARM) depending on the number
+        of threads and bitrate settings. Constant gain over the 5-16 speed
+        range.
+        - Token buffer reduced from one frame to 8 MBs
+    
+    Quality:
+        - quality is affected by the delayed context updates. This again
+        dependents on input material, speed and bitrate settings. For VC
+        style input the loss seen is up to 0.2dB. If error-resilient=2
+        mode is used than the effect of this change is negligible.
+    
+    Example:
+    ./configure --enable-realtime-only --enable-onthefly-bitpacking
+    ./vpxenc --rt --end-usage=1 --fps=30000/1000 -w 640 -h 480
+    --target-bitrate=1000 --token-parts=3 --static-thresh=2000
+    --ivf -P -t 4 -o strm.ivf tanya_640x480.yuv
+    
+    Change-Id: I127295cb85b835fc287e1c0201a67e378d025d76
+
+[33mcommit 78071b3b97e0fd227d94bf8046c21bcd3ee7c433[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Fri Sep 16 13:54:06 2011 +0300
+
+    Multithreaded encoder, late sync loopfilter
+    
+    Second shot at this...
+    
+    Sync with loopfilter thread as late as possible, usually just at the
+    beginning of next frame encoding. This returns control to application
+    [1;31mfast[mer and allows a better multicore scaling.
+    
+    When PSNR packets are generated the final filtered frame is needed
+    imediatly so we cannot delay the sync. Same has to be done when
+    internal frame is previewed.
+    
+    Change-Id: I64e110c8b224dd967faefffd9c93dd8dbad4a5b5
+For keyword time:
+[33mcommit f039a85fd820f9f010d32dd45fc82dddc3263783[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Mon Apr 16 10:23:57 2012 +0300
+
+    Make global data const
+    
+    Removes all run[1;31mtime[m initialization of global data. This commit is a
+    squashed version of the following series cherry-picked from master.
+    This is necessary because of a change that was merged to the tester
+    that depends on the scaler being moved to the RTCD framework, which
+    is a worthwhile thing to include in Eider anyway.
+    
+      - a91b42f02 Makes all global data in entropy.c const
+      - b35a0db0e Makes all global data in tokenize.c const
+      - 441cac8ea Makes all mode token tables const
+      - 5948a0210 Ports vpx_xcaler to new RTCD method
+      - 317d4244c Makes all mode token tables const part 2
+    
+    Change-Id: Ifeaea24df2b731e7c509fa6c6ef6891a374afc26
+
+[33mcommit 061a16d96e86a08cff0cda5761b65c3f87dfb0af[m
+Author: Ralph Giles <giles@xiph.org>
+Date:   Thu Jan 5 15:05:05 2012 -0600
+
+    Have vpxenc use a default kf_max_rate of 5 seconds.
+    
+    Rather than using the static default maximum keyframe spacing
+    provided by vpx_codec_enc_config_default() set the default
+    value to 5 [1;31mtime[ms the frame rate. Five seconds is too long for
+    live streaming applications, but is a compromise between seek
+    efficiency and giving the encoder freedom to choose keyframe
+    locations.
+    
+    The five second value is from James Zern's suggestion in
+    http://article.gmane.org/gmane.comp.mul[1;31mtime[mdia.webm.user/2945
+    
+    Change-Id: Ib7274dc248589c433c06e68ca07232e97f7ce17f
+
+[33mcommit 21173e19994a7ffcbdc321c35c8c8ea8e6219b78[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Mon Apr 16 12:22:59 2012 -0700
+
+    correct alt-ref contribution to frame rate
+    
+    When producing an invisible ARF, the [1;31mtime[m stamp counters aren't
+    updated since the last [1;31mtime[m stamp is seen by the codec twice. The
+    prior code was trapping this case with refresh_alt_ref, but this isn't
+    correct for other uses of the ARF. Instead, use the show_frame flag.
+    
+    Change-Id: If67fff7c6c66a3606698e34e2fb5731f56b4a223
+
+[33mcommit c459d37c26ac65e95b33d71a6f61b4c851b0f3cc[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Mon Apr 2 15:08:18 2012 -0700
+
+    Allow disabling disabled codecs
+    
+    When using 'make dist' after --disable-vp8[encoder|decoder] it would
+    fail to recognize the option. This would only occur when also specifying
+    --enable-install-docs and --enable-install-srcs but not
+    --enable-codec-srcs
+    
+    Including vpx/ fixes builds with --enable-codec-srcs
+    
+    vpx_[1;31mtime[mr.h is also required for vpxenc.c
+    
+    Change-Id: Ie3e28b2f7ec7ee6d5961d3843f9eab869f79c35b
+
+[33mcommit cb265a497d05416572343b345a01ffa048aefda6[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Mar 27 16:28:41 2012 -0700
+
+    FTFY: an automated style corrector
+    
+    This is a utility for applying a limited amount of style correction on
+    a change-by-change basis. Rather than a big-bang reformatting, this
+    tool attempts to only correct the style in diff hunks that you touch.
+    This should make the cosmetic changes small enough that we can mix them
+    with functional changes without destroying the diffs, and there's an
+    escape hatch for separating the reformatting to a second commit for
+    purists and cases where it hurts readability.
+    
+    At this [1;31mtime[m, the script requires a clean working tree, so run it after
+    you've commited your changes. Run without arguments, the style
+    corrections will be applied and left unstaged in your working copy. It
+    also supports the --amend option, which will automatically amend your
+    HEAD with the corrected style, and --commit, which will create a new
+    change dependent on your HEAD that contains only the whitespace changes.
+    
+    There are a number of ways this could be applied in an automated manner
+    if this proves to be useful, either on a project-wide or per-user
+    basis. This doesn't buy anything in terms of real code quality, the
+    intent here would be to keep formatting nits out of review comments in
+    favor of more meaningful ones and help people whose habitual style
+    doesn't match the baseline.
+    
+    Requires astyle[1] 1.24 or newer.
+      [1]: http://astyle.sourceforge.net/
+    
+    Change-Id: I2fb3434de8479655e9811f094029bb90e5d757e1
+
+[33mcommit c21f53a501ebecc9dcbbad90251efed82e327629[m
+Merge: 7a1590713 a6f538cef
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Mar 9 14:48:06 2012 -0800
+
+    Merge "vpx_[1;31mtime[mr: increase resolution"
+
+[33mcommit a6f538cefa73563aeb520d54b36c7276ff8e714b[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Thu Mar 1 12:49:43 2012 -0800
+
+    vpx_[1;31mtime[mr: increase resolution
+    
+    There's no useful reason to limit this [1;31mtime[mr to 1 second.
+    
+    Change-Id: Idd1960268624e8bdfe958d99833ae6482fdb423e
+
+[33mcommit aabae97e57378356cdc8c94af5e369f8363b9831[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Feb 29 08:24:53 2012 -0500
+
+    vpxenc: fix [1;31mtime[m and fps calculation in 2-pass encoding
+    
+    When we do 2-pass encoding, elapsed [1;31mtime[m is accumulated through
+    whole 2-pass process, which gives incorrect [1;31mtime[m and fps results
+    for second pass. This change fixed that by resetting the [1;31mtime[m
+    accumulator for second pass.
+    
+    Change-Id: Ie6cbf0d0e66e6874e7071305e253c6267529cf20
+
+[33mcommit 52cf4dcaea10f97d25d8a3585704a1e47b384751[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Thu Feb 9 12:37:03 2012 +0200
+
+    Packing bitstream on-the-fly with delayed context updates
+    
+    Produce the token partitions on-the-fly, while processing each MB.
+    Context is updated at the beginning of each frame based on the
+    previoud frame's counters. Optimally encoder outputs partitions in
+    separate buffers. For frame based output, partitions are concatenated
+    internally.
+    
+    Limitations:
+        - enabled just in combination with real[1;31mtime[m-only mode
+        - number of encoding threads has to be equal or less than the
+        number of token partitions. For this reason, by default the encoder
+        will do 8 token partitions.
+        - vpxenc supports partition output (-P) just in combination with
+        IVF output format (--ivf)
+    
+    Performance:
+        - Real[1;31mtime[m encoder can be up to 13% faster (ARM) depending on the number
+        of threads and bitrate settings. Constant gain over the 5-16 speed
+        range.
+        - Token buffer reduced from one frame to 8 MBs
+    
+    Quality:
+        - quality is affected by the delayed context updates. This again
+        dependents on input material, speed and bitrate settings. For VC
+        style input the loss seen is up to 0.2dB. If error-resilient=2
+        mode is used than the effect of this change is negligible.
+    
+    Example:
+    ./configure --enable-real[1;31mtime[m-only --enable-onthefly-bitpacking
+    ./vpxenc --rt --end-usage=1 --fps=30000/1000 -w 640 -h 480
+    --target-bitrate=1000 --token-parts=3 --static-thresh=2000
+    --ivf -P -t 4 -o strm.ivf tanya_640x480.yuv
+    
+    Change-Id: I127295cb85b835fc287e1c0201a67e378d025d76
+
+[33mcommit 019384f2d365e4265b554e235c7d669b69ef35c0[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Mon Feb 27 17:38:53 2012 -0500
+
+    Only do uv intra-mode evaluation when intra mode is checked
+    
+    When we encode slide-show clips, for the majority of the [1;31mtime[m,
+    only ZEROMV mode is checked, and all other modes are skipped.
+    This change delayed uv intra-mode evaluation until intra mode is
+    actually checked. This gave big performance gain for slide-show
+    video encoding (2nd pass gain: 18% to 28%). But, this change
+    doesn't help other types of videos.
+    
+    Also, zbin_mode_boost is adjusted in mode-checking loop, which
+    causes bitstream mismatch before/after this change when --best
+    or --good with --cpu-used=0 are used.
+    
+    Change-Id: I582b3e69fd384039994360e870e6e059c36a64cc
+
+[33mcommit fa1a9290e6e7cd0bf0afff5213e73fa5f662a9e2[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Feb 2 14:27:04 2012 -0500
+
+    Allow to skip highest-resolution encoding in multi-resolution encoder
+    
+    Some[1;31mtime[ms, a user doesn't have enough bandwidth to send high-resolution
+    (i.e. HD) video even though the camera catches HD video. This change
+    allowed users to skip highest-resolution encoding by setting that level's
+    target bit rate to 0.
+    
+    To test it, modify the following line in vp8_multi_resolution_encoder.c.
+        unsigned int  target_bitrate[NUM_ENCODERS]={1400, 500, 100};
+    To skip the highest-resolution level, change it to
+        unsigned int  target_bitrate[NUM_ENCODERS]={0, 500, 100};
+    To skip the first and second highest resolution levels, change it to
+        unsigned int  target_bitrate[NUM_ENCODERS]={0, 0, 100};
+    
+    This change also fixed a small problem in mapping, which slightly helped
+    quality and performance.
+    
+    Change-Id: I977bae9a9fbfba85c8be4bd5af01539f2b84bc81
+
+[33mcommit a910049aea5e2be97b232dbdd7700d078eb7ecd0[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Aug 19 14:06:00 2011 -0400
+
+    New RTCD implementation
+    
+    This is a proof of concept RTCD implementation to replace the current
+    system of nested includes, prototypes, INVOKE macros, etc. Currently
+    only the decoder specific functions are implemented in the new system.
+    Additional functions will be added in subsequent commits.
+    
+    Overview:
+      RTCD "functions" are implemented as either a global function pointer
+      or a macro (when only one eligible specialization available).
+      Functions which have RTCD specializations are listed using a simple
+      DSL identifying the function's base name, its prototype, and the
+      architecture extensions that specializations are available for.
+    
+    Advantages over the old system:
+      - No INVOKE macros. A call to an RTCD function looks like an ordinary
+        function call.
+      - No need to pass vtables around.
+      - If there is only one eligible function to call, the function is
+        called directly, rather than indirecting through a function pointer.
+      - Supports the notion of "required" extensions, so in combination with
+        the above, on x86_64 if the best function available is sse2 or lower
+        it will be called directly, since all x86_64 platforms implement
+        sse2.
+      - Elides all references to functions which will never be called, which
+        could reduce binary size. For example if sse2 is required and there
+        are both mmx and sse2 implementations of a certain function, the
+        code will have no link [1;31mtime[m references to the mmx code.
+      - Significantly easier to add a new function, just one file to edit.
+    
+    Disadvantages:
+      - Requires global writable data (though this is not a new requirement)
+      - 1 new generated source file.
+    
+    Change-Id: Iae6edab65315f79c168485c96872641c5aa09d55
+For keyword perf:
+[33mcommit e50c842755993b183c1c56d72000be7918bf0bfb[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Wed May 2 10:11:36 2012 -0700
+
+    Fix TEXTRELs in the ARM asm.
+    
+    Besides imposing a [1;31mperf[mormance penalty at startup in most
+     configurations, these relocations break the dynamic linker for
+     native Fennec, since it does not support them at all.
+    
+    Change-Id: Id5dc768609354ebb4379966eb61a7313e6fd18de
+
+[33mcommit 9e9f5f3d7006255bafdf9fb427d034e2708accd7[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Fri Mar 23 15:50:08 2012 -0400
+
+    New vp8_decode_mb_tokens()
+    
+    This new vp8_decode_mb_tokens() uses a modified version of
+    WebP's GetCoeffs function.  For now, the dequant does not
+    occur in GetCoeffs.
+    Tests showed [1;31mperf[mormance improvements up to 2.5% depending
+    on material.
+    
+    Change-Id: Ia24d78627e16ffee5eb4d777ee8379a9270f07c5
+
+[33mcommit 6a819ce4fe9e4cc6bd9eed1d19ee90602651ddf5[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Mar 14 10:03:39 2012 -0400
+
+    Add motion search skipping in first pass
+    
+    This change added a motion search skipping mechanism similar
+    to what we did in second pass. For a macroblock that is very
+    similar to the macroblock at same location on last frame,
+    we can set its mv to be zero, and skip motion search. This
+    improves first-pass [1;31mperf[mormance for slide shows and video
+    conferencing clips with a slight PSNR loss.
+    
+    Change-Id: Ic73f9ef5604270ddd6d433170091d20361dfe229
+
+[33mcommit 019384f2d365e4265b554e235c7d669b69ef35c0[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Mon Feb 27 17:38:53 2012 -0500
+
+    Only do uv intra-mode evaluation when intra mode is checked
+    
+    When we encode slide-show clips, for the majority of the time,
+    only ZEROMV mode is checked, and all other modes are skipped.
+    This change delayed uv intra-mode evaluation until intra mode is
+    actually checked. This gave big [1;31mperf[mormance gain for slide-show
+    video encoding (2nd pass gain: 18% to 28%). But, this change
+    doesn't help other types of videos.
+    
+    Also, zbin_mode_boost is adjusted in mode-checking loop, which
+    causes bitstream mismatch before/after this change when --best
+    or --good with --cpu-used=0 are used.
+    
+    Change-Id: I582b3e69fd384039994360e870e6e059c36a64cc
+
+[33mcommit fa1a9290e6e7cd0bf0afff5213e73fa5f662a9e2[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Feb 2 14:27:04 2012 -0500
+
+    Allow to skip highest-resolution encoding in multi-resolution encoder
+    
+    Sometimes, a user doesn't have enough bandwidth to send high-resolution
+    (i.e. HD) video even though the camera catches HD video. This change
+    allowed users to skip highest-resolution encoding by setting that level's
+    target bit rate to 0.
+    
+    To test it, modify the following line in vp8_multi_resolution_encoder.c.
+        unsigned int  target_bitrate[NUM_ENCODERS]={1400, 500, 100};
+    To skip the highest-resolution level, change it to
+        unsigned int  target_bitrate[NUM_ENCODERS]={0, 500, 100};
+    To skip the first and second highest resolution levels, change it to
+        unsigned int  target_bitrate[NUM_ENCODERS]={0, 0, 100};
+    
+    This change also fixed a small problem in mapping, which slightly helped
+    quality and [1;31mperf[mormance.
+    
+    Change-Id: I977bae9a9fbfba85c8be4bd5af01539f2b84bc81
+For keyword optim:
+[33mcommit 6b151d436d490dee423a38b42b7bab8832bd60fa[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Fri Jan 27 11:44:01 2012 -0800
+
+    Clarify 'max_sad' usage
+    
+    Depending on implementation the [1;31moptim[mized SAD functions may return early
+    when the calculated SAD exceeds max_sad.
+    
+    Change-Id: I05ce5b2d34e6d45fb3ec2a450aa99c4f3343bf3a
+
+[33mcommit 7989bb7fe74aa1a3e477b2228e32424376c2c5e9[m
+Author: Makoto Kato <makoto.kt@gmail.com>
+Date:   Sun Feb 12 13:57:13 2012 +0900
+
+    Support Android x86 NDK build
+    
+    On Android NDK, rand() is inlined function.  But, on our SSE [1;31moptim[mization,
+    we need symbol for rand()
+    
+    Change-Id: I42ab00e3255208ba95d7f9b9a8a3605ff58da8e1
+
+[33mcommit 8c50a70a9505c3771762d3e4c29d3dca908e34e0[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Feb 9 16:19:10 2012 -0800
+
+    max_sad check is not always implemented
+    
+    As an [1;31moptim[mization some architectures use the max_sad argument to break
+    out early from the SAD. Pass in INT_MAX instead of 0 to prevent this.
+    
+    Change-Id: I653c476834b97771578d63f231233d445388629d
+For keyword regression:
+For keyword speed:
+[33mcommit 52cf4dcaea10f97d25d8a3585704a1e47b384751[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Thu Feb 9 12:37:03 2012 +0200
+
+    Packing bitstream on-the-fly with delayed context updates
+    
+    Produce the token partitions on-the-fly, while processing each MB.
+    Context is updated at the beginning of each frame based on the
+    previoud frame's counters. Optimally encoder outputs partitions in
+    separate buffers. For frame based output, partitions are concatenated
+    internally.
+    
+    Limitations:
+        - enabled just in combination with realtime-only mode
+        - number of encoding threads has to be equal or less than the
+        number of token partitions. For this reason, by default the encoder
+        will do 8 token partitions.
+        - vpxenc supports partition output (-P) just in combination with
+        IVF output format (--ivf)
+    
+    Performance:
+        - Realtime encoder can be up to 13% faster (ARM) depending on the number
+        of threads and bitrate settings. Constant gain over the 5-16 [1;31mspeed[m
+        range.
+        - Token buffer reduced from one frame to 8 MBs
+    
+    Quality:
+        - quality is affected by the delayed context updates. This again
+        dependents on input material, [1;31mspeed[m and bitrate settings. For VC
+        style input the loss seen is up to 0.2dB. If error-resilient=2
+        mode is used than the effect of this change is negligible.
+    
+    Example:
+    ./configure --enable-realtime-only --enable-onthefly-bitpacking
+    ./vpxenc --rt --end-usage=1 --fps=30000/1000 -w 640 -h 480
+    --target-bitrate=1000 --token-parts=3 --static-thresh=2000
+    --ivf -P -t 4 -o strm.ivf tanya_640x480.yuv
+    
+    Change-Id: I127295cb85b835fc287e1c0201a67e378d025d76
+For keyword quality:
+[33mcommit cb265a497d05416572343b345a01ffa048aefda6[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Mar 27 16:28:41 2012 -0700
+
+    FTFY: an automated style corrector
+    
+    This is a utility for applying a limited amount of style correction on
+    a change-by-change basis. Rather than a big-bang reformatting, this
+    tool attempts to only correct the style in diff hunks that you touch.
+    This should make the cosmetic changes small enough that we can mix them
+    with functional changes without destroying the diffs, and there's an
+    escape hatch for separating the reformatting to a second commit for
+    purists and cases where it hurts readability.
+    
+    At this time, the script requires a clean working tree, so run it after
+    you've commited your changes. Run without arguments, the style
+    corrections will be applied and left unstaged in your working copy. It
+    also supports the --amend option, which will automatically amend your
+    HEAD with the corrected style, and --commit, which will create a new
+    change dependent on your HEAD that contains only the whitespace changes.
+    
+    There are a number of ways this could be applied in an automated manner
+    if this proves to be useful, either on a project-wide or per-user
+    basis. This doesn't buy anything in terms of real code [1;31mquality[m, the
+    intent here would be to keep formatting nits out of review comments in
+    favor of more meaningful ones and help people whose habitual style
+    doesn't match the baseline.
+    
+    Requires astyle[1] 1.24 or newer.
+      [1]: http://astyle.sourceforge.net/
+    
+    Change-Id: I2fb3434de8479655e9811f094029bb90e5d757e1
+
+[33mcommit 52cf4dcaea10f97d25d8a3585704a1e47b384751[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Thu Feb 9 12:37:03 2012 +0200
+
+    Packing bitstream on-the-fly with delayed context updates
+    
+    Produce the token partitions on-the-fly, while processing each MB.
+    Context is updated at the beginning of each frame based on the
+    previoud frame's counters. Optimally encoder outputs partitions in
+    separate buffers. For frame based output, partitions are concatenated
+    internally.
+    
+    Limitations:
+        - enabled just in combination with realtime-only mode
+        - number of encoding threads has to be equal or less than the
+        number of token partitions. For this reason, by default the encoder
+        will do 8 token partitions.
+        - vpxenc supports partition output (-P) just in combination with
+        IVF output format (--ivf)
+    
+    Performance:
+        - Realtime encoder can be up to 13% faster (ARM) depending on the number
+        of threads and bitrate settings. Constant gain over the 5-16 speed
+        range.
+        - Token buffer reduced from one frame to 8 MBs
+    
+    Quality:
+        - [1;31mquality[m is affected by the delayed context updates. This again
+        dependents on input material, speed and bitrate settings. For VC
+        style input the loss seen is up to 0.2dB. If error-resilient=2
+        mode is used than the effect of this change is negligible.
+    
+    Example:
+    ./configure --enable-realtime-only --enable-onthefly-bitpacking
+    ./vpxenc --rt --end-usage=1 --fps=30000/1000 -w 640 -h 480
+    --target-bitrate=1000 --token-parts=3 --static-thresh=2000
+    --ivf -P -t 4 -o strm.ivf tanya_640x480.yuv
+    
+    Change-Id: I127295cb85b835fc287e1c0201a67e378d025d76
+
+[33mcommit fa1a9290e6e7cd0bf0afff5213e73fa5f662a9e2[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Feb 2 14:27:04 2012 -0500
+
+    Allow to skip highest-resolution encoding in multi-resolution encoder
+    
+    Sometimes, a user doesn't have enough bandwidth to send high-resolution
+    (i.e. HD) video even though the camera catches HD video. This change
+    allowed users to skip highest-resolution encoding by setting that level's
+    target bit rate to 0.
+    
+    To test it, modify the following line in vp8_multi_resolution_encoder.c.
+        unsigned int  target_bitrate[NUM_ENCODERS]={1400, 500, 100};
+    To skip the highest-resolution level, change it to
+        unsigned int  target_bitrate[NUM_ENCODERS]={0, 500, 100};
+    To skip the first and second highest resolution levels, change it to
+        unsigned int  target_bitrate[NUM_ENCODERS]={0, 0, 100};
+    
+    This change also fixed a small problem in mapping, which slightly helped
+    [1;31mquality[m and performance.
+    
+    Change-Id: I977bae9a9fbfba85c8be4bd5af01539f2b84bc81
+For keyword pass:
+[33mcommit 3e32105d63c0a15198b0b4e1172c1c934e1c5b7d[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Fri May 4 13:32:43 2012 +0300
+
+    Fix multi-resolution threaded encoding
+    
+    mb_row and mb_col was not [1;31mpass[med to vp8cx_encode_inter_macroblock in
+    threaded encoding.
+    
+    Change-Id: If4321cc59bf91e991aa31e772f882ed5f2bbb201
+
+[33mcommit faed00d84480b2a2a64008d2bc5e43d09f48bf03[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Fri Apr 27 11:06:14 2012 -0700
+
+    Reset output frames counter for second [1;31mpass[m
+    
+    The frame counter was not being reset at the start of
+    the first [1;31mpass[m.
+    
+    Change-Id: I2ef7c6edf027e43f83f470c52cbcf95bf152e430
+
+[33mcommit 9ed1b2f09e9142687d4762d0c0906ebd9bfd167b[m
+Merge: 56e8485c8 6a819ce4f
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Mar 16 14:02:51 2012 -0700
+
+    Merge "Add motion search skipping in first [1;31mpass[m"
+
+[33mcommit 6a819ce4fe9e4cc6bd9eed1d19ee90602651ddf5[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Mar 14 10:03:39 2012 -0400
+
+    Add motion search skipping in first [1;31mpass[m
+    
+    This change added a motion search skipping mechanism similar
+    to what we did in second [1;31mpass[m. For a macroblock that is very
+    similar to the macroblock at same location on last frame,
+    we can set its mv to be zero, and skip motion search. This
+    improves first-[1;31mpass[m performance for slide shows and video
+    conferencing clips with a slight PSNR loss.
+    
+    Change-Id: Ic73f9ef5604270ddd6d433170091d20361dfe229
+
+[33mcommit aabae97e57378356cdc8c94af5e369f8363b9831[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Feb 29 08:24:53 2012 -0500
+
+    vpxenc: fix time and fps calculation in 2-[1;31mpass[m encoding
+    
+    When we do 2-[1;31mpass[m encoding, elapsed time is accumulated through
+    whole 2-[1;31mpass[m process, which gives incorrect time and fps results
+    for second [1;31mpass[m. This change fixed that by resetting the time
+    accumulator for second [1;31mpass[m.
+    
+    Change-Id: Ie6cbf0d0e66e6874e7071305e253c6267529cf20
+
+[33mcommit 019384f2d365e4265b554e235c7d669b69ef35c0[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Mon Feb 27 17:38:53 2012 -0500
+
+    Only do uv intra-mode evaluation when intra mode is checked
+    
+    When we encode slide-show clips, for the majority of the time,
+    only ZEROMV mode is checked, and all other modes are skipped.
+    This change delayed uv intra-mode evaluation until intra mode is
+    actually checked. This gave big performance gain for slide-show
+    video encoding (2nd [1;31mpass[m gain: 18% to 28%). But, this change
+    doesn't help other types of videos.
+    
+    Also, zbin_mode_boost is adjusted in mode-checking loop, which
+    causes bitstream mismatch before/after this change when --best
+    or --good with --cpu-used=0 are used.
+    
+    Change-Id: I582b3e69fd384039994360e870e6e059c36a64cc
+
+[33mcommit 9e50ed7f27b8d3185b0891ae636db01e62239226[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed Feb 15 12:39:38 2012 -0800
+
+    vpxenc: initial implementation of multistream support
+    
+    Add the ability to specify multiple output streams on the command line.
+    Streams are delimited by --, and most parameters inherit from previous
+    streams.
+    
+    In this implementation, resizing streams is still not supported. It
+    does not make use of the new multistream support in the encoder either.
+    Two [1;31mpass[m support runs all streams independently, though it's
+    theoretically possible that we could combine first[1;31mpass[m runs in the
+    future. The logic required for this is too tricky to do as part of this
+    initial implementation. This is mostly an effort to get the parameter
+    [1;31mpass[ming and independent streams working from the application's
+    perspective, and a later commit will add the rescaling and
+    multiresolution support.
+    
+    Change-Id: Ibf18c2355f54189fc91952c734c899e5c072b3e0
+
+[33mcommit a910049aea5e2be97b232dbdd7700d078eb7ecd0[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Aug 19 14:06:00 2011 -0400
+
+    New RTCD implementation
+    
+    This is a proof of concept RTCD implementation to replace the current
+    system of nested includes, prototypes, INVOKE macros, etc. Currently
+    only the decoder specific functions are implemented in the new system.
+    Additional functions will be added in subsequent commits.
+    
+    Overview:
+      RTCD "functions" are implemented as either a global function pointer
+      or a macro (when only one eligible specialization available).
+      Functions which have RTCD specializations are listed using a simple
+      DSL identifying the function's base name, its prototype, and the
+      architecture extensions that specializations are available for.
+    
+    Advantages over the old system:
+      - No INVOKE macros. A call to an RTCD function looks like an ordinary
+        function call.
+      - No need to [1;31mpass[m vtables around.
+      - If there is only one eligible function to call, the function is
+        called directly, rather than indirecting through a function pointer.
+      - Supports the notion of "required" extensions, so in combination with
+        the above, on x86_64 if the best function available is sse2 or lower
+        it will be called directly, since all x86_64 platforms implement
+        sse2.
+      - Elides all references to functions which will never be called, which
+        could reduce binary size. For example if sse2 is required and there
+        are both mmx and sse2 implementations of a certain function, the
+        code will have no link time references to the mmx code.
+      - Significantly easier to add a new function, just one file to edit.
+    
+    Disadvantages:
+      - Requires global writable data (though this is not a new requirement)
+      - 1 new generated source file.
+    
+    Change-Id: Iae6edab65315f79c168485c96872641c5aa09d55

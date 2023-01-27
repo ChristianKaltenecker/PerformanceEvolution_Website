@@ -1,0 +1,230 @@
+Searching between v0.5.2 and v0.6.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,compression
+Keywords: slow fast time perf optim regression quality compression
+For keyword slow:
+commit 5db62dcc9d386579609540cdf8869e95ad334bbd
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Wed Nov 9 14:04:09 2016 +0100
+
+    Fixes: (#468)
+    
+    * fix slow-down after a long copy (q10-11)
+     * more thorough hashing for long ranges (q10-11)
+     * minor documentation fixes
+     * bazel.io -> bazel.build
+For keyword fast:
+For keyword time:
+commit 1ff78b877f0138064f0a0513267e8355affd4be8
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Fri Mar 10 16:01:49 2017 +0100
+
+    Prevent fuzzer timeouts on compression-bomb samples (#522)
+    
+    * Prevent fuzzer timeouts on compression-bomb samples.
+    
+    * Fix fuzzer lanucher
+
+commit f62cd2bcd294fa1562034acd4c6cde028744191e
+Author: jneb <jneb@users.noreply.github.com>
+Date:   Tue Dec 20 14:41:47 2016 +0100
+
+    brotlidump.py: disassemble brotli file (revisited) (#314)
+    
+    * Create brotlidump.py
+    
+    Sorry, I am a newbie. I couldn't find my file anymore when I wanted to edit it. Hope I don't waste your time.
+    
+    * Fixed a bug where it couldn't read its own compression.
+    
+    The problem was that a prefix code ending with a 16 "repeat" didn't realize the table was full already.
+    Also minor bug fixes, comments and stuff.
+    
+    * Major refactoring
+    
+    Rewrote almost everything.
+    Now can dump its own compression.
+    
+    * Now more or less complete
+    
+    Appears to handle all files completely (including metablock data).
+    Used as inspiration for the the hex example (see makehexexample.py)
+
+commit 9223fd4d8d85faf1f3c29a5a63903146d01894d0
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Wed Sep 21 15:18:35 2016 +0200
+
+    Update bro tool:
+     * use new decoder API
+     * copy permissions and modification time to output file
+For keyword perf:
+For keyword optim:
+commit 27d94590a2e77644416eb78ada8d0433f28efdaf
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Thu Dec 22 13:03:28 2016 +0100
+
+    Research (#491)
+    
+    * add advanced mode for optimal references generator
+     * fix #489
+    
+    Thanks to Ivan Nikulin for working on it.
+
+commit f20b3eeb2f401fc4b87488ca22ca32729a6dec20
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Wed Sep 21 15:05:12 2016 +0200
+
+    Update decoder:
+     * use BROTLI_MAX_DISTANCE_BITS instead of magic constant
+     * introduce BROTLI_DEPRECATED
+     * move BROTLI_RESTRICT to common/port.h
+     * promote reg_t to dec/port.h
+     * remove deprecated decoder API
+     * more optimistic ring-buffer allocation
+     * fix MSVC warnings
+     * fix (not tested) for ARM 64-bit RBIT
+For keyword regression:
+For keyword quality:
+commit 7e347a7c849db05acad20304f5e9b29071ecec7c
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Thu Dec 22 15:55:05 2016 +0100
+
+    Update encoder (#492)
+    
+    * fix comment position in `context.h`
+     * fix typo in internal quality constant name
+     * deduplicate `BuildMetaBlockGreedy` code
+     * simplify aggregation in `ChooseContextMap`
+
+commit 0a63f99db9eeb8a15dc3941b96802141b1993912
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Wed Sep 21 17:20:36 2016 +0200
+
+    Update encoder
+     * move `common/port.h` to `includes/port.h`
+     * replace magic more magic numbers with constants
+     * artificially limit window size to 2^18 for quality 0 and 1
+     * use fixed shifts for quality 0 and 1 hashes
+     * removed `BrotliEncoderWriteMetadata`
+     * added `BROTLI_OPERATION_EMIT_METADATA` instead
+     * deprecated low-level API
+     * fixed MSVC warnings
+For keyword compression:
+commit 8a06e02935abadcfff46099c43c879a677d56280
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Mar 21 16:08:23 2017 +0100
+
+    Better compression (#523)
+    
+    Better compression:
+     * use more complex content modeling on 1MiB+ files
+
+commit 1ff78b877f0138064f0a0513267e8355affd4be8
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Fri Mar 10 16:01:49 2017 +0100
+
+    Prevent fuzzer timeouts on compression-bomb samples (#522)
+    
+    * Prevent fuzzer timeouts on compression-bomb samples.
+    
+    * Fix fuzzer lanucher
+
+commit f62cd2bcd294fa1562034acd4c6cde028744191e
+Author: jneb <jneb@users.noreply.github.com>
+Date:   Tue Dec 20 14:41:47 2016 +0100
+
+    brotlidump.py: disassemble brotli file (revisited) (#314)
+    
+    * Create brotlidump.py
+    
+    Sorry, I am a newbie. I couldn't find my file anymore when I wanted to edit it. Hope I don't waste your time.
+    
+    * Fixed a bug where it couldn't read its own compression.
+    
+    The problem was that a prefix code ending with a 16 "repeat" didn't realize the table was full already.
+    Also minor bug fixes, comments and stuff.
+    
+    * Major refactoring
+    
+    Rewrote almost everything.
+    Now can dump its own compression.
+    
+    * Now more or less complete
+    
+    Appears to handle all files completely (including metablock data).
+    Used as inspiration for the the hex example (see makehexexample.py)
+
+commit 0ee416139f47e656f936e724dee1a332aa0e393d
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Mon Dec 12 10:27:13 2016 +0100
+
+    Update python brotli wrapper (#479)
+    
+    * Update python brotli wrapper
+     * release GIL on CPU intensive blocks, fixes #476
+     * use BrotliDecoderTakeOutput (less memory, less memcpy)
+    
+    * Python: Convert bro.py tests to unittest style (#478)
+    
+    * Create unittest-style tests for `bro.py` decompression and compression
+    * Delete old tests for `bro.py`
+    * Update test method generation to properly create a Cartesian product
+      of iterables using `itertools.product`
+    
+    * Update python brotli wrapper
+     * release GIL on CPU intensive blocks, fixes #476
+     * use BrotliDecoderTakeOutput (less memory, less memcpy)
+
+commit 4a60128c1339f74c13f0c8ae27a5dfe426b14208
+Author: Alex Nicksay <nicksay@gmail.com>
+Date:   Fri Dec 9 07:44:05 2016 -0500
+
+    Python: Convert bro.py tests to unittest style (#478)
+    
+    * Create unittest-style tests for `bro.py` decompression and compression
+    * Delete old tests for `bro.py`
+    * Update test method generation to properly create a Cartesian product
+      of iterables using `itertools.product`
+
+commit a260b6ba73e0b0eab6d7e7385dbaa476d36f30ab
+Author: Alex Nicksay <nicksay@gmail.com>
+Date:   Mon Oct 31 08:24:01 2016 -0400
+
+    Python: Add tests for streamed compression (#458)
+    
+    Progress on #191
+
+commit 5632315d3568b4bba3966a69c195adeabaf2fc0b
+Author: Alex Nicksay <nicksay@gmail.com>
+Date:   Mon Oct 24 07:28:56 2016 -0400
+
+    Python: Support streamed compression with the Compressor object (#448)
+    
+    This adds `flush` and `finish` methods to the `Compressor`
+    object in the extension module, renames the `compress` method to
+    `process`, and updates that method to only process data.  Now,
+    one or more `process` calls followed by a `finish` call will be
+    equivalent to a module-level `compress` call.
+    
+    Note: To maximize the compression efficiency (and match
+    underlying Brotli behavior, the `Compressor` object `process`
+    method does not guarantee all input is immediately written to
+    output. To ensure immediate output, call `flush` to manually
+    flush the compression buffer.  Extraneous flushing can increase
+    the size, but may be required when processing streaming data.
+    
+    Progress on #191
+
+commit 595a5246b4b2ab8ddb8618bb3f11080898d9e180
+Author: Alex Nicksay <nicksay@google.com>
+Date:   Thu Sep 29 15:14:16 2016 -0400
+
+    Python: Create an extension Compressor object
+    
+    - Create a `Compressor` object in the extension module
+    - Move the `compress` method into the native module and use
+      the new `Compressor` object to do the compression
+    
+    Note: This does not change the module-level Python API.  The
+    `Compressor` object will not be publicly exposed until its
+    methods have stabilized.

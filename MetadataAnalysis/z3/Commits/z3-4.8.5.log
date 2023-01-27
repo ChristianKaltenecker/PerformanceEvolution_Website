@@ -1,0 +1,347 @@
+Searching between z3-4.8.4 and Z3-4.8.5
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: FP,LRA,proof
+Keywords: slow fast time perf optim regression speed FP LRA proof
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit 9bb0c882faca510165a546e1a7ed2024d2470894[m
+Author: Louis Gesbert <louis.gesbert@ocamlpro.com>
+Date:   Tue May 21 17:44:19 2019 +0200
+
+    OCaml API build: provide static linking options by default
+    
+    when --staticlib is enabled, the linker will still choose to
+    dynamically link upon encountering `-lz3` when generating an
+    executable through OCaml.
+    
+    The interaction between the underlying C linker and OCaml make it very
+    hard to choose the static version instead. The present patch works
+    around this issue by copying `libz3.a` to `libz3-static.a`, and using
+    `-lz3-static` instead: the static version is chosen since no dynamic
+    one is found.
+    
+    One can get back to dynamically linking by compiling without
+    `--staticlib`, or switching back to `-lz3`, but will in the latter
+    case run into the same problem with specifying the option; if that
+    needs to be made easier, we could provide two versions of the `cm(x)a`
+    which differ only by their linking options.
+    
+    One last solution would be to remove `lz3` altogether from the linking
+    options included in the cm(x)a, requiring either `-lz3` or
+    `-lz3-static` to be specified at link [1;31mtime[m. Simpler and most flexible,
+    but requires an update of all users that link with the Z3 ml api...
+
+[33mcommit cdc89b6193ef219e53cf9293528a8b083f95135d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 24 12:57:08 2019 -0700
+
+    add get-info :rlimit option to cmd-context to facilitate [1;31mtime[mout based repros
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2f33bafd5a7696a57a04555bc6521063f069ef59[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Thu Feb 21 14:59:31 2019 +0000
+
+    stopwatches: fix a few places that would call start/stop multiple [1;31mtime[ms
+
+[33mcommit 85162d90d1c68838f150704c672e82a457922e54[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Thu Feb 21 13:57:38 2019 +0000
+
+    simplify [1;31mtime[mr.h
+
+[33mcommit a76c0fbbfbb7e0e80c5d491da99fb6b56f408139[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Thu Feb 21 11:49:41 2019 +0000
+
+    simplify [1;31mtime[mout mechanism and fix race conditions there
+
+[33mcommit f3cd7d646d021a02d6d1dbc6a419ec22668b5158[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Thu Feb 21 10:42:42 2019 +0000
+
+    further simplifications to scoped_[1;31mtime[mr
+
+[33mcommit 24dfdfe9bc154c370b7ebaade8904c3018415012[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Feb 9 16:06:02 2019 -0800
+
+    disable fixes for #2128 and related as it breaks model evaluation [1;31mtime[m in regressions, set longer delay for inprocessing in sat solver, report stats
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b17bb60915897c572aa495416c2bc59cb57d00ee[m
+Merge: 9cf99e26a 73f680637
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Feb 5 09:09:09 2019 +0100
+
+    Merge pull request #2124 from nunoplopes/master
+    
+    rewrite scoped_[1;31mtime[mr in C++11 way
+
+[33mcommit 73f6806371e494cab008e6c226d969c1e4df3376[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Feb 4 17:42:27 2019 +0000
+
+    rewrite scoped_[1;31mtime[mr in C++11 way
+    the code is much smaller and reused across platforms
+    I see a small speedup on linux as well
+
+[33mcommit e954f59052fd2aee193527a0503a8b5a8575343b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jan 14 13:50:17 2019 -0800
+
+    ensure that solver objects have [1;31mtime[mout/rlimit/ctrl-c exposed as possible parameters
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 59b0b56b421af33ba02e9662a19c3d69ef4bf371[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jan 10 12:08:38 2019 -0800
+
+    add checkpoints to blocked clause elimination to handle [1;31mtime[mouts, #2080
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 83e3a79bd1cf925324bb63a214da7d78ed1653f7[m
+Author: Huanyi Chen <huanyi-chen@hotmail.com>
+Date:   Fri Jan 4 17:26:00 2019 -0500
+
+    Remove testcase that takes long [1;31mtime[m to finish
+For keyword perf:
+[33mcommit 7fa9768c365dc2a8464df8ec96a934d847a085b8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Feb 1 09:16:46 2019 -0800
+
+    improving drat output [1;31mperf[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f7746e22848ea318a8a094e30a002e022aef1d85[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jan 23 16:58:00 2019 -0800
+
+    address [1;31mperf[m #2098
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword optim:
+[33mcommit 0c0e79a937c5dcd6d8bee66e2a640aaeeeef0f40[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 3 20:33:12 2019 -0800
+
+    add logging to lar-solver to capture state for unbounded [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 19e7b75536aa1dc311147f6677aab5efb016f867[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 3 19:31:51 2019 -0800
+
+    set status [1;31moptim[mal also on object
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0aafa8b7ce3adb82125d72c10370151e35a2fd18[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Feb 18 15:52:42 2019 +0100
+
+    [1;31moptim[mize binary output
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8c085f1a185087c82075a963e31f0f62acf40c94[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Feb 16 21:26:29 2019 -0800
+
+    removing unused and fixing suspect [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit ea778eefb2fdba2102f8c1e6064b4e7968360822[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Feb 16 20:58:30 2019 -0800
+
+    skip [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 6c464f8aec5dcbf3d22f33c17d8bbc481a7aeba6[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Feb 1 14:59:36 2019 -0800
+
+    add assert_and_track to [1;31moptim[mize for #2116
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword regression:
+[33mcommit 25c93410b1ecaea4a3cfeeb6ec3ab3b2f2649dce[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed May 29 07:24:42 2019 -0700
+
+    add #2298 to [1;31mregression[m/example
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f99384c6a36e564c81fd3c70b1dd034b86810ede[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon May 27 04:17:43 2019 -0700
+
+    fix nightly [1;31mregression[m from solve-eqs context solver addition
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0a0b0a5cc016d37eeb1111ce9b0d05d93b8a25ba[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 24 13:22:35 2019 -0700
+
+    fix python doc [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 32164b6c7f307b93118fa257bebbd0db6ea3ee56[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 24 13:10:11 2019 -0700
+
+    fix python doc [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 6c331279ae3eb7d0b9c6346ab5a221d90c0dd3ef[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 3 13:22:12 2019 -0800
+
+    fix array [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e51b5fd99c10319584230d13e57f9bbe6e0fbd18[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 3 13:10:11 2019 -0800
+
+    fix t154 [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 7399f78dfd2c38fc50170f3560811bc54b917859[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 3 12:40:59 2019 -0800
+
+    disable model compression for [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit cc216f8cc3c05dcf267a913395be30f893e14f48[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Feb 19 21:24:44 2019 +0100
+
+    fix [1;31mregression[ms breaking build
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 24dfdfe9bc154c370b7ebaade8904c3018415012[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Feb 9 16:06:02 2019 -0800
+
+    disable fixes for #2128 and related as it breaks model evaluation time in [1;31mregression[ms, set longer delay for inprocessing in sat solver, report stats
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b63a0e31d3e2162049d9a424cc5be2bb10f20d26[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jan 7 16:30:04 2019 -0800
+
+    fix [1;31mregression[m from #2061 breaking #2074
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+[33mcommit 73f6806371e494cab008e6c226d969c1e4df3376[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Feb 4 17:42:27 2019 +0000
+
+    rewrite scoped_timer in C++11 way
+    the code is much smaller and reused across platforms
+    I see a small [1;31mspeed[mup on linux as well
+
+[33mcommit b8d18c6c6d150ad73747e90ccaa272b66a1f7b89[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Jan 11 20:52:19 2019 -0800
+
+    [1;31mspeed[m-up handling of cnf input to inc_sat_solver
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword FP:
+[33mcommit c611fbeaee1ac8587e0fd6e6aeda1736506628c2[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Tue Apr 16 12:50:04 2019 +0100
+
+    Fix RoundingMode value generation in [1;31mFP[mA theory. Fixes #2239.
+
+[33mcommit 699834261e6e8f70d3928409f6a7fde22f34d2ee[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Feb 22 12:55:01 2019 +0000
+
+    Fix translation of [1;31mFP[mA numerals in ast_smt_pp. Fixes #2145.
+
+[33mcommit 598fc810b57462552f69f69110fbc0930d772d8d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Feb 20 15:34:47 2019 +0100
+
+    adding [1;31mFP[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword LRA:
+For keyword proof:
+[33mcommit fc4c162e31a0898c87cb603a60adf1f0d40c81bb[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu May 30 15:59:28 2019 -0700
+
+    add clause [1;31mproof[m module, small improvements to bapa
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f128398bf9f2405d6e42e822ff1fe3df182ccee5[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu May 30 15:57:19 2019 -0700
+
+    add clause [1;31mproof[m module, small improvements to bapa
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 48fc3d752ef56dec5c165b2e863f89aa81caeb1e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu May 30 15:49:19 2019 -0700
+
+    add clause [1;31mproof[m module, small improvements to bapa
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 893e60459369e1b781c3d99015c03d2089dd8c5e[m
+Author: Nils Becker <nbecker@student.ethz.ch>
+Date:   Sat May 11 17:34:53 2019 +0200
+
+    generate rewrite [1;31mproof[m object early on to avoid logging equality term twice
+
+[33mcommit 4c799c144a2f7554b449dc3a0ad6432e4a348c3f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Feb 22 11:14:20 2019 +0100
+
+    fix gc to not remove ternary clauses that are on assignment trail. This addresses issue with drat [1;31mproof[ms that don't pass drat-trim due to deletion during gc, but use in conflicts
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit bfb554c0b8e87b094ecde74196061ef1744dc150[m
+Author: nilsbecker <nbecker@student.ethz.ch>
+Date:   Mon Jan 14 21:28:06 2019 +0100
+
+    logging sorts of quantified variables
+    logging [1;31mproof[m objects seperately form regular terms
+    renaming inst-possible -> inst-discovered
+
+[33mcommit 0b8dbf28545eaea8820715224b65ea371e892dad[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jan 12 00:30:21 2019 -0800
+
+    fixing drat [1;31mproof[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>

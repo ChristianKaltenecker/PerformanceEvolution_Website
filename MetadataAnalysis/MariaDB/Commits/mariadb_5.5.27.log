@@ -1,0 +1,3164 @@
+Searching between mariadb-5.5.23 and mariadb-5.5.27
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: delayedInnoDBflush,delayed,InnoDB,flush,dsync
+Keywords: slow fast time perf optim regression speed delayedInnoDBflush delayed InnoDB flush dsync
+For keyword slow:
+commit 36ed2c39713d37ddb9885933ae4116d1d68cad9d
+Author: unknown <knielsen@knielsen-hq.org>
+Date:   Thu Jun 21 11:52:54 2012 +0200
+
+    MDEV-359: Server crash when SET GLOBAL rpl_semi_sync_master_enabled = OFF
+    
+    The semisync code does a fast-but-unsafe check for enabled or not without lock,
+    followed by a slow-but-safe check under lock. However, if the slow check failed,
+    the code still referenced not valid data (in an assert() expression), causing a
+    crash.
+    
+    Fixed by not running the incorrect assert when semisync is disabled.
+
+commit ce7a3b43c80f8e6452713b799d5cae98af95bb7f
+Author: Vladislav Vaintroub <wlad@montyprogram.com>
+Date:   Fri Jun 8 19:15:01 2012 +0200
+
+    LP1008334 : Speedup specific datetime queries that got slower with introduction of microseconds in 5.3
+    
+    - Item::get_seconds() now skips decimal arithmetic, if decimals is 0. This significantly speeds up from_unixtime() if no fractional part is passed.
+    - replace sprintfs used to format temporal values  by hand-coded formatting
+    
+    Query1 (original query in the bug report)
+    BENCHMARK(10000000,DATE_SUB(FROM_UNIXTIME(RAND() * 2147483648), INTERVAL (FLOOR(1 + RAND() * 365)) DAY))
+    
+    Query2 (Variation of query1 that does not use fractional part in FROM_UNIXTIME parameter)
+    BENCHMARK(10000000,DATE_SUB(FROM_UNIXTIME(FLOOR(RAND() * 2147483648)), INTERVAL (FLOOR(1 + RAND() * 365)) DAY))
+    
+    Prior to the patch, the runtimes were (32 bit compilation/AMD machine)
+    Query1: 41.53 sec
+    Query2: 23.90 sec
+    
+    With the patch, the runtimes are
+    Query1: 32.32 sec (speed up due to removing sprintf)
+    Query2: 12.06 sec (speed up due to skipping decimal arithmetic)
+
+commit c81b9faebd22c0dc1890fcd9dca8482c4ca0fb6d
+Author: Vladislav Vaintroub <wlad@montyprogram.com>
+Date:   Tue May 8 12:38:22 2012 +0200
+
+    MDEV-262 : log_state occationally fails in buildbot.
+    
+    The failures are  missing entries in the slow query log.  The reason for the failure  are sleep() calls  with short duration 10ms, which is less than the default system timer resolution for various WaitForXXXObject functions  (15.6 ms) and thus can't work reliably.
+    The fix is to make sleeps tiny bit longer (20ms from 10ms) in the test.
+
+commit 78afdb713618693107ba89b2cd5d551854ffa9d1
+Author: Venkata Sidagam <venkata.sidagam@oracle.com>
+Date:   Mon May 7 16:46:44 2012 +0530
+
+    Bug #11754178 45740: MYSQLDUMP DOESN'T DUMP GENERAL_LOG AND SLOW_QUERY
+                         CAUSES RESTORE PROBLEM
+    Problem Statement:
+    ------------------
+    mysqldump is not having the dump stmts for general_log and slow_log
+    tables. That is because of the fix for Bug#26121. Hence, after
+    dropping the mysql database, and applying the dump by enabling the
+    logging, "'general_log' table not found" errors are logged into the
+    server log file.
+    
+    Analysis:
+    ---------
+    As part of the fix for Bug#26121, we skipped the dumping of tables
+    for general_log and slow_log, because the data dump of those tables
+    are taking LOCKS, which is not allowed for log tables.
+    
+    Fix:
+    ----
+    We came up with an approach that instead of taking both meta data
+    and data dump information for those tables, take only the meta data
+    dump which doesn't need LOCKS.
+    As part of fixing the issue we came up with below algorithm.
+    Design before fix:
+    1) mysql database is having tables like db, event,... general_log,
+       ... slow_log...
+    2) Skip general_log and slow_log while preparing the tables list
+    3) Take the TL_READ lock on tables which are present in the table
+       list and do 'show create table'.
+    4) Release the lock.
+    
+    Design with the fix:
+    1) mysql database is having tables like db, event,... general_log,
+       ... slow_log...
+    2) Skip general_log and slow_log while preparing the tables list
+    3) Explicitly call the 'show create table' for general_log and
+       slow_log
+    3) Take the TL_READ lock on tables which are present in the table
+       list and do 'show create table'.
+    4) Release the lock.
+    
+    While taking the meta data dump for general_log and slow_log the
+    "CREATE TABLE" is replaced with "CREATE TABLE IF NOT EXISTS".
+    This is because we skipped "DROP TABLE" for those tables,
+    "DROP TABLE" fails for these tables if logging is enabled.
+    Customer is applying the dump by enabling logging so, if the dump
+    has "DROP TABLE" it will fail. Hence, removed the "DROP TABLE"
+    stmts for those tables.
+    
+    After the fix we could observe "Table 'mysql.general_log'
+    doesn't exist" errors initially that is because in the customer
+    scenario they are dropping the mysql database by enabling the
+    logging, Hence, those errors are expected. Once we apply the
+    dump which is taken before the "drop database mysql", the errors
+    will not be there.
+    
+    client/mysqldump.c:
+      In get_table_structure() added code to skip the DROP TABLE stmts for general_log
+      and slow_log tables, because when logging is enabled those stmts will fail. And
+      replaced CREATE TABLE with CREATE IF NOT EXISTS for those tables, just to make
+      sure CREATE stmt for those tables doesn't fail since we removed DROP stmts for
+      those tables.
+      In dump_all_tables_in_db() added code to call get_table_structure() for
+      general_log and slow_log tables.
+    mysql-test/r/mysqldump.result:
+      Added a test as part of fix for Bug #11754178
+    mysql-test/t/mysqldump.test:
+      Added a test as part of fix for Bug #11754178
+
+commit 3b961d5daddb9c352b911fb8301140dea8c5774a
+Author: Venkata Sidagam <venkata.sidagam@oracle.com>
+Date:   Fri May 4 18:33:34 2012 +0530
+
+    Bug #11754178 45740: MYSQLDUMP DOESN'T DUMP GENERAL_LOG AND SLOW_QUERY
+                         CAUSES RESTORE PROBLEM
+    Problem Statement:
+    ------------------
+    mysqldump is not having the dump stmts for general_log and slow_log
+    tables. That is because of the fix for Bug#26121. Hence, after
+    dropping the mysql database, and applying the dump by enabling the
+    logging, "'general_log' table not found" errors are logged into the
+    server log file.
+    
+    Analysis:
+    ---------
+    As part of the fix for Bug#26121, we skipped the dumping of tables
+    for general_log and slow_log, because the data dump of those tables
+    are taking LOCKS, which is not allowed for log tables.
+    
+    Fix:
+    ----
+    We came up with an approach that instead of taking both meta data
+    and data dump information for those tables, take only the meta data
+    dump which doesn't need LOCKS.
+    As part of fixing the issue we came up with below algorithm.
+    Design before fix:
+    1) mysql database is having tables like db, event,... general_log,
+       ... slow_log...
+    2) Skip general_log and slow_log while preparing the tables list
+    3) Take the TL_READ lock on tables which are present in the table
+       list and do 'show create table'.
+    4) Release the lock.
+    
+    Design with the fix:
+    1) mysql database is having tables like db, event,... general_log,
+       ... slow_log...
+    2) Skip general_log and slow_log while preparing the tables list
+    3) Explicitly call the 'show create table' for general_log and
+       slow_log
+    3) Take the TL_READ lock on tables which are present in the table
+       list and do 'show create table'.
+    4) Release the lock.
+    
+    While taking the meta data dump for general_log and slow_log the
+    "CREATE TABLE" is replaced with "CREATE TABLE IF NOT EXISTS".
+    This is because we skipped "DROP TABLE" for those tables,
+    "DROP TABLE" fails for these tables if logging is enabled.
+    Customer is applying the dump by enabling logging so, if the dump
+    has "DROP TABLE" it will fail. Hence, removed the "DROP TABLE"
+    stmts for those tables.
+    
+    After the fix we could observe "Table 'mysql.general_log'
+    doesn't exist" errors initially that is because in the customer
+    scenario they are dropping the mysql database by enabling the
+    logging, Hence, those errors are expected. Once we apply the
+    dump which is taken before the "drop database mysql", the errors
+    will not be there.
+    
+    client/mysqldump.c:
+      In get_table_structure() added code to skip the DROP TABLE stmts for general_log
+      and slow_log tables, because when logging is enabled those stmts will fail. And
+      replaced CREATE TABLE with CREATE IF NOT EXISTS for those tables, just to make
+      sure CREATE stmt for those tables doesn't fail since we removed DROP stmts for
+      those tables.
+      In dump_all_tables_in_db() added code to call get_table_structure() for
+      general_log and slow_log tables.
+    mysql-test/r/mysqldump.result:
+      Added a test as part of fix for Bug #11754178
+    mysql-test/t/mysqldump.test:
+      Added a test as part of fix for Bug #11754178
+For keyword fast:
+commit 63f6c4e8fcdba8fe47d7c7592c31b5c2549daa3a
+Author: unknown <knielsen@knielsen-hq.org>
+Date:   Thu Aug 30 10:53:49 2012 +0200
+
+    MDEV-381: fdatasync() does not correctly flush growing binlog file.
+    
+    When we append data to the binlog file, we use fdatasync() to ensure
+    the data gets to disk so that crash recovery can work.
+    
+    Unfortunately there seems to be a bug in ext3/ext4 on linux, so that
+    fdatasync() does not correctly sync all data when the size of a file
+    is increased. This causes crash recovery to not work correctly (it
+    loses transactions from the binlog).
+    
+    As a work-around, use fsync() for the binlog, not fdatasync(). Since
+    we are increasing the file size, (correct) fdatasync() will most
+    likely not be faster than fsync() on any file system, and fsync()
+    does work correctly on ext3/ext4. This avoids the need to try to
+    detect if we are running on buggy ext3/ext4.
+
+commit 2176956c517de59a838151a80470c995825e3eed
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Wed Aug 15 14:37:55 2012 +0300
+
+    Fixed MDEV-366: Assertion `share->reopen == 1' failed in maria_extra on DROP TABLE which is locked twice
+    
+    mysql-test/suite/maria/lock.result:
+      Added test case
+    mysql-test/suite/maria/lock.test:
+      Added test case
+    sql/sql_table.cc:
+      One can't call HA_EXTRA_FORCE_REOPEN on something that may be opened twice.
+      It's safe to remove the call in this case as we will call HA_EXTRA_PREPARE_FOR_DROP for the table anyway.
+      (One nice side effect is that drop is a bit faster as we are not flushing the cache to disk before the drop anymore)
+
+commit 34b6a6aa37705a551c9396b26cdae903522a806a
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Wed Aug 15 09:34:18 2012 +0300
+
+    Fixed compiler warnings
+    
+    sql/item_subselect.cc:
+      Added purecov info
+    sql/sql_select.cc:
+      Added cast
+    storage/innobase/handler/ha_innodb.cc:
+      Added cast
+    storage/xtradb/btr/btr0btr.c:
+      Added buf_block_get_frame_fast() to avoid compiler warning
+    storage/xtradb/handler/ha_innodb.cc:
+      Added cast
+    storage/xtradb/include/buf0buf.h:
+      Innodb has buf_block_get_frame(block) defined as (block)->frame.
+      Didn't want to do a big change to break xtradb as it may use block_get_frame() differently, so I mad this quick hack to patch one compiler warning.
+
+commit 36ed2c39713d37ddb9885933ae4116d1d68cad9d
+Author: unknown <knielsen@knielsen-hq.org>
+Date:   Thu Jun 21 11:52:54 2012 +0200
+
+    MDEV-359: Server crash when SET GLOBAL rpl_semi_sync_master_enabled = OFF
+    
+    The semisync code does a fast-but-unsafe check for enabled or not without lock,
+    followed by a slow-but-safe check under lock. However, if the slow check failed,
+    the code still referenced not valid data (in an assert() expression), causing a
+    crash.
+    
+    Fixed by not running the incorrect assert when semisync is disabled.
+
+commit 10d81fcf84ad0574d4fa95dcb8fbeaeec10f2822
+Author: Narayanan Venkateswaran <v.narayanan@oracle.com>
+Date:   Thu Jun 7 19:14:26 2012 +0530
+
+    WL#6161 Integrating with InnoDB codebase in MySQL 5.5
+    
+    Changes in the InnoDB codebase required to compile and
+    integrate the MEB codebase with MySQL 5.5.
+    
+    @ storage/innobase/btr/btr0btr.c
+      Excluded buffer pool usage from MEB build.
+    
+      buf_pool_from_bpage calls are in buf0buf.ic, and
+      the buffer pool functions from that file are
+      disabled in MEB.
+    @ storage/innobase/buf/buf0buf.c
+      Disabling more buffer pool functions unused in MEB.
+    @ storage/innobase/dict/dict0dict.c
+      Disabling dict_ind_free that is unused in MEB.
+    @ storage/innobase/dict/dict0mem.c
+      The include
+    
+      #include "ha_prototypes.h"
+    
+      Was causing conflicts with definitions in my_global.h
+    
+      Linking C executable mysqlbackup
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_foreign_table_name_lookup_set':
+      dict0mem.c:(.text+0x91c): undefined reference to `innobase_get_lower_case_table_names'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_referenced_table_name_lookup_set':
+      dict0mem.c:(.text+0x9fc): undefined reference to `innobase_get_lower_case_table_names'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_foreign_table_name_lookup_set':
+      dict0mem.c:(.text+0x96e): undefined reference to `innobase_casedn_str'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_referenced_table_name_lookup_set':
+      dict0mem.c:(.text+0xa4e): undefined reference to `innobase_casedn_str'
+      collect2: ld returned 1 exit status
+      make[2]: *** [mysqlbackup] Error 1
+    
+      innobase_get_lower_case_table_names
+      innobase_casedn_str
+      are functions that are part of ha_innodb.cc that is not part of the build
+    
+      dict_mem_foreign_table_name_lookup_set
+      function is not there in the current codebase, meaning we do not use it in MEB.
+    @ storage/innobase/fil/fil0fil.c
+      The srv_fast_shutdown variable is declared in
+      srv0srv.c that is not compiled in the
+      mysqlbackup codebase.
+    
+      This throws an undeclared error.
+    
+      From the Manual
+      ---------------
+    
+      innodb_fast_shutdown
+      --------------------
+    
+      The InnoDB shutdown mode. The default value is 1
+      as of MySQL 3.23.50, which causes a Ã¢â‚¬Å“fastÃ¢â‚¬ï¿½ shutdown
+      (the normal type of shutdown). If the value is 0,
+      InnoDB does a full purge and an insert buffer merge
+      before a shutdown. These operations can take minutes,
+      or even hours in extreme cases. If the value is 1,
+      InnoDB skips these operations at shutdown.
+    
+      This ideally does not matter from mysqlbackup
+      @ storage/innobase/ha/ha0ha.c
+      In file included from /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/ha/ha0ha.c:34:0:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/btr0sea.h:286:17: error: expected Ã¢â‚¬Ëœ=Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ,Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ;Ã¢â‚¬â„¢, Ã¢â‚¬ËœasmÃ¢â‚¬â„¢ or Ã¢â‚¬Ëœ__attribute__Ã¢â‚¬â„¢ before Ã¢â‚¬Ëœ*Ã¢â‚¬â„¢ token
+      make[2]: *** [CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/ha/ha0ha.c.o] Error 1
+      make[1]: *** [CMakeFiles/innodb.dir/all] Error 2
+      make: *** [all] Error 2
+    
+      # include "sync0rw.h" is excluded from hotbackup compilation in dict0dict.h
+    
+      This causes extern rw_lock_t* btr_search_latch_temp; to throw a failure because
+      the definition of rw_lock_t is not found.
+    @ storage/innobase/include/buf0buf.h
+      Excluding buffer pool functions that are unused from the
+      MEB codebase.
+    @ storage/innobase/include/buf0buf.ic
+      replicated the exclusion of
+    
+      #include "buf0flu.h"
+      #include "buf0lru.h"
+      #include "buf0rea.h"
+    
+      by looking at the current codebase in <meb-trunk>/src/innodb
+      @ storage/innobase/include/dict0dict.h
+      dict_table_x_lock_indexes, dict_table_x_unlock_indexes, dict_table_is_corrupted,
+      dict_index_is_corrupted, buf_block_buf_fix_inc_func are unused in MEB and was
+      leading to compilation errors and hence excluded.
+    @ storage/innobase/include/dict0dict.ic
+      dict_table_x_lock_indexes, dict_table_x_unlock_indexes, dict_table_is_corrupted,
+      dict_index_is_corrupted, buf_block_buf_fix_inc_func are unused in MEB and was
+      leading to compilation errors and hence excluded.
+    @ storage/innobase/include/log0log.h
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/log0log.h: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/log0log.h:767:2: error: expected specifier-qualifier-list before Ã¢â  ‚¬Ëœmutex_tÃ¢â‚¬â„¢
+    
+      mutex_t definitions were excluded as seen from ambient code
+      hence excluding definition for log_flush_order_mutex also.
+    @ storage/innobase/include/os0file.h
+      Bug in InnoDB code, create_mode should have been create.
+    @ storage/innobase/include/srv0srv.h
+      In file included from /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/buf/buf0buf.c:50:0:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/srv0srv.h: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/srv0srv.h:120:16: error: expected Ã¢â‚¬Ëœ=Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ,Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ;Ã¢â‚¬â„¢, Ã¢â‚¬ËœasmÃ¢â‚¬â„¢ or Ã¢â‚¬Ëœ__attribute__Ã¢â‚¬â„¢ before Ã¢â‚¬Ëœsrv_use_native_aioÃ¢â‚¬â„¢
+    
+      srv_use_native_aio - we do not use native aio of the OS anyway from MEB. MEB does not compile
+      InnoDB with this option. Hence disabling it.
+    @ storage/innobase/include/trx0sys.h
+      [ 56%] Building C object CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c.o
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c: In function Ã¢â‚¬Ëœtrx_sys_read_file_format_idÃ¢â‚¬â„¢:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c:1499:20: error: Ã¢â‚¬ËœTRX_SYS_FILE_FORMAT_TAG_MAGIC_NÃ¢â‚¬â„¢   undeclared (first use in this function)
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c:1499:20: note: each undeclared identifier is reported only once for  each function it appears in
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/buf0buf.h:607:1: warning: Ã¢â‚¬Ëœbuf_block_buf_fix_inc_funcÃ¢â‚¬â„¢ declared Ã¢â‚¬ËœstaticÃ¢â‚¬â„¢ but never defined
+      make[2]: *** [CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c.o] Error 1
+    
+      unused calls excluded to enable compilation
+    @ storage/innobase/mem/mem0dbg.c
+        excluding #include "ha_prototypes.h" that lead to definitions in ha_innodb.cc
+    @ storage/innobase/os/os0file.c
+        InnoDB not compiled with aio support from MEB anyway. Hence excluding this from
+        the compilation.
+    @ storage/innobase/page/page0zip.c
+      page0zip.c:(.text+0x4e9e): undefined reference to `buf_pool_from_block'
+      collect2: ld returned 1 exit status
+    
+      buf_pool_from_block defined in buf0buf.ic, most of the file is excluded for compilation of MEB
+    @ storage/innobase/ut/ut0dbg.c
+      excluding #include "ha_prototypes.h" since it leads to definitions in ha_innodb.cc
+      innobase_basename(file) is defined in ha_innodb.cc. Hence excluding that also.
+    @ storage/innobase/ut/ut0ut.c
+      cal_tm unused from MEB, was leading to earnings, hence disabling for MEB.
+
+commit ed3607d43c3a656782c9e6bbbe9e09670da59a1f
+Author: unknown <timour@askmonty.org>
+Date:   Wed May 30 00:18:53 2012 +0300
+
+    Patch for mdev-287: CHEAP SQ: A query with subquery in SELECT list, EXISTS, inner joins takes hundreds times longer
+    
+    Analysis:
+    
+    The fix for lp:944706 introduces early subquery optimization.
+    While a subquery is being optimized some of its predicates may be
+    removed. In the test case, the EXISTS subquery is constant, and is
+    evaluated to TRUE. As a result the whole OR is TRUE, and thus the
+    correlated condition "b = alias1.b" is optimized away. The subquery
+    becomes non-correlated.
+    
+    The subquery cache is designed to work only for correlated subqueries.
+    If constant subquery optimization is disallowed, then the constant
+    subquery is not evaluated, the subquery remains correlated, and its
+    execution is cached. As a result execution is fast.
+    
+    However, when the constant subquery was optimized away, it was neither
+    cached by the subquery cache, nor it was cached by the internal subquery
+    caching. The latter was due to the fact that the subquery still appeared
+    as correlated to the subselect_XYZ_engine::exec methods, and they
+    re-executed the subquery on each call to Item_subselect::exec.
+    
+    Solution:
+    
+    The solution is to update the correlated status of the subquery after it has
+    been optimized. This status consists of:
+    - st_select_lex::is_correlated
+    - Item_subselect::is_correlated
+    - SELECT_LEX::uncacheable
+    - SELECT_LEX_UNIT::uncacheable
+    The status is updated by st_select_lex::update_correlated_cache(), and its
+    caller st_select_lex::optimize_unflattened_subqueries. The solution relies
+    on the fact that the optimizer already called
+    st_select_lex::update_used_tables() for each subquery. This allows to
+    efficiently update the correlated status of each subquery without walking
+    the whole subquery tree.
+    
+    Notice that his patch is an improvement over MySQL 5.6 and older, where
+    subqueries are not pre-optimized, and the above analysis is not possible.
+
+commit 88accb77248ed220273484c48756eb6e2bc8344e
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Fri May 18 16:02:11 2012 +0300
+
+    Fixed lp:997460 Truncate table on partitioned Aria table fails with ER_ILLEGAL_HA
+    Fix is done by doing an autocommit in truncate table inside Aria
+    
+    storage/maria/ha_maria.cc:
+      Force a commit for TRUNCATE TABLE inside lock tables
+      Check that we don't call TRUNCATE with concurrent inserts going on.
+      Make ha_maria::implict_commit faster when we don't have Aria tables in the transaction.
+      (Most of the patch is just re-indentation because I removed an if level)
+
+commit af71947859d0fd044ae8d07c1541614257ec80ff
+Author: Georgi Kodinov <Georgi.Kodinov@Oracle.com>
+Date:   Fri Mar 9 15:04:49 2012 +0200
+
+    Bug #12408412: GROUP_CONCAT + ORDER BY + INPUT/OUTPUT SAME
+    USER VARIABLE = CRASH
+    
+    Moved the preparation of the variables that receive the output from
+    SELECT INTO from execution time (JOIN:execute) to compile time
+    (JOIN::prepare). This ensures that if the same variable is used in the
+    SELECT part of SELECT INTO it will be properly marked as non-const
+    for this query.
+    Test case added.
+    Used proper fast iterator.
+For keyword time:
+commit b742cade1f468141b2c3366010a40c858351d185
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Tue Sep 4 12:12:28 2012 +0200
+
+    1. fix an old typo. A purgatory must be cleaned on every LF_PURGATORY_SIZE freeing,
+       not every time.
+    2. Increase purgatory size.
+    
+    include/lf.h:
+      allocate larger purgatory
+    mysys/lf_alloc-pin.c:
+      typo.
+
+commit 2e93e6d8a9b4ad481ff7c7ad559cb65fba05994a
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Fri Aug 31 13:03:41 2012 +0200
+
+    MDEV-414 Depending on indexes or execution plans, a warning on incorrect or out of range values in WHERE condition is sometimes produced and sometimes not
+    
+    use the same method that disables warnings in all relevant places, remove redundant function
+
+commit 6062be89b176ce33fa1ec0651ac7402c9c3e5851
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Thu Aug 30 09:05:27 2012 +0200
+
+    MDEV-437 Microseconds: In time functions precision is calculated modulo 256
+    
+    store the precision in uint, not uint8
+
+commit 5044bc9c0dd78c301bd5164b330307eff158826a
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Wed Aug 29 17:55:59 2012 +0200
+
+    MDEV-454 Addition of a time interval reduces the resulting value
+    
+    1. Field_newdate::get_date should refuse to return a date with zeros when
+       TIME_NO_ZERO_IN_DATE is set, not when TIME_FUZZY_DATE is unset
+    2. Item_func_to_days and Item_date_add_interval can only work with valid dates,
+       no zeros allowed.
+
+commit df46e34d8a51b06e62a41cac3b14fe8a95500dd6
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Wed Aug 29 10:59:51 2012 +0200
+
+    MDEV-456 An out-of-range datetime value (with a 5-digit year) can be created and cause troubles
+    
+    fix Item_func_add_time::get_date() to generate valid dates.
+    Move the validity check inside get_date_from_daynr()
+    instead of relying on callers
+    (5 that had it, and 2 that did not, but should've)
+
+commit d7a1ea485c3ff63be50cb810e082d6a9edd24f15
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Mon Aug 20 22:54:15 2012 +0300
+
+    Ensure we don't assert with debug binaries if SHOW INNODB STATUS returns with an error.
+    
+    
+    sql/handler.cc:
+      SHOW INNODB STATUS sometimes returns 0 even if it has generated an error.
+      This code is here to catch it until InnoDB some day is fixed.
+    storage/innobase/handler/ha_innodb.cc:
+      Catch at least one of the possible errors from SHOW INNODB STATUS to provide a correct return code.
+    storage/xtradb/handler/ha_innodb.cc:
+      Catch at least one of the possible errors from SHOW INNODB STATUS to provide a correct return code.
+    support-files/my-huge.cnf.sh:
+      Fixed typo
+
+commit 327e4c93d71730ce3f26917993215da25aeef2a3
+Merge: 78b83425409 244acf7a2a9
+Author: Elena Stepanova <elenst@ubuntu11.home>
+Date:   Thu Aug 2 00:58:13 2012 +0400
+
+    MDEV-369 (Mismatches in MySQL engines test suite)
+    Following reasons caused mismatches:
+      - different handling of invalid values;
+      - different CAST results with fractional seconds;
+      - microseconds support in MariaDB;
+      - different algorithm of comparing temporal values;
+      - differences in error and warning texts and codes;
+      - different approach to truncating datetime values to time;
+      - additional collations;
+      - different record order for queries without ORDER BY;
+      - MySQL bug#66034.
+    More details in MDEV-369 comments.
+
+commit 244acf7a2a952f4f8d28ff68360b60414d4e93c5
+Author: Elena Stepanova <elenst@ubuntu11.home>
+Date:   Mon Jul 30 04:16:49 2012 +0400
+
+    MDEV-369 (Mismatches in MySQL engines test suite)
+    Following reasons caused mismatches:
+      - different handling of invalid values;
+      - different CAST results with fractional seconds;
+      - microseconds support in MariaDB;
+      - different algorithm of comparing temporal values;
+      - differences in error and warning texts and codes;
+      - different approach to truncating datetime values to time;
+      - additional collations;
+      - different record order for queries without ORDER BY;
+      - MySQL bug#66034.
+    More details in MDEV-369 comments.
+
+commit c21f3e1f50233b2b8874190b01f9cdb45373fc09
+Author: Rohit Kalhans <rohit.kalhans@oracle.com>
+Date:   Tue Jul 10 18:24:11 2012 +0530
+
+    BUG#11759333: SBR LOGGING WARNING MESSAGES FOR PRIMARY
+    KEY UPDATES WITH A LIMIT OF 1
+    
+    Problem: The unsafety warning for statements such as
+    update...limit1 where pk=1 are thrown when binlog-format
+    = STATEMENT,despite of the fact that such statements are
+    actually safe. this leads to filling up of the disk space
+    with false warnings.
+    
+    Solution: This is not a complete fix for the problem, but
+    prevents the disks from getting filled up. This should
+    therefore be regarded as a workaround. In the future this
+    should be overriden by server general suppress/filtering
+    framework. It should also be noted that another worklog is
+    supposed to defeat this case's artificial unsafety.
+    
+    We use a warning suppression mechanism to detect warning flood,
+    enable the suppression, and disable this when the average
+    warnings/second has reduced to acceptable limits.
+    
+      Activation: The supression for LIMIT unsafe statements are
+      activated when the last 50 warnings were logged in less
+      than 50 seconds.
+    
+      Supression: Once activated this supression will prevent the
+      individual warnings to be logged in the error log, but print
+      the warning for every 50 warnings with the note:
+      "The last warning was repeated N times in last S seconds"
+      Noteworthy is the fact that this supression works only on the
+      error logs and the warnings seen by the clients will remain as
+      it is (i.e. one warning/ unsafe statement)
+    
+      Deactivation: The supression will be deactivated once the
+      average # of warnings/sec have gone down to the acceptable limits.
+    
+    
+    
+    sql/sql_class.cc:
+      Added code to supress warning while logging them to error-log.
+
+commit 99eb9277a888c3a69ab82a959269021ec6cf6e55
+Author: Norvald H. Ryeng <norvald.ryeng@oracle.com>
+Date:   Mon Jun 18 09:20:12 2012 +0200
+
+    Bug#13003736 CRASH IN ITEM_REF::WALK WITH SUBQUERIES
+    
+    Problem: Some queries with subqueries and a HAVING clause that
+    consists only of a column not in the select or grouping lists causes
+    the server to crash.
+    
+    During parsing, an Item_ref is constructed for the HAVING column. The
+    name of the column is resolved when JOIN::prepare calls fix_fields()
+    on its having clause. Since the column is not mentioned in the select
+    or grouping lists, a ref pointer is not found and a new Item_field is
+    created instead. The Item_ref is replaced by the Item_field in the
+    tree of HAVING clauses. Since the tree consists only of this item, the
+    pointer that is updated is JOIN::having. However,
+    st_select_lex::having still points to the Item_ref as the root of the
+    tree of HAVING clauses.
+    
+    The bug is triggered when doing filesort for create_sort_index(). When
+    find_all_keys() calls select->cond->walk() it eventually reaches
+    Item_subselect::walk() where it continues to walk the having clauses
+    from lex->having. This means that it finds the Item_ref instead of the
+    new Item_field, and Item_ref::walk() tries to dereference the ref
+    pointer, which is still null.
+    
+    The crash is reproducible only in 5.5, but the problem lies latent in
+    5.1 and trunk as well.
+    
+    Fix: After calling fix_fields on the having clause in JOIN::prepare(),
+    set select_lex::having to point to the same item as JOIN::having.
+    
+    This patch also fixes a bug in 5.1 and 5.5 that is triggered if the
+    query is executed as a prepared statement. The Item_field is created
+    in the runtime arena when the query is prepared, and the pointer to
+    the item is saved by st_select_lex::fix_prepare_information() and
+    brought back as a dangling pointer when the query is executed, after
+    the runtime arena has been reclaimed.
+    
+    Fix: Backport fix from trunk that switches to the permanent arena
+    before calling Item_ref::fix_fields() in JOIN::prepare().
+    
+    
+    sql/item.cc:
+      Set context when creating Item_field.
+    sql/sql_select.cc:
+      Switch to permanent arena and update select_lex->having.
+
+commit 98ae55aad6ee0d92b4ffcb1494a923591e286862
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Fri Jun 15 17:22:49 2012 +0200
+
+    MDEV-316 lp:1009085 Assertion failed: warn_item, file item_cmpfunc.cc, line 3613
+    
+    make sure that find_date_time_item() is called before agg_arg_charsets_for_comparison().
+    optimize Item_func_conv_charset to avoid conversion if no string result is needed
+
+commit d319ae0107b7d9f6c2b84a514ac3f53192ee3730
+Author: Vladislav Vaintroub <wlad@montyprogram.com>
+Date:   Fri Jun 15 17:21:06 2012 +0200
+
+    MDEV-339, LP1001340 - system_time_zone is wrong on Windows
+    
+    On localized Windows versions, Windows uses localized time zone names and contain non-ASCII characters.  non-ASCII characters appear broken when displayed by clients
+    The fix is to declare system_time_zone variable to have UTF8 encoding and to convert tzname to UTF8.
+
+commit 63422883a971a5b09f850a275290bb8962b837db
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Fri Jun 15 13:36:34 2012 +0300
+
+    Removed one variable from the test output that was depending on timing.
+    
+    mysql-test/suite/sphinx/sphinx.result:
+      Removed sphinx_time, as it was depending on timing.
+    mysql-test/suite/sphinx/sphinx.test:
+      Removed sphinx_time, as it was depending on timing.
+
+commit 34909431930c1570facadcf66e70ceba87a9b6c8
+Author: unknown <timour@askmonty.org>
+Date:   Fri Jun 15 11:33:24 2012 +0300
+
+    Fix bug lp:1008686
+    
+    Analysis:
+    The fix for bug lp:985667 implements the method Item_subselect::no_rows_in_result()
+    for all main kinds of subqueries. The purpose of this method is to be called from
+    return_zero_rows() and set Items to some default value in the case when a query
+    returns no rows. Aggregates and subqueries require special treatment in this case.
+    
+    Every implementation of Item_subselect::no_rows_in_result() called
+    Item_subselect::make_const() to set the subquery predicate to its default value
+    irrespective of where the predicate was located in the query. Once the predicate
+    was set to a constant it was never executed.
+    
+    At the same time, the JOIN object of the fake select for UNIONs (the one used for
+    the final result of the UNION), was set after all subqueries in the union were
+    executed. Since we set the subquery as constant, it was never executed, and the
+    corresponding JOIN was never created.
+    
+    In order to decide whether the result of NOT IN is NULL or FALSE, Item_in_optimizer
+    needs to check if the subquery result was empty or not. This is where we got the
+    crash, because subselect_union_engine::no_rows() checks for
+    unit->fake_select_lex->join->send_records, and the join object was NULL.
+    
+    Solution:
+    If a subquery is in the HAVING clause it must be evaluated in order to know its
+    result, so that we can properly filter the result records. Once subqueries in the
+    HAVING clause are executed even in the case of no result rows, this specific
+    crash will be solved, because the UNION will be executed, and its JOIN will be
+    constructed. Therefore the fix for this crash is to narrow the fix for lp:985667,
+    and to apply Item_subselect::no_rows_in_result() only when the subquery predicate
+    is in the SELECT clause.
+
+commit ce7a3b43c80f8e6452713b799d5cae98af95bb7f
+Author: Vladislav Vaintroub <wlad@montyprogram.com>
+Date:   Fri Jun 8 19:15:01 2012 +0200
+
+    LP1008334 : Speedup specific datetime queries that got slower with introduction of microseconds in 5.3
+    
+    - Item::get_seconds() now skips decimal arithmetic, if decimals is 0. This significantly speeds up from_unixtime() if no fractional part is passed.
+    - replace sprintfs used to format temporal values  by hand-coded formatting
+    
+    Query1 (original query in the bug report)
+    BENCHMARK(10000000,DATE_SUB(FROM_UNIXTIME(RAND() * 2147483648), INTERVAL (FLOOR(1 + RAND() * 365)) DAY))
+    
+    Query2 (Variation of query1 that does not use fractional part in FROM_UNIXTIME parameter)
+    BENCHMARK(10000000,DATE_SUB(FROM_UNIXTIME(FLOOR(RAND() * 2147483648)), INTERVAL (FLOOR(1 + RAND() * 365)) DAY))
+    
+    Prior to the patch, the runtimes were (32 bit compilation/AMD machine)
+    Query1: 41.53 sec
+    Query2: 23.90 sec
+    
+    With the patch, the runtimes are
+    Query1: 32.32 sec (speed up due to removing sprintf)
+    Query2: 12.06 sec (speed up due to skipping decimal arithmetic)
+
+commit 134b56dc5574fb3c4d751434ca91a964b167361c
+Author: unknown <knielsen@knielsen-hq.org>
+Date:   Fri Jun 8 11:18:56 2012 +0200
+
+    MDEV-329: MariaDB 5.5 does not use fdatasync().
+    
+    The --debug-no-sync incorrectly defaulted to ON, disabling sync calls
+    by default which can loose data or cause corruption. Also, the code
+    used fsync() instead of the sometimes more efficient fdatasync().
+
+commit 388cc907ecd14e004f8879c0eb15e9f6299d312b
+Author: Jon Olav Hauglid <jon.hauglid@oracle.com>
+Date:   Fri Jun 1 09:31:24 2012 +0200
+
+    Bug#13982017: ALTER TABLE RENAME ENDS UP WITH ERROR 1050 (42S01)
+    
+    Fixed by backport of:
+        ------------------------------------------------------------
+        revno: 3402.50.156
+        committer: Jon Olav Hauglid <jon.hauglid@oracle.com>
+        branch nick: mysql-trunk-test
+        timestamp: Wed 2012-02-08 14:10:23 +0100
+        message:
+          Bug#13417754 ASSERT IN ROW_DROP_DATABASE_FOR_MYSQL DURING DROP SCHEMA
+    
+          This assert could be triggered if an InnoDB table was being moved
+          to a different database using ALTER TABLE ... RENAME, while this
+          database concurrently was being dropped by DROP DATABASE.
+    
+          The reason for the problem was that no metadata lock was taken
+          on the target database by ALTER TABLE ... RENAME.
+          DROP DATABASE was therefore not blocked and could remove
+          the database while ALTER TABLE ... RENAME was executing. This
+          could cause the assert in InnoDB to be triggered.
+    
+          This patch fixes the problem by taking a IX metadata lock on
+          the target database before ALTER TABLE ... RENAME starts
+          moving a table to a different database.
+    
+          Note that this problem did not occur with RENAME TABLE which
+          already takes the correct metadata locks.
+    
+          Also note that this patch slightly changes the behavior of
+          ALTER TABLE ... RENAME. Before, the statement would abort and
+          return an error if a lock on the target table name could not
+          be taken immediately. With this patch, ALTER TABLE ... RENAME
+          will instead block and wait until the lock can be taken
+          (or until we get a lock timeout). This also means that it is
+          possible to get ER_LOCK_DEADLOCK errors in this situation
+          since we allow ALTER TABLE ... RENAME to wait and not just
+          abort immediately.
+
+commit ed3607d43c3a656782c9e6bbbe9e09670da59a1f
+Author: unknown <timour@askmonty.org>
+Date:   Wed May 30 00:18:53 2012 +0300
+
+    Patch for mdev-287: CHEAP SQ: A query with subquery in SELECT list, EXISTS, inner joins takes hundreds times longer
+    
+    Analysis:
+    
+    The fix for lp:944706 introduces early subquery optimization.
+    While a subquery is being optimized some of its predicates may be
+    removed. In the test case, the EXISTS subquery is constant, and is
+    evaluated to TRUE. As a result the whole OR is TRUE, and thus the
+    correlated condition "b = alias1.b" is optimized away. The subquery
+    becomes non-correlated.
+    
+    The subquery cache is designed to work only for correlated subqueries.
+    If constant subquery optimization is disallowed, then the constant
+    subquery is not evaluated, the subquery remains correlated, and its
+    execution is cached. As a result execution is fast.
+    
+    However, when the constant subquery was optimized away, it was neither
+    cached by the subquery cache, nor it was cached by the internal subquery
+    caching. The latter was due to the fact that the subquery still appeared
+    as correlated to the subselect_XYZ_engine::exec methods, and they
+    re-executed the subquery on each call to Item_subselect::exec.
+    
+    Solution:
+    
+    The solution is to update the correlated status of the subquery after it has
+    been optimized. This status consists of:
+    - st_select_lex::is_correlated
+    - Item_subselect::is_correlated
+    - SELECT_LEX::uncacheable
+    - SELECT_LEX_UNIT::uncacheable
+    The status is updated by st_select_lex::update_correlated_cache(), and its
+    caller st_select_lex::optimize_unflattened_subqueries. The solution relies
+    on the fact that the optimizer already called
+    st_select_lex::update_used_tables() for each subquery. This allows to
+    efficiently update the correlated status of each subquery without walking
+    the whole subquery tree.
+    
+    Notice that his patch is an improvement over MySQL 5.6 and older, where
+    subqueries are not pre-optimized, and the above analysis is not possible.
+
+commit 318b3001107f47fc5f7c88938401ae2454b38765
+Author: Sergey Petrunya <psergey@askmonty.org>
+Date:   Wed May 23 11:55:14 2012 +0400
+
+    BUG#1000051: Query with simple join and ORDER BY takes thousands times longer when run with ICP
+    - Correct testcases.
+
+commit fe18ab39f3d5958268f578f635ff69123fabec98
+Author: Sergey Petrunya <psergey@askmonty.org>
+Date:   Wed May 23 11:46:40 2012 +0400
+
+    BUG#1000051: Query with simple join and ORDER BY takes thousands times longer when run with ICP
+    - Disable IndexConditionPushdown for reverse scans.
+
+commit 6d87da19883ca2669c07fea515b93239cb920acb
+Author: Venkata Sidagam <venkata.sidagam@oracle.com>
+Date:   Wed May 16 16:14:27 2012 +0530
+
+    Bug #13955256: KEYCACHE CRASHES, CORRUPTIONS/HANGS WITH,
+                   FULLTEXT INDEX AND CONCURRENT DML.
+    
+    Problem Statement:
+    ------------------
+    1) Create a table with FT index.
+    2) Enable concurrent inserts.
+    3) In multiple threads do below operations repeatedly
+       a) truncate table
+       b) insert into table ....
+       c) select ... match .. against .. non-boolean/boolean mode
+    
+    After some time we could observe two different assert core dumps
+    
+    Analysis:
+    --------
+    1)assert core dump at key_read_cache():
+    Two select threads operating in-parallel on same key
+    root block.
+    1st select thread block->status is set to BLOCK_ERROR
+    because the my_pread() in read_block() is returning '0'.
+    Truncate table made the index file size as 1024 and pread
+    was asked to get the block of count bytes(1024 bytes)
+    from offset of 1024 which it cannot read since its
+    "end of file" and retuning '0' setting
+    "my_errno= HA_ERR_FILE_TOO_SHORT" and the key_file_length,
+    key_root[0] is same i.e. 1024. Since block status has BLOCK_ERROR
+    the 1st select thread enter into the free_block() and will
+    be under wait on conditional mutex by making status as
+    BLOCK_REASSIGNED and goes for wait_on_readers(). Other select
+    thread will also work on the same block and sees the status as
+    BLOCK_ERROR and enters into free_block(), checks for BLOCK_REASSIGNED
+    and asserting the server.
+    
+    2)assert core dump at key_write_cache():
+    One select thread and One insert thread.
+    Select thread gets the unlocks the 'keycache->cache_lock',
+    which allows other threads to continue and gets the pread()
+    return value as'0'(please see the explanation above) and
+    tries to get the lock on 'keycache->cache_lock' and waits
+    there for the lock.
+    Insert thread requests for the block, block will be assigned
+    from the hash list and makes the page_status as
+    'PAGE_WAIT_TO_BE_READ' and goes for the read_block(), waits
+    in the queue since there are some other threads performing
+    reads on the same block.
+    Select thread which was waiting for the 'keycache->cache_lock'
+    mutex in the read_block() will continue after getting the my_pread()
+    value as '0' and sets the block status as BLOCK_ERROR and goes to
+    the free_block() and go to the wait_for_readers().
+    Now the insert thread will awake and continues. and checks
+    block->status as not BLOCK_READ and it asserts.
+    
+    Fix:
+    ---
+    In the full text code, multiple readers of index file is not guarded.
+    Hence added below below code in _ft2_search() and walk_and_match().
+    
+    to lock the key_root I have used below code in _ft2_search()
+     if (info->s->concurrent_insert)
+        mysql_rwlock_rdlock(&share->key_root_lock[0]);
+    
+    and to unlock
+     if (info->s->concurrent_insert)
+       mysql_rwlock_unlock(&share->key_root_lock[0]);
+    
+    storage/myisam/ft_boolean_search.c:
+      Since its a recursion function, to avoid confusion in taking and
+      releasing the locks, renamed _ft2_search() to _ft2_search_internal()
+      function. And _ft2_search() will take the lock, call
+      _ft2_search_internal() and release the lock in case of concurrent
+      inserts.
+    storage/myisam/ft_nlq_search.c:
+      Added read locks code in walk_and_match()
+
+commit df9cf2be1d3dcd3d13fcab35e05dcd4daa1d0665
+Author: Venkata Sidagam <venkata.sidagam@oracle.com>
+Date:   Wed May 16 13:55:22 2012 +0530
+
+    Bug #13955256: KEYCACHE CRASHES, CORRUPTIONS/HANGS WITH,
+                   FULLTEXT INDEX AND CONCURRENT DML.
+    
+    Problem Statement:
+    ------------------
+    1) Create a table with FT index.
+    2) Enable concurrent inserts.
+    3) In multiple threads do below operations repeatedly
+       a) truncate table
+       b) insert into table ....
+       c) select ... match .. against .. non-boolean/boolean mode
+    
+    After some time we could observe two different assert core dumps
+    
+    Analysis:
+    --------
+    1)assert core dump at key_read_cache():
+    Two select threads operating in-parallel on same key
+    root block.
+    1st select thread block->status is set to BLOCK_ERROR
+    because the my_pread() in read_block() is returning '0'.
+    Truncate table made the index file size as 1024 and pread
+    was asked to get the block of count bytes(1024 bytes)
+    from offset of 1024 which it cannot read since its
+    "end of file" and retuning '0' setting
+    "my_errno= HA_ERR_FILE_TOO_SHORT" and the key_file_length,
+    key_root[0] is same i.e. 1024. Since block status has BLOCK_ERROR
+    the 1st select thread enter into the free_block() and will
+    be under wait on conditional mutex by making status as
+    BLOCK_REASSIGNED and goes for wait_on_readers(). Other select
+    thread will also work on the same block and sees the status as
+    BLOCK_ERROR and enters into free_block(), checks for BLOCK_REASSIGNED
+    and asserting the server.
+    
+    2)assert core dump at key_write_cache():
+    One select thread and One insert thread.
+    Select thread gets the unlocks the 'keycache->cache_lock',
+    which allows other threads to continue and gets the pread()
+    return value as'0'(please see the explanation above) and
+    tries to get the lock on 'keycache->cache_lock' and waits
+    there for the lock.
+    Insert thread requests for the block, block will be assigned
+    from the hash list and makes the page_status as
+    'PAGE_WAIT_TO_BE_READ' and goes for the read_block(), waits
+    in the queue since there are some other threads performing
+    reads on the same block.
+    Select thread which was waiting for the 'keycache->cache_lock'
+    mutex in the read_block() will continue after getting the my_pread()
+    value as '0' and sets the block status as BLOCK_ERROR and goes to
+    the free_block() and go to the wait_for_readers().
+    Now the insert thread will awake and continues. and checks
+    block->status as not BLOCK_READ and it asserts.
+    
+    Fix:
+    ---
+    In the full text code, multiple readers of index file is not guarded.
+    Hence added below below code in _ft2_search() and walk_and_match().
+    
+    to lock the key_root I have used below code in _ft2_search()
+     if (info->s->concurrent_insert)
+        mysql_rwlock_rdlock(&share->key_root_lock[0]);
+    
+    and to unlock
+     if (info->s->concurrent_insert)
+       mysql_rwlock_unlock(&share->key_root_lock[0]);
+    
+    storage/myisam/ft_boolean_search.c:
+      Since its a recursion function, to avoid confusion in taking and
+      releasing the locks, renamed _ft2_search() to _ft2_search_internal()
+      function. And _ft2_search() will take the lock, call
+      _ft2_search_internal() and release the lock in case of concurrent
+      inserts.
+    storage/myisam/ft_nlq_search.c:
+      Added read locks code in walk_and_match()
+
+commit f9143686336f95d70f9d5258ff1e1aa165e40aee
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Fri May 18 16:40:16 2012 +0300
+
+    Fixed compile warnings
+    Fixed some mtr test problems
+    
+    
+    
+    dbug/tests.c:
+      Fixed compiler warnings
+    mysql-test/r/handlersocket.result:
+      Fixed that plugin_license is written
+    mysql-test/suite/innodb/t/innodb_bug60196.test:
+      Force sorted results as it was sometimes different on windows
+    mysql-test/suite/rpl/t/rpl_heartbeat_basic.test:
+      Prolong test as this failed on windows
+    mysql-test/t/handlersocket.test:
+      Fixed that plugin_license is written
+    plugin/handler_socket/handlersocket/handlersocket.cpp:
+      Use maria_declare_plugin
+    plugin/handler_socket/handlersocket/mysql_incl.hpp:
+      Fixed compiler warning
+    plugin/handler_socket/libhsclient/auto_addrinfo.hpp:
+      Fixed compiler warning
+    sql/handler.h:
+      Fixed typo
+    sql/sql_plugin.cc:
+      Fixed bug that caused plugin library name twice in error message
+    storage/maria/ma_checkpoint.c:
+      Fixed compiler warning
+    storage/maria/ma_loghandler.c:
+      Fixed compiler warning
+    unittest/mysys/base64-t.c:
+      Fixed compiler warning
+    unittest/mysys/bitmap-t.c:
+      Fixed compiler warning
+    unittest/mysys/my_malloc-t.c:
+      Fixed compiler warning
+
+commit bb2af22b8e874aefab5934d71c7e3bca163780f9
+Author: Igor Babaev <igor@askmonty.org>
+Date:   Wed May 16 20:39:03 2012 -0700
+
+    Fixed LP bug #999251: Q13 from DBT3 uses table scan instead of covering index scan.
+    
+    The optimizer chose a less efficient execution plan due to the following
+    defects of the code:
+    1. the generic handler function handler::keyread_time did not take into account
+       that in clustered primary keys record data is included into each index entry
+    2. the function make_join_readinfo erroneously decided that index only scan
+       could not be used if join cache was empoyed.
+    
+    Added no additional test case.
+    Adjusted some of the test results.
+
+commit 598bb174677207475e34eb3c0632cab91f6dea9a
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Thu May 17 01:47:28 2012 +0300
+
+    More fixes for LOCK TABLE and REPAIR/FLUSH
+    Changed HA_EXTRA_NORMAL to HA_EXTRA_NOT_USED (more clean)
+    
+    mysql-test/suite/maria/lock.result:
+      More extensive tests of LOCK TABLE with FLUSH and REPAIR
+    mysql-test/suite/maria/lock.test:
+      More extensive tests of LOCK TABLE with FLUSH and REPAIR
+    sql/sql_admin.cc:
+      Fix that REPAIR TABLE ... USE_FRM works with LOCK TABLES
+    sql/sql_base.cc:
+      Ensure that transactions are closed in ARIA when doing flush
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+      Don't call extra many times for a table in close_all_tables_for_name()
+      Added test if table_list->table as this can happen in error situations
+    sql/sql_partition.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_reload.cc:
+      Fixed comment
+    sql/sql_table.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_trigger.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_truncate.cc:
+      HA_EXTRA_FORCE_REOPEN -> HA_EXTRA_PREPARE_FOR_DROP for truncate, as this speeds up truncate by not having to flush the cache to disk.
+
+commit 73fdf95ba658f74033afa4bda66a2c1b77f34427
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Wed May 16 22:04:48 2012 +0300
+
+    Fixed LP:990187 Assertion `share->reopen == 1' failed at maria_extra on ADD PARTITION
+    
+    
+    mysql-test/suite/maria/maria-partitioning.result:
+      New test case
+    mysql-test/suite/maria/maria-partitioning.test:
+      New test case
+    sql/sql_base.cc:
+      Ignore HA_EXTRA_NORMAL for wait_while_table_is_used()
+      More DBUG
+    sql/sql_partition.cc:
+      Don't use HA_EXTRA_FORCE_REOPEN for wait_while_table_is_used() as the table is opened multiple times (in prep_alter_part_table)
+      This fixes the assert in Aria where we check if table is opened multiple times if HA_EXTRA_FORCE_REOPEN is issued
+
+commit c81b9faebd22c0dc1890fcd9dca8482c4ca0fb6d
+Author: Vladislav Vaintroub <wlad@montyprogram.com>
+Date:   Tue May 8 12:38:22 2012 +0200
+
+    MDEV-262 : log_state occationally fails in buildbot.
+    
+    The failures are  missing entries in the slow query log.  The reason for the failure  are sleep() calls  with short duration 10ms, which is less than the default system timer resolution for various WaitForXXXObject functions  (15.6 ms) and thus can't work reliably.
+    The fix is to make sleeps tiny bit longer (20ms from 10ms) in the test.
+
+commit 6dc2cecb91122711cb576f248d9909ef3e9c5d92
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Wed May 2 15:22:47 2012 +0200
+
+    MDEV-241 lp:992722 - Server crashes in get_datetime_value
+    
+    Create an Item_cache based on item's cmp_type, not result_type in
+    subselect_engine.
+    
+    Use result_field in Item_cache_temporal::cache_value(),
+    just like all other Item_cache*::cache_value() do.
+
+commit 78ccdd4ee0a3e3df563d90079a029ebdc187a1b5
+Merge: 16745489752 721a06d4846
+Author: Yasufumi Kinoshita <yasufumi.kinoshita@oracle.com>
+Date:   Fri Apr 27 19:40:12 2012 +0900
+
+    Bug#11758510 (#50723): INNODB CHECK TABLE FATAL SEMAPHORE WAIT TIMEOUT POSSIBLY TOO SHORT FOR BI
+    Fixed not to check timeout during the check table.
+
+commit 721a06d4846342b51760c041fa807bc1fd8ac6c4
+Author: Yasufumi Kinoshita <yasufumi.kinoshita@oracle.com>
+Date:   Fri Apr 27 19:38:13 2012 +0900
+
+    Bug#11758510 (#50723): INNODB CHECK TABLE FATAL SEMAPHORE WAIT TIMEOUT POSSIBLY TOO SHORT FOR BI
+    Fixed not to check timeout during the check table.
+
+commit d42da7f325b5277103483ca29bb979773bc6603c
+Author: Chaithra Gopalareddy <chaithra.gopalareddy@oracle.com>
+Date:   Wed Apr 18 11:25:01 2012 +0530
+
+    Bug#12713907:STRANGE OPTIMIZE & WRONG RESULT UNDER
+                       ORDER BY COUNT(*) LIMIT.
+    
+    PROBLEM:
+    With respect to problem in the bug description, we
+    exhibit different behaviors for the two tables
+    presented, because innodb statistics (rec_per_key
+    in this case) are updated for the first table
+    and not so for the second one. As a result the
+    query plan gets changed in test_if_skip_sort_order
+    to use 'index' scan. Hence the difference in the
+    explain output. (NOTE: We can reproduce the problem
+    with first table by reducing the number of tuples
+    and changing the table structure)
+    
+    The varied output w.r.t the query on the second table
+    is because of the result in the query plan change.
+    When a query plan is changed to use 'index' scan,
+    after the call to test_if_skip_sort_order, we set
+    keyread to TRUE immedietly. If for some reason
+    we drop this index scan for a filesort later on,
+    we fetch only the keys not the entire tuple.
+    As a result we would see junk values in the result set.
+    
+    Following is the code flow:
+    
+    Call test_if_skip_sort_order
+    -Choose an index to give sorted output
+    -If this is a covering index, set_keyread to TRUE
+    -Set the scan to INDEX scan
+    
+    Call test_if_skip_sort_order second time
+    -Index is not chosen (note that we do not pass the
+    actual limit value second time. Hence we do not choose
+    index scan second time which in itself is a bug fixed
+    in 5.6 with WL#5558)
+    -goto filesort
+    
+    Call filesort
+    -Create quick range on a different index
+    -Since keyread is set to TRUE, we fetch only the columns of
+    the index
+    -results in the required columns are not fetched
+    
+    FIX:
+    Remove the call to set_keyread(TRUE) from
+    test_if_skip_sort_order. The access function which is
+    'join_read_first' or 'join_read_last' calls set_keyread anyways.
+    
+    
+    mysql-test/r/func_group_innodb.result:
+      Added test result for Bug#12713907
+    mysql-test/t/func_group_innodb.test:
+      Added test case for Bug#12713907
+    sql/sql_select.cc:
+      Remove the call to set_keyread as we do it from access
+      functions 'join_read_first' and 'join_read_last'
+
+commit 1282161977520f9d8e7e010d74cea76306b62f01
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Tue Apr 17 20:29:43 2012 +0200
+
+    better fix for string plugin variables pointing into argv[]
+    for a plugin installed run-time
+
+commit 12e4feabf105d481d869350228491bc0500ed99a
+Author: Vladislav Vaintroub <wlad@montyprogram.com>
+Date:   Thu Apr 12 01:40:44 2012 +0200
+
+    Threadpool - use EV_ONESHOT with kevent, to prevent race condition when 2
+    threads are retrieving events at the same time.
+
+commit 3320be9682711f1ceb80d62e752ceb8dc17cbbb1
+Author: unknown <gopal.shankar@oracle.com>
+Date:   Wed Apr 11 15:53:17 2012 +0530
+
+    Bug#11815557 60269: MYSQL SHOULD REJECT ATTEMPTS TO CREATE SYSTEM
+                        TABLES IN INCORRECT ENGINE
+    
+    PROBLEM:
+      CREATE/ALTER TABLE currently can move system tables like
+    mysql.db, user, host etc, to engines other than MyISAM. This is not
+    completely supported as of now, by mysqld. When some of system tables
+    like plugin, servers, event, func, *_priv, time_zone* are moved
+    to innodb, mysqld restart crashes. Currently system tables
+    can be moved to BLACKHOLE also!!!.
+    
+    ANALYSIS:
+      The problem is that there is no check before creating or moving
+    a system table to some particular engine.
+    
+      System tables are suppose to be residing in MyISAM. We can think
+    of restricting system tables to exist only in MyISAM. But, there could
+    be future needs of these system tables to be part of other engines
+    by design. For eg, NDB cluster expects some tables to be on innodb
+    or ndb engine. This calls for a solution, by which system
+    tables can be supported by any desired engine, with minimal effort.
+    
+    FIX:
+      The solution provides a handlerton interface using which,
+    mysqld server can query particular storage engine handlerton for
+    system tables that it supports. This way each storage engine
+    layer can define their own system database and system tables.
+    
+      The check_engine() function uses the new handlerton function
+    ha_check_if_supported_system_table() to check if db.tablename
+    provided in the DDL is supported by the SE.
+    
+    Note: This fix has modified a test in help.test, which was moving
+    mysql.help_* to innodb. The primary intention of the test was not
+    to move them between engines.
+
+commit d6bd512c844776e114ce313902c51f3f4535f60e
+Author: Tor Didriksen <tor.didriksen@oracle.com>
+Date:   Wed Mar 14 13:25:14 2012 +0100
+
+    Bug#13721076 CRASH WITH TIME TYPE/TIMESTAMP() AND WARNINGS IN SUBQUERY
+    
+    The table contains one time value: '00:00:32'
+    This value is converted to timestamp by a subquery.
+    
+    In convert_constant_item we call (*item)->is_null()
+    which triggers execution of the Item_singlerow_subselect subquery,
+    and the string "0000-00-00 00:00:32" is cached
+    by Item_cache_datetime.
+    We continue execution and call update_null_value, which calls val_int()
+    on the cached item, which converts the time value to ((longlong) 32)
+    Then we continue to do (*item)->save_in_field()
+    which ends up in Item_cache_datetime::val_str() which fails,
+    since (32 < 101) in number_to_datetime, and val_str() returns NULL.
+    
+    Item_singlerow_subselect::val_str isnt prepared for this:
+    if exec() succeeds, and return !null_value, then val_str()
+    *must* succeed.
+    
+    Solution: refuse to cache strings like "0000-00-00 00:00:32"
+    in Item_cache_datetime::cache_value, and return NULL instead.
+    
+    This is similar to the solution for
+    Bug#11766860 - 60085: CRASH IN ITEM::SAVE_IN_FIELD() WITH TIME DATA TYPE
+    
+    This patch is for 5.5 only.
+    The issue is not present after WL#946, since a time value
+    will be converted to a proper timestamp, with the current date
+    rather than "0000-00-00"
+    
+    
+    mysql-test/r/subselect.result:
+      New test case.
+    mysql-test/t/subselect.test:
+      New test case.
+    sql/item.cc:
+      Verify proper date format before caching timestamps.
+    sql/item_timefunc.cc:
+      Use named constant for readability.
+
+commit af71947859d0fd044ae8d07c1541614257ec80ff
+Author: Georgi Kodinov <Georgi.Kodinov@Oracle.com>
+Date:   Fri Mar 9 15:04:49 2012 +0200
+
+    Bug #12408412: GROUP_CONCAT + ORDER BY + INPUT/OUTPUT SAME
+    USER VARIABLE = CRASH
+    
+    Moved the preparation of the variables that receive the output from
+    SELECT INTO from execution time (JOIN:execute) to compile time
+    (JOIN::prepare). This ensures that if the same variable is used in the
+    SELECT part of SELECT INTO it will be properly marked as non-const
+    for this query.
+    Test case added.
+    Used proper fast iterator.
+
+commit cc5ff8e7f1cf679a6130fce15123babe06954d51
+Merge: 8868eb76a07 5a71a715410
+Author: Tatjana Azundris Nuernberg <tatjana.nuernberg@oracle.com>
+Date:   Sun Feb 19 09:00:52 2012 +0000
+
+    BUG#13431369 - MAIN.VARIABLES-NOTEMBEDDED CRASHES THE SERVER SPORADICALLY ON WINDOWS
+    
+    On shutdown(), Windows can drop traffic still queued for sending even if that
+    wasn't specifically requested. As a result, fatal errors (those after
+    signaling which the server will drop the connection) were sometimes only
+    seen as "connection lost" on the client side, because the server-side
+    shutdown() erraneously discarded the correct error message before sending
+    it.
+    
+    If on Windows, we now use the Windows API to access the (non-broken) equivalent
+    of shutdown().
+    
+    Backport from trunk
+
+commit 5a71a7154107c50f22d3a7e3ba15ddeb5ef73d8e
+Merge: 947cc98b2d5 e9fc99d5c82
+Author: Tatjana Azundris Nuernberg <tatjana.nuernberg@oracle.com>
+Date:   Sun Feb 19 08:57:11 2012 +0000
+
+    BUG#13431369 - MAIN.VARIABLES-NOTEMBEDDED CRASHES THE SERVER SPORADICALLY ON WINDOWS
+    
+    On shutdown(), Windows can drop traffic still queued for sending even if that
+    wasn't specifically requested. As a result, fatal errors (those after
+    signaling which the server will drop the connection) were sometimes only
+    seen as "connection lost" on the client side, because the server-side
+    shutdown() erraneously discarded the correct error message before sending
+    it.
+    
+    If on Windows, we now use the Windows API to access the (non-broken) equivalent
+    of shutdown().
+    
+    Backport from trunk
+
+commit e9fc99d5c8291c2736c1ae3ebb8c1c35f2a83038
+Author: Tatjana Azundris Nuernberg <tatjana.nuernberg@oracle.com>
+Date:   Fri Feb 17 19:02:17 2012 +0000
+
+    BUG#13431369 - MAIN.VARIABLES-NOTEMBEDDED CRASHES THE SERVER SPORADICALLY ON WINDOWS
+    
+    On shutdown(), Windows can drop traffic still queued for sending even if that
+    wasn't specifically requested. As a result, fatal errors (those after
+    signaling which the server will drop the connection) were sometimes only
+    seen as "connection lost" on the client side, because the server-side
+    shutdown() erraneously discarded the correct error message before sending
+    it.
+    
+    If on Windows, we now use the Windows API to access the (non-broken) equivalent
+    of shutdown().
+    
+    Backport from trunk
+    
+    include/violite.h:
+      export mysql_socket_shutdown(). It lives in vio in the backport.
+    sql/mysqld.cc:
+      Go through our own shutdown() rather than straight to the POSIX one.
+    vio/viosocket.c:
+      Define mysql_socket_shutdown(). On UNIXoid systems, it's just a wrapper for shutdown(), but
+      on Window, it uses DisconnectEx, which is magic.
+For keyword perf:
+commit 08cbe45c038ab066f8807264d0ad6e4f9a46a4ec
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Thu Aug 23 15:36:38 2012 +0200
+
+    MDEV-439 cmake -DWITHOUT_SERVER does not work
+    
+    fix mysys/waiting_threads.c to compile w/o performance schema
+    include clients. scripts and manpages in -DWITHOUT_SERVER
+
+commit c2b458edab2088d6e1c02fcc9e0ebc4567e5cc64
+Author: Igor Babaev <igor@askmonty.org>
+Date:   Mon Jun 11 22:12:47 2012 -0700
+
+    Fixed LP bug #1008293.
+    
+    One of the reported problems manifested itself in the scenario when one
+    thread tried to to get statistics on a key cache while the second thread
+    had not finished initialization of the key cache structure yet.
+    The problem was resolved by forcing serialization of such operations
+    on key caches.
+    
+    To serialize function calls to perform certain operations over a key cache
+    a new mutex associated with the key cache now is used. It is stored in the
+    field op_lock of the KEY_CACHE structure. It is locked when the operation
+    is performed. Some of the serialized key cache operations utilize calls
+    for other key cache operations. To avoid recursive locking of op_lock
+    the new functions that perform the operations of key cache initialization,
+    destruction and re-partitioning with an additional parameter were introduced.
+    The parameter says whether the operation over op_lock are to be performed or
+    are to be omitted. The old functions for the operations of key cache
+    initialization, destruction,and  re-partitioning  now just call the
+    corresponding new functions with the additional parameter set to true
+    requesting to use op_lock while all other calls of these new function
+    have this parameter set to false.
+    
+    Another problem reported in the bug entry concerned the operation of
+    assigning an index to a key cache. This operation can be called
+    while the key cache structures are not initialized yet. In this
+    case any call of flush_key_blocks() should return without any actions.
+    
+    No test case is provided with this patch.
+
+commit 33562d13bc742d3718088bd8bfbe9639c1f0f519
+Author: Marc Alff <marc.alff@oracle.com>
+Date:   Thu May 31 11:47:13 2012 +0200
+
+    Bug 14116252 - CANNOT BUILD ARCHIVE ENGINE WHEN WITH_PERFSCHEMA_STORAGE_ENGINE=0
+    
+    Fixed a build break with compiling without the performance schema,
+    instrumentation should be protected by HAVE_PSI_INTERFACE
+
+commit 7a7e0072dbffed2b317c027aebf03fb9a72af825
+Author: Igor Babaev <igor@askmonty.org>
+Date:   Fri May 25 00:07:26 2012 -0700
+
+    Fixed a performance problem: calls of the function imerge_list_and_tree
+    could lead an to exponential growth of the imerge lists.
+
+commit 347132ef90111454271633acfad98766bba77f5d
+Author: unknown <timour@askmonty.org>
+Date:   Thu May 24 14:08:28 2012 +0300
+
+    Test case for bug lp:1001117, MySQL BUG#12330344
+    
+    Analysis:
+    The problem in the original MySQL bug is that the range optimizer
+    performs its analysis in a separate MEM_ROOT object that is freed
+    after the range optimzier is done. During range analysis get_mm_tree
+    calls Item_func_like::select_optimize, which in turn evaluates its
+    right argument. In the test case the right argument is a subquery.
+    
+    In MySQL, subqueries are optimized lazyly, thus the call to val_str
+    triggers optimization for the subquery. All objects needed by the
+    subquery plan end up in the temporary MEM_ROOT used by the range
+    optimizer. When execution ends, the JOIN::cleanup process tries to
+    cleanup objects of the subquery plan, but all these objects are gone
+    with the temporary MEM_ROOT. The solution for MySQL is to switch the
+    mem_root.
+    
+    In MariaDB with the patch for bug lp:944706, all constant subqueries
+    that may be used by the optimization process are preoptimized. Therefore
+    Item_func_like::select_optimize only triggers subquery execution, and
+    the above problem is not present.
+    
+    The patch however adds a test whether the evaluated right argument of
+    the LIKE predicate is expensive. This is consistent with our approach
+    not to evaluate expensive expressions during optimization.
+
+commit 430aafc23fbc60f2c728c5f3b4d12b92d896efcc
+Author: Marc Alff <marc.alff@oracle.com>
+Date:   Wed May 23 10:21:35 2012 +0200
+
+    Improved the test performance_schema.func_file_io,
+    so that investigating test failures is easier.
+    
+    Detect cases when @before_count / @after_count is NULL.
+
+commit 6d87da19883ca2669c07fea515b93239cb920acb
+Author: Venkata Sidagam <venkata.sidagam@oracle.com>
+Date:   Wed May 16 16:14:27 2012 +0530
+
+    Bug #13955256: KEYCACHE CRASHES, CORRUPTIONS/HANGS WITH,
+                   FULLTEXT INDEX AND CONCURRENT DML.
+    
+    Problem Statement:
+    ------------------
+    1) Create a table with FT index.
+    2) Enable concurrent inserts.
+    3) In multiple threads do below operations repeatedly
+       a) truncate table
+       b) insert into table ....
+       c) select ... match .. against .. non-boolean/boolean mode
+    
+    After some time we could observe two different assert core dumps
+    
+    Analysis:
+    --------
+    1)assert core dump at key_read_cache():
+    Two select threads operating in-parallel on same key
+    root block.
+    1st select thread block->status is set to BLOCK_ERROR
+    because the my_pread() in read_block() is returning '0'.
+    Truncate table made the index file size as 1024 and pread
+    was asked to get the block of count bytes(1024 bytes)
+    from offset of 1024 which it cannot read since its
+    "end of file" and retuning '0' setting
+    "my_errno= HA_ERR_FILE_TOO_SHORT" and the key_file_length,
+    key_root[0] is same i.e. 1024. Since block status has BLOCK_ERROR
+    the 1st select thread enter into the free_block() and will
+    be under wait on conditional mutex by making status as
+    BLOCK_REASSIGNED and goes for wait_on_readers(). Other select
+    thread will also work on the same block and sees the status as
+    BLOCK_ERROR and enters into free_block(), checks for BLOCK_REASSIGNED
+    and asserting the server.
+    
+    2)assert core dump at key_write_cache():
+    One select thread and One insert thread.
+    Select thread gets the unlocks the 'keycache->cache_lock',
+    which allows other threads to continue and gets the pread()
+    return value as'0'(please see the explanation above) and
+    tries to get the lock on 'keycache->cache_lock' and waits
+    there for the lock.
+    Insert thread requests for the block, block will be assigned
+    from the hash list and makes the page_status as
+    'PAGE_WAIT_TO_BE_READ' and goes for the read_block(), waits
+    in the queue since there are some other threads performing
+    reads on the same block.
+    Select thread which was waiting for the 'keycache->cache_lock'
+    mutex in the read_block() will continue after getting the my_pread()
+    value as '0' and sets the block status as BLOCK_ERROR and goes to
+    the free_block() and go to the wait_for_readers().
+    Now the insert thread will awake and continues. and checks
+    block->status as not BLOCK_READ and it asserts.
+    
+    Fix:
+    ---
+    In the full text code, multiple readers of index file is not guarded.
+    Hence added below below code in _ft2_search() and walk_and_match().
+    
+    to lock the key_root I have used below code in _ft2_search()
+     if (info->s->concurrent_insert)
+        mysql_rwlock_rdlock(&share->key_root_lock[0]);
+    
+    and to unlock
+     if (info->s->concurrent_insert)
+       mysql_rwlock_unlock(&share->key_root_lock[0]);
+    
+    storage/myisam/ft_boolean_search.c:
+      Since its a recursion function, to avoid confusion in taking and
+      releasing the locks, renamed _ft2_search() to _ft2_search_internal()
+      function. And _ft2_search() will take the lock, call
+      _ft2_search_internal() and release the lock in case of concurrent
+      inserts.
+    storage/myisam/ft_nlq_search.c:
+      Added read locks code in walk_and_match()
+
+commit df9cf2be1d3dcd3d13fcab35e05dcd4daa1d0665
+Author: Venkata Sidagam <venkata.sidagam@oracle.com>
+Date:   Wed May 16 13:55:22 2012 +0530
+
+    Bug #13955256: KEYCACHE CRASHES, CORRUPTIONS/HANGS WITH,
+                   FULLTEXT INDEX AND CONCURRENT DML.
+    
+    Problem Statement:
+    ------------------
+    1) Create a table with FT index.
+    2) Enable concurrent inserts.
+    3) In multiple threads do below operations repeatedly
+       a) truncate table
+       b) insert into table ....
+       c) select ... match .. against .. non-boolean/boolean mode
+    
+    After some time we could observe two different assert core dumps
+    
+    Analysis:
+    --------
+    1)assert core dump at key_read_cache():
+    Two select threads operating in-parallel on same key
+    root block.
+    1st select thread block->status is set to BLOCK_ERROR
+    because the my_pread() in read_block() is returning '0'.
+    Truncate table made the index file size as 1024 and pread
+    was asked to get the block of count bytes(1024 bytes)
+    from offset of 1024 which it cannot read since its
+    "end of file" and retuning '0' setting
+    "my_errno= HA_ERR_FILE_TOO_SHORT" and the key_file_length,
+    key_root[0] is same i.e. 1024. Since block status has BLOCK_ERROR
+    the 1st select thread enter into the free_block() and will
+    be under wait on conditional mutex by making status as
+    BLOCK_REASSIGNED and goes for wait_on_readers(). Other select
+    thread will also work on the same block and sees the status as
+    BLOCK_ERROR and enters into free_block(), checks for BLOCK_REASSIGNED
+    and asserting the server.
+    
+    2)assert core dump at key_write_cache():
+    One select thread and One insert thread.
+    Select thread gets the unlocks the 'keycache->cache_lock',
+    which allows other threads to continue and gets the pread()
+    return value as'0'(please see the explanation above) and
+    tries to get the lock on 'keycache->cache_lock' and waits
+    there for the lock.
+    Insert thread requests for the block, block will be assigned
+    from the hash list and makes the page_status as
+    'PAGE_WAIT_TO_BE_READ' and goes for the read_block(), waits
+    in the queue since there are some other threads performing
+    reads on the same block.
+    Select thread which was waiting for the 'keycache->cache_lock'
+    mutex in the read_block() will continue after getting the my_pread()
+    value as '0' and sets the block status as BLOCK_ERROR and goes to
+    the free_block() and go to the wait_for_readers().
+    Now the insert thread will awake and continues. and checks
+    block->status as not BLOCK_READ and it asserts.
+    
+    Fix:
+    ---
+    In the full text code, multiple readers of index file is not guarded.
+    Hence added below below code in _ft2_search() and walk_and_match().
+    
+    to lock the key_root I have used below code in _ft2_search()
+     if (info->s->concurrent_insert)
+        mysql_rwlock_rdlock(&share->key_root_lock[0]);
+    
+    and to unlock
+     if (info->s->concurrent_insert)
+       mysql_rwlock_unlock(&share->key_root_lock[0]);
+    
+    storage/myisam/ft_boolean_search.c:
+      Since its a recursion function, to avoid confusion in taking and
+      releasing the locks, renamed _ft2_search() to _ft2_search_internal()
+      function. And _ft2_search() will take the lock, call
+      _ft2_search_internal() and release the lock in case of concurrent
+      inserts.
+    storage/myisam/ft_nlq_search.c:
+      Added read locks code in walk_and_match()
+
+commit c57cf1ae326f6e4d3b9d2025c95cd451ad02498b
+Author: Olav Sandstaa <olav.sandstaa@oracle.com>
+Date:   Wed May 16 09:49:23 2012 +0200
+
+    Fix for Bug#12667154 SAME QUERY EXEC AS WHERE SUBQ GIVES DIFFERENT
+                         RESULTS ON IN() & NOT IN() COMP #3
+    
+    This bug causes a wrong result in mysql-trunk when ICP is used
+    and bad performance in mysql-5.5 and mysql-trunk.
+    
+    Using the query from bug report to explain what happens and causes
+    the wrong result from the query when ICP is enabled:
+    
+    1. The t3 table contains four records. The outer query will read
+       these and for each of these it will execute the subquery.
+    
+    2. Before the first execution of the subquery it will be optimized. In
+       this case the important is what happens to the first table t1:
+       -make_join_select() will call the range optimizer which decides
+        that t1 should be accessed using a range scan on the k1 index
+        It creates a QUICK_RANGE_SELECT object for this.
+       -As the last part of optimization the ICP code pushes the
+        condition down to the storage engine for table t1 on the k1 index.
+    
+       This produces the following information in the explain for this table:
+    
+         2 DEPENDENT SUBQUERY t1 range k1 k1 5 NULL 3 Using index condition; Using filesort
+    
+       Note the use of filesort.
+    
+    3. The first execution of the subquery does (among other things) due
+       to the need for sorting:
+       a. Call create_sort_index() which again will call find_all_keys():
+       b. find_all_keys() will read the required keys for all qualifying
+          rows from the storage engine. To do this it checks if it has a
+          quick-select for the table. It will use the quick-select for
+          reading records. In this case it will read four records from the
+          storage engine (based on the range criteria). The storage engine
+          will evaluate the pushed index condition for each record.
+       c. At the end of create_sort_index() there is code that cleans up a
+          lot of stuff on the join tab. One of the things that is cleaned
+          is the select object. The result of this is that the
+          quick-select object created in make_join_select is deleted.
+    
+    4. The second execution of the subquery does the same as the first but
+       the result is different:
+       a. Call create_sort_index() which again will call find_all_keys()
+          (same as for the first execution)
+       b. find_all_keys() will read the keys from the storage engine. To
+          do this it checks if it has a quick-select for the table. Now
+          there is NO quick-select object(!) (since it was deleted in
+          step 3c). So find_all_keys defaults to read the table using a
+          table scan instead. So instead of reading the four relevant records
+          in the range it reads the entire table (6 records). It then
+          evaluates the table's condition (and here it goes wrong). Since
+          the entire condition has been pushed down to the storage engine
+          using ICP all 6 records qualify. (Note that the storage engine
+          will not evaluate the pushed index condition in this case since
+          it was pushed for the k1 index and now we do a table scan
+          without any index being used).
+          The result is that here we return six qualifying key values
+          instead of four due to not evaluating the table's condition.
+       c. As above.
+    
+    5. The two last execution of the subquery will also produce wrong results
+       for the same reason.
+    
+    Summary: The problem occurs due to all but the first executions of the
+    subquery is done as a table scan without evaluating the table's
+    condition (which is pushed to the storage engine on a different
+    index). This is caused by the create_sort_index() function deleting
+    the quick-select object that should have been used for executing the
+    subquery as a range scan.
+    
+    Note that this bug in addition to causing wrong results also can
+    result in bad performance due to executing the subquery using a table
+    scan instead of a range scan. This is an issue in MySQL 5.5.
+    
+    The fix for this problem is to avoid that the Quick-select-object that
+    the optimizer created is deleted when create_sort_index() is doing
+    clean-up of the join-tab. This will ensure that the quick-select
+    object and the corresponding pushed index condition will be available
+    and used by all following executions of the subquery.
+    
+    
+    sql/sql_select.cc:
+      Fix for Bug#12667154: Change how create_sort_index() cleans up the
+      join_tab's select and quick-select objects in order to avoid that a
+      quick-select object created outside of create_sort_index() is deleted.
+
+commit 737a9fee8324fca43790af4aa27eff61fd654607
+Author: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+Date:   Thu May 10 10:18:31 2012 +0530
+
+    Bug #14007649 65111: INNODB SOMETIMES FAILS TO UPDATE ROWS INSERTED
+    BY A CONCURRENT TRANSACTIO
+    
+    The member function QUICK_RANGE_SELECT::init_ror_merged_scan() performs
+    a table handler clone. Innodb does not provide a clone operation.
+    The ha_innobase::clone() is not there. The handler::clone() does not
+    take care of the ha_innobase->prebuilt->select_lock_type.  Because of
+    this what happens is that for one index we do a locking read, and
+    for the other index we were doing a non-locking (consistent) read.
+    The patch introduces ha_innobase::clone() member function.
+    It is implemented similar to ha_myisam::clone().  It calls the
+    base class handler::clone() and then does any additional operation
+    required.  I am setting the ha_innobase->prebuilt->select_lock_type
+    correctly.
+    
+    rb://1060 approved by Marko
+For keyword optim:
+commit e261f87e9b9b988a85ea2b8492965fb6a22e83c2
+Author: unknown <timour@askmonty.org>
+Date:   Tue Aug 21 15:24:43 2012 +0300
+
+    Fix bug mdev-447: Wrong output from the EXPLAIN command of the test case for lp bug #714999
+    
+    The fix backports from MWL#182: Explain running statements the logic that
+    saves the original JOIN_TAB array of a query plan after optimization. This
+    array is later used during EXPLAIN to iterate over the original JOIN plan
+    nodes in the cases when this plan could be changed by early subquery
+    execution during the optimization phase of the outer query.
+
+commit 4723855354c5526de07eea841393f8b763019083
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Sun Jun 17 16:09:16 2012 +0200
+
+    fix an overly agressive optimization in Item_func_conv_charset
+
+commit 98ae55aad6ee0d92b4ffcb1494a923591e286862
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Fri Jun 15 17:22:49 2012 +0200
+
+    MDEV-316 lp:1009085 Assertion failed: warn_item, file item_cmpfunc.cc, line 3613
+    
+    make sure that find_date_time_item() is called before agg_arg_charsets_for_comparison().
+    optimize Item_func_conv_charset to avoid conversion if no string result is needed
+
+commit 34909431930c1570facadcf66e70ceba87a9b6c8
+Author: unknown <timour@askmonty.org>
+Date:   Fri Jun 15 11:33:24 2012 +0300
+
+    Fix bug lp:1008686
+    
+    Analysis:
+    The fix for bug lp:985667 implements the method Item_subselect::no_rows_in_result()
+    for all main kinds of subqueries. The purpose of this method is to be called from
+    return_zero_rows() and set Items to some default value in the case when a query
+    returns no rows. Aggregates and subqueries require special treatment in this case.
+    
+    Every implementation of Item_subselect::no_rows_in_result() called
+    Item_subselect::make_const() to set the subquery predicate to its default value
+    irrespective of where the predicate was located in the query. Once the predicate
+    was set to a constant it was never executed.
+    
+    At the same time, the JOIN object of the fake select for UNIONs (the one used for
+    the final result of the UNION), was set after all subqueries in the union were
+    executed. Since we set the subquery as constant, it was never executed, and the
+    corresponding JOIN was never created.
+    
+    In order to decide whether the result of NOT IN is NULL or FALSE, Item_in_optimizer
+    needs to check if the subquery result was empty or not. This is where we got the
+    crash, because subselect_union_engine::no_rows() checks for
+    unit->fake_select_lex->join->send_records, and the join object was NULL.
+    
+    Solution:
+    If a subquery is in the HAVING clause it must be evaluated in order to know its
+    result, so that we can properly filter the result records. Once subqueries in the
+    HAVING clause are executed even in the case of no result rows, this specific
+    crash will be solved, because the UNION will be executed, and its JOIN will be
+    constructed. Therefore the fix for this crash is to narrow the fix for lp:985667,
+    and to apply Item_subselect::no_rows_in_result() only when the subquery predicate
+    is in the SELECT clause.
+
+commit b35231b0ecb7de9794ee5ead9597ed6db07738a1
+Author: unknown <timour@askmonty.org>
+Date:   Thu Jun 14 17:03:09 2012 +0300
+
+    Fix bug lp:1008773
+    
+    Analysis:
+    Queries with implicit grouping (there is aggregate, but no group by)
+    follow some non-obvious semantics in the case of empty result set.
+    Aggregate functions produce some special "natural" value depending on
+    the function. For instance MIN/MAX return NULL, COUNT returns 0.
+    
+    The complexity comes from non-aggregate expressions in the select list.
+    If the non-aggregate expression is a constant, it can be computed, so
+    we should return its value, however if the expression is non-constant,
+    and depends on columns from the empty result set, then the only meaningful
+    value is NULL.
+    
+    The cause of the wrong result was that for subqueries the optimizer didn't
+    make a difference between constant and non-constant ones in the case of
+    empty result for implicit grouping.
+    
+    Solution:
+    In all implementations of Item_subselect::no_rows_in_result() check if the
+    subquery predicate is constant. If it is constant, do not set it to the
+    default value for implicit grouping, instead let it be evaluated.
+
+commit edc07fca92e3d1fd46f5107a5fe21a7030cac78c
+Author: unknown <timour@askmonty.org>
+Date:   Fri Jun 1 14:10:15 2012 +0300
+
+    Fixed bug MDEV-288
+    CHEAP SQ: Valgrind warnings "Memory lost" with IN and EXISTS nested subquery, materialization+semijoin
+    
+    Analysis:
+    The memory leak was a result of the interaction of semi-join optimization
+    with early optimization of constant subqueries. The function:
+    setup_jtbm_semi_joins() created a dummy temporary table "dummy_table"
+    in order to make some JOIN_TAB objects complete. Normally, such temporary
+    tables are freed inside JOIN_TAB::cleanup.
+    
+    However, the inner-most subquery is pre-optimized, which allows the
+    optimization fo the MAX subquery to determine that its WHERE is TRUE,
+    and thus to compute the result of the MAX during optimization. This
+    ultimately allows the optimize phase of the outer query to find that
+    it WHERE clause is FALSE. Once JOIN::optimize finds that the result
+    set is empty, it sets zero_result_cause, and returns *before* it ever
+    reached make_join_statistics(). As a result the query plan has no
+    JOIN_TABs at all. Since the temporary table is supposed to be cleanup
+    via JOIN_TAB::cleanup, this never happens because there is no JOIN_TAB
+    for this table. Hence we get a memory leak.
+    
+    Solution:
+    Whenever there are no JOIN_TABs, iterate over all table reference in
+    JOIN::join_list, and free the ones that contain semi-join temporary
+    tables.
+
+commit 8b2dbc8c9ba466f415dec5ed6f9a3a4baf4dcdfe
+Author: unknown <timour@askmonty.org>
+Date:   Wed May 30 19:10:18 2012 +0300
+
+    Fix for bug lp:1006231
+    
+    Analysis:
+    
+    When a subquery that needs a temp table is executed during
+    the prepare or optimize phase of the outer query, at the end
+    of the subquery execution all the JOIN_TABs of the subquery
+    are replaced by a new JOIN_TAB that selects from the temp table.
+    However that temp table has no corresponding TABLE_LIST.
+    Once EXPLAIN execution reaches its last phase, it tries to print
+    the names of the subquery tables through its TABLE_LISTs, but in
+    the case of this bug there is no such TABLE_LIST (it is NULL),
+    hence a crash.
+    
+    Solution:
+    The fix is to block subquery evaluation inside
+    Item_func_like::fix_fields and Item_func_like::select_optimize()
+    using the Item::is_expensive() test.
+
+commit ed3607d43c3a656782c9e6bbbe9e09670da59a1f
+Author: unknown <timour@askmonty.org>
+Date:   Wed May 30 00:18:53 2012 +0300
+
+    Patch for mdev-287: CHEAP SQ: A query with subquery in SELECT list, EXISTS, inner joins takes hundreds times longer
+    
+    Analysis:
+    
+    The fix for lp:944706 introduces early subquery optimization.
+    While a subquery is being optimized some of its predicates may be
+    removed. In the test case, the EXISTS subquery is constant, and is
+    evaluated to TRUE. As a result the whole OR is TRUE, and thus the
+    correlated condition "b = alias1.b" is optimized away. The subquery
+    becomes non-correlated.
+    
+    The subquery cache is designed to work only for correlated subqueries.
+    If constant subquery optimization is disallowed, then the constant
+    subquery is not evaluated, the subquery remains correlated, and its
+    execution is cached. As a result execution is fast.
+    
+    However, when the constant subquery was optimized away, it was neither
+    cached by the subquery cache, nor it was cached by the internal subquery
+    caching. The latter was due to the fact that the subquery still appeared
+    as correlated to the subselect_XYZ_engine::exec methods, and they
+    re-executed the subquery on each call to Item_subselect::exec.
+    
+    Solution:
+    
+    The solution is to update the correlated status of the subquery after it has
+    been optimized. This status consists of:
+    - st_select_lex::is_correlated
+    - Item_subselect::is_correlated
+    - SELECT_LEX::uncacheable
+    - SELECT_LEX_UNIT::uncacheable
+    The status is updated by st_select_lex::update_correlated_cache(), and its
+    caller st_select_lex::optimize_unflattened_subqueries. The solution relies
+    on the fact that the optimizer already called
+    st_select_lex::update_used_tables() for each subquery. This allows to
+    efficiently update the correlated status of each subquery without walking
+    the whole subquery tree.
+    
+    Notice that his patch is an improvement over MySQL 5.6 and older, where
+    subqueries are not pre-optimized, and the above analysis is not possible.
+
+commit 528e8cc6cc204eb1f676ab99c8e3139a621fa388
+Author: Alexey Botchkov <holyfoot@askmonty.org>
+Date:   Tue May 29 09:59:25 2012 +0500
+
+    MDEV-294 SELECT WHERE ST_CONTAINS doesn't return all the records where ST_CONTAINS() is 1.
+            Optimizator fails using index with ST_Within(g, constant_poly).
+    
+    per-file comments:
+      mysql-test/r/gis-rt-precise.result
+            test result fixed.
+      mysql-test/r/gis-rtree.result
+            test result fixed.
+      mysql-test/suite/maria/r/maria-gis-rtree-dynamic.result
+            test result fixed.
+      mysql-test/suite/maria/r/maria-gis-rtree-trans.result
+            test result fixed.
+      mysql-test/suite/maria/r/maria-gis-rtree.result
+            test result fixed.
+      storage/maria/ma_rt_index.c
+            Use MBR_INTERSECT mode when optimizing the select WITH ST_Within.
+      storage/myisam/rt_index.c
+            Use MBR_INTERSECT mode when optimizing the select WITH ST_Within.
+
+commit 347132ef90111454271633acfad98766bba77f5d
+Author: unknown <timour@askmonty.org>
+Date:   Thu May 24 14:08:28 2012 +0300
+
+    Test case for bug lp:1001117, MySQL BUG#12330344
+    
+    Analysis:
+    The problem in the original MySQL bug is that the range optimizer
+    performs its analysis in a separate MEM_ROOT object that is freed
+    after the range optimzier is done. During range analysis get_mm_tree
+    calls Item_func_like::select_optimize, which in turn evaluates its
+    right argument. In the test case the right argument is a subquery.
+    
+    In MySQL, subqueries are optimized lazyly, thus the call to val_str
+    triggers optimization for the subquery. All objects needed by the
+    subquery plan end up in the temporary MEM_ROOT used by the range
+    optimizer. When execution ends, the JOIN::cleanup process tries to
+    cleanup objects of the subquery plan, but all these objects are gone
+    with the temporary MEM_ROOT. The solution for MySQL is to switch the
+    mem_root.
+    
+    In MariaDB with the patch for bug lp:944706, all constant subqueries
+    that may be used by the optimization process are preoptimized. Therefore
+    Item_func_like::select_optimize only triggers subquery execution, and
+    the above problem is not present.
+    
+    The patch however adds a test whether the evaluated right argument of
+    the LIKE predicate is expensive. This is consistent with our approach
+    not to evaluate expensive expressions during optimization.
+
+commit acdcb6a506124e3301b282d408d64ab27fcfbe50
+Author: unknown <timour@askmonty.org>
+Date:   Tue May 22 15:22:55 2012 +0300
+
+    Fix bug lp:1002079
+    
+      Analysis:
+      The optimizer detects an empty result through constant table optimization.
+      Then it calls return_zero_rows(), which in turns calls inderctly
+      Item_maxmin_subselect::no_rows_in_result(). The latter method set "value=0",
+      however "value" is pointer to Item_cache, and not just an integer value.
+    
+      All of the Item_[maxmin | singlerow]_subselect::val_XXX methods does:
+        if (forced_const)
+          return value->val_real();
+      which of course crashes when value is a NULL pointer.
+    
+      Solution:
+      When the optimizer discovers an empty result set, set
+      Item_singlerow_subselect::value to a FALSE constant Item instead of NULL.
+
+commit 6eab130202ffdc996349f5b255872a1d846f6c6f
+Author: unknown <timour@askmonty.org>
+Date:   Thu May 17 13:46:05 2012 +0300
+
+    Fix for bug lp:944706, task MDEV-193
+    
+    The patch enables back constant subquery execution during
+    query optimization after it was disabled during the development
+    of MWL#89 (cost-based choice of IN-TO-EXISTS vs MATERIALIZATION).
+    
+    The main idea is that constant subqueries are allowed to be executed
+    during optimization if their execution is not expensive.
+    
+    The approach is as follows:
+    - Constant subqueries are recursively optimized in the beginning of
+      JOIN::optimize of the outer query. This is done by the new method
+      JOIN::optimize_constant_subqueries(). This is done so that the cost
+      of executing these queries can be estimated.
+    - Optimization of the outer query proceeds normally. During this phase
+      the optimizer may request execution of non-expensive constant subqueries.
+      Each place where the optimizer may potentially execute an expensive
+      expression is guarded with the predicate Item::is_expensive().
+    - The implementation of Item_subselect::is_expensive has been extended
+      to use the number of examined rows (estimated by the optimizer) as a
+      way to determine whether the subquery is expensive or not.
+    - The new system variable "expensive_subquery_limit" controls how many
+      examined rows are considered to be not expensive. The default is 100.
+    
+    In addition, multiple changes were needed to make this solution work
+    in the light of the changes made by MWL#89. These changes were needed
+    to fix various crashes and wrong results, and legacy bugs discovered
+    during development.
+
+commit 857304c56434c31f7184213da1cbc5b1deb67fcb
+Author: Mattias Jonsson <mattias.jonsson@oracle.com>
+Date:   Tue May 15 12:45:52 2012 +0200
+
+    bug#13949735: crash regression from bug#13694811.
+    
+    There can be cases when the optimizer calls ha_partition::records_in_range
+    when there are no matching partitions. So the DBUG_ASSERT of
+    !tot_used_partitions does assert.
+    
+    Fixed by returning 0 instead when no matching partitions are found.
+    
+    This will avoid the crash. records_in_range will then try to find the
+    biggest used partition, which will not find any partition and
+    records_in_range will then return 0, meaning non rows can be found.
+    
+    Patch contributed by Davi Arnaut at twitter.
+
+commit d81b0e0b6812c0b37a29ae0e1f0bb26e10076620
+Author: Mayank Prasad <mayank.prasad@oracle.com>
+Date:   Thu May 17 22:24:23 2012 +0530
+
+    Bug#11766101 : 59140: LIKE CONCAT('%',@A,'%') DOESN'T MATCH WHEN @A CONTAINS LATIN1 STRING
+    
+    Issue/Cause:
+    Issue is of memory corruption.During optimization phase, pattern to be matched in where
+    clause, is prepared. This is done in Item_func_concat::val_str() function which forms the
+    resultant string (tmp_value) and return its pointer. In caller, Item_func_like::fix_fields,
+    pattern is made to point to this string (tmp_value). In further processing, tmp_value is
+    getting modified which causes pattern to have changed/wrong values.
+    
+    Fix:
+    Allocate its own memroy location in caller, copy value of resultant string (tmp_value)
+    into that and make pattern to point to that. This makes sure no further changes to
+    tmp_value will affect pattern.
+
+commit c57cf1ae326f6e4d3b9d2025c95cd451ad02498b
+Author: Olav Sandstaa <olav.sandstaa@oracle.com>
+Date:   Wed May 16 09:49:23 2012 +0200
+
+    Fix for Bug#12667154 SAME QUERY EXEC AS WHERE SUBQ GIVES DIFFERENT
+                         RESULTS ON IN() & NOT IN() COMP #3
+    
+    This bug causes a wrong result in mysql-trunk when ICP is used
+    and bad performance in mysql-5.5 and mysql-trunk.
+    
+    Using the query from bug report to explain what happens and causes
+    the wrong result from the query when ICP is enabled:
+    
+    1. The t3 table contains four records. The outer query will read
+       these and for each of these it will execute the subquery.
+    
+    2. Before the first execution of the subquery it will be optimized. In
+       this case the important is what happens to the first table t1:
+       -make_join_select() will call the range optimizer which decides
+        that t1 should be accessed using a range scan on the k1 index
+        It creates a QUICK_RANGE_SELECT object for this.
+       -As the last part of optimization the ICP code pushes the
+        condition down to the storage engine for table t1 on the k1 index.
+    
+       This produces the following information in the explain for this table:
+    
+         2 DEPENDENT SUBQUERY t1 range k1 k1 5 NULL 3 Using index condition; Using filesort
+    
+       Note the use of filesort.
+    
+    3. The first execution of the subquery does (among other things) due
+       to the need for sorting:
+       a. Call create_sort_index() which again will call find_all_keys():
+       b. find_all_keys() will read the required keys for all qualifying
+          rows from the storage engine. To do this it checks if it has a
+          quick-select for the table. It will use the quick-select for
+          reading records. In this case it will read four records from the
+          storage engine (based on the range criteria). The storage engine
+          will evaluate the pushed index condition for each record.
+       c. At the end of create_sort_index() there is code that cleans up a
+          lot of stuff on the join tab. One of the things that is cleaned
+          is the select object. The result of this is that the
+          quick-select object created in make_join_select is deleted.
+    
+    4. The second execution of the subquery does the same as the first but
+       the result is different:
+       a. Call create_sort_index() which again will call find_all_keys()
+          (same as for the first execution)
+       b. find_all_keys() will read the keys from the storage engine. To
+          do this it checks if it has a quick-select for the table. Now
+          there is NO quick-select object(!) (since it was deleted in
+          step 3c). So find_all_keys defaults to read the table using a
+          table scan instead. So instead of reading the four relevant records
+          in the range it reads the entire table (6 records). It then
+          evaluates the table's condition (and here it goes wrong). Since
+          the entire condition has been pushed down to the storage engine
+          using ICP all 6 records qualify. (Note that the storage engine
+          will not evaluate the pushed index condition in this case since
+          it was pushed for the k1 index and now we do a table scan
+          without any index being used).
+          The result is that here we return six qualifying key values
+          instead of four due to not evaluating the table's condition.
+       c. As above.
+    
+    5. The two last execution of the subquery will also produce wrong results
+       for the same reason.
+    
+    Summary: The problem occurs due to all but the first executions of the
+    subquery is done as a table scan without evaluating the table's
+    condition (which is pushed to the storage engine on a different
+    index). This is caused by the create_sort_index() function deleting
+    the quick-select object that should have been used for executing the
+    subquery as a range scan.
+    
+    Note that this bug in addition to causing wrong results also can
+    result in bad performance due to executing the subquery using a table
+    scan instead of a range scan. This is an issue in MySQL 5.5.
+    
+    The fix for this problem is to avoid that the Quick-select-object that
+    the optimizer created is deleted when create_sort_index() is doing
+    clean-up of the join-tab. This will ensure that the quick-select
+    object and the corresponding pushed index condition will be available
+    and used by all following executions of the subquery.
+    
+    
+    sql/sql_select.cc:
+      Fix for Bug#12667154: Change how create_sort_index() cleans up the
+      join_tab's select and quick-select objects in order to avoid that a
+      quick-select object created outside of create_sort_index() is deleted.
+
+commit 05a0d97ea2e228c593e556c363b924aaac1c532c
+Author: Sergey Petrunya <psergey@askmonty.org>
+Date:   Sun May 13 13:15:17 2012 +0400
+
+    BUG#998236: Assertion failure or valgrind errors at best_access_path ...
+    - Let fix_semijoin_strategies_for_picked_join_order() set
+      POSITION::prefix_record_count for POSITION records that it copies from
+      SJ_MATERIALIZATION_INFO::tables.
+      (These records do not have prefix_record_count set, because they are optimized
+       as joins-inside-semijoin-nests, without full advance_sj_state() processing).
+
+commit bb2af22b8e874aefab5934d71c7e3bca163780f9
+Author: Igor Babaev <igor@askmonty.org>
+Date:   Wed May 16 20:39:03 2012 -0700
+
+    Fixed LP bug #999251: Q13 from DBT3 uses table scan instead of covering index scan.
+    
+    The optimizer chose a less efficient execution plan due to the following
+    defects of the code:
+    1. the generic handler function handler::keyread_time did not take into account
+       that in clustered primary keys record data is included into each index entry
+    2. the function make_join_readinfo erroneously decided that index only scan
+       could not be used if join cache was empoyed.
+    
+    Added no additional test case.
+    Adjusted some of the test results.
+
+commit c9e3bf74ee2c7c087c9a45605d82b6c06f01a35d
+Author: unknown <sanja@montyprogram.com>
+Date:   Fri May 11 09:35:46 2012 +0300
+
+    fix for LP bug#994392
+    
+    The not_null_tables() of Item_func_not_all and Item_in_optimizer was inherited from
+    Item_func by mistake. It made the optimizer think that  subquery
+    predicates with ALL/ANY/IN were null-rejecting. This could trigger invalid
+    conversions of outer joins into inner joins.
+
+commit e09fb52d633151aefb6bf87daeaf6f67d464857c
+Author: unknown <timour@askmonty.org>
+Date:   Mon May 7 11:02:58 2012 +0300
+
+    Fix for bug lp:992405
+    
+    The patch backports two patches from mysql 5.6:
+    - BUG#12640437: USING SQL_BUFFER_RESULT RESULTS IN A DIFFERENT QUERY OUTPUT
+    - Bug#12578908: SELECT SQL_BUFFER_RESULT OUTPUTS TOO MANY ROWS WHEN GROUP IS OPTIMIZED AWAY
+    
+    Original comment:
+    -----------------
+    3714 Jorgen Loland      2012-03-01
+          BUG#12640437 - USING SQL_BUFFER_RESULT RESULTS IN A DIFFERENT
+                         QUERY OUTPUT
+    
+          For all but simple grouped queries, temporary tables are used to
+          resolve grouping. In these cases, the list of grouping fields is
+          stored in the temporary table and grouping is resolved
+          there (e.g. by adding a unique constraint on the involved
+          fields). Because of this, grouping is already done when the rows
+          are read from the temporary table.
+    
+          In the case where a group clause may be optimized away, grouping
+          does not have to be resolved using a temporary table. However, if
+          a temporary table is explicitly requested (e.g. because the
+          SQL_BUFFER_RESULT hint is used, or the statement is
+          INSERT...SELECT), a temporary table is used anyway. In this case,
+          the temporary table is created with an empty group list (because
+          the group clause was optimized away) and it will therefore not
+          create groups. Since the temporary table does not take care of
+          grouping, JOIN::group shall not be set to false in
+          make_simple_join(). This was fixed in bug 12578908.
+    
+          However, there is an exception where make_simple_join() should
+          set JOIN::group to false even if the query uses a temporary table
+          that was explicitly requested but is not strictly needed. That
+          exception is if the loose index scan access method (explain
+          says "Using index for group-by") is used to read into the
+          temporary table. With loose index scan, grouping is resolved
+          by the access method. This is exactly what happens in this bug.
+
+commit a4336eb617612109ad4714150b257e88089f0702
+Author: unknown <timour@askmonty.org>
+Date:   Fri Apr 27 12:59:17 2012 +0300
+
+    Fix bug lp:985667, MDEV-229
+    
+    Analysis:
+    
+    The reason for the wrong result is the interaction between constant
+    optimization (in this case 1-row table) and subquery optimization.
+    
+    - First the outer query is optimized, and 'make_join_statistics' finds that
+    table t2 has one row, reads that row, and marks the whole table as constant.
+    This also means that all fields of t2 are constant.
+    
+    - Next, we optimize the subquery in the end of the outer 'make_join_statistics'.
+    The field 'f2' is considered constant, with value '3'. The subquery predicate
+    is rewritten as the constant TRUE.
+    
+    - The outer query execution detects early that the whole query result is empty
+    and calls 'return_zero_rows'. Since the query is with implicit grouping, we
+    have to produce one row with special values for the aggregates (depending on
+    each aggregate function), and NULL values for all non-aggregate fields.  This
+    function calls 'no_rows_in_result' to set each aggregate function to the
+    default value when it aggregates over an empty result, and then calls
+    'send_data', which in turn evaluates each Item in the SELECT list.
+    
+    - When evaluation reaches the subquery predicate, it executes the subquery
+    with field 'f2' having a constant value '3', and the subquery produces the
+    incorrect result '7'.
+    
+    Solution:
+    
+    Implement Item::no_rows_in_result for all subquery predicates. In order to
+    make this work, it is also needed to make all val_* methods of all subquery
+    predicates respect the Item_subselect::forced_const flag. Otherwise subqueries
+    are executed anyways, and override the default value set by no_rows_in_result
+    with whatever result is produced from the subquery evaluation.
+For keyword regression:
+commit e30dbf157f5b642b6d284da1264f7b1991be9afd
+Author: Andrei Elkin <andrei.elkin@oracle.com>
+Date:   Thu Jul 5 14:37:48 2012 +0300
+
+    Bug#14275000
+    
+    Fixes for BUG11761686 left a flaw that managed to slip away from testing.
+    Only effective filtering branch was actually tested with a regression test
+    added to rpl_filter_tables_not_exist.
+    The reason of the failure is destuction of too early mem-root-allocated memory
+    at the end of the deferred User-var's do_apply_event().
+    
+    Fixed with bypassing free_root() in the deferred execution branch.
+    Deallocation of created in do_apply_event() items is done by the base code
+    through THD::cleanup_after_query() -> free_items() that the parent Query
+    can't miss.
+    
+    
+    
+    sql/log_event.cc:
+      Do not call free_root() in case the deferred User-var event.
+      Necessary methods to the User-var class are added, do_apply_event() refined.
+    sql/log_event.h:
+      Necessary methods to avoid destoying mem-root-based memory at
+      User-var applying are defined.
+
+commit 857304c56434c31f7184213da1cbc5b1deb67fcb
+Author: Mattias Jonsson <mattias.jonsson@oracle.com>
+Date:   Tue May 15 12:45:52 2012 +0200
+
+    bug#13949735: crash regression from bug#13694811.
+    
+    There can be cases when the optimizer calls ha_partition::records_in_range
+    when there are no matching partitions. So the DBUG_ASSERT of
+    !tot_used_partitions does assert.
+    
+    Fixed by returning 0 instead when no matching partitions are found.
+    
+    This will avoid the crash. records_in_range will then try to find the
+    biggest used partition, which will not find any partition and
+    records_in_range will then return 0, meaning non rows can be found.
+    
+    Patch contributed by Davi Arnaut at twitter.
+
+commit e482b0bb5bc764bcd097d0c591fe31863d667200
+Author: Andrei Elkin <andrei.elkin@oracle.com>
+Date:   Fri Apr 20 19:41:20 2012 +0300
+
+    BUG#11754117 incorrect logging of INSERT into auto-increment
+    BUG#11761686 insert_id event is not filtered.
+    
+    Two issues are covered.
+    
+    INSERT into autoincrement field which is not the first part in the composed primary key
+    is unsafe by autoincrement logging design. The case is specific to MyISAM engine
+    because Innodb does not allow such table definition.
+    
+    However no warnings and row-format logging in the MIXED mode was done, and
+    that is fixed.
+    
+    Int-, Rand-, User-var log-events were not filtered along with their parent
+    query that made possible them to screw up execution context of the following
+    query.
+    
+    Fixed with deferring their execution until the parent query.
+    
+    ******
+    Bug#11754117
+    
+    Post review fixes.
+    
+    mysql-test/suite/rpl/r/rpl_auto_increment_bug45679.result:
+      a new result file is added.
+    mysql-test/suite/rpl/r/rpl_filter_tables_not_exist.result:
+      results updated.
+    mysql-test/suite/rpl/t/rpl_auto_increment_bug45679.test:
+      regression test for BUG#11754117-45670 is added.
+    mysql-test/suite/rpl/t/rpl_filter_tables_not_exist.test:
+      regression test for filtering issue of BUG#11754117 - 45670 is added.
+    sql/log_event.cc:
+      Logics are added for deferring and executing events associated
+      with the Query event.
+    sql/log_event.h:
+      Interface to deferred events batch execution is added.
+    sql/rpl_rli.cc:
+      initialization for new RLI members is added.
+    sql/rpl_rli.h:
+      New members to RLI are added to facilitate deferred events gathering
+      and execution control;
+      two general character RLI cleanup methods are constructed.
+    sql/rpl_utility.cc:
+      Deferred_log_events methods are difined.
+    sql/rpl_utility.h:
+      A new class Deferred_log_events is defined to implement
+      IRU events gathering, execution and cleanup.
+    sql/slave.cc:
+      Necessary changes to initialize `rli->deferred_events' and prevent
+      deferred event deletion in the main read-exec branch.
+    sql/sql_base.cc:
+      A new safe-check function for multi-part pk with auto-increment is defined
+      and deployed in lock_tables().
+    sql/sql_class.cc:
+      Initialization for a new member and replication cleanups are added
+      to THD class.
+    sql/sql_class.h:
+      THD class receives a new member to hold a specific execution
+      context for slave applier.
+    sql/sql_parse.cc:
+      Execution of the deferred event in started prior to its parent query.
+
+commit 6c841fd42b1679886bd89a18b6d680342c270d4c
+Author: Mayank Prasad <mayank.prasad@oracle.com>
+Date:   Thu Apr 19 14:57:34 2012 +0530
+
+    BUG#12427262 : 60961: SHOW TABLES VERY SLOW WHEN NOT IN SYSTEM DISK CACHE
+    
+    Reason:
+     This is a regression happened because of changes done in code refactoring
+     in 5.1 from 5.0.
+    
+    Issue:
+     While doing "Show tables" lex->verbose was being checked to avoid opening
+     FRM files to get table type. In case of "Show full table", lex->verbose
+     is true to indicate table type is required. In 5.0, this check was
+     present which got missing in >=5.5.
+    
+    Fix:
+     Added the required check to avoid opening FRM files unnecessarily in case
+     of "Show tables".
+
+commit d12f47c2c63ecdc4a98c5edfb06a1fb86ad2b504
+Author: Praveenkumar Hulakund <praveenkumar.hulakund@oracle.com>
+Date:   Wed Apr 4 11:13:42 2012 +0530
+
+    Bug#12762885: 61713: MYSQL WILL NOT BIND TO "LOCALHOST" IF LOCALHOST IS BOTH
+                         IPV4/IPV6 ENABLED
+    
+    Analysis:
+    ----------------------
+    The problem was that if a hostname resolves to more than one IP-address,
+    the server (5.5) does not start due to an error. In 5.1 the server used to
+    take some IP-address and start.
+    
+    It's a regression and should be fixed.
+    
+    5.5 supports IPv6, while 5.1 does not. However, that should not
+    prevent the server from start -- if a hostname has both IPv4 and IPv6 addresses,
+    the server should choose some IPv4-address and start.
+    
+    It's been decided to prefer IPv4-address to be backward compatible with 5.1.
+    
+    Another problem was that the 5.6 server did not report proper error message
+    when the specified hostname could not be resolved. So, the code has been
+    changed to report proper error message.
+    
+    Testing
+    ================================
+    5.5
+    =============================
+    invalid hostname (localhos):
+      => Following error message reported.
+         120308 15:52:09 [ERROR] Can't start server: cannot resolve hostname!
+         120308 15:52:09 [ERROR] Aborting
+    
+    invalid ip_address:
+      => Following error message reported.
+          120308 15:56:06 [Note] Server hostname (bind-address): '123.123.123.123'; port: 3306
+          120308 15:56:06 [Note]   - '123.123.123.123' resolves to '123.123.123.123';
+          120308 15:56:06 [Note] Server socket created on IP: '123.123.123.123'.
+          120308 15:56:06 [ERROR] Can't start server: Bind on TCP/IP port: Cannot assign requested address
+    
+    Only ipv4 host configured:
+      => Following message logged
+        120308 16:02:50 [Note] Server hostname (bind-address): 'localhost'; port: 3306
+        120308 16:02:50 [Note]   - 'localhost' resolves to '127.0.0.1';
+        120308 16:02:50 [Note] Server socket created on IP: '127.0.0.1'
+    
+    Only ipv6 host configured:
+      => Following message logged
+        120308 16:04:03 [Note] Server hostname (bind-address): 'localhost'; port: 3306
+        120308 16:04:03 [Note]   - 'localhost' resolves to '::1';
+        120308 16:04:03 [Note] Server socket created on IP: '::1'.
+    
+    ipv4 and ipv6 host configured:
+      => Following message logged
+        120308 16:05:02 [Note] Server hostname (bind-address): 'localhost'; port: 3306
+        120308 16:05:02 [Note]   - 'localhost' resolves to '::1';
+        120308 16:05:02 [Note]   - 'localhost' resolves to '127.0.0.1';
+        120308 16:05:02 [Note] Server socket created on IP: '127.0.0.1'.
+      => Non localhost address
+        120308 16:08:20 [Note] Server hostname (bind-address): 'mysql_addr'; port: 3306
+        120308 16:08:20 [Note]   - 'mysql_addr' resolves to '10.178.58.216';
+        120308 16:08:20 [Note]   - 'mysql_addr' resolves to 'fe80::120b:a9ff:fe69:59ec';
+        120308 16:08:20 [Note] Server socket created on IP: '10.178.58.216'.
+    
+    More than one entry for ipv4 and ipv6 address:
+      => Following message logged
+        120308 16:06:19 [Note] Server hostname (bind-address): 'localhost'; port: 3306
+        120308 16:06:19 [Note]   - 'localhost' resolves to '::1';
+        120308 16:06:19 [Note]   - 'localhost' resolves to '::1';
+        120308 16:06:19 [Note]   - 'localhost' resolves to '127.0.0.1';
+        120308 16:06:19 [Note]   - 'localhost' resolves to '127.0.0.1';
+        120308 16:06:19 [Note] Server socket created on IP: '127.0.0.1'.
+For keyword speed:
+commit ce7a3b43c80f8e6452713b799d5cae98af95bb7f
+Author: Vladislav Vaintroub <wlad@montyprogram.com>
+Date:   Fri Jun 8 19:15:01 2012 +0200
+
+    LP1008334 : Speedup specific datetime queries that got slower with introduction of microseconds in 5.3
+    
+    - Item::get_seconds() now skips decimal arithmetic, if decimals is 0. This significantly speeds up from_unixtime() if no fractional part is passed.
+    - replace sprintfs used to format temporal values  by hand-coded formatting
+    
+    Query1 (original query in the bug report)
+    BENCHMARK(10000000,DATE_SUB(FROM_UNIXTIME(RAND() * 2147483648), INTERVAL (FLOOR(1 + RAND() * 365)) DAY))
+    
+    Query2 (Variation of query1 that does not use fractional part in FROM_UNIXTIME parameter)
+    BENCHMARK(10000000,DATE_SUB(FROM_UNIXTIME(FLOOR(RAND() * 2147483648)), INTERVAL (FLOOR(1 + RAND() * 365)) DAY))
+    
+    Prior to the patch, the runtimes were (32 bit compilation/AMD machine)
+    Query1: 41.53 sec
+    Query2: 23.90 sec
+    
+    With the patch, the runtimes are
+    Query1: 32.32 sec (speed up due to removing sprintf)
+    Query2: 12.06 sec (speed up due to skipping decimal arithmetic)
+
+commit 598bb174677207475e34eb3c0632cab91f6dea9a
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Thu May 17 01:47:28 2012 +0300
+
+    More fixes for LOCK TABLE and REPAIR/FLUSH
+    Changed HA_EXTRA_NORMAL to HA_EXTRA_NOT_USED (more clean)
+    
+    mysql-test/suite/maria/lock.result:
+      More extensive tests of LOCK TABLE with FLUSH and REPAIR
+    mysql-test/suite/maria/lock.test:
+      More extensive tests of LOCK TABLE with FLUSH and REPAIR
+    sql/sql_admin.cc:
+      Fix that REPAIR TABLE ... USE_FRM works with LOCK TABLES
+    sql/sql_base.cc:
+      Ensure that transactions are closed in ARIA when doing flush
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+      Don't call extra many times for a table in close_all_tables_for_name()
+      Added test if table_list->table as this can happen in error situations
+    sql/sql_partition.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_reload.cc:
+      Fixed comment
+    sql/sql_table.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_trigger.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_truncate.cc:
+      HA_EXTRA_FORCE_REOPEN -> HA_EXTRA_PREPARE_FOR_DROP for truncate, as this speeds up truncate by not having to flush the cache to disk.
+For keyword delayedInnoDBflush:
+For keyword delayed:
+For keyword InnoDB:
+commit d7a1ea485c3ff63be50cb810e082d6a9edd24f15
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Mon Aug 20 22:54:15 2012 +0300
+
+    Ensure we don't assert with debug binaries if SHOW INNODB STATUS returns with an error.
+    
+    
+    sql/handler.cc:
+      SHOW INNODB STATUS sometimes returns 0 even if it has generated an error.
+      This code is here to catch it until InnoDB some day is fixed.
+    storage/innobase/handler/ha_innodb.cc:
+      Catch at least one of the possible errors from SHOW INNODB STATUS to provide a correct return code.
+    storage/xtradb/handler/ha_innodb.cc:
+      Catch at least one of the possible errors from SHOW INNODB STATUS to provide a correct return code.
+    support-files/my-huge.cnf.sh:
+      Fixed typo
+
+commit 51b59214a31f274251c80fe1273040cd5a226598
+Author: Jon Olav Hauglid <jon.hauglid@oracle.com>
+Date:   Tue Jul 10 16:13:02 2012 +0200
+
+    Bug#12623923 Server can crash after failure to create
+                 primary key with innodb tables
+    
+    The bug was triggered if a single ALTER TABLE statement both
+    added and dropped indexes and ALTER TABLE failed during drop
+    (e.g. because the index was needed in a foreign key constraint).
+    In such cases, the server index information would get out of
+    sync with InnoDB - the added index would be present inside
+    InnoDB, but not in the server. This could then lead to InnoDB
+    error messages and/or server crashes.
+    
+    The root cause is that new indexes are added before old indexes
+    are dropped. This means that if ALTER TABLE fails while dropping
+    indexes, index changes will be reverted in the server but not
+    inside InnoDB.
+    
+    This patch fixes the problem by dropping any added indexes
+    if drop fails (for ALTER TABLE statements that both adds
+    and drops indexes).
+    
+    However, this won't work if we added a primary key as this
+    key might not be possible to drop inside InnoDB. Therefore,
+    we resort to the copy algorithm if a primary key is added
+    by an ALTER TABLE statement that also drops an index.
+    
+    In 5.6 this bug is more properly fixed by the handler interface
+    changes done in the scope of WL#5534 "Online ALTER".
+
+commit 38020ff4717a3920cc23b85dd0b841b55fbb1e59
+Author: Joerg Bruehe <joerg.bruehe@oracle.com>
+Date:   Thu Jun 28 20:03:53 2012 +0200
+
+    Bug#65745: UPDATE ON INNODB TABLE ENTERS RECURSION
+    
+    Introduction of cost based decision on filesort vs index for UPDATE
+    statements changed detection of the fact that the index used to scan the
+    table is being updated. The new design missed the case of index merge
+    when there is no single index to check. That was worked until a recent
+    change in InnoDB after which it went into infinite recursion if update of
+    the used index wasn't properly detected.
+    
+    The fix consists of 'used key being updated' detection code from 5.1.
+    
+    Patch done by Evgeny Potemkin <evgeny.potemkin@oracle.com>
+    and transferred into the 5.5.25a release build by Joerg Bruehe.
+    
+    This changeset is the difference between MySQL 5.5.25 and 5.5.25a.
+    
+    
+    VERSION:
+      Version number change.
+    sql/sql_update.cc:
+      Bug#65745: UPDATE ON INNODB TABLE ENTERS RECURSION
+      The check for used key being updated is extended to cover the case when
+      index merge is used.
+
+commit 102f3fc79afd6a3d7e5f96ed8e5c7b4d19b61c16
+Author: Evgeny Potemkin <evgeny.potemkin@oracle.com>
+Date:   Thu Jun 28 16:53:45 2012 +0400
+
+    Bug#14248833: UPDATE ON INNODB TABLE ENTERS RECURSION
+    
+    Introduction of cost based decision on filesort vs index for UPDATE
+    statements changed detection of the fact that the index used to scan the
+    table is being updated. The new design missed the case of index merge
+    when there is no single index to check. That was worked until a recent
+    change in InnoDB after which it went into infinite recursion if update of
+    the used index wasn't properly detected.
+    
+    The fix consists of 'used key being updated' detection code from 5.1.
+    
+    sql/sql_update.cc:
+      Bug#14248833: UPDATE ON INNODB TABLE ENTERS RECURSION
+      The check for used key being updated is extended to cover the case when
+      index merge is used.
+
+commit a839a9a750f1071a39aed71f26c958c8a06a3369
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Wed Jun 27 17:13:12 2012 +0300
+
+    Don't abort InnoDB/XtraDB if one can't allocate resources for AIO
+    - Better error messages
+    
+    This fixes that one again can run the test systems with many threads without having to increase fs.aio-max-nr.
+    
+    
+    mysql-test/include/mtr_check.sql:
+      Ignore the INNODB_USE_NATIVE_AIO variable (may change during execution)
+    mysql-test/mysql-test-run.pl:
+      Ignore warnings for failure to setup AIO
+    storage/innobase/os/os0file.c:
+      Continue without AIO even if we can't allocate resources for AIO
+    storage/xtradb/os/os0file.c:
+      Continue without AIO even if we can't allocate resources for AIO
+    storage/xtradb/srv/srv0start.c:
+      Give an error message (instead of core dump) if AIO can't be initialized
+
+commit 52acbbd93606d13021aaffac088859a29032b116
+Author: Jon Olav Hauglid <jon.hauglid@oracle.com>
+Date:   Tue Jun 12 15:04:57 2012 +0200
+
+    Bug#13586591 RQG GRAMMAR CONF/ENGINES/ENGINE_STRESS.YY
+                 CRASHES INNODB | TRX_STATE_NOT_STARTED
+    
+    The problem was that if DELETE with subselect caused a
+    deadlock inside InnoDB, this deadlock was not properly
+    handled by the SQL layer. This meant that the SQL layer
+    would try to unlock the row after InnoDB had rolled
+    back the transaction. This caused an assertion inside
+    InnoDB.
+    
+    This patch fixes the problem by checking for errors
+    reported by SQL_SELECT::skip_record() and not calling
+    unlock_row() if any errors have been reported.
+
+commit 10d81fcf84ad0574d4fa95dcb8fbeaeec10f2822
+Author: Narayanan Venkateswaran <v.narayanan@oracle.com>
+Date:   Thu Jun 7 19:14:26 2012 +0530
+
+    WL#6161 Integrating with InnoDB codebase in MySQL 5.5
+    
+    Changes in the InnoDB codebase required to compile and
+    integrate the MEB codebase with MySQL 5.5.
+    
+    @ storage/innobase/btr/btr0btr.c
+      Excluded buffer pool usage from MEB build.
+    
+      buf_pool_from_bpage calls are in buf0buf.ic, and
+      the buffer pool functions from that file are
+      disabled in MEB.
+    @ storage/innobase/buf/buf0buf.c
+      Disabling more buffer pool functions unused in MEB.
+    @ storage/innobase/dict/dict0dict.c
+      Disabling dict_ind_free that is unused in MEB.
+    @ storage/innobase/dict/dict0mem.c
+      The include
+    
+      #include "ha_prototypes.h"
+    
+      Was causing conflicts with definitions in my_global.h
+    
+      Linking C executable mysqlbackup
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_foreign_table_name_lookup_set':
+      dict0mem.c:(.text+0x91c): undefined reference to `innobase_get_lower_case_table_names'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_referenced_table_name_lookup_set':
+      dict0mem.c:(.text+0x9fc): undefined reference to `innobase_get_lower_case_table_names'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_foreign_table_name_lookup_set':
+      dict0mem.c:(.text+0x96e): undefined reference to `innobase_casedn_str'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_referenced_table_name_lookup_set':
+      dict0mem.c:(.text+0xa4e): undefined reference to `innobase_casedn_str'
+      collect2: ld returned 1 exit status
+      make[2]: *** [mysqlbackup] Error 1
+    
+      innobase_get_lower_case_table_names
+      innobase_casedn_str
+      are functions that are part of ha_innodb.cc that is not part of the build
+    
+      dict_mem_foreign_table_name_lookup_set
+      function is not there in the current codebase, meaning we do not use it in MEB.
+    @ storage/innobase/fil/fil0fil.c
+      The srv_fast_shutdown variable is declared in
+      srv0srv.c that is not compiled in the
+      mysqlbackup codebase.
+    
+      This throws an undeclared error.
+    
+      From the Manual
+      ---------------
+    
+      innodb_fast_shutdown
+      --------------------
+    
+      The InnoDB shutdown mode. The default value is 1
+      as of MySQL 3.23.50, which causes a Ã¢â‚¬Å“fastÃ¢â‚¬ï¿½ shutdown
+      (the normal type of shutdown). If the value is 0,
+      InnoDB does a full purge and an insert buffer merge
+      before a shutdown. These operations can take minutes,
+      or even hours in extreme cases. If the value is 1,
+      InnoDB skips these operations at shutdown.
+    
+      This ideally does not matter from mysqlbackup
+      @ storage/innobase/ha/ha0ha.c
+      In file included from /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/ha/ha0ha.c:34:0:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/btr0sea.h:286:17: error: expected Ã¢â‚¬Ëœ=Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ,Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ;Ã¢â‚¬â„¢, Ã¢â‚¬ËœasmÃ¢â‚¬â„¢ or Ã¢â‚¬Ëœ__attribute__Ã¢â‚¬â„¢ before Ã¢â‚¬Ëœ*Ã¢â‚¬â„¢ token
+      make[2]: *** [CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/ha/ha0ha.c.o] Error 1
+      make[1]: *** [CMakeFiles/innodb.dir/all] Error 2
+      make: *** [all] Error 2
+    
+      # include "sync0rw.h" is excluded from hotbackup compilation in dict0dict.h
+    
+      This causes extern rw_lock_t* btr_search_latch_temp; to throw a failure because
+      the definition of rw_lock_t is not found.
+    @ storage/innobase/include/buf0buf.h
+      Excluding buffer pool functions that are unused from the
+      MEB codebase.
+    @ storage/innobase/include/buf0buf.ic
+      replicated the exclusion of
+    
+      #include "buf0flu.h"
+      #include "buf0lru.h"
+      #include "buf0rea.h"
+    
+      by looking at the current codebase in <meb-trunk>/src/innodb
+      @ storage/innobase/include/dict0dict.h
+      dict_table_x_lock_indexes, dict_table_x_unlock_indexes, dict_table_is_corrupted,
+      dict_index_is_corrupted, buf_block_buf_fix_inc_func are unused in MEB and was
+      leading to compilation errors and hence excluded.
+    @ storage/innobase/include/dict0dict.ic
+      dict_table_x_lock_indexes, dict_table_x_unlock_indexes, dict_table_is_corrupted,
+      dict_index_is_corrupted, buf_block_buf_fix_inc_func are unused in MEB and was
+      leading to compilation errors and hence excluded.
+    @ storage/innobase/include/log0log.h
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/log0log.h: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/log0log.h:767:2: error: expected specifier-qualifier-list before Ã¢â  ‚¬Ëœmutex_tÃ¢â‚¬â„¢
+    
+      mutex_t definitions were excluded as seen from ambient code
+      hence excluding definition for log_flush_order_mutex also.
+    @ storage/innobase/include/os0file.h
+      Bug in InnoDB code, create_mode should have been create.
+    @ storage/innobase/include/srv0srv.h
+      In file included from /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/buf/buf0buf.c:50:0:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/srv0srv.h: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/srv0srv.h:120:16: error: expected Ã¢â‚¬Ëœ=Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ,Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ;Ã¢â‚¬â„¢, Ã¢â‚¬ËœasmÃ¢â‚¬â„¢ or Ã¢â‚¬Ëœ__attribute__Ã¢â‚¬â„¢ before Ã¢â‚¬Ëœsrv_use_native_aioÃ¢â‚¬â„¢
+    
+      srv_use_native_aio - we do not use native aio of the OS anyway from MEB. MEB does not compile
+      InnoDB with this option. Hence disabling it.
+    @ storage/innobase/include/trx0sys.h
+      [ 56%] Building C object CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c.o
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c: In function Ã¢â‚¬Ëœtrx_sys_read_file_format_idÃ¢â‚¬â„¢:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c:1499:20: error: Ã¢â‚¬ËœTRX_SYS_FILE_FORMAT_TAG_MAGIC_NÃ¢â‚¬â„¢   undeclared (first use in this function)
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c:1499:20: note: each undeclared identifier is reported only once for  each function it appears in
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/buf0buf.h:607:1: warning: Ã¢â‚¬Ëœbuf_block_buf_fix_inc_funcÃ¢â‚¬â„¢ declared Ã¢â‚¬ËœstaticÃ¢â‚¬â„¢ but never defined
+      make[2]: *** [CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c.o] Error 1
+    
+      unused calls excluded to enable compilation
+    @ storage/innobase/mem/mem0dbg.c
+        excluding #include "ha_prototypes.h" that lead to definitions in ha_innodb.cc
+    @ storage/innobase/os/os0file.c
+        InnoDB not compiled with aio support from MEB anyway. Hence excluding this from
+        the compilation.
+    @ storage/innobase/page/page0zip.c
+      page0zip.c:(.text+0x4e9e): undefined reference to `buf_pool_from_block'
+      collect2: ld returned 1 exit status
+    
+      buf_pool_from_block defined in buf0buf.ic, most of the file is excluded for compilation of MEB
+    @ storage/innobase/ut/ut0dbg.c
+      excluding #include "ha_prototypes.h" since it leads to definitions in ha_innodb.cc
+      innobase_basename(file) is defined in ha_innodb.cc. Hence excluding that also.
+    @ storage/innobase/ut/ut0ut.c
+      cal_tm unused from MEB, was leading to earnings, hence disabling for MEB.
+
+commit 388cc907ecd14e004f8879c0eb15e9f6299d312b
+Author: Jon Olav Hauglid <jon.hauglid@oracle.com>
+Date:   Fri Jun 1 09:31:24 2012 +0200
+
+    Bug#13982017: ALTER TABLE RENAME ENDS UP WITH ERROR 1050 (42S01)
+    
+    Fixed by backport of:
+        ------------------------------------------------------------
+        revno: 3402.50.156
+        committer: Jon Olav Hauglid <jon.hauglid@oracle.com>
+        branch nick: mysql-trunk-test
+        timestamp: Wed 2012-02-08 14:10:23 +0100
+        message:
+          Bug#13417754 ASSERT IN ROW_DROP_DATABASE_FOR_MYSQL DURING DROP SCHEMA
+    
+          This assert could be triggered if an InnoDB table was being moved
+          to a different database using ALTER TABLE ... RENAME, while this
+          database concurrently was being dropped by DROP DATABASE.
+    
+          The reason for the problem was that no metadata lock was taken
+          on the target database by ALTER TABLE ... RENAME.
+          DROP DATABASE was therefore not blocked and could remove
+          the database while ALTER TABLE ... RENAME was executing. This
+          could cause the assert in InnoDB to be triggered.
+    
+          This patch fixes the problem by taking a IX metadata lock on
+          the target database before ALTER TABLE ... RENAME starts
+          moving a table to a different database.
+    
+          Note that this problem did not occur with RENAME TABLE which
+          already takes the correct metadata locks.
+    
+          Also note that this patch slightly changes the behavior of
+          ALTER TABLE ... RENAME. Before, the statement would abort and
+          return an error if a lock on the target table name could not
+          be taken immediately. With this patch, ALTER TABLE ... RENAME
+          will instead block and wait until the lock can be taken
+          (or until we get a lock timeout). This also means that it is
+          possible to get ER_LOCK_DEADLOCK errors in this situation
+          since we allow ALTER TABLE ... RENAME to wait and not just
+          abort immediately.
+
+commit d74fbc6ba29c9faf9a7298b30b641818ceb0536b
+Author: irana <irana@dscczz01.us.oracle.com>
+Date:   Thu Apr 26 08:17:14 2012 -0700
+
+    InnoDB: Adjust error message when a dropped tablespace is accessed.
+For keyword flush:
+commit 63f6c4e8fcdba8fe47d7c7592c31b5c2549daa3a
+Author: unknown <knielsen@knielsen-hq.org>
+Date:   Thu Aug 30 10:53:49 2012 +0200
+
+    MDEV-381: fdatasync() does not correctly flush growing binlog file.
+    
+    When we append data to the binlog file, we use fdatasync() to ensure
+    the data gets to disk so that crash recovery can work.
+    
+    Unfortunately there seems to be a bug in ext3/ext4 on linux, so that
+    fdatasync() does not correctly sync all data when the size of a file
+    is increased. This causes crash recovery to not work correctly (it
+    loses transactions from the binlog).
+    
+    As a work-around, use fsync() for the binlog, not fdatasync(). Since
+    we are increasing the file size, (correct) fdatasync() will most
+    likely not be faster than fsync() on any file system, and fsync()
+    does work correctly on ext3/ext4. This avoids the need to try to
+    detect if we are running on buggy ext3/ext4.
+
+commit 2176956c517de59a838151a80470c995825e3eed
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Wed Aug 15 14:37:55 2012 +0300
+
+    Fixed MDEV-366: Assertion `share->reopen == 1' failed in maria_extra on DROP TABLE which is locked twice
+    
+    mysql-test/suite/maria/lock.result:
+      Added test case
+    mysql-test/suite/maria/lock.test:
+      Added test case
+    sql/sql_table.cc:
+      One can't call HA_EXTRA_FORCE_REOPEN on something that may be opened twice.
+      It's safe to remove the call in this case as we will call HA_EXTRA_PREPARE_FOR_DROP for the table anyway.
+      (One nice side effect is that drop is a bit faster as we are not flushing the cache to disk before the drop anymore)
+
+commit c2b458edab2088d6e1c02fcc9e0ebc4567e5cc64
+Author: Igor Babaev <igor@askmonty.org>
+Date:   Mon Jun 11 22:12:47 2012 -0700
+
+    Fixed LP bug #1008293.
+    
+    One of the reported problems manifested itself in the scenario when one
+    thread tried to to get statistics on a key cache while the second thread
+    had not finished initialization of the key cache structure yet.
+    The problem was resolved by forcing serialization of such operations
+    on key caches.
+    
+    To serialize function calls to perform certain operations over a key cache
+    a new mutex associated with the key cache now is used. It is stored in the
+    field op_lock of the KEY_CACHE structure. It is locked when the operation
+    is performed. Some of the serialized key cache operations utilize calls
+    for other key cache operations. To avoid recursive locking of op_lock
+    the new functions that perform the operations of key cache initialization,
+    destruction and re-partitioning with an additional parameter were introduced.
+    The parameter says whether the operation over op_lock are to be performed or
+    are to be omitted. The old functions for the operations of key cache
+    initialization, destruction,and  re-partitioning  now just call the
+    corresponding new functions with the additional parameter set to true
+    requesting to use op_lock while all other calls of these new function
+    have this parameter set to false.
+    
+    Another problem reported in the bug entry concerned the operation of
+    assigning an index to a key cache. This operation can be called
+    while the key cache structures are not initialized yet. In this
+    case any call of flush_key_blocks() should return without any actions.
+    
+    No test case is provided with this patch.
+
+commit 10d81fcf84ad0574d4fa95dcb8fbeaeec10f2822
+Author: Narayanan Venkateswaran <v.narayanan@oracle.com>
+Date:   Thu Jun 7 19:14:26 2012 +0530
+
+    WL#6161 Integrating with InnoDB codebase in MySQL 5.5
+    
+    Changes in the InnoDB codebase required to compile and
+    integrate the MEB codebase with MySQL 5.5.
+    
+    @ storage/innobase/btr/btr0btr.c
+      Excluded buffer pool usage from MEB build.
+    
+      buf_pool_from_bpage calls are in buf0buf.ic, and
+      the buffer pool functions from that file are
+      disabled in MEB.
+    @ storage/innobase/buf/buf0buf.c
+      Disabling more buffer pool functions unused in MEB.
+    @ storage/innobase/dict/dict0dict.c
+      Disabling dict_ind_free that is unused in MEB.
+    @ storage/innobase/dict/dict0mem.c
+      The include
+    
+      #include "ha_prototypes.h"
+    
+      Was causing conflicts with definitions in my_global.h
+    
+      Linking C executable mysqlbackup
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_foreign_table_name_lookup_set':
+      dict0mem.c:(.text+0x91c): undefined reference to `innobase_get_lower_case_table_names'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_referenced_table_name_lookup_set':
+      dict0mem.c:(.text+0x9fc): undefined reference to `innobase_get_lower_case_table_names'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_foreign_table_name_lookup_set':
+      dict0mem.c:(.text+0x96e): undefined reference to `innobase_casedn_str'
+      libinnodb.a(dict0mem.c.o): In function `dict_mem_referenced_table_name_lookup_set':
+      dict0mem.c:(.text+0xa4e): undefined reference to `innobase_casedn_str'
+      collect2: ld returned 1 exit status
+      make[2]: *** [mysqlbackup] Error 1
+    
+      innobase_get_lower_case_table_names
+      innobase_casedn_str
+      are functions that are part of ha_innodb.cc that is not part of the build
+    
+      dict_mem_foreign_table_name_lookup_set
+      function is not there in the current codebase, meaning we do not use it in MEB.
+    @ storage/innobase/fil/fil0fil.c
+      The srv_fast_shutdown variable is declared in
+      srv0srv.c that is not compiled in the
+      mysqlbackup codebase.
+    
+      This throws an undeclared error.
+    
+      From the Manual
+      ---------------
+    
+      innodb_fast_shutdown
+      --------------------
+    
+      The InnoDB shutdown mode. The default value is 1
+      as of MySQL 3.23.50, which causes a Ã¢â‚¬Å“fastÃ¢â‚¬ï¿½ shutdown
+      (the normal type of shutdown). If the value is 0,
+      InnoDB does a full purge and an insert buffer merge
+      before a shutdown. These operations can take minutes,
+      or even hours in extreme cases. If the value is 1,
+      InnoDB skips these operations at shutdown.
+    
+      This ideally does not matter from mysqlbackup
+      @ storage/innobase/ha/ha0ha.c
+      In file included from /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/ha/ha0ha.c:34:0:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/btr0sea.h:286:17: error: expected Ã¢â‚¬Ëœ=Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ,Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ;Ã¢â‚¬â„¢, Ã¢â‚¬ËœasmÃ¢â‚¬â„¢ or Ã¢â‚¬Ëœ__attribute__Ã¢â‚¬â„¢ before Ã¢â‚¬Ëœ*Ã¢â‚¬â„¢ token
+      make[2]: *** [CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/ha/ha0ha.c.o] Error 1
+      make[1]: *** [CMakeFiles/innodb.dir/all] Error 2
+      make: *** [all] Error 2
+    
+      # include "sync0rw.h" is excluded from hotbackup compilation in dict0dict.h
+    
+      This causes extern rw_lock_t* btr_search_latch_temp; to throw a failure because
+      the definition of rw_lock_t is not found.
+    @ storage/innobase/include/buf0buf.h
+      Excluding buffer pool functions that are unused from the
+      MEB codebase.
+    @ storage/innobase/include/buf0buf.ic
+      replicated the exclusion of
+    
+      #include "buf0flu.h"
+      #include "buf0lru.h"
+      #include "buf0rea.h"
+    
+      by looking at the current codebase in <meb-trunk>/src/innodb
+      @ storage/innobase/include/dict0dict.h
+      dict_table_x_lock_indexes, dict_table_x_unlock_indexes, dict_table_is_corrupted,
+      dict_index_is_corrupted, buf_block_buf_fix_inc_func are unused in MEB and was
+      leading to compilation errors and hence excluded.
+    @ storage/innobase/include/dict0dict.ic
+      dict_table_x_lock_indexes, dict_table_x_unlock_indexes, dict_table_is_corrupted,
+      dict_index_is_corrupted, buf_block_buf_fix_inc_func are unused in MEB and was
+      leading to compilation errors and hence excluded.
+    @ storage/innobase/include/log0log.h
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/log0log.h: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/log0log.h:767:2: error: expected specifier-qualifier-list before Ã¢â  ‚¬Ëœmutex_tÃ¢â‚¬â„¢
+    
+      mutex_t definitions were excluded as seen from ambient code
+      hence excluding definition for log_flush_order_mutex also.
+    @ storage/innobase/include/os0file.h
+      Bug in InnoDB code, create_mode should have been create.
+    @ storage/innobase/include/srv0srv.h
+      In file included from /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/buf/buf0buf.c:50:0:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/srv0srv.h: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/srv0srv.h:120:16: error: expected Ã¢â‚¬Ëœ=Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ,Ã¢â‚¬â„¢, Ã¢â‚¬Ëœ;Ã¢â‚¬â„¢, Ã¢â‚¬ËœasmÃ¢â‚¬â„¢ or Ã¢â‚¬Ëœ__attribute__Ã¢â‚¬â„¢ before Ã¢â‚¬Ëœsrv_use_native_aioÃ¢â‚¬â„¢
+    
+      srv_use_native_aio - we do not use native aio of the OS anyway from MEB. MEB does not compile
+      InnoDB with this option. Hence disabling it.
+    @ storage/innobase/include/trx0sys.h
+      [ 56%] Building C object CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c.o
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c: In function Ã¢â‚¬Ëœtrx_sys_read_file_format_idÃ¢â‚¬â„¢:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c:1499:20: error: Ã¢â‚¬ËœTRX_SYS_FILE_FORMAT_TAG_MAGIC_NÃ¢â‚¬â„¢   undeclared (first use in this function)
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c:1499:20: note: each undeclared identifier is reported only once for  each function it appears in
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c: At top level:
+      /home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/include/buf0buf.h:607:1: warning: Ã¢â‚¬Ëœbuf_block_buf_fix_inc_funcÃ¢â‚¬â„¢ declared Ã¢â‚¬ËœstaticÃ¢â‚¬â„¢ but never defined
+      make[2]: *** [CMakeFiles/innodb.dir/home/narayanan/mysql-server/mysql-5.5-meb-rel3.8-innodb-integration-1/storage/innobase/trx/trx0sys.c.o] Error 1
+    
+      unused calls excluded to enable compilation
+    @ storage/innobase/mem/mem0dbg.c
+        excluding #include "ha_prototypes.h" that lead to definitions in ha_innodb.cc
+    @ storage/innobase/os/os0file.c
+        InnoDB not compiled with aio support from MEB anyway. Hence excluding this from
+        the compilation.
+    @ storage/innobase/page/page0zip.c
+      page0zip.c:(.text+0x4e9e): undefined reference to `buf_pool_from_block'
+      collect2: ld returned 1 exit status
+    
+      buf_pool_from_block defined in buf0buf.ic, most of the file is excluded for compilation of MEB
+    @ storage/innobase/ut/ut0dbg.c
+      excluding #include "ha_prototypes.h" since it leads to definitions in ha_innodb.cc
+      innobase_basename(file) is defined in ha_innodb.cc. Hence excluding that also.
+    @ storage/innobase/ut/ut0ut.c
+      cal_tm unused from MEB, was leading to earnings, hence disabling for MEB.
+
+commit 620507995dceba2ec9f45be2e2f9d18b1011c604
+Author: Sergei Golubchik <sergii@pisem.net>
+Date:   Mon Jun 4 17:39:28 2012 +0200
+
+    MDEV-136 Non-blocking "set read_only"
+    
+    backport dmitry.shulga@oracle.com-20120209125742-w7hdxv0103ymb8ko from mysql-trunk:
+    
+      Patch for bug#11764747 (formerly known as 57612): SET GLOBAL READ_ONLY=1 cannot
+      progress when a table is locked with LOCK TABLES.
+    
+      The reason for the bug was that mysql server makes a flush of all open tables
+      during handling of statement 'SET GLOBAL READ_ONLY=1'. Therefore if some of
+      these tables were locked by "LOCK TABLE ... READ" from a different connection,
+      then execution of statement 'SET GLOBAL READ_ONLY=1' would be waiting for
+      the lock for such table even if the table was locked in a compatible read mode.
+    
+      Flushing of all open tables before setting of read_only system variable
+      is inherited from 5.1 implementation since this was the only possible approach
+      to ensure that there isn't any pending write operations on open tables.
+    
+      Start from version 5.5 and above such behaviour is guaranteed by the fact
+      that we acquire global_read_lock before setting read_only flag. Since
+      acquiring of global_read_lock is successful only when there isn't any
+      active write operation then we can remove flushing of open tables from
+      processing of SET GLOBAL READ_ONLY=1.
+    
+      This modification changes the server behavior so that read locks held
+      by other connections (LOCK TABLE ... READ) no longer will block attempts
+      to enable read_only.
+
+commit 598bb174677207475e34eb3c0632cab91f6dea9a
+Author: Michael Widenius <monty@askmonty.org>
+Date:   Thu May 17 01:47:28 2012 +0300
+
+    More fixes for LOCK TABLE and REPAIR/FLUSH
+    Changed HA_EXTRA_NORMAL to HA_EXTRA_NOT_USED (more clean)
+    
+    mysql-test/suite/maria/lock.result:
+      More extensive tests of LOCK TABLE with FLUSH and REPAIR
+    mysql-test/suite/maria/lock.test:
+      More extensive tests of LOCK TABLE with FLUSH and REPAIR
+    sql/sql_admin.cc:
+      Fix that REPAIR TABLE ... USE_FRM works with LOCK TABLES
+    sql/sql_base.cc:
+      Ensure that transactions are closed in ARIA when doing flush
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+      Don't call extra many times for a table in close_all_tables_for_name()
+      Added test if table_list->table as this can happen in error situations
+    sql/sql_partition.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_reload.cc:
+      Fixed comment
+    sql/sql_table.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_trigger.cc:
+      HA_EXTRA_NORMAL -> HA_EXTRA_NOT_USED
+    sql/sql_truncate.cc:
+      HA_EXTRA_FORCE_REOPEN -> HA_EXTRA_PREPARE_FOR_DROP for truncate, as this speeds up truncate by not having to flush the cache to disk.
+
+commit 0c16222337b8146281533cf9fc4584676cdbdde5
+Author: Inaam Rana <inaam.rana@oracle.com>
+Date:   Mon Apr 23 22:15:29 2012 -0400
+
+    Bug#13990648: 65061: LRU FLUSH RATE CALCULATION IS BASED ON INVALID VALUES
+    
+    rb://1043
+    approved by: Sunny Bains
+    
+    Two internal counters were incremented twice for a single
+    operations. The counters are:
+    srv_buf_pool_flushed
+    buf_lru_flush_page_count
+For keyword dsync:

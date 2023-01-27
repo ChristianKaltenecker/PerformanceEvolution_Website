@@ -1,0 +1,1956 @@
+Searching between z3-4.7.1 and z3-4.8.1
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: QF_LRA,proof
+Keywords: slow fast time perf optim regression speed QF_LRA proof
+For keyword slow:
+[33mcommit 2bb94ed4fe576da4af98844fe4698361c79f8d6a[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Sun Feb 25 10:52:53 2018 -0800
+
+    remove warnings in scaler and use m_cut_solver_cycle_on_var
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    detect [1;31mslow[m propagations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fiddle with the stop conditions
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    get rid of constraint->m_predecessors, fix a bug in push/pop with lemmas
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    clean detection of stale lemmas in pop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add constraints lazily to cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    refactor some of cut_solver classes into include files
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    prepare to index constraint from 0 to to n - 1, where n is the number of constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    prepare for constraint priority
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use priorities in active_set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove unnecesessary parameters
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    speedup bound propagations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    restore tactics
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    speedup bound propagation by avoiding some calls to propagate_constraint_only_one_unlim
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixes by Nikolaj
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix print lp_core_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on gomory test, subs terms indices correctly
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    correct const_iterator for lar_term
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    improve static_matrix with iterators
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    make row_strip a struct
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    move row_strip outside of static_matrix
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add const_iterator to row_strip
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove the hierarchy of iterators - use std::iterators
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    adding gcd_test stats and taking care of for iterators
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    restore qflia_tactic.cpp
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    run gcd_test according to settings()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    experiment with picking a narrow or random branch
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit ad571510f3e44b57a67372a8e46675eba3a84f5e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed May 9 10:49:32 2018 +0100
+
+    disable [1;31mslow[m validation code
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword fast:
+[33mcommit 852df6f7d9cec0fc138eadfbada3dec87e97b96c[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Thu Jul 5 16:35:05 2018 -0700
+
+    reshufle var_register to [1;31mfast[mer access
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit e1d3119f9fe447b9c3274ae88f6cb59f7ab05637[m
+Author: Lev Nachmanson <levnach@microsoft.com>
+Date:   Mon Jul 10 11:57:33 2017 -0700
+
+    use a [1;31mfast[mer version of get_model in debug checks
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+
+[33mcommit da0aa710827912f1a8e6579285ed18283174ea1a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Nov 29 21:21:56 2017 -0800
+
+    adding uhle/uhte for [1;31mfast[mer asymmetric branching
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9dc7ba73eb13a42f24ca77471290a22aaf26dc94[m
+Author: Lev Nachmanson <levnach@microsoft.com>
+Date:   Mon Jul 10 11:57:33 2017 -0700
+
+    use a [1;31mfast[mer version of get_model in debug checks
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+For keyword time:
+[33mcommit 390f77ee695182924ccfb7007f9451c692e7d2ac[m
+Merge: fc4627a24 bb534f610
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jul 9 20:20:03 2018 -0700
+
+    Merge pull request #1743 from rainof[1;31mtime[m/master
+    
+    Add example of using z3's model construction C++ API
+
+[33mcommit 6202b2f2e486c7800c8b21c9912e17e74de5328c[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Tue Oct 3 11:50:21 2017 -0700
+
+    add cancellations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    syntax errors
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+    
+    use std::vector instead of vector in cut_solver temporarily
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix in is_upper_bound, is_lower_bound
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add bound() for polynomial, needs more testing
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on resolve
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+    
+    implement resolve()
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+    
+    implement improves()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    replace low_bound by lower_bound
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    better printing in cut_solver.h
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add value vector to cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on bound propagaion for cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    bound propagation for integer inequalites
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    bound propagation for integer inequalites
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    bound propagattions on integers
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    adding m_explanation field to cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify bound propagation in cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    calculate conflict explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    change m_explanation type to a set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    making cut_solver a member of int_solver, missing push/pop support
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    Nikolaj's comments
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    Nikolaj's comments
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    return explanations from cut_solver and hook up push/pop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    hook up push/pop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    using resize of std::vector
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    it is a big squashed commit
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    rename hpp to cpp
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixes in push/pop of cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    return simple inequalities a part of a conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on propagation and the main loop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add file
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    init m_v[j], the var values only when j is fixed
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    handle decide in cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    start on resolve_conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    start on resolve_conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove cut_solver_def.h
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    in the middle
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    change signature of resolve
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix the domain of the decided var
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on tightening of ineqs
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on tight ineqs
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on tightening
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on tightening
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    resolve conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix in usage of resolve()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on conflict resolution
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    cut_solver is not a template
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    represent var_info as a class, not a struct
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    make literal a class
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    better resolve_conflict scheme, and switch to *constraints in literals
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug conflict resolution in cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    switch to vector
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove nondetermenistic behavior from cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug resolve conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix backjump
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix backjump
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix backjump
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix backjump
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    dumb explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    get rid of a parameter
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add lemmas origins
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use lemma_origins to provide correct explanations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use lemma_origins to provide correct explanations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    store lemmas in a separate vector
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use std::unordered_set for m_dependent_constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use std::unordered_set for m_dependent_constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix bugs with lemmas
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    finding conflicting cores
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    switch from changed variables to active_set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    less active constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on cut_solver.h
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    propagate simple constraing immediately
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    propagate simple constraints immediately
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixing bugs with active set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove const_cast
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    towards unbounded variables
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    toward unbounded variables
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    toward unbounded variables
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    make lemmas_origins a set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use correct hash and equal in m_lemma_origins
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add testing code
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add testing code
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug unlimited vars
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    take in Nikolaj's comments and improvements
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    address the comments
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    handle unlimited vars in check_inconsistent
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    detect trivial polynomials in resolve
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    Nikolaj's changes
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify handling of m_global_bound_var
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    decide on m_global_bound_var if it is not fixed
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify m_global_bound_var
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove m_global_bound_var, simplify the indexing of var_infos of cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    do not run cut_solver with vars without any bound
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    small changes
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add cancellation in cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    do not pop lemmas during a cut_solver run
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    treating cut_solver as an heurisitic
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    prepare for cut_solver returning undef
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify work with active_set in cut_solver, add stats
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify var_info literals
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in fill_conflict_explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in the conflict explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add [1;31mtime[mout to validate_* in theory_lra.cpp
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify cut_solver, no special treatment for simple constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    cleanup the cancel story
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    cleanup cancelling
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in push/pop of cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    extract a method in int_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    some progress with the new scheme
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add testing code
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixes in test and in literal creation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in bound propagation in cut_solver.h
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    provide valid conflict explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use a lazy push in stacked_map
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use a lazy push in stacked_map
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    optimize stack operations on var_info's domains
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in tightening
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use the standard tactics from qflia_tactic
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    spread the var domain stack over literals
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    spread the var domain stack over literals
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    avoid cycling in cut_solver.h and fixes in push/pop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixes after rebase
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 3d27232b2ad377ca41d8d2de4bcf3e9bbe487973[m
+Merge: 8969a7035 fc8b1d9a7
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Jun 22 09:31:19 2018 -0700
+
+    Merge pull request #1697 from rainof[1;31mtime[m/master
+    
+    Refine default_tactic for better support of pure SAT instances
+
+[33mcommit 245651305356de89c61e919257fcc747b9e6c743[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jun 19 10:43:51 2018 -0700
+
+    some[1;31mtime[ms comments are worth reading
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5756871738485a70d689effd898ae2e4a442ee93[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon Jun 4 12:22:51 2018 -0700
+
+    Always attempt to eliminate all existential variables
+    
+    Some[1;31mtime[ms variables that cannot be eliminated in one context, can be
+    eliminated in the other. Pass all available variables to MBP to be
+    eliminated if possible
+
+[33mcommit 7396ad72abd2fc70e1200b6e7c6e442b4c5efe75[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon Jun 4 12:21:03 2018 -0700
+
+    Give up when a lemma is re-discovered too many [1;31mtime[ms
+
+[33mcommit 23a8e59493f95a18e62bdeebe007700ae29d6be3[m
+Author: Yakir Vizel <yakir.vizel@gmail.com>
+Date:   Mon Dec 18 13:52:53 2017 -0500
+
+    Initial commit of QGen
+    
+    Controlled by fixedpoint.spacer.use_quanti_generalizer
+    
+    measure cumulative [1;31mtime[m, number of invocations, and number of failed
+    SMT calls
+    
+    Relaxing equality in a pattern: if a variable equals a numeral, relax with GE
+    
+    pob::get_skolems() returns all skolems that might appear in the pob.
+    New skolems must be added above the largest index in that map,
+    even if they are not used in the pob itself.
+    
+    pattern generalization should be done before the pattern is skolemized and
+    added into the new cube.
+
+[33mcommit a0b5f6937bcc8c2f38ac5dd524d9db28e4418478[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Feb 8 10:05:26 2018 -0800
+
+    fix bugs, add soft [1;31mtime[mout to opt frontend
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 64e542bd70e0254a4a24648ca8ad96421445ad66[m
+Author: Lev Nachmanson <levnach@microsoft.com>
+Date:   Thu Jul 20 19:13:13 2017 -0700
+
+    fix term indices for the [1;31mtime[m being when exiting from check()
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+For keyword perf:
+[33mcommit 1e11b62bc6587579481bb5cfb29170b83f67fa21[m
+Merge: e8a78ec69 f67346d16
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Sep 4 20:35:46 2018 -0700
+
+    Merge pull request #1809 from agurfinkel/deep_space
+    
+    Fix [1;31mperf[mormance regression
+
+[33mcommit 75eba45926139395b18c79f2fbea97b2422fc020[m
+Merge: b5100b5b6 c963f6f2d
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed May 23 08:47:08 2018 -0700
+
+    Merge pull request #1606 from NikolajBjorner/opt
+    
+    This integrates several features and improvements to the SAT and finite domain solver.
+    
+    - The SAT solver by default handle cardinality and PB constraints using a custom plugin that operates directly on cardinality and PB constraints.
+    - A parallel mode is available for select theories, including QF_BV. By setting parallel.enable=true Z3 will spawn a number of worker threads proportional to the number of available CPU cores to apply cube and conquer solving on the goal.
+    - A "cube" interface is exposed over the solver API.
+    - Model conversion is first class over the textual API, such that subgoals created from running a solver can be passed in text files and a model for the original formula can be recreated from the result.
+    - This has also led to changes in how models are tracked over tactic subgoals. The API for extracting models from apply_result have been replaced.
+    - An optional mode handles xor constraints using a custom xor propagator. It is off by default and its value not demonstrated.
+    - The SAT solver includes new inprocessing technques that are available during simplification. It [1;31mperf[morms asymmetric tautology elimination by default, and one can turn on more powerful inprocessing techniques (known as ACCE, ABCE, CCE). Asymmetric branching also uses features introduced in Lingeling by exploiting binary implication graphs.
+    
+    - A breaking change to the API is that parsers for SMT-LIB2 formulas return a vector of formulas as opposed to a conjunction of formulas. The vector of formulas correspond to the set of "assert" instructions in the SMT-LIB input.
+
+[33mcommit 4695ca16c84aa0de6b7b9360db5645baa0ee6102[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Feb 10 11:43:33 2018 -0800
+
+    [1;31mperf[m improvements
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e0d69a0033bcc67296746037f57a4cc5e74010d8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Dec 1 08:24:42 2017 -0800
+
+    fix [1;31mperf[m bug
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 62e39069576fa199255aafa51c8c98ecf5d8ec07[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Nov 27 10:53:22 2017 -0800
+
+    add options to [1;31mperf[morm transitive reduction and add hyper binary clauses
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 636f740b1afcaa4fcb2c8af91784d4fe0948b852[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Oct 18 19:32:49 2017 -0700
+
+    fixup bdd reordering, assertions and [1;31mperf[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword optim:
+[33mcommit b1ab4730351bfcc8db3707bab2dc467d66223d74[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Oct 14 20:44:46 2018 -0700
+
+    add arguments to [1;31moptim[mize_check fix #1866
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 09e40f6e23351c3da40676b81c61b5f7ee82b234[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Oct 14 20:43:35 2018 -0700
+
+    add arguments to [1;31moptim[mize_check fix #1866
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0457b5a73f2326202fb2cd35bc37e508d85e1d31[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Oct 14 20:39:54 2018 -0700
+
+    add arguments to [1;31moptim[mize_check fix #1866
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c04bcb411d40e9626a086f904d668fa53f7e5b4e[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Tue Apr 3 17:29:58 2018 -0700
+
+    no calling cut_solver when there are bounded columns
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use special bounds inf find_cube for x+y, x-y
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    bug fixes in column patching, add stats to patching, restructure int_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    comment out m_old_values from int_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    avoid calling pivot_fixed_vars_from_basis() in int_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix the return value from path_nbasic_columns
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix the return value from path_nbasic_columns
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work in patch_columns
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on int_solver check()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    exit from find_free_interval() when l >= u
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    experiment with branching on nbasic columns
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove m_old_values
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add rounding to patch_columns
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    qflia
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    patch all columns, round non-patched, branch or basic columns
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    refactor int_solver::check()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    restore  move_non_basic_columns_to_bounds() after a failure in find_cube()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    [1;31moptim[mize gomory cuts search
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    produce gomory cuts without moving columns to bounds
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    call find_feasible_solution() after moving columns
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    alway move colums to bounds before gomory cut
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    merge from best branch
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 6202b2f2e486c7800c8b21c9912e17e74de5328c[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Tue Oct 3 11:50:21 2017 -0700
+
+    add cancellations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    syntax errors
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+    
+    use std::vector instead of vector in cut_solver temporarily
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix in is_upper_bound, is_lower_bound
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add bound() for polynomial, needs more testing
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on resolve
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+    
+    implement resolve()
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+    
+    implement improves()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    replace low_bound by lower_bound
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    better printing in cut_solver.h
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add value vector to cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on bound propagaion for cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    bound propagation for integer inequalites
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    bound propagation for integer inequalites
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    bound propagattions on integers
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    adding m_explanation field to cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify bound propagation in cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    calculate conflict explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    change m_explanation type to a set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    making cut_solver a member of int_solver, missing push/pop support
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    Nikolaj's comments
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    Nikolaj's comments
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    return explanations from cut_solver and hook up push/pop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    hook up push/pop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    using resize of std::vector
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    it is a big squashed commit
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    rename hpp to cpp
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixes in push/pop of cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    return simple inequalities a part of a conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on propagation and the main loop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add file
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    init m_v[j], the var values only when j is fixed
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    handle decide in cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    start on resolve_conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    start on resolve_conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove cut_solver_def.h
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    in the middle
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    change signature of resolve
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix the domain of the decided var
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on tightening of ineqs
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on tight ineqs
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on tightening
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on tightening
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    resolve conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix in usage of resolve()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on conflict resolution
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    cut_solver is not a template
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    represent var_info as a class, not a struct
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    make literal a class
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    better resolve_conflict scheme, and switch to *constraints in literals
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug conflict resolution in cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    switch to vector
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove nondetermenistic behavior from cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug resolve conflict
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix backjump
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix backjump
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix backjump
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix backjump
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    dumb explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    get rid of a parameter
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add lemmas origins
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use lemma_origins to provide correct explanations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use lemma_origins to provide correct explanations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    store lemmas in a separate vector
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use std::unordered_set for m_dependent_constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use std::unordered_set for m_dependent_constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix bugs with lemmas
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    finding conflicting cores
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    switch from changed variables to active_set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    less active constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on cut_solver.h
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    propagate simple constraing immediately
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    propagate simple constraints immediately
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixing bugs with active set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove const_cast
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    towards unbounded variables
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    toward unbounded variables
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    toward unbounded variables
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    make lemmas_origins a set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use correct hash and equal in m_lemma_origins
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add testing code
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add testing code
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug unlimited vars
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    take in Nikolaj's comments and improvements
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    address the comments
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    handle unlimited vars in check_inconsistent
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    debug
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    detect trivial polynomials in resolve
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    Nikolaj's changes
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify handling of m_global_bound_var
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    decide on m_global_bound_var if it is not fixed
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify m_global_bound_var
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove m_global_bound_var, simplify the indexing of var_infos of cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    do not run cut_solver with vars without any bound
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    small changes
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add cancellation in cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    do not pop lemmas during a cut_solver run
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    treating cut_solver as an heurisitic
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    prepare for cut_solver returning undef
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify work with active_set in cut_solver, add stats
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify var_info literals
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in fill_conflict_explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in the conflict explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add timeout to validate_* in theory_lra.cpp
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify cut_solver, no special treatment for simple constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    cleanup the cancel story
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    cleanup cancelling
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in push/pop of cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    extract a method in int_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    some progress with the new scheme
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add testing code
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixes in test and in literal creation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in bound propagation in cut_solver.h
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    simplify cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    provide valid conflict explanation
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use a lazy push in stacked_map
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use a lazy push in stacked_map
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    [1;31moptim[mize stack operations on var_info's domains
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix a bug in tightening
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use the standard tactics from qflia_tactic
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    spread the var domain stack over literals
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    spread the var domain stack over literals
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    avoid cycling in cut_solver.h and fixes in push/pop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixes after rebase
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit f936c92efc111639de507def47b5612b7843e98e[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Thu Jun 14 22:27:57 2018 -0700
+
+    Improve distinct constraint generation
+    
+    still many more [1;31moptim[mizations possible
+
+[33mcommit 295d16bfae929e2a1bf4498fcfe3ab0b765d0ec4[m
+Author: Bernhard Gleiss <bgleiss@forsyte.tuwien.ac.at>
+Date:   Tue Dec 19 15:28:53 2017 +0100
+
+    Rewrite hyp-reducer
+    
+    This is a new version that conceptually addresses the bugs in
+    all previous version. However, it had a hard-to-debug memory
+    corruption. The bug appeared only in [1;31moptim[mized compilation under
+    Linux with GCC.
+    
+    This code is suspect and should be reviewed and further tested
+
+[33mcommit f39a4ece0d88f0dfd1d4203b1d16f9bb342b0e6b[m
+Merge: 42e9a0156 806690571
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 17 13:22:40 2017 -0700
+
+    Merge pull request #6 from TheRealNebus/opt
+    
+    Lookahead clause size [1;31moptim[mization. Fixed some missing propagations
+
+[33mcommit 806690571e06f12f21239dd8d68d1786ec9cec4e[m
+Author: Miguel Neves <t-mineve@microsoft.com>
+Date:   Tue Oct 17 13:15:34 2017 -0700
+
+    Lookahead clause size [1;31moptim[mization. Fixed some missing propagations
+
+[33mcommit 77aac8d96fc115fef9cbf4c3cdd007a190df41ba[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Feb 21 17:04:10 2017 -0800
+
+    fix handling of global parameters, exceptions when [1;31moptim[mization call gets cancelled
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword regression:
+[33mcommit af41255a9d01e50e328900dbbaeb48959e5d779c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Sep 25 10:00:13 2018 -0700
+
+    fix [1;31mregression[m in model generation for UFLRA
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 1e11b62bc6587579481bb5cfb29170b83f67fa21[m
+Merge: e8a78ec69 f67346d16
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Sep 4 20:35:46 2018 -0700
+
+    Merge pull request #1809 from agurfinkel/deep_space
+    
+    Fix performance [1;31mregression[m
+
+[33mcommit 88f4ce68fd46b2200c9d75d568eded5accc4c27f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Jul 13 13:51:07 2018 -0700
+
+    fix model generation [1;31mregression[m exposed in nightly builds
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e13b61eae8ed780a52358102d2aa8ff86d4832bc[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jul 2 11:10:37 2018 -0700
+
+    work around [1;31mregression[m with use of mk_app_core, returning BR_FAILED if nothing is rewritten
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit cd62017afd604b84a31605b610e1ecbb49539e14[m
+Author: Thai Trinh <trinhmt@comp.nus.edu.sg>
+Date:   Sat Jun 30 15:52:20 2018 +0800
+
+    fixed failures with [1;31mregression[m tests
+
+[33mcommit 16d4e2f5d1b2de3ee5fc62e20afeb5678b66a314[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Fri Jun 29 16:10:15 2018 -0700
+
+    [1;31mregression[m fix
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit d80f6e3222a6655ad3ed2edb957aa54c79b4f4ac[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Fri Jun 29 09:57:29 2018 -0700
+
+    [1;31mregression[m failures fixes
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 335d672bf1f923b8782d89da2b60339a29c742e7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jun 19 23:23:19 2018 -0700
+
+    fix #1675, [1;31mregression[m in core processing in maxres
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 6a0b70ee5cb3664fafee08068626b9a68778bf78[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 18 20:42:53 2018 -0700
+
+    selective expansion of strings for canonizer to fix #1690 [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 4634d1daed5a173b5bca26995dba51256bad521f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 18 20:37:39 2018 -0700
+
+    selective expansion of strings for canonizer to fix #1690 [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit bc8ddedc54e8492d5caed5a3fe7c1224bf4fdbfd[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jun 14 08:34:52 2018 -0700
+
+    fix a few build [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 209d31346b56e58165e77061660f1e432bd12c28[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Dec 13 18:03:25 2017 -0800
+
+    fix crash [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+[33mcommit 01b5db63e6b869fb714c0e4fdf5d82b4efeebdd7[m
+Merge: 84c1e0035 b71fe0b3b
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Mon Jul 16 18:48:26 2018 -0700
+
+    Merge pull request #1758 from levnach/bugfix
+    
+    [1;31mspeed[m up find_cube
+
+[33mcommit b71fe0b3b7a1a33b59e87c4c46e104fce4883eb3[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Mon Jul 16 16:17:49 2018 -0700
+
+    [1;31mspeed[m up find_cube
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 49e94809282eee4dff22d39887724112dd6472a1[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Wed Jun 27 14:34:29 2018 -0400
+
+    Fix lemma_as_cti option
+    
+    Use negation of a lemma as a proof obligation. This [1;31mspeed[ms up discovering
+    bad lemmas that do not contain some reachable states.
+
+[33mcommit 2bb94ed4fe576da4af98844fe4698361c79f8d6a[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Sun Feb 25 10:52:53 2018 -0800
+
+    remove warnings in scaler and use m_cut_solver_cycle_on_var
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    detect slow propagations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fiddle with the stop conditions
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    get rid of constraint->m_predecessors, fix a bug in push/pop with lemmas
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    clean detection of stale lemmas in pop
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add constraints lazily to cut_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    refactor some of cut_solver classes into include files
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    prepare to index constraint from 0 to to n - 1, where n is the number of constraints
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    prepare for constraint priority
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    use priorities in active_set
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove unnecesessary parameters
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    [1;31mspeed[mup bound propagations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    restore tactics
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    [1;31mspeed[mup bound propagation by avoiding some calls to propagate_constraint_only_one_unlim
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fixes by Nikolaj
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    fix print lp_core_solver
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    work on gomory test, subs terms indices correctly
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    correct const_iterator for lar_term
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    improve static_matrix with iterators
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    make row_strip a struct
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    move row_strip outside of static_matrix
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    add const_iterator to row_strip
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    remove the hierarchy of iterators - use std::iterators
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    adding gcd_test stats and taking care of for iterators
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    restore qflia_tactic.cpp
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    run gcd_test according to settings()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+    
+    experiment with picking a narrow or random branch
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 69d6b022b8535fce5b48234326fcbba073e0fbb4[m
+Author: Lev Nachmanson <levnach@microsoft.com>
+Date:   Mon Jul 10 22:14:56 2017 -0700
+
+    [1;31mspeed[m up in get_model and fix in git_model_do_not_care_...
+    
+    Signed-off-by: Lev Nachmanson <levnach@microsoft.com>
+For keyword QF_LRA:
+For keyword proof:
+[33mcommit 5d2f682f7a0730e87b631d2b97e102f5b82e9ff2[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Tue Sep 4 15:29:14 2018 -0400
+
+    Enable [1;31mproof[m mode in add_cover
+
+[33mcommit 290302dca807847d892dffd11164551f688444d8[m
+Merge: d2b77b117 1de0f8fe5
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jul 7 15:36:39 2018 -0700
+
+    Merge pull request #1738 from agurfinkel/deep_space
+    
+    Fix bug in [1;31mproof[m checking
+
+[33mcommit 1de0f8fe5e8ffbd6643738a6c0ab7994f15eec94[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Sat Jul 7 19:10:16 2018 +0300
+
+    Fix bug in [1;31mproof[m checking
+
+[33mcommit 026265f9a3709c7bf9443c75f3e6b419bc762d4a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jul 3 08:55:26 2018 -0700
+
+    fix memory leak in [1;31mproof[m production in theory_pb
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8502f1fe36aba6ca81fba77090f9f4baf13228e2[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon Jul 2 21:37:30 2018 -0400
+
+    Fix in [1;31mproof[m_util:elim_aux_assertions
+    
+    Replace assertions/hypotheses of aux variables with PR_TRUE.
+    Rebuild unit resolution as needed.
+    This makes the transformation stable against new [1;31mproof[m rules.
+
+[33mcommit dc8ec50137d892a70818487e9a4ac49be342890e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jul 2 13:53:55 2018 -0700
+
+    enable [1;31mproof[m objects for PB
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 49e94809282eee4dff22d39887724112dd6472a1[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Wed Jun 27 14:34:29 2018 -0400
+
+    Fix lemma_as_cti option
+    
+    Use negation of a lemma as a [1;31mproof[m obligation. This speeds up discovering
+    bad lemmas that do not contain some reachable states.
+
+[33mcommit 176c0a97f762aefcd9bfefe704ec7c21677e0257[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Tue Jun 26 21:18:10 2018 -0400
+
+    Gracefully handle absence of a [1;31mproof[m
+
+[33mcommit 7844476a7d47e114a3488a0b27e066ead50d1fd1[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jun 27 17:04:47 2018 -0700
+
+    fixes to term-graph, add [1;31mproof[m-checker routines for PR_BIND, remove orphaned file
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit fc8b1d9a7dab2489f593379f398f057ab2289281[m
+Author: rainoftime <rainoftime@gmail.com>
+Date:   Fri Jun 22 16:46:47 2018 +0800
+
+    Refine default_tactic: if the constraint is an SAT instance and [1;31mproof[m is not enabled, then use the qffd tactic
+
+[33mcommit e84ca25f05dc6ec9eb368d0b6219c915d3586eb6[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Thu Jun 7 09:07:17 2018 -0700
+
+    Check whether one [1;31mproof[m node is an ancestor of another on-demand
+    
+    Instead of pre-computing sets
+
+[33mcommit a40e0dce0cee87a29f58d41d985e59cae5065d6d[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Thu Jun 7 08:50:31 2018 -0700
+
+    [1;31mproof[m_utils: use expr_mark instead of hashtable
+
+[33mcommit fca0442487d1e884c443126e319fb4f00df99c3f[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Tue Jun 5 17:11:46 2018 -0700
+
+    Fix [1;31mproof[m_checker to use is_int_expr
+
+[33mcommit 0c2e3c0894b8bf3b59fb97c42c71dd1f90a0f5f1[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue May 29 15:40:39 2018 -0700
+
+    fixes to clause [1;31mproof[m tracking
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 6514741e3fe481b1cc0f67fe41a6e463fa0a8e19[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon May 21 10:45:07 2018 -0700
+
+    [1;31mproof[m-checker: replace match_negated with ast_manager::is_complement
+    
+    is_complement matches true and false, while match_negated does not
+    
+    Necessary to handle uses of true-axiom
+
+[33mcommit 9550fd1ec4d7fbae30e99ef18a9a4b55bcf422db[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon May 21 10:44:29 2018 -0700
+
+    [1;31mproof[m-checker: handle true-axiom
+
+[33mcommit 2db38fedd6348d9edb28dc0bf1e6fbbf0e51feb3[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Wed May 16 13:58:13 2018 -0700
+
+    Cleanup of theory_axiom_reducer [1;31mproof[m trasfomation
+
+[33mcommit 07ad67ebad7fda14a64bd5974b705ac3910a766e[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Wed May 16 13:32:28 2018 -0700
+
+    Move [1;31mproof[m dot printing into iuc_[1;31mproof[m
+
+[33mcommit 45500ff7d348d6ff50e93f568f130f6e46ea9bc7[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Wed May 16 12:57:35 2018 -0700
+
+    Cleanup iuc_[1;31mproof[m
+
+[33mcommit abe67705d3cbead80481f06bf21f3ea4a7208118[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Wed May 16 10:09:26 2018 -0700
+
+    Cleanup iuc_[1;31mproof[m
+
+[33mcommit df2eb771ef160aaa06719cb60e8ec41e86bfd30a[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Tue May 15 09:55:04 2018 -0700
+
+    Fix in spacer_itp_solver: use pr.get() instead of get_[1;31mproof[m()
+
+[33mcommit ab3a6702af995dfa6adb7e8b0433d383526114aa[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon Nov 27 14:39:52 2017 -0500
+
+    Fix several bugs in hyp_reducer
+    
+      - compute_marks didn't find all units
+      - call to m.mk_unit_resolution expects that there is at least one unit
+      - hyp-reduced [1;31mproof[m wasn't used
+      - bug in early termination
+      - any hypothesis was  replaced with the old derivation of the literal
+      - handle the case of a single literal premise under hypothesis that is
+        replaced by an empty clause under hypothesis
+
+[33mcommit 56114a5f6d34e8b49fd08dab6d8dc591baff5f4d[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Tue May 15 09:43:31 2018 -0700
+
+    Refactor iuc_[1;31mproof[m as a separate class
+    
+    This also adds DOT printing support to interpolating [1;31mproof[ms
+    (color for different parts)
+    
+    iuc_[1;31mproof[m is a [1;31mproof[m used for IUC computation
+
+[33mcommit 25fad153d11736393c4c5baa80854622dd1139a3[m
+Author: Bernhard Gleiss <bgleiss@forsyte.tuwien.ac.at>
+Date:   Mon Oct 23 15:39:59 2017 +0200
+
+    added option fixedpoint.spacer.iuc.debug_[1;31mproof[m to debug [1;31mproof[m which is used for generation of iuc
+
+[33mcommit 370667722dd4bf3ff676aa200ac31a2c9c53e534[m
+Author: Bernhard Gleiss <bgleiss@forsyte.tuwien.ac.at>
+Date:   Thu Oct 12 16:36:11 2017 +0200
+
+    New option fixedpoint.spacer.print_farkas_stats
+    
+    Prints the number of Farkas lemmas in each [1;31mproof[m
+
+[33mcommit 56fcb8e6fdb94e036d8a2654b96d2db50cb2b2f6[m
+Author: Bernhard Gleiss <bgleiss@forsyte.tuwien.ac.at>
+Date:   Thu Oct 12 16:36:11 2017 +0200
+
+    added option fixedpoint.spacer.print_farkas_stats to print number of Farkas lemmas in each [1;31mproof[m
+
+[33mcommit 148ccc93f0c398f2ca876fce2a4d480449144492[m
+Merge: 77aef356c a3facc82f
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed May 23 10:01:11 2018 -0700
+
+    Merge pull request #1641 from waywardmonkeys/remove-[1;31mproof[m-mode-from-ocaml-docs
+    
+    Update OCaml docs for changes made elsewhere.
+
+[33mcommit 4bbece661600c891672d3b2d8197db8368588bc0[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Nov 18 16:33:54 2017 -0800
+
+    re-organize [1;31mproof[m and model converters to be associated with goals instead of external
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit df6b1a707ebc406bf47bc9ed1bdbeb98248ca39c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Nov 17 23:32:29 2017 -0800
+
+    remove [1;31mproof[m_converter from tactic application, removing nlsat_tactic
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>

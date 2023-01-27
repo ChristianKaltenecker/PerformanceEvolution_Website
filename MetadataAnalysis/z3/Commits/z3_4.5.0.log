@@ -1,0 +1,887 @@
+Searching between z3-4.4.1 and z3-4.5.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: QF_FP,proof
+Keywords: slow fast time perf optim regression speed QF_FP proof
+For keyword slow:
+For keyword fast:
+[33mcommit 5c99405db3da8ebe13419701a57deae1fa78a192[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jul 28 20:15:47 2016 -0700
+
+    finish consequence [1;31mfast[m path code
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8221a09659ea878f29d4aa413122f9e4a73b88d9[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jul 28 16:49:19 2016 -0700
+
+    [1;31mfast[m path for antecedent extraction in smt_context
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 83e34638e677ce9c429362ef442b65a27ed17fca[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Thu Mar 24 15:39:18 2016 +0000
+
+    add support to build with MSVC /Gr ([1;31mfast[mcall mode for x86)
+    not enabled by default nor exposed at the moment
+For keyword time:
+[33mcommit dfc80d3b697125a2d4b3694786ef9507245c52a6[m
+Author: George Karpenkov <george@metaworld.me>
+Date:   Sun Jun 12 14:14:11 2016 +0200
+
+    Do not needlessly catch exceptions in Java bindings
+    
+    A lot of existing code in Java bindings catches exceptions just to
+    silence them later.
+    
+    This is:
+    a) Unnecessary: it is OK for a function to throw a Run[1;31mtime[mException
+    without declaring it.
+    b) Highly unidiomatic and not recommended by Java experts (see Effective
+    Java and others)
+    c) Confusing as has the potential to hide the existing bugs and have
+    them resurface at the most inconvenient/unexpected moment.
+
+[33mcommit e29adbf304fc137703c8747f383eca4237b1d8f7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Apr 30 11:18:34 2016 -0700
+
+    fix issues #581: nested [1;31mtime[mouts canceled each-other
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 417c80edbccb54842b62ecf644d9cd35f31c70d0[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Tue Apr 19 02:17:12 2016 -0700
+
+    fix mem leak in quantifier_info::insert_qinfo on [1;31mtime[mout
+
+[33mcommit 7bb085a565b38a450e5520143f4fc23e91327b88[m
+Author: Bobby Powers <bobbypowers@gmail.com>
+Date:   Tue Mar 22 10:42:00 2016 -0400
+
+    build: allow overriding of 'ar' in mk_config
+    
+    This will still use 'ar' if AR isn't set in the environment, but lets
+    us override the default archive tool at configure [1;31mtime[m.
+    
+    Just like CC and CXX, this doesn't apply to a ./configure for Windows.
+
+[33mcommit 251527603df01904f70ed884f8695fedab5caed9[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sat Feb 20 23:21:00 2016 +0000
+
+    Implement a CMake build system.
+    
+    This is a large rework of my first attempt at this (#459).
+    
+    This implementation calls into the recently implemented python scripts
+    to generate the necessary generated ``.h`` and ``.cpp`` files but is
+    independent from Python building system otherwise.  Unlike the Python
+    build system, the generated files are emitted into the build tree to
+    avoid polluting the source tree. The build system is setup to refuse to
+    configure if it detects generated files in the source tree. If your
+    source tree is dirty you can run ``git clean -fx`` to clean your working
+    directory.
+    
+    Currently the build succeeds on Linux using CMake 3.4.3 using
+    the "Unix Makefiles" generator with gcc or clang.
+    
+    The following notable features are implemented:
+    
+    * Building of the C and C++ examples and the ``test-z3`` executable.
+      These are included from the ``all`` target so you have to tell the
+      build system (e.g. make) to build them manually.
+    
+    * Install (``make install``) and uninstall (``make uninstall``) of libz3
+      and its header files. This supports ``DESTDIR`` out of the box because
+      CMake supports it.
+    
+    * An option (``BUILD_LIBZ3_SHARED``) to build libz3 as a static or dynamic library.
+    
+    * Support for using/not using OpenMP (``USE_OPENMP``)
+    
+    * Support for using/not using libgmp (``USE_LIB_GMP``)
+    
+    * Setting the SOVERSION for libz3. I'm not sure if I'm setting the
+    * number correctly though. This is required by Linux distrubtions that
+      wills ship libz3. This needs discussion.
+    
+    The following notable features are currently not implemented
+    and are left for future work.
+    
+    * Support for ARM.
+    * Support for the foci2 library.
+    * Support for creating/installing/uninstalling the dotnet, java, python and ml
+      bindings.
+    * Full support for MSVC. Although I've tried to write the CMake code
+      with MSVC in mind not all the correct flags are passed to it.
+    * Support for using the git hash.
+    
+    This new build system has several advantages other the old build system.
+    
+    * It is easier for outside contributors to contribute to Z3 when the
+      build system is something more standard.
+    * Incremental builds work properly. With the old build system when
+      new code is pulled down the old build directory would need to thrown
+      out and a new fresh build had to be performed because the build system
+      didn't know how to correctly rebuild the project (e.g. couldn't handle
+      new sources being added/removed, compiler flags changing, generated
+      files changing, etc...). This is a MASSIVE boost to productivity!
+    * We now have access rich array of features that CMake provides for
+      building C/C++ projects. This means less [1;31mtime[m spent implementing
+      custom build system logic in Python that is already supported by
+      CMake.
+    * CMake supports many IDEs out of the box so it should be fairly
+      straight forward to build Z3 with Visual Studio (once support for MSVC
+      is added), Xcode, Eclipse CDT, CLion, ..etc.
+
+[33mcommit 56f15e98b5207dab2fe6193caf174099811a96ed[m
+Merge: 5285a795a ea900db33
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Feb 10 11:43:31 2016 +0000
+
+    Merge pull request #444 from delcypher/explicit_solver_[1;31mtime[mout_units
+    
+    Explicitly state what the units of the [1;31mtime[mout parameter for the "smt" module are.
+
+[33mcommit ea900db3378eee5865e155e98a8f4f7f607fb603[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Wed Feb 10 11:35:15 2016 +0000
+
+    Explicitly state what the units of the [1;31mtime[mout parameter for the "smt"
+    module are.
+
+[33mcommit cb106d71cfd805e3971bd9d5bcb50625ebbf4159[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sun Jan 10 13:58:11 2016 +0000
+
+    Teach the OCaml bindings install rule to respect the DESTDIR makefile
+    variable. Previously it would try to install into the system (e.g.
+    ``/usr/lib/ocaml``) regardless of the value of DESTDIR.
+    
+    Unfortunately it looks like packagers who use DESTDIR to do staged
+    installs will need to have their packages patch their user's OCaml
+    ``ld.conf`` file manually at package install [1;31mtime[m (not ``make install``
+    [1;31mtime[m) with the extra path to the Z3 Ocaml package directory. We could
+    use the ``touch`` command to create an empty ``ld.conf`` before running
+    ``ocamlfind install`` but that adds the wrong path to ``ld.conf``
+    because it contains DESTDIR.
+
+[33mcommit 5706df30c6b1f969575954879b8ab32bee35ee0d[m
+Author: Mikolas Janota <mikolas.janota@gmail.com>
+Date:   Fri Jan 8 16:17:34 2016 +0000
+
+    Fixing soft [1;31mtime[mout for check-sat-using.
+
+[33mcommit 4b0f2cae0d31c1673059ddea0a0adda71efa9d1e[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Tue Dec 8 17:03:18 2015 +0000
+
+    fix compiler warning in scoped_[1;31mtime[mr.cpp on linux
+    2 secs in nanosec representation still fit in 31 bits, so no need for ULL
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit b285ce7ceeba659596feb66aacf1140fc7abbc71[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Tue Nov 24 09:14:08 2015 +0000
+
+    Partially fix not being able to do a staged install (using ``DESTDIR``)
+    when installing the Python bindings.
+    
+    If ``DESTDIR`` is set the bindings will now be installed under this
+    path but ``$(PREFIX)`` only appears in the ``Makefile`` if ``--prefix``
+    was set which seems a little broken (we'll fix this soon).
+    
+    The creation of the Python ``site-packages`` (and ``__pycache__`` for Python
+    3) directories has been moved to build [1;31mtime[m instead of configure [1;31mtime[m
+    because we don't know what ``DESTDIR`` will be set to at configure [1;31mtime[m.
+
+[33mcommit d9bafc3fbafa724186a740fd8b9a9533aad50266[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Sun Nov 22 11:40:52 2015 +0000
+
+    rewrite scoped_[1;31mtime[mr for linux
+    The previous version was racy and could lead to crashes.
+    The [1;31mtime[mr could be deleted before the callback was called, making it execute on already freed memory
+    
+    This new version is similar to Mac's. It spawns its own thread and uses pthread_cond_wait.
+    Care is taken for small [1;31mtime[mouts to avoid races in the thread creation and [1;31mtime[mr destruction.
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 04b0e3c2f74c318d52de5fa7fb3324d95b89bf56[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Nov 17 18:48:52 2015 -0800
+
+    add checks for cancellation inside mam to agilely not ignore Rustan's soft requests for a [1;31mtime[mout #326
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 15c48eeaf9352a73515e0b6badf042879a6f19dc[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Nov 13 16:42:46 2015 +0000
+
+    Fix for [1;31mtime[mout/rlimit in deprecated solver API.
+    
+    Partially fixes #307.
+
+[33mcommit d83f8d08f3a7971a634f04aae35aae3b49b85723[m
+Merge: 6a5da9e9c d4dff70f3
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Oct 28 20:30:15 2015 -0700
+
+    Merge pull request #276 from kenmcmil/issue260
+    
+    issue #260 -- support [1;31mtime[mout in Z3_compute_interpolant
+
+[33mcommit d4dff70f39a5976bb5ced3a7299a1be7a998070d[m
+Author: Ken McMillan <kenmcmil@microsoft.com>
+Date:   Wed Oct 28 18:01:22 2015 -0700
+
+    issue #260 -- support [1;31mtime[mout in Z3_compute_interpolant
+
+[33mcommit 99e4b321bdcc334f206f3d7a12c471bd5dafb0b5[m
+Author: martin-neuhaeusser <martin.neuhaeusser@siemens.com>
+Date:   Wed Oct 7 17:27:05 2015 +0200
+
+    Fixed typo that accidentally prints warning message if a Z3 context is created with the '[1;31mtime[mout' parameter
+For keyword perf:
+[33mcommit 3714e520bed8e95696bfe9e2e51032eece1a2c73[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Oct 28 08:27:11 2016 -0700
+
+    fix [1;31mperf[mormance bottlnecks: gc of literals walk through potentially huge watch-lists, avoid user-push/pop around calls to solver2tactic
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 461e88e34cfd6819343297e1ee87543a1ea3817e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 25 20:32:13 2016 -0700
+
+    additional robustness check for incremental sat solver core when it recieves interpreted constants, added PB equality to interface and special handling of equalities to adddress [1;31mperf[mormance gap documented in #755
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit bb6d8269082c28519c09db5c669b544fe3ad1bf0[m
+Merge: 9cd7b9b4f f97ffce47
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 20 22:17:11 2016 -0700
+
+    use index j to avoid su[1;31mperf[micial, but typically flagged, name clash with internal index i
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit df81ab72f53a92ce07ab1d628d4d80a292680d00[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Tue May 17 16:35:45 2016 +0100
+
+    Bug and [1;31mperf[mormance fixes for FP UFs.
+
+[33mcommit bb2c5972c7117fe695ee75f3fc0eaf70b9273c98[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Sat May 14 18:21:53 2016 +0100
+
+    Bugfixes for UFs in theory_fpa.
+    
+    Fixes #591, but [1;31mperf[mormance issues remain.
+
+[33mcommit 217c0419a13b30d7dcb63cf326cf01aa9a606ce6[m
+Author: Mikolas Janota <mikolas.janota@gmail.com>
+Date:   Tue Mar 29 19:34:30 2016 +0100
+
+    Avoiding adding a su[1;31mperf[mluous unary AND in lackr.
+
+[33mcommit 45fdb95f53fc47c1e640f2dd1421d28635c5285a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Mar 23 17:23:57 2016 -0700
+
+    fix [1;31mperf[mormance for model construction, recognize concats of values as a value for pre-processing
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 251527603df01904f70ed884f8695fedab5caed9[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Sat Feb 20 23:21:00 2016 +0000
+
+    Implement a CMake build system.
+    
+    This is a large rework of my first attempt at this (#459).
+    
+    This implementation calls into the recently implemented python scripts
+    to generate the necessary generated ``.h`` and ``.cpp`` files but is
+    independent from Python building system otherwise.  Unlike the Python
+    build system, the generated files are emitted into the build tree to
+    avoid polluting the source tree. The build system is setup to refuse to
+    configure if it detects generated files in the source tree. If your
+    source tree is dirty you can run ``git clean -fx`` to clean your working
+    directory.
+    
+    Currently the build succeeds on Linux using CMake 3.4.3 using
+    the "Unix Makefiles" generator with gcc or clang.
+    
+    The following notable features are implemented:
+    
+    * Building of the C and C++ examples and the ``test-z3`` executable.
+      These are included from the ``all`` target so you have to tell the
+      build system (e.g. make) to build them manually.
+    
+    * Install (``make install``) and uninstall (``make uninstall``) of libz3
+      and its header files. This supports ``DESTDIR`` out of the box because
+      CMake supports it.
+    
+    * An option (``BUILD_LIBZ3_SHARED``) to build libz3 as a static or dynamic library.
+    
+    * Support for using/not using OpenMP (``USE_OPENMP``)
+    
+    * Support for using/not using libgmp (``USE_LIB_GMP``)
+    
+    * Setting the SOVERSION for libz3. I'm not sure if I'm setting the
+    * number correctly though. This is required by Linux distrubtions that
+      wills ship libz3. This needs discussion.
+    
+    The following notable features are currently not implemented
+    and are left for future work.
+    
+    * Support for ARM.
+    * Support for the foci2 library.
+    * Support for creating/installing/uninstalling the dotnet, java, python and ml
+      bindings.
+    * Full support for MSVC. Although I've tried to write the CMake code
+      with MSVC in mind not all the correct flags are passed to it.
+    * Support for using the git hash.
+    
+    This new build system has several advantages other the old build system.
+    
+    * It is easier for outside contributors to contribute to Z3 when the
+      build system is something more standard.
+    * Incremental builds work properly. With the old build system when
+      new code is pulled down the old build directory would need to thrown
+      out and a new fresh build had to be [1;31mperf[mormed because the build system
+      didn't know how to correctly rebuild the project (e.g. couldn't handle
+      new sources being added/removed, compiler flags changing, generated
+      files changing, etc...). This is a MASSIVE boost to productivity!
+    * We now have access rich array of features that CMake provides for
+      building C/C++ projects. This means less time spent implementing
+      custom build system logic in Python that is already supported by
+      CMake.
+    * CMake supports many IDEs out of the box so it should be fairly
+      straight forward to build Z3 with Visual Studio (once support for MSVC
+      is added), Xcode, Eclipse CDT, CLion, ..etc.
+
+[33mcommit c1eb1cc3f2be0f92403432d4e3479748f65d32a5[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Sun Feb 28 20:07:39 2016 +0000
+
+    bv_bounds: improve [1;31mperf[m of push/pop
+
+[33mcommit 995a2e1a2920f89dc4951c29f8b828fca82f2315[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Feb 1 07:51:05 2016 -0800
+
+    [1;31mperf[m tuning based on Chris's examples
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 3388e1e628af3d69d55ec53c976429c9c889c51a[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Dec 11 18:00:38 2015 +0000
+
+    Removed su[1;31mperf[mluous file.
+
+[33mcommit 61d1cd524ea1cfd73b0554071ebdb7b891701b4a[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Wed Nov 25 18:33:59 2015 +0000
+
+    Teach the build system to build and install the ".NET bindings"
+    under non Windows systems (i.e. Using mono).
+    
+    Building these bindings is unfortunately on by default because
+    I didn't want to change the command line interface (i.e. ``--nodotnet``)
+    which people might be relying on. This should really be changed to
+    match the other binding flags (e.g. ``--java``) but I will leave
+    this for now.
+    
+    To [1;31mperf[morm the build a C# compiler and the GAC utility are required.
+    The script will try to automatically detect them but the user can
+    override this by setting the ``CSC`` and ``GACUTIL`` environment
+    variables.
+    
+    In order for the ".NET bindings" to be installed the assembly
+    (``Microsoft.Z3.dll``) needs to have a strong name which means
+    we need a Strong name key file which is what the
+    ``Microsoft.Z3.mono.snk`` is for. This is the public and private
+    key so this key **must never** be used for checking integrity. Instead its
+    only purpose is to avoid any name clashes in the GAC.
+    
+    It is also worth noting that slightly different flags needs to
+    be passed to the C# compiler on non Windows platforms. I don't
+    understand why some of the flags are being used on Windows but I left
+    a comment there that hopefully someone can fix...
+For keyword optim:
+[33mcommit 81fce55d784e173b1eb31f384f1a5ed8750dccdc[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Nov 4 21:22:01 2016 +0000
+
+    Updated [1;31moptim[mization ML API. Addresses #776.
+
+[33mcommit 4f3f21bff157152f0fa8927c57ec7dd1810c4f23[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Oct 23 21:45:35 2016 -0700
+
+    disable local [1;31moptim[mization in presence of non-linear constraints, addresses issue #758
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c725fe7698445e9b3fe16939dc4a475952fd75e5[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun May 22 17:03:29 2016 -0700
+
+    tune lra [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit a1aa166ef56983ed284d071bc4ffd7b42dec5da7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Apr 26 17:15:24 2016 -0700
+
+    adding local [1;31moptim[mization to qsat
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2033719c14f2163609824fff5fa4c8cd501f1135[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Apr 9 20:58:57 2016 -0700
+
+    fix [1;31moptim[mization pre-processing reported by Gereon Kremer
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 28f9c61d76644d6b755323453553692ab03d8b0b[m
+Author: martin-neuhaeusser <martin.neuhaeusser@siemens.com>
+Date:   Mon Mar 28 17:08:22 2016 +0200
+
+    Include *.cmx files during installation of OCaml bindings.
+    
+    The *.cmx files are now installed using ocamlfind. They contain information from the
+    compiler that can be used during [1;31moptim[mization (the upcoming OCaml 4.03.0 issues
+    warning 58 if those files are missing from a package).
+
+[33mcommit 9b979b6e1e4c196c870b8bf03febae9fa00fce9d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Feb 1 17:08:11 2016 -0800
+
+    more string [1;31moptim[mizations based on Chris' examples
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c1a6163bda4fc7c84d5579eb2b0a3c8415784272[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Nov 20 14:34:31 2015 -0800
+
+    disable aig tactic in inc_sat_solver (it can blow up the size of formulas significantly without sharing) and fix configuration update bug for [1;31moptim[mization context exposed in example by Corina
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c58e640563424747ecf086339aeb2f6437b46567[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Nov 18 14:53:08 2015 -0800
+
+    extract labels for [1;31moptim[mal model. Fix to #325
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 1575dd06a73e5dcdcdec57f41713d38126f49ab2[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Nov 18 09:42:12 2015 -0800
+
+    expose labels from [1;31moptim[mization. Move printing of objectives to after sat/unsat. Cahnge format to something that is somewhat related to how other output is created. Issue #325.
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword regression:
+[33mcommit 4bd83724dddcc03c32ec5fa683590f2de631514d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Oct 26 19:15:05 2016 -0700
+
+    remove conflict on false disequality, introduced [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit a880e5f49be687222b1dd26facf518a1fed7a5ec[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Oct 24 13:12:36 2016 -0700
+
+    fix incorrection assertion when checking signs of literals, exposed by miTLS [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c68c56b0e7190fa220ad7e0741a6c5eec2b7efa6[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Oct 24 13:09:27 2016 -0700
+
+    fix incorrect assertion when checking signs of literals, exposed by mitls [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 279621c1d753832bc429ccdaabd3cf5801305091[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Sep 30 07:21:39 2016 -0700
+
+    duplicating private member from z3 to avoid build [1;31mregression[ms under some environments
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5a86815f3413bf1acf3dbfa79162888b3be32dc9[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Sep 11 05:43:16 2016 -0700
+
+    fix [1;31mregression[m in seq-replace rewriting
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 6f971a3a868fe7ca02036f8c027f7eae390c6720[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Jul 15 11:44:38 2016 -0700
+
+    add object z3 objects to target context during translation, to fix build [1;31mregression[m failure on z3test.py
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0a6b03808cdfbad3057d9e2402584bae4e405f9d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jul 9 12:35:54 2016 -0700
+
+    fix core extraction for QF_BV theory/inc_sat_solver based on [1;31mregression[ms pointed out by Matthias Heizmann and Tjark Weber
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8f862f8fedab42a79d424707b9159fd577bcc9f3[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jul 9 12:35:11 2016 -0700
+
+    fix core extraction for QF_BV theory/inc_sat_solver based on [1;31mregression[ms pointed out by Matthias Heizmann and Tjark Weber
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 3d73fe55c71e1a875f3e0691fa8e7f205bcf548f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jul 9 05:31:49 2016 -0700
+
+    track assumptions when calling check-sat. [1;31mregression[m detected by Tjark Weber running core extraction
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit a07381ac1933976297fbd152a04404f39bec5d72[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed May 25 14:23:07 2016 -0700
+
+    fix [1;31mregression[m in evaluator exposed by build failure on fp-array-6.smt2
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 4cb57cd4dad67168cb13f69329355aaa55058fb7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Apr 18 17:22:47 2016 -0700
+
+    fix [1;31mregression[m introduced by using ref-vectors on non-ref'ed output parameters
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c3f4124a9f70c9ec7e9304c190d7f5a847b80b16[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Apr 18 14:50:10 2016 -0700
+
+    trace down recent exposed [1;31mregression[m in goal2sat, incorporate Scott's suggestion on making vector<std::string inaccessible
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b97d694e5e2af7e425ad674866a4d697940904f6[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Apr 5 22:26:57 2016 +0200
+
+    undo model evaluation to BR_FULL pending [1;31mregression[m in assertion violation
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9667185af0e0e96c36f364a42247aef4691dc471[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Apr 3 12:53:50 2016 +0200
+
+    issue #549, replace BoolVal by False, otherwise creates [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit fe4f3e777245f7bf019443be42a68fed2e792305[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Mar 23 20:38:18 2016 -0700
+
+    fix [1;31mregression[ms exposed in QF_LIA: manager got initialized early and Euclidean solver is not safe even with some throttle
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 73e29c6ee6898c654e89339cf894ce7a62ca0660[m
+Merge: 92b5aac12 b66fc4e35
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 20 10:20:43 2016 -0700
+
+    fix [1;31mregression[m warning on invalid case split strategy
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f951372f032ffb182895fbed54b16a4b7c0dd45e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Mar 18 13:54:42 2016 -0700
+
+    fix [1;31mregression[m in internalizing bit-vectors, reported by Mikolas Janota
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5db84575f6d1d57094283d9b473020e720735e4f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Mar 8 22:27:47 2016 -0800
+
+    fix [1;31mregression[m in o7.smt2
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5994c5a94899d732ec834888d6ccee77ef436571[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Mar 7 16:42:29 2016 -0800
+
+    fix partial model tracking over cancellation/exceptions, reported by August Shi. Fix [1;31mregression[m test for fp-to-real, reset the pre-processor in inc_sat_solver on exceptions
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9909c056f0412007e3060f6db4c9131554ad3d06[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jan 13 00:49:31 2016 -0800
+
+    add range / loop handling for re. Fix [1;31mregression[m reading mixed numerals reported by Trentin
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9a6fe93e6c6124710c59278d5f4853baf13094c6[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jan 12 12:42:18 2016 -0800
+
+    re-enable feature that lets Z3 solver mixed integer/real constraints with additional information tha texpressions with sort real can only take integer values. Fixes [1;31mregression[m on epsilon.smt2
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 22fbed18ccf9b2017cf73430c42b9ca811dfbda7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jan 12 11:18:52 2016 -0800
+
+    fix [1;31mregression[ms exposed by build
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 985fc509614e8959a34282c07048abed13821bd8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jan 12 09:48:43 2016 -0800
+
+    breaking [1;31mregression[m tests: ensure that model values are of the sort of the original expression.
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 643999860dc86e8c3072a93c3c179c5d96f5dc81[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jan 6 17:32:54 2016 -0800
+
+    fix memory leak in SAT solver exposed by [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 00f3a1fe81e40b612097e9337e115052b019ef64[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jan 6 11:47:45 2016 -0800
+
+    fix memory leak in SAT solver exposed by [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit aec5a38b146471396772b505a9c113adf3c0c14e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jan 6 11:44:55 2016 -0800
+
+    fix memory leak in SAT solver exposed by [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit ee0dbf34f0d1bbded0512aef5168ea8c92e30df0[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Dec 16 00:49:06 2015 +0200
+
+    add completion (introducing negative root function symbols) to address [1;31mregression[m introduced when fixing unsound handling of negative roots
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b197e590a4a9d816be3dbb2f72ddc4308056e3eb[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 27 19:25:38 2015 -0700
+
+    fix coercion [1;31mregression[m. Issue #263
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5e4f2092920420faa49260f9f3b683b3128584c6[m
+Merge: 87921f455 ac902dad1
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 22 08:55:13 2015 -0700
+
+    Merge pull request #255 from NikolajBjorner/master
+    
+    fix another [1;31mregression[m and missing detection of bounds, Issue #254
+
+[33mcommit ac902dad1a1022a3762320e321c4b2f696a8dbd0[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 22 08:53:12 2015 -0700
+
+    fix another [1;31mregression[m and missing detection of bounds, Issue #254
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+[33mcommit 24fc19ed5833ee19b748ab954b890768dd80d114[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 27 08:15:39 2016 -0700
+
+    [1;31mspeed[m up consequence finding by avoiding local search whenver assumption level is reached during the initial phase
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 62e46aacd9819ac46aa5637fbb3272d3b2594b86[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Tue Mar 1 11:31:08 2016 +0000
+
+    bv_bounds: make may_simplify more precise to skip exprs with just 1 bound expr
+    [1;31mspeed[mups up to 3x in selected benchmarks
+
+[33mcommit 43202572ee73b204dfa472a67c437cc1abd627f5[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Feb 29 17:23:54 2016 +0000
+
+    bv_bounds: switch from rational to uint64
+    this limits the analysis to 64-bit BVs, but gives a [1;31mspeed[mup of up to one order of magnitude
+
+[33mcommit c693c990df9e2babb34b5e4b8e0e09b1513dd65d[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Thu Feb 25 16:53:35 2016 +0000
+
+    bv_bounds: [1;31mspeed[mup up to 10x in larger formulas
+    introduce a may_simplify() function to short-circuit evaluation of expression trees that are guaranteed to not be simplifiable
+
+[33mcommit c1aa33339d2e95c6b8099debe75bd457ebd47b20[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Thu Feb 25 09:32:10 2016 +0000
+
+    bv_bounds: early exit in is_bound in case the expr is not boolean
+    ~2% [1;31mspeed[mup
+
+[33mcommit cc6769c866420e84aa0bac95bac8134bbda68106[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Feb 1 13:46:55 2016 +0000
+
+    improve bit-blasting for the case (bvsrem var power-of-two)
+    We will now transform bvsrem into an extract + zero extend
+    Gives ~40% [1;31mspeed[mup in selected benchmarks
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 03afedafaf6a6e00def185481e32b0c44ff777d9[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Wed Dec 30 13:54:01 2015 +0000
+
+    expr_abstract: don't recreate an AST_APP if arguments didn't change
+    gives ~30% [1;31mspeed[mup in some benchmarks with quantifiers
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+For keyword QF_FP:
+[33mcommit cc04fdbd706ae42795db31652a50d517c8028a5e[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Thu Mar 17 17:52:26 2016 +0000
+
+    Added eager ackermannization to [1;31mQF_FP[m, so that small numbers of unspecified operators are eliminated upfront.
+For keyword proof:
+[33mcommit ba942af5a8492615886c8cba4cabefeb03ed6922[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Oct 31 23:27:39 2016 +0100
+
+    disable sat solver when [1;31mproof[ms are turned on. Fixes issue #768
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 77b245b3d822f65515267173522e92837ea6beca[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Sep 17 17:29:19 2016 -0700
+
+    fix [1;31mproof[m production to avoid crash. Issue #733
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f2b5c11d1c4435d98f75d5209c856f89f60b682b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Aug 20 03:52:45 2016 -0700
+
+    add option for prettier [1;31mproof[m printing, Issue #706
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5f39c4371ccc692c5f369328a62abf53d7ff17ba[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jul 20 11:54:39 2016 -0700
+
+    fix [1;31mproof[m generation for unit resolution. Issue #691
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c7a7cc74fafc56a2b1a4aed5bbd70df12906a371[m
+Author: martin-neuhaeusser <martin.neuhaeusser@siemens.com>
+Date:   Wed Mar 9 14:06:39 2016 +0100
+
+    Fix bug in ufbv tactic that enabled ackermannization even if unsat core or [1;31mproof[m generation are requested
+
+[33mcommit e63724a22d445a46662f1333fa12b1fdd89ab27c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Dec 29 15:30:42 2015 -0800
+
+    replace assert by SASSERT in case of unsupported [1;31mproof[m rule
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5d289a8da50fc790326d51efb565a6036ed42732[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Sun Nov 29 10:49:52 2015 +0000
+
+    fix leak in asserted_formulas::propagate_values() for [1;31mproof[m generation mode
+    continuation of issue #342
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit cbf8bd8de12c593818d4dcef27cf55865aa6188f[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Sun Oct 25 15:56:42 2015 +0000
+
+    Enabled [1;31mproof[m & core production in fpa2bv and qffp.
+
+[33mcommit 9b5abcd55a641dbe8583cc1740d7161c5c0cf7be[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Wed Oct 21 20:11:59 2015 +0100
+
+    Improved support for FPA unspecified min/max values, model validation, and [1;31mproof[m generation.
+
+[33mcommit ca496f20cb1d3eacafa1c608e8f0bc78cc23f2f5[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Tue Oct 20 18:32:31 2015 +0100
+
+    Partial refactoring of fpa2bv conversion to support [1;31mproof[ms.
+
+[33mcommit 21ad1fb623a655362374454a0584d144105fa1d1[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Sun Oct 25 13:09:18 2015 +0000
+
+    Bugfix for [1;31mproof[m production in asserted_formulas::propagate_values()
+    
+    Fixes #259

@@ -1,0 +1,284 @@
+Searching between z3-4.8.12 and z3-4.8.13
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: LRA,proof,UFLRA
+Keywords: slow fast time perf optim regression speed LRA proof UFLRA
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit b5deba84263ebe3c9dc2aae73d7c11cafb572124[m
+Author: rainoftime <995204576@qq.com>
+Date:   Wed Nov 10 03:05:10 2021 +0800
+
+    add EFSMT solving example (#5654)
+    
+    Co-authored-by: rainof[1;31mtime[m <rainof[1;31mtime[m@gmail.com>
+
+[33mcommit cd8d8bbb630dc8db8c01b8ec9987ca6640c42720[m
+Author: Weng Shiwei <arbipher@gmail.com>
+Date:   Thu Oct 21 18:27:54 2021 -0400
+
+    Fix run[1;31mtime[m search path for shared-lib and add '-static' to the name of static-lib. (#5616)
+    
+    * Fix run[1;31mtime[m search path for shared-lib and add '-static' to static-lib.
+    
+    * Revert the change on `META.in`.
+
+[33mcommit fcb55257beede8e5882f20e04de5537341b90acb[m
+Author: 0152la <al2510@imperial.ac.uk>
+Date:   Mon Aug 2 20:01:41 2021 +0100
+
+    Improve coverage CI script (#5451)
+    
+    * Due to the long duration of the CI execution, execute it at a set [1;31mtime[m
+      daily (currently 11 UTC / 4 PDT)
+    * Use `Ninja` to build instead of Makefile, due to better compilation
+      [1;31mtime[m
+    * Execute all the available Z3 tests and examples: `test-z3 -a`,
+      `z3test` regression suites (`smt2`, `smt2-debug`, and `smt2-extra`),
+      `z3test` coverage tests, and the 4 provided examples
+    * Upload `gcovr` report as an artifact associated with the CI run
+    
+    TODOs:
+    * Fix `gcovr` emitting an empty report
+    * Potentially take the artifact and upload it somewhere accessible
+    
+    Co-authored-by: Andrei Lascu <andrei.lascu10@imperial.ac.uk>
+
+[33mcommit 79296d8dfc644fc907700491b9acb1a68778a746[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jul 27 09:09:21 2021 -0700
+
+    proviso for different life-[1;31mtime[m of objects allocated in arguments.
+For keyword perf:
+[33mcommit 63ac2ee0d13771469c2bbedb0dc2047ca9c3b57e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 11 17:54:46 2021 -0800
+
+    #5614 turn on / off options to get better [1;31mperf[mormance.
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b28a8013fe0e37edb079d8a71afb75b826f2cb9a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 11 13:28:57 2021 -0800
+
+    #5653
+    
+    fix [1;31mperf[mormance bottleneck in static features
+
+[33mcommit 87d4ce265901d5cfc33f9a617ec2104773c4c370[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Nov 2 14:55:28 2021 -0700
+
+    working on #5614
+    
+    there are some different sources for the [1;31mperf[mormance regression illustrated by the example. The mitigations will be enabled separately:
+    - m_bv_to_propagate is too expensive
+    - lp_bound_propagator misses equalities in two different ways:
+       - it resets row checks after backtracking even though they could still propagate
+       - it misses equalities for fixed rows when the fixed constant value does not correspond to a fixed variable.
+    
+    FYI @levnach
+
+[33mcommit 4dad41416136ab421be54b4ee56fd17a9c6a20cd[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 28 05:49:07 2021 +0200
+
+    fix [1;31mperf[mormance regression after adding user declared functions to model
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0ba518b0c0337c0a33c1f9de596be7df8f7e5f63[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jul 20 20:07:06 2021 -0700
+
+    avoid [1;31mperf[m abyss for macros
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword optim:
+[33mcommit 6f5597117708748a219fbe8d89d242b3ed35b625[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Oct 8 13:06:10 2021 -0700
+
+    Newderiv (#5585)
+    
+    * updated derivative engine
+    
+    * some edit
+    
+    * further improvements in derivative code
+    
+    * more deriv code edits and re::to_str update
+    
+    * [1;31moptim[mized mk_deriv_accept
+    
+    * fixed PR comments
+    
+    * small syntax fix
+    
+    * updated some simplifications
+    
+    * bugfix:forgot to_re before reverse
+    
+    * fixed PR comments
+    
+    * more PR comment fixes
+    
+    * more PR comment fixes
+    
+    * forgot to delete
+    
+    * deleting unused definition
+    
+    * fixes
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    Co-authored-by: Margus Veanes <margus@microsoft.com>
+
+[33mcommit 146f4621c54d2755f75f51ab37dee42eff9f81e6[m
+Author: Margus Veanes <veanes@users.noreply.github.com>
+Date:   Fri Oct 8 13:04:49 2021 -0700
+
+    Updated regex derivative engine (#5567)
+    
+    * updated derivative engine
+    
+    * some edit
+    
+    * further improvements in derivative code
+    
+    * more deriv code edits and re::to_str update
+    
+    * [1;31moptim[mized mk_deriv_accept
+    
+    * fixed PR comments
+    
+    * small syntax fix
+    
+    * updated some simplifications
+    
+    * bugfix:forgot to_re before reverse
+    
+    * fixed PR comments
+    
+    * more PR comment fixes
+    
+    * more PR comment fixes
+    
+    * forgot to delete
+    
+    * deleting unused definition
+    
+    * fixes
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fixes
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    Co-authored-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8e9bc86c232fd4567c1e00ebd9b492239f386939[m
+Author: Margus Veanes <veanes@users.noreply.github.com>
+Date:   Thu Jul 15 13:28:59 2021 -0700
+
+    fixed bug #5343 and did some related [1;31moptim[mizations (#5411)
+For keyword regression:
+[33mcommit 87d4ce265901d5cfc33f9a617ec2104773c4c370[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Nov 2 14:55:28 2021 -0700
+
+    working on #5614
+    
+    there are some different sources for the performance [1;31mregression[m illustrated by the example. The mitigations will be enabled separately:
+    - m_bv_to_propagate is too expensive
+    - lp_bound_propagator misses equalities in two different ways:
+       - it resets row checks after backtracking even though they could still propagate
+       - it misses equalities for fixed rows when the fixed constant value does not correspond to a fixed variable.
+    
+    FYI @levnach
+
+[33mcommit 4dad41416136ab421be54b4ee56fd17a9c6a20cd[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 28 05:49:07 2021 +0200
+
+    fix performance [1;31mregression[m after adding user declared functions to model
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 61eb8d1908e406dd1f5d1505e4d4193a5f7c71e4[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 26 11:39:13 2021 +0200
+
+    add ref for [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit bfa960c2cee9ec4343d00f2e504508d757a36a1e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Oct 8 14:48:17 2021 -0700
+
+    fix internalize [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 3e6ff768a58f072b888722e142eedcd65ea6dd30[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Sep 10 07:06:49 2021 +0200
+
+    fix [1;31mregression[m bug in mam reported by Aseem
+
+[33mcommit 535f4426550d8d1f764aad89b3386e60d27b0e9e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Aug 31 12:13:27 2021 -0700
+
+    #5518
+    
+    [1;31mregression[m from adding lambdas in model
+
+[33mcommit 07c26208fa9ecdc6b833875570427f3b654aa034[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Aug 25 18:30:50 2021 -0700
+
+    [1;31mregression[ms from previous push
+
+[33mcommit d980ee0533d1113398261f479b1e84ac60db6cb8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Aug 18 10:00:22 2021 -0700
+
+    fix [1;31mregression[m in FPNumRef sign
+
+[33mcommit fcb55257beede8e5882f20e04de5537341b90acb[m
+Author: 0152la <al2510@imperial.ac.uk>
+Date:   Mon Aug 2 20:01:41 2021 +0100
+
+    Improve coverage CI script (#5451)
+    
+    * Due to the long duration of the CI execution, execute it at a set time
+      daily (currently 11 UTC / 4 PDT)
+    * Use `Ninja` to build instead of Makefile, due to better compilation
+      time
+    * Execute all the available Z3 tests and examples: `test-z3 -a`,
+      `z3test` [1;31mregression[m suites (`smt2`, `smt2-debug`, and `smt2-extra`),
+      `z3test` coverage tests, and the 4 provided examples
+    * Upload `gcovr` report as an artifact associated with the CI run
+    
+    TODOs:
+    * Fix `gcovr` emitting an empty report
+    * Potentially take the artifact and upload it somewhere accessible
+    
+    Co-authored-by: Andrei Lascu <andrei.lascu10@imperial.ac.uk>
+
+[33mcommit ed27ce5526bb4b42407579eb9622b9dd6251e9e7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jul 31 11:41:55 2021 -0700
+
+    fix [1;31mregression[m in goal2sat
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+For keyword LRA:
+For keyword proof:
+For keyword UFLRA:

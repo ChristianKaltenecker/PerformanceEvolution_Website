@@ -1,0 +1,30 @@
+Searching between v0.612 and v0.614
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+For keyword lzo:
+For keyword lzma:
+For keyword gzip:
+For keyword bzip:
+For keyword compression:
+commit 081265f1c9f23485b84c03a15817e0e1a8cb6c59
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Jul 7 20:43:44 2012 +1000
+
+    Use no back end compression for blocks smaller than 64 bytes to avoid issues to do with minimum buffer size and minimum match sizes of the rzip preprocessing.
+For keyword processor:
+For keyword multi:
+For keyword level:
+For keyword thread:
+commit 901e507bd8545319dad7bd18a8c6d40657209f01
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Jul 7 21:16:11 2012 +1000
+
+    Include test for pthread.h and include header in lrzip_private.h.

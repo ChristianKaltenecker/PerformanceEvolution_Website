@@ -1,0 +1,234 @@
+Searching between z3-4.8.9 and z3-4.8.10
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: LRA,proof,UFLRA
+Keywords: slow fast time perf optim regression speed LRA proof UFLRA
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit b7e1b1e118b1f29a9937f054f8a56c468475ab28[m
+Author: John Regehr <regehr@cs.utah.edu>
+Date:   Sun Nov 29 14:26:53 2020 -0700
+
+    get rid of threads in the scoped_[1;31mtime[mr thread pool prior to forking, on non-Windows (#4833)
+    
+    * on POSIX systems, fork() is dangerous in the presence of a thread
+    pool, because the child process inherits only the thread from the
+    parent that actually called fork().
+    
+    this patch winds down the scoped_[1;31mtime[mr thread pool in preparation for
+    forking; workers will get freshly created again following the fork
+    call.
+
+[33mcommit b5a6c6bc6603759855ae95ab6e1d819f35c148d5[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 26 06:33:44 2020 -0800
+
+    attempt at more graceful [1;31mtime[mout handling #4821
+
+[33mcommit 0fa88efc2b6340180148c3b3307ece1447a9fb7b[m
+Author: John Regehr <regehr@cs.utah.edu>
+Date:   Thu Nov 19 14:42:55 2020 -0700
+
+    scoped_[1;31mtime[mr: wait for [1;31mtime[mr thread before main thread continues (#4803)
+
+[33mcommit 1730bc7c7ff2e42d88a4316d872392ac9307f727[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Fri Oct 30 10:01:09 2020 +0000
+
+    fix #4763: shell not finishing before hard [1;31mtime[mout
+    The [1;31mtime[mr thread for the hard [1;31mtime[mout was leaking and thus the thread only exited on [1;31mtime[mout
+
+[33mcommit 4e9035d4b9f7b42b9cb1f07b2d901ae80fd83fba[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Sat Oct 24 12:46:50 2020 +0100
+
+    cleanup thread pool of scoped_[1;31mtime[mr on memory finalize
+    but keep it alive on Z3_memory_reset()
+
+[33mcommit a95c35dadbfdcc86cb7e483b3c0b8e9063cc1e6b[m
+Author: John Regehr <regehr@cs.utah.edu>
+Date:   Thu Oct 22 11:25:01 2020 -0600
+
+    thread pool for scoped_[1;31mtime[mr (#4748)
+    
+    creating a fresh thread for every scoped_[1;31mtime[mr has significant overhead
+    in some use cases. this patch creates a persistent pool of worker threads
+    to do this job, resulting in 20-30% speedup of some alive2 jobs on a
+    large multicore
+For keyword perf:
+[33mcommit c49d39af81a2a05a7cdb450175aed7a0c2ce72a9[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Dec 7 21:34:57 2020 -0800
+
+    [1;31mperf[m for #4655
+
+[33mcommit e5cc613bf1dfc0fd4f13b57ae3b550bfce3e903c[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Wed Oct 21 14:12:05 2020 +0100
+
+    remove some dup map lookups (mentioned in [1;31mperf[m sanitizer paper)
+
+[33mcommit 4e74c4cdd4b13fa98664b9d299c73aa39411579b[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Tue Sep 29 22:05:16 2020 -0700
+
+    [1;31mperf[m in branching (#4719)
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+For keyword optim:
+[33mcommit 3ba857fb04d1c125876910c6c3060173a282bb4a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Oct 26 11:49:24 2020 -0700
+
+    add alternate caching mechanism to allow experimenting for #4747
+    
+    @nunoplopes @aqjune you can experiment by setting ALIVE_OPT to 1 and see if this helps.
+    A further possible [1;31moptim[mization is to persist the "subst" object on the api_context object.
+    Then in Z3_substitute in api_ast.cpp, instead of declaring locally
+            expr_safe_replace subst(m);
+    you can use an attribute on the context to retrieve the same substitution object.
+    
+    It is not easy to figure out if this matters without having some profiling information so I hope you can determine on your side whether this is useful.
+
+[33mcommit ef6542823b400b98db192282a49ae932ad880980[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Sep 28 20:01:33 2020 -0700
+
+    unit [1;31moptim[mization
+
+[33mcommit 6f63f8761c9272e1374224707a7790a341e57c86[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Sep 20 06:47:27 2020 -0700
+
+    [1;31moptim[mizations to bv-solver and euf-egraph (#4698)
+    
+    * additional bit-vector propagators
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * rename restrict (not a keyword, but well) #4694, tune euf
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * merge
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * add pb rewriting to pb2bv #4697
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword regression:
+[33mcommit 621e99284b02f6804a283a19ad696a8675a80623[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Dec 8 16:36:43 2020 -0800
+
+    fix arith_solver=6 [1;31mregression[m over solver=2
+    
+    https://github.com/Z3Prover/z3/issues/4613#issuecomment-668047545
+
+[33mcommit fae9481308040ba84fe0e081e142cb9cd3e86cb9[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Dec 8 12:17:41 2020 -0800
+
+    fix #4875
+    
+    remove unsound rewrite, [1;31mregression[m
+
+[33mcommit 64af8981ba40262b369fbb55ab99da7ea4e88b20[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Nov 29 19:43:37 2020 -0800
+
+    fix #4834, [1;31mregression[m after delay-propagating disequality axioms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b80ba24ba6a26a93c6ec15622d015a563ad980ab[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Oct 12 12:26:50 2020 -0700
+
+    deal with [1;31mregression[m break
+
+[33mcommit e683f4be21db3f2dd274011fb34ce9496dd07e1b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Oct 12 10:35:33 2020 -0700
+
+    #4525 [1;31mregression[m in model generation
+
+[33mcommit fa58a36b9f5cb13b27e9c48f03647b97e8cf8f2e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Oct 5 14:13:05 2020 -0700
+
+    model refactor (#4723)
+    
+    * refactor model fixing
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * missing cond macro
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * file
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * file
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * add macros dependency
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * deps and debug
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * add dependency to normal forms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * build issues
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * compile
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix leal [1;31mregression[m
+    
+    * complete model fixer
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fold back private functionality to model_finder
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * avoid duplicate fixed callbacks
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+[33mcommit a95c35dadbfdcc86cb7e483b3c0b8e9063cc1e6b[m
+Author: John Regehr <regehr@cs.utah.edu>
+Date:   Thu Oct 22 11:25:01 2020 -0600
+
+    thread pool for scoped_timer (#4748)
+    
+    creating a fresh thread for every scoped_timer has significant overhead
+    in some use cases. this patch creates a persistent pool of worker threads
+    to do this job, resulting in 20-30% [1;31mspeed[mup of some alive2 jobs on a
+    large multicore
+For keyword LRA:
+For keyword proof:
+[33mcommit 67a8492bd0b8d70ed1518633611bc8b412180be7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Nov 27 14:40:46 2020 -0800
+
+    more graceful [1;31mproof[m checks
+For keyword UFLRA:

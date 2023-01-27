@@ -1,0 +1,159 @@
+Searching between v0.551 and v0.552
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compressoion,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compressoion processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+commit 2a0553bc54241a4ef2d647e587c52083292c568c
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Feb 9 12:39:15 2011 +1100
+
+    Revert "Decompress more than one stream at a time if there are threads free and the end of one stream is reached."
+    
+    This reverts commit 8ee9ef64f5317cd0ab64f69f03b59514c5d26861.
+    
+    This change is unreliable. Hence revert it and all dependent patches.
+
+commit 8ee9ef64f5317cd0ab64f69f03b59514c5d26861
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 8 11:58:01 2011 +1100
+
+    Decompress more than one stream at a time if there are threads free and the end of one stream is reached.
+    Still limit total threads running to control.threads.
+    This affords a small speedup on decompression.
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+commit 8ee9ef64f5317cd0ab64f69f03b59514c5d26861
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 8 11:58:01 2011 +1100
+
+    Decompress more than one stream at a time if there are threads free and the end of one stream is reached.
+    Still limit total threads running to control.threads.
+    This affords a small speedup on decompression.
+
+commit 6b73eb13949b6463be5041b6e03b6f101916bdbc
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Feb 6 11:58:47 2011 +1100
+
+    We do not need to wait for the main process to be ready to receive the data from the threads before shutting them down.
+    Only wait for the "ready" semaphore if we've failed to decompress in parallel.
+    This affords a small speedup on decompression.
+For keyword lzo:
+For keyword lzma:
+For keyword gzip:
+commit becb08129c902fb146ab20faa8cff52c35626a76
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Dec 15 22:54:15 2010 +1100
+
+    gotti spotted that bzip2 and gzip would fail if they encountered an incompressible block instead of returning it uncompressed, and provided a patch for it.
+    Tweaked the patch slightly for style.
+For keyword bzip:
+commit becb08129c902fb146ab20faa8cff52c35626a76
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Dec 15 22:54:15 2010 +1100
+
+    gotti spotted that bzip2 and gzip would fail if they encountered an incompressible block instead of returning it uncompressed, and provided a patch for it.
+    Tweaked the patch slightly for style.
+For keyword compressoion:
+For keyword processor:
+For keyword multi:
+commit 0a32b5f72db784d4cb8be12302ba67049bc97c26
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Thu Feb 10 13:53:42 2011 +1100
+
+    Convert mmaps to malloc in runzip as they may fail if not a multiple of page size!
+
+commit e1bb9ebda5aa58db6e546fdc180bfdbed157cc1c
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 18 00:50:49 2010 +1100
+
+    There's a bug where archives with multiple stream 0 entries per chunk can be corrupted on decompression with threading enabled.
+    Until the bug is tracked down, disable multithreaded decompression when an archive with interleaved stream 0/1 entries is detected.
+For keyword level:
+For keyword thread:
+commit b81542cea47a9195e1af052216497b902f3b2dd4
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Fri Feb 11 12:22:09 2011 +1100
+
+    OSX doesn't support unnamed semaphores so to make it work, fake the threading by just creating the threads and waiting for them to finish.
+    This is done by making the semaphore wrappers null functions on osx and closing the thread in the creation wrapper.
+    Move the wrappers to rzip.h to make this change clean.
+
+commit 2a0553bc54241a4ef2d647e587c52083292c568c
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Feb 9 12:39:15 2011 +1100
+
+    Revert "Decompress more than one stream at a time if there are threads free and the end of one stream is reached."
+    
+    This reverts commit 8ee9ef64f5317cd0ab64f69f03b59514c5d26861.
+    
+    This change is unreliable. Hence revert it and all dependent patches.
+
+commit 823963503859fbb13119a4ef8e3f30e4c19da012
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Feb 9 12:39:02 2011 +1100
+
+    Revert "Limit the maximum number of threads on stream 0 to 1 again as stream 1 data always appear after a chunk of stream 0 data."
+    
+    This reverts commit 0b0f6db60668e469fc871b2da91e32ea797cd513.
+
+commit 44399d88acf9358abf1e86e369cda5411b5be7a0
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Feb 9 12:38:32 2011 +1100
+
+    Revert "Check we dont go over control.threads when trying to fill the other stream."
+    
+    This reverts commit 0bded0a7d9af3b35f2802d4c5b0bf4918e2ac8bb.
+
+commit 0bded0a7d9af3b35f2802d4c5b0bf4918e2ac8bb
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Feb 9 11:07:38 2011 +1100
+
+    Check we dont go over control.threads when trying to fill the other stream.
+    Update comments to reflect when we can go over control.threads.
+
+commit 0b0f6db60668e469fc871b2da91e32ea797cd513
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Feb 9 10:45:03 2011 +1100
+
+    Limit the maximum number of threads on stream 0 to 1 again as stream 1 data always appear after a chunk of stream 0 data.
+
+commit 8ee9ef64f5317cd0ab64f69f03b59514c5d26861
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 8 11:58:01 2011 +1100
+
+    Decompress more than one stream at a time if there are threads free and the end of one stream is reached.
+    Still limit total threads running to control.threads.
+    This affords a small speedup on decompression.
+
+commit aa00c29fba2f0da3d8d67f633a40b3a122498071
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 8 08:55:36 2011 +1100
+
+    The free semaphore is now only updated from the main process on decompression so there are no synchronisation concerns.
+    Remove the free semaphore and the fragile use of sem_trywait and replace it with a simple busy flag for threads on decompression.
+
+commit 6b73eb13949b6463be5041b6e03b6f101916bdbc
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Feb 6 11:58:47 2011 +1100
+
+    We do not need to wait for the main process to be ready to receive the data from the threads before shutting them down.
+    Only wait for the "ready" semaphore if we've failed to decompress in parallel.
+    This affords a small speedup on decompression.
+
+commit 8d110e3366d50d07a0f660f5a6936299822415eb
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Feb 6 11:21:36 2011 +1100
+
+    Remove the check for interleaved streams as it wasn't achieving anything.
+    Make sure the thread has really exited before moving on, and set the free semaphore from outside the thread once it has joined.
+
+commit e1bb9ebda5aa58db6e546fdc180bfdbed157cc1c
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 18 00:50:49 2010 +1100
+
+    There's a bug where archives with multiple stream 0 entries per chunk can be corrupted on decompression with threading enabled.
+    Until the bug is tracked down, disable multithreaded decompression when an archive with interleaved stream 0/1 entries is detected.

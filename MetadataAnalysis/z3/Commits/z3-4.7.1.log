@@ -1,0 +1,115 @@
+Searching between z3-4.6.0 and z3-4.7.1
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: QF_FP,proof,QF_UFLRA
+Keywords: slow fast time perf optim regression speed QF_FP proof QF_UFLRA
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit e1100af52c1ee4201cb7922e69dbffb02417fa72[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Feb 12 12:04:24 2018 -0800
+
+    ensure that final model is logged by the [1;31mtime[m it is produced fix #1463
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5c3f35dc4407fb0d4d86fdf9247b7d4401de26ed[m
+Author: Murphy Berzish <murphy.berzish@gmail.com>
+Date:   Thu Jan 25 15:52:57 2018 -0500
+
+    always rewrite regex length constraints as they are some[1;31mtime[ms malformed
+
+[33mcommit e9be339d9df0d7d16d31e58aeb1ff81b9215a563[m
+Author: Dan Liew <daniel.liew@imperial.ac.uk>
+Date:   Wed Jan 3 12:42:43 2018 +0000
+
+    [CMake] Fix #1437.
+    
+    The `clock_get[1;31mtime[m()` function in glibc < 2.17 required linking against
+    librt. Until #1437 nobody had tried using the CMake build system with
+    a really old version of glibc (in this case 2.12).
+    
+    The python build system always linked against librt but the CMake build
+    system never tried to link against it leading to link failures.
+    
+    This patch teaches the CMake build system to detect if librt is required
+    when linking against `clock_get[1;31mtime[m()` and adds `rt` as a link
+    dependency if necessary.
+
+[33mcommit 5bc4c9809e232d63f46018b200cb930bca993ce5[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Dec 25 12:50:11 2017 -0800
+
+    initialize additional assumptions after setup_context is called the first [1;31mtime[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword perf:
+[33mcommit 9e8192e44811bcfad99866932480619d8e8512af[m
+Merge: 3b78bdc8e 66b85e000
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Apr 7 10:29:11 2018 -0700
+
+    Merge pull request #1560 from c-cube/[1;31mperf[m-occurs-check
+    
+    improve [1;31mperf[mormance of occurs check for datatypes
+
+[33mcommit 9df140343a9565cbdae2fdf39b876882add46933[m
+Author: Simon Cruanes <simon.cruanes.2007@m4x.org>
+Date:   Mon Apr 2 17:17:21 2018 -0500
+
+    [1;31mperf[m(datatype): whole-graph implementation of occurs_check
+
+[33mcommit b5d531f079d6b678dc8accf6fd165185361c18d6[m
+Author: Simon Cruanes <simon.cruanes.2007@m4x.org>
+Date:   Mon Apr 2 13:37:12 2018 -0500
+
+    [1;31mperf[m(datatype): improve caching in occurs_check
+
+[33mcommit 54b3cd00717914aad0d343d381621506ff3f40c4[m
+Author: Bruce Mitchener <bruce.mitchener@gmail.com>
+Date:   Tue Feb 6 11:21:17 2018 +0700
+
+    Reserve vector space when possible.
+    
+    This fixes all current instances of the
+    `[1;31mperf[mormance-inefficient-vector-operation`
+    warning in clang-tidy.
+For keyword optim:
+[33mcommit 480e1c4daba6a9f5cae5a7c12010613e88584cae[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Apr 23 07:20:24 2018 +0200
+
+    add warning message for [1;31moptim[mization with quantifiers. Fix #1580
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword regression:
+[33mcommit eb1122c5cb434338e25b87e7d94c7c6d56be02f8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Mar 4 21:57:08 2018 -0800
+
+    delay updating parameters to ensure rewriting in asserted_formulas is applied using configuration overrides. Fixes build [1;31mregression[m for tree_interpolation documentation test
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+For keyword QF_FP:
+[33mcommit a1d870f19f6638432eb5f15f0f1a59319a9927ab[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Tue Apr 24 12:43:11 2018 +0100
+
+    Added tactic for [1;31mQF_FP[mLRA
+For keyword proof:
+[33mcommit fc835ba01e5285ceb4c15ec8fa6eb1eb90d6e5ba[m
+Merge: 4e31794c4 4cc936285
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Mar 9 05:22:49 2018 -0500
+
+    Merge pull request #1518 from waywardmonkeys/const-[1;31mproof[m-checker
+    
+    Make [1;31mproof[m_checker more const correct.
+
+[33mcommit 4cc936285113df07f6492cf791f7850e933cda54[m
+Author: Bruce Mitchener <bruce.mitchener@gmail.com>
+Date:   Wed Mar 7 13:18:39 2018 +0700
+
+    Make [1;31mproof[m_checker more const correct.
+For keyword QF_UFLRA:

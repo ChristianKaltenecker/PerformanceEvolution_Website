@@ -1,0 +1,890 @@
+Searching between v0.9.7-p1 and v1.0.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality
+Keywords: slow fast time perf optim regression speed quality
+For keyword slow:
+For keyword fast:
+[33mcommit 0780f258da950e6d0a600ede35968ced93f407c5[m
+Merge: b2c8dff72 2b2c0c9bd
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Jan 5 10:09:39 2012 -0800
+
+    Merge "Improve SSSE3 [1;31mfast[m quantizer function"
+
+[33mcommit 2b2c0c9bda036f3f284ff476d3292af94f406b83[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Dec 29 12:05:50 2011 -0500
+
+    Improve SSSE3 [1;31mfast[m quantizer function
+    
+    Simplified the EOB calculation in the function.
+    
+    Change-Id: I7422f18be40ae270358f5cb0811d66e64436b56f
+
+[33mcommit d6020f9d52cbaa9629e3a3c6ad023360c9e7b483[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Mon Dec 12 17:08:03 2011 -0800
+
+    tokenizer: use correct block type context in stuff1st_order_b
+    
+    The [1;31mfast[m-path for skipped MBs was not correctly respecting the
+    block type during update of the coefficient counts. Extracted
+    this from part of change I365cfb6ac636f19c545f682e3aeac185253abaef
+    
+    Change-Id: I53d8cf0a00a98034b97b0ed3414b703bae74a739
+
+[33mcommit a4e410a3cacab1d8cafa93fdddeddead256b27c5[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Dec 9 11:54:36 2011 -0800
+
+    vpx_integer.h: fix incorrect type emulation
+    
+    The previous definition of uintptr_t was incorrect on x64 with MSVC.
+    Also, the ARMV6 version of int_[1;31mfast[m16_t was defined as unsigned for
+    some reason. Since the [1;31mfast[m types are currently unused, just remove
+    them.
+    
+    Change-Id: Idd73f77a989c77feedcb4a6802ae6bd37324ed40
+
+[33mcommit 5a2fd63a2af84b65f17c2c50fd9a100a653f7e76[m
+Author: Tero Rintaluoma <teror@google.com>
+Date:   Mon Nov 7 13:40:01 2011 +0200
+
+    ARMv6 optimized Intra4x4 prediction
+    
+    Added ARM optimized intra 4x4 prediction
+     - 2x [1;31mfast[mer on Profiler compared to C-code compiled with -O3
+     - Function interface changed a little to improve BLOCKD structure
+       access
+    
+    Change-Id: I9bc2b723155943fe0cf03dd9ca5f1760f7a81f54
+
+[33mcommit 294777b9158c918b74c35293e3711179ac2d0eaa[m
+Merge: efa69d26a de8280944
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Wed Oct 26 11:33:14 2011 -0700
+
+    Merge "Reduce partial frame copy in encoder's pick_filter_level_[1;31mfast[m"
+
+[33mcommit de8280944449db88e96f9f4909f383a542c35de0[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Tue Oct 18 09:48:50 2011 +0300
+
+    Reduce partial frame copy in encoder's pick_filter_level_[1;31mfast[m
+    
+    The partial frame copy function used to copy an extra 8 lines above
+    and  below. The partial frame filtering can only modify 3 pixel rows
+    above the partial frame. Reduce copy to bare minimum needed, which is
+    4 lines, so that partial filtering on copied frame is possible.
+    
+    Define the "magic" fraction number for partial filtering in
+    loopfilter.h .
+    
+    Change-Id: I4791ffc541b6884b12759a0d0714a8faf16147ec
+
+[33mcommit 380d64ecb19984a1466e727244a41445ae919060[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Fri Sep 16 13:54:06 2011 +0300
+
+    Multithreaded encoder, late sync loopfilter
+    
+    Sync with loopfilter thread just at the beginning of next frame encoding.
+    This returns control to application [1;31mfast[mer and allows a better multicore scaling.
+    When PSNR packets are generated the final filtered frame is needed imediatly
+    so we cannot delay the sync.
+    
+    Change-Id: I288d97b5e331d41d6f5bb49d97986fa12ac6f066
+
+[33mcommit 0c2529a8129c9f978d7d87992e033ba3c83b073c[m
+Author: Tero Rintaluoma <teror@google.com>
+Date:   Mon Sep 19 10:10:49 2011 +0300
+
+    NEON FDCT updated to match current C code
+    
+    - Removed [1;31mfast[m_fdct4x4_neon and [1;31mfast[m_fdct8x4_neon
+    - Uses now short_fdct4x4 and short_fdct8x4
+    - Gives ~1-2% speed-up on Cortex-A8/A9
+    
+    Change-Id: Ib62f2cb2080ae719f8fa1d518a3a5e71278a41ec
+
+[33mcommit 4c3ad66b7f63c1e69318941448533a6a7f05c77e[m
+Author: Tero Rintaluoma <teror@google.com>
+Date:   Mon Sep 19 10:24:02 2011 +0300
+
+    Updated ARMv6 forward transforms to match C
+    
+    - Updated walsh transform to match C
+      (based on Change Id24f3392)
+    - Changed [1;31mfast[m_fdct4x4 and 8x4 to short_fdct4x4 and 8x4
+      correspondingly
+    
+    Change-Id: I704e862f40e315b0a79997633c7bd9c347166a8e
+
+[33mcommit bc9293b8159b68e64d9b73e118b90f9fdadd6d80[m
+Author: Alpha Lam <hclam@google.com>
+Date:   Tue Aug 30 19:23:34 2011 +0100
+
+    Recalculate zbin_extra only if regular quantizer is being used
+    
+    vp8_update_zbin_extra() is called all the time even though the [1;31mfast[m
+    quantizer doesn't use it. Skip this call if [1;31mfast[m quantizer is used.
+    
+    Change-Id: Ia711c38431930cc2486cf59b8466060ef0e9d9db
+For keyword time:
+[33mcommit e479379abb071050d45273c614c37253522bf7b0[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Fri Jan 13 14:09:40 2012 -0800
+
+    Fixed bugs in multi-layer code related to changing params
+    
+    When running multi-layer (ML) encodes and dynamically
+    changing coding parameters on the fly (e.g. frame
+    duration/rate, bandwidths allocated to each layer)
+    the encoder would not produce sensible output.
+    
+    In certain cases the rate targeting would be
+    hideously inaccurate.
+    
+    These fixes make it possible to change these coding
+    parameters correctly and to maintain accurate control
+    of the rate targeting.
+    
+    I also added the specification of the input [1;31mtime[mbase
+    into the test program, vp8_scalable_patterns.c.
+    
+    Patch 2: Moved declaration to appease MS compiler)
+    
+    Change-Id: Ic8bb5a16daa924bb64974e740696e040d07ae363
+
+[33mcommit 34168287ede09b9e4f30c40265d3d2662527bbb4[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Mon Jan 9 11:42:30 2012 -0800
+
+    Remove armv4 optimized scaler code.
+    
+    Code was from a [1;31mtime[m when the compiler was
+    not good at optimizing.  Compilers are better
+    and instruction sets have increased to make
+    this code obsolete.
+    
+    Change-Id: I8d261371685247465eb4aa00bdcecc9fe1784219
+
+[33mcommit 056bcc877111cfb4c32daf1c493df3d86eb1ec35[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Mon Dec 19 13:51:11 2011 -0800
+
+    remove armv6 files from armv5 build
+    
+    Make bilinearfilter_arm.c compiled only when HAVE_ARMV6, as its definitions
+    are v6 only. This is normally not a problem for static builds as the file
+    is elided at link [1;31mtime[m, but this was not being done properly for the
+    --enable-shared --enable-pic build.
+    
+    Change-Id: Ic800a7cde751f74f22555c5b247f99f9df5e550d
+
+[33mcommit 26c6a44c66697190e97f2556cd764329cedcc994[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Dec 16 11:26:53 2011 -0800
+
+    Avoid heap allocation of firstpass stats
+    
+    The total_stats, this_frame_stats, and total_left_stats structures
+    were previously create by a heap allocation, despite being of fixed
+    size. These structures were allocated and deallocated during
+    {de,}allocate_compressor_data, which is reinvoked whenever the frame
+    size changes. Unfortunately, this clobbers the total_stats and
+    total_left_stats data.
+    
+    Historically, these were variable size at one [1;31mtime[m, due to the first
+    pass motion map, which necessitated their being created by a unique
+    heap allocation. However, this bug with the total_stats being
+    clobbered has probably been present since that initial implementation.
+    
+    These structures are instead moved to be stored within the struct
+    twopass_rc directly, rather than being heap allocated separately.
+    
+    Change-Id: I7f9e519e25c58b92969071f0e99fa80307e0682b
+
+[33mcommit d7e09b6adad349b6efab2b707fb2c7670b887fc8[m
+Merge: 72f459c77 55fbdd58a
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Dec 15 05:38:57 2011 -0800
+
+    Merge "Force real[1;31mtime[m version 1 streams to only use simple loopfilter"
+
+[33mcommit c1c47e83b0b08ffaae6f42eeb6dd4db7040ede4f[m
+Author: James Berry <jamesberry@google.com>
+Date:   Wed Dec 7 15:48:00 2011 -0500
+
+    add check to ensure that cq_level falls within min and max q
+    
+    Add the notion of deferred validation of parameters. We don't want to
+    validate the cq_level at initialization [1;31mtime[m, because it won't have
+    been set via set_param() yet.
+    
+    Change-Id: Ia1308395e8c10e0b1dc4e9af3a09b2bd6744cc30
+
+[33mcommit 51c4f9e6b13592467a63a5703757a3a32f7b2acd[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Fri Dec 9 14:54:41 2011 +0200
+
+    Avoid multiple test for same lvl in auto filter lvl pick
+    
+    Some[1;31mtime[ms same level is tested 2-3 [1;31mtime[ms; store and reuse the
+    calculated error value.
+    
+    Change-Id: Ia1c04a2568232edf9a5a62c4e2d8e8a50d85e00e
+
+[33mcommit 55fbdd58ac4c5101d2e09377e9e879ad415bbf4a[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Thu Dec 8 10:54:39 2011 +0200
+
+    Force real[1;31mtime[m version 1 streams to only use simple loopfilter
+    
+    ...regardless of the speed settings.
+    
+    Change-Id: I4b91ac7a7208efd690dfc69e175f8eb769b6ce03
+
+[33mcommit aa7335e610b961626f77130bc99b24de1031601d[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Tue Oct 25 15:14:16 2011 -0400
+
+    Multiple-resolution encoder
+    
+    The example encoder down-samples the input video frames a number of
+    [1;31mtime[ms with a down-sampling factor, and then encodes and outputs
+    bitstreams with different resolutions.
+    
+    Support arbitrary down-sampling factor, and down-sampling factor
+    can be different for each encoding level.
+    
+    For example, the encoder can be tested as follows.
+    1. Configure with multi-resolution encoding enabled:
+    ../libvpx/configure --target=x86-linux-gcc --disable-codecs
+    --enable-vp8 --enable-run[1;31mtime[m_cpu_detect --enable-debug
+    --disable-install-docs --enable-error-concealment
+    --enable-multi-res-encoding
+    2. Run make
+    3. Encode:
+    If input video is 1280x720, run:
+    ./vp8_multi_resolution_encoder 1280 720 input.yuv 1.ivf 2.ivf 3.ivf 1
+    (output: 1.ivf(1280x720); 2.ivf(640x360); 3.ivf(320x180).
+    The last parameter is set to 1/0 to show/not show PSNR.)
+    4. Decode:
+    ./simple_decoder 1.ivf 1.yuv
+    ./simple_decoder 2.ivf 2.yuv
+    ./simple_decoder 3.ivf 3.yuv
+    5. View video:
+    mplayer 1.yuv -demuxer rawvideo -rawvideo w=1280:h=720 -loop 0 -fps 30
+    mplayer 2.yuv -demuxer rawvideo -rawvideo w=640:h=360 -loop 0 -fps 30
+    mplayer 3.yuv -demuxer rawvideo -rawvideo w=320:h=180 -loop 0 -fps 30
+    
+    The encoding parameters can be modified in vp8_multi_resolution_encoder.c,
+    for example, target bitrate, frame rate...
+    
+    Modified API. John helped a lot with that. Thanks!
+    
+    Change-Id: I03be9a51167eddf94399f92d269599fb3f3d54f5
+
+[33mcommit e55974bf86714e6403f68c010b89fbd62a4f35e5[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Nov 18 12:47:16 2011 -0800
+
+    Speed selection support for disabled reference frames
+    
+    There was an implicit reference frame test order (typically LAST,
+    GOLD, ARF) in the mode selection logic, but this doesn't provide the
+    expected results when some reference frames are disabled. For
+    instance, in real-[1;31mtime[m mode, the speed selection logic often disables
+    the ARF modes. So if the user disables the LAST and GOLD frames, the
+    encoder was always choosing INTRA, when in reality searching the ARF
+    in this case has the same speed penalty as searching LAST would have
+    had.
+    
+    Instead, introduce the notion of a reference frame search order. This
+    patch preserves the former priorities, so if a frame is disabled, the
+    other frames bump up a slot to take its place. This patch lays the
+    groundwork for doing something smarter in the frame test order, for
+    example considering temporal distance or looking at the frames used by
+    nearby blocks.
+    
+    Change-Id: I1199149f8662a408537c653d2c021c7f1d29a700
+
+[33mcommit ab00d209bc9d9f373c841e889bf6adb80fa8d300[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Fri Sep 30 12:49:46 2011 -0400
+
+    Improved tokenize
+    
+    For a real[1;31mtime[m HD encodings, up to 1.6% gains seen.
+    
+    
+    
+    Change-Id: If45028e23db95124da63f9d38ffe06e05596cc6e
+
+[33mcommit bc9293b8159b68e64d9b73e118b90f9fdadd6d80[m
+Author: Alpha Lam <hclam@google.com>
+Date:   Tue Aug 30 19:23:34 2011 +0100
+
+    Recalculate zbin_extra only if regular quantizer is being used
+    
+    vp8_update_zbin_extra() is called all the [1;31mtime[m even though the fast
+    quantizer doesn't use it. Skip this call if fast quantizer is used.
+    
+    Change-Id: Ia711c38431930cc2486cf59b8466060ef0e9d9db
+
+[33mcommit 1f20202e2c6c137dd2e3464e2b14bba0fdc289ce[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Aug 25 16:54:45 2011 -0400
+
+    Minor modification on key frame decision
+    
+    This change makes sure that no key frame recoding in real-[1;31mtime[m mode
+    even if CONFIG_REALTIME_ONLY is not configured.
+    
+    Change-Id: Ifc34141f3217a6bb63cc087d78b111fadb35eec2
+
+[33mcommit 4e8d35a461e7a45f5134715b010ed38be986fb00[m
+Author: Alpha Lam <hclam@google.com>
+Date:   Tue Aug 9 20:59:45 2011 +0100
+
+    Copy less when active map is in use
+    
+    When active map is specified and the current frame is not a key frame,
+    golden frame nor a altref frame then copy only those active regions.
+    
+    This significantly reduces encoding [1;31mtime[m by as much as 19% on the test
+    system where real[1;31mtime[m encoding is used. This is particularly useful
+    when the frame size is large (e.g. 2560x1600) and there's only a few
+    action macroblocks.
+    
+    Change-Id: If394a813ec2df5a0201745d1348dbde4278f7ad4
+
+[33mcommit 19987dcbfa02c2185a6d126b34f07366085d0905[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Tue Aug 16 16:21:21 2011 -0400
+
+    Faster vp8_default_coef_probs
+    
+    Copies from a generated table instead of building the
+    default coeff probabilities during run[1;31mtime[m.
+    
+    Change-Id: I4d9551ea3a2d7d4a4f7ce9eda006495221a8de50
+
+[33mcommit 56417a3075c5baa6dc8ad6f708547190458fbaa5[m
+Merge: e28e08146 9eb0b2f1d
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Thu Aug 4 17:05:55 2011 -0400
+
+    (Re)Merge branch 'master' into cayuga
+    
+    Corrected the merge direction this [1;31mtime[m, so that running
+    `git describe` on the master branch finds v0.9.7 as the most recent
+    tag.
+    
+    Change-Id: I9e7b5d473c26e670c6d9a76f5c03fa617690651d
+
+[33mcommit b9f19f8917ccac145817c413c3f3268eef20d99a[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Aug 3 11:51:07 2011 -0400
+
+    Adjust half-pixel only search
+    
+    Changed motion search in vp8_find_best_half_pixel_step() to be the
+    same as in vp8_find_best_sub_pixel_step(), which checks 5 points
+    instead of 8 points. This only affects real-[1;31mtime[m mode with
+    cpu-used >=9. Tests showed it gives 2% encoding speedup with
+    a quality loss(psnr) of up to 0.5%.
+    
+    Change-Id: I16049cad1535002346d46cfdfad345bfc3dc5146
+For keyword perf:
+[33mcommit c647ec4462640ae2aff569ac4bb46aa702581596[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Dec 16 16:50:29 2011 -0500
+
+    Merge mr_pick_inter_mode and pick_inter_mode
+    
+    Merged multi-resolution motion estimation with regular motion
+    estimation function in order to remove duplicated part. This
+    caused slight changes in multi-resulotion encoder quality &
+    [1;31mperf[mormance.
+    
+    Change-Id: Ib4ecc7acfebfe5eea959b5b91febae6db7b95fd1
+
+[33mcommit 153eec46e04e4bd24c67ed3ca58374c856231cce[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Dec 8 12:31:01 2011 -0500
+
+    Align image buffer in multiple-resolution encoder
+    
+    Aligned the image buffer and stride to 32 bytes. This enables
+    calling of optimized scaler function in libyuv, and improves
+    the [1;31mperf[mormance.
+    
+    Tested libyuv scaler(x86 optimization) on Linux and Windows,
+    including: Linux 32/64bit, visual studio 32/64bit, Cygwin, and
+    MinGW32.
+    
+    Also, fixed a wrong pointer in vpx_codec_encode().
+    
+    Change-Id: Ibe97d7a0a745f82c43852fa4ed719be5a4db6abc
+
+[33mcommit df49c7c58dcb6bca3d479b224245b53f366c7725[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Wed Nov 9 15:30:35 2011 -0500
+
+    SSE2 optimizations for vp8_build_intra_predictors_mby{,_s}()
+    
+    Ronald recently sent me this patch that he did in April.
+    > From: Ronald S. Bultje <rbultje@google.com>
+    > Date: Thu, 28 Apr 2011 17:30:15 -0700
+    > Subject: [PATCH] SSE2 optimizations for
+    > vp8_build_intra_predictors_mby{,_s}().
+    HD decode tests have shown a [1;31mperf[mormance boost up to 1.5%,
+    depending on material.
+    Patch set 3: Fixed encoder crash.
+    
+    Change-Id: Ie1fd1fa3dc750eec1a7a20bfa2decc079dcf48c8
+
+[33mcommit 6064384d59b8aeb820b8cd11fbcbe3b39a4b53ad[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Thu Oct 27 11:26:30 2011 -0400
+
+    Improved decode_split_mv()
+    
+    Tests showed ~1.2% [1;31mperf[mormance boost on the HD clip used.
+    Performance will vary based on material.
+    
+    Change-Id: Icbcf1a828750d5b4ae5252bf596b3ef594042e8a
+
+[33mcommit 21970d1dc2287ca17c12dd503a4f0d71e513edf4[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Wed Oct 26 11:46:10 2011 -0400
+
+    Improved mv_bias
+    
+    Small [1;31mperf[mormance gains.
+    
+    Change-Id: I709b9390a8a27a70f5f23574313b8db85ac7f23d
+
+[33mcommit ff1d170e69383adf3090fe45586bebe58a6d06f9[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Wed Oct 26 10:46:36 2011 -0400
+
+    Improved read_mb_modes_mv()
+    
+    Interleaved vp8_find_near_mvs and vp8_mv_ref_probs.
+    2.5% to 4% [1;31mperf[mormance improvement for the HD clips used.
+    
+    Change-Id: Id888b667cf5ae2f0e19da18743140f055ff7de8d
+
+[33mcommit ed9c66f5844cd6fd28c7f92e84a769170a56462e[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Tue Oct 18 12:06:50 2011 -0400
+
+    Remove usage of predict buffer for decode
+    
+    Instead of using the predict buffer, the decoder now writes
+    the predictor into the recon buffer.  For blocks with eob=0,
+    unnecessary idcts can be eliminated.  This gave a [1;31mperf[mormance
+    boost of ~1.8% for the HD clips used.
+    
+    Tero: Added needed changes to ARM side and scheduled some
+          assembly code to prevent interlocks.
+    
+    Patch Set 6:  Merged (I1bcdca7a95aacc3a181b9faa6b10e3a71ee24df3)
+    into this commit because of similarities in the idct
+    functions.
+    Patch Set 7: EC bug fix.
+    
+    Change-Id: Ie31d90b5d3522e1108163f2ac491e455e3f955e6
+
+[33mcommit b870947d42d3b391d799b0e48630871844b0a37d[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Wed Aug 24 14:42:26 2011 -0400
+
+    Removed bmi copy to/from BLOCKD
+    
+    for SPLITMV and B_PRED modes.  Modified code to use the bmi
+    found in mode_info_context instead of BLOCKD.  On the decode
+    side, the uvmvs are calculated only when required, instead of
+    every macroblock.  This is WIP. (bmi should eventually be
+    removed from BLOCKD)
+    Small [1;31mperf[mormance gains noticed for RT encodes and decodes.(VGA)
+    
+    Change-Id: I2ed7f0fd5ca733655df684aa82da575c77a973e7
+For keyword optim:
+[33mcommit 55610053af21c019b5d497412f739bcc393aed45[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Tue Jan 10 11:16:37 2012 -0800
+
+    Remove iwmmx target.
+    
+    No [1;31moptim[mized code present for target.
+    
+    Change-Id: If99bb37491b15c1093e8851430c060cb2466898c
+
+[33mcommit 34168287ede09b9e4f30c40265d3d2662527bbb4[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Mon Jan 9 11:42:30 2012 -0800
+
+    Remove armv4 [1;31moptim[mized scaler code.
+    
+    Code was from a time when the compiler was
+    not good at [1;31moptim[mizing.  Compilers are better
+    and instruction sets have increased to make
+    this code obsolete.
+    
+    Change-Id: I8d261371685247465eb4aa00bdcecc9fe1784219
+
+[33mcommit 89cdfdb2312a6381e66c353a50221185c6ddfa9f[m
+Merge: 77119a5cd df49c7c58
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Thu Jan 5 09:05:19 2012 -0800
+
+    Merge "SSE2 [1;31moptim[mizations for vp8_build_intra_predictors_mby{,_s}()"
+
+[33mcommit 153eec46e04e4bd24c67ed3ca58374c856231cce[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Dec 8 12:31:01 2011 -0500
+
+    Align image buffer in multiple-resolution encoder
+    
+    Aligned the image buffer and stride to 32 bytes. This enables
+    calling of [1;31moptim[mized scaler function in libyuv, and improves
+    the performance.
+    
+    Tested libyuv scaler(x86 [1;31moptim[mization) on Linux and Windows,
+    including: Linux 32/64bit, visual studio 32/64bit, Cygwin, and
+    MinGW32.
+    
+    Also, fixed a wrong pointer in vpx_codec_encode().
+    
+    Change-Id: Ibe97d7a0a745f82c43852fa4ed719be5a4db6abc
+
+[33mcommit edd98b7310e0338708abfbd0826688222e1e6f57[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Tue Nov 15 12:53:01 2011 -0500
+
+    Added predictor stride argument(s) to subtract functions
+    
+    Patch set 2: 64 bit build fix
+    Patch set 3: 64 bit crash fix
+    
+    [Tero]
+    Patch set 4: Updated ARMv6 and NEON assembly.
+                 Added also minor NEON [1;31moptim[mizations to subtract
+                 functions.
+    
+    Patch set 5: x86 stride bug fix
+    
+    Change-Id: I1fcca93e90c89b89ddc204e1c18f208682675c15
+
+[33mcommit df49c7c58dcb6bca3d479b224245b53f366c7725[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Wed Nov 9 15:30:35 2011 -0500
+
+    SSE2 [1;31moptim[mizations for vp8_build_intra_predictors_mby{,_s}()
+    
+    Ronald recently sent me this patch that he did in April.
+    > From: Ronald S. Bultje <rbultje@google.com>
+    > Date: Thu, 28 Apr 2011 17:30:15 -0700
+    > Subject: [PATCH] SSE2 [1;31moptim[mizations for
+    > vp8_build_intra_predictors_mby{,_s}().
+    HD decode tests have shown a performance boost up to 1.5%,
+    depending on material.
+    Patch set 3: Fixed encoder crash.
+    
+    Change-Id: Ie1fd1fa3dc750eec1a7a20bfa2decc079dcf48c8
+
+[33mcommit ea2229bab69fc7fa4c474cb9f88a47ae158a2b43[m
+Merge: 2999ca309 5a2fd63a2
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Wed Nov 9 09:36:33 2011 -0800
+
+    Merge "ARMv6 [1;31moptim[mized Intra4x4 prediction"
+
+[33mcommit 5a2fd63a2af84b65f17c2c50fd9a100a653f7e76[m
+Author: Tero Rintaluoma <teror@google.com>
+Date:   Mon Nov 7 13:40:01 2011 +0200
+
+    ARMv6 [1;31moptim[mized Intra4x4 prediction
+    
+    Added ARM [1;31moptim[mized intra 4x4 prediction
+     - 2x faster on Profiler compared to C-code compiled with -O3
+     - Function interface changed a little to improve BLOCKD structure
+       access
+    
+    Change-Id: I9bc2b723155943fe0cf03dd9ca5f1760f7a81f54
+
+[33mcommit 05bde9d4a4b575aaadd9b6f5d0f82826b1cb4900[m
+Author: James Berry <jamesberry@google.com>
+Date:   Fri Oct 7 15:42:23 2011 -0400
+
+    bug fix - starting/[1;31moptim[mal/max and buffer_level changed from int to int64_t
+    
+    buffer_level in VP8_COMP and starting_buffer_level, [1;31moptim[mal_buffer_level
+    and maximum_buffer_size in VP8_CONFIG changed from int to int64_t
+    to avoid potential crash issues for larger target bit rates.
+    
+    Change-Id: I0d5ab6c8a44c2fef51f30cd8df4bb4b739c5df26
+
+[33mcommit 694d4e777705ec7ad9d903f4074ba23d1806fe01[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Mon Aug 22 12:36:28 2011 -0700
+
+    Reclassify [1;31moptim[mized ssim calculations as SSE2.
+    
+    Calculations were incorrectly classified as either
+    SSE3 or SSSE3.  Only using SSE2 instructions.
+    Cleanup function names and make non-RTCD code work
+    as well.
+    
+    Change-Id: I48ad0218af0cc51c5078070a08511dee43ecfe09
+
+[33mcommit b7a6f1d20e958ce4dbce4555637a5948390797b1[m
+Merge: f8e3d23b9 734b1b204
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Mon Aug 22 12:32:12 2011 -0700
+
+    Merge "Revert "Reclasify [1;31moptim[mized ssim calculations as SSE2.""
+
+[33mcommit 734b1b2041a209ace033481c0fc919164177a3fc[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Mon Aug 22 11:31:12 2011 -0700
+
+    Revert "Reclasify [1;31moptim[mized ssim calculations as SSE2."
+    
+    This reverts commit 01376858cd184d820ff4c2d8390361a8679c0e87
+
+[33mcommit f8e3d23b99ac0ce695a0515456d1d293e526a247[m
+Merge: 2f964bac2 01376858c
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Mon Aug 22 09:20:33 2011 -0700
+
+    Merge "Reclasify [1;31moptim[mized ssim calculations as SSE2."
+
+[33mcommit 01376858cd184d820ff4c2d8390361a8679c0e87[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Fri Aug 19 08:51:27 2011 -0700
+
+    Reclasify [1;31moptim[mized ssim calculations as SSE2.
+    
+    Calculations were incorrectly classified as either
+    SSE3 or SSSE3.  Only using SSE2 instructions.
+    Cleanup function names and make non-RTCD code work
+    as well.
+    
+    Change-Id: I29f5c2ead342b2086a468029c15e2c1d948b5d97
+For keyword regression:
+For keyword speed:
+[33mcommit aa8650dd7fed52b5988cb1d6cff22c3475f0a03e[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Dec 20 11:17:42 2011 -0800
+
+    Use lookup tables for mode_check_freq
+    
+    Mostly cosmetic. Trying for a more compact representation of [1;31mspeed[m
+    selection thresholds.
+    
+    Change-Id: I339e7840049b91ad569aabbdc9c702a496110d3b
+
+[33mcommit efb4783d3658a06b9fb43030bd6f076039b4d340[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Dec 20 11:17:42 2011 -0800
+
+    Use lookup tables for thresh_mult
+    
+    Mostly cosmetic. Trying for a more compact representation of [1;31mspeed[m
+    selection thresholds.
+    
+    Change-Id: Icaebea632c7bb71ca8e07b4def04a046d4515e27
+
+[33mcommit 55fbdd58ac4c5101d2e09377e9e879ad415bbf4a[m
+Author: Attila Nagy <attilanagy@google.com>
+Date:   Thu Dec 8 10:54:39 2011 +0200
+
+    Force realtime version 1 streams to only use simple loopfilter
+    
+    ...regardless of the [1;31mspeed[m settings.
+    
+    Change-Id: I4b91ac7a7208efd690dfc69e175f8eb769b6ce03
+
+[33mcommit e55974bf86714e6403f68c010b89fbd62a4f35e5[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Nov 18 12:47:16 2011 -0800
+
+    Speed selection support for disabled reference frames
+    
+    There was an implicit reference frame test order (typically LAST,
+    GOLD, ARF) in the mode selection logic, but this doesn't provide the
+    expected results when some reference frames are disabled. For
+    instance, in real-time mode, the [1;31mspeed[m selection logic often disables
+    the ARF modes. So if the user disables the LAST and GOLD frames, the
+    encoder was always choosing INTRA, when in reality searching the ARF
+    in this case has the same [1;31mspeed[m penalty as searching LAST would have
+    had.
+    
+    Instead, introduce the notion of a reference frame search order. This
+    patch preserves the former priorities, so if a frame is disabled, the
+    other frames bump up a slot to take its place. This patch lays the
+    groundwork for doing something smarter in the frame test order, for
+    example considering temporal distance or looking at the frames used by
+    nearby blocks.
+    
+    Change-Id: I1199149f8662a408537c653d2c021c7f1d29a700
+
+[33mcommit 0c2529a8129c9f978d7d87992e033ba3c83b073c[m
+Author: Tero Rintaluoma <teror@google.com>
+Date:   Mon Sep 19 10:10:49 2011 +0300
+
+    NEON FDCT updated to match current C code
+    
+    - Removed fast_fdct4x4_neon and fast_fdct8x4_neon
+    - Uses now short_fdct4x4 and short_fdct8x4
+    - Gives ~1-2% [1;31mspeed[m-up on Cortex-A8/A9
+    
+    Change-Id: Ib62f2cb2080ae719f8fa1d518a3a5e71278a41ec
+
+[33mcommit b9f19f8917ccac145817c413c3f3268eef20d99a[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Aug 3 11:51:07 2011 -0400
+
+    Adjust half-pixel only search
+    
+    Changed motion search in vp8_find_best_half_pixel_step() to be the
+    same as in vp8_find_best_sub_pixel_step(), which checks 5 points
+    instead of 8 points. This only affects real-time mode with
+    cpu-used >=9. Tests showed it gives 2% encoding [1;31mspeed[mup with
+    a quality loss(psnr) of up to 0.5%.
+    
+    Change-Id: I16049cad1535002346d46cfdfad345bfc3dc5146
+For keyword quality:
+[33mcommit 47dcd769c110f393cb1f7885321a79eb70d88c92[m
+Author: Deb Mukherjee <debargha@google.com>
+Date:   Thu Jan 19 19:06:55 2012 -0800
+
+    Overhauling the thresholds and mixing proportions for mfqe postprocessor.
+    
+    Makes the thresholds for the multiframe [1;31mquality[m enhancement module
+    depend on the difference between the base quantizers. Also modifies
+    the mixing function to weigh the current low [1;31mquality[m frame less if
+    the difference in quantizer is large. With the above modifications
+    mfqe works well for both scalable patterns as well as low [1;31mquality[m
+    key frames.
+    
+    Change-Id: If24e94f63f3c292f939eea94f627e7ebfb27cb75
+
+[33mcommit 15c29afeca9dee2e693bd113509006c5c8854854[m
+Author: Jeff Faust <jfaust@google.com>
+Date:   Tue Jan 17 18:15:05 2012 -0800
+
+    Simplify an assignment statement
+    
+    Separated a double assignment that looked suspiciously like an
+    assignment and e[1;31mquality[m typo.
+    
+    Change-Id: I7813979e9d7ea2539afb3c8ae6074f9df5ebdf52
+
+[33mcommit 28aa08748e703fe3f5da025958e608e5372f608e[m
+Merge: 16a02e341 87aa846b4
+Author: Deb Mukherjee <debargha@google.com>
+Date:   Mon Jan 9 10:23:24 2012 -0800
+
+    Merge "Multiframe [1;31mquality[m enhancement postprocessing"
+
+[33mcommit 87aa846b47a61ba5480ffbae058222720754be5c[m
+Author: Deb Mukherjee <debargha@google.com>
+Date:   Tue Dec 20 14:50:31 2011 -0800
+
+    Multiframe [1;31mquality[m enhancement postprocessing
+    
+    Adds a multiframe postprocessing module to enhance the [1;31mquality[m of
+    certain frames that are coded at lower [1;31mquality[m than preceding frames.
+    The module can be invoked from the commandline by use of the --mfqe
+    option, and will be most beneficial for enhancing the [1;31mquality[m of
+    frames decoded using scalable patterns.
+    
+    Uses the vp8_variance_var16x16 and vp8_variance_sad16x16 function
+    pointers to compute SAD and Variance of blocks.
+    
+    Change-Id: Id73d2a6e3572d07f9f8e36bbce00a4fc5ffd8961
+
+[33mcommit c647ec4462640ae2aff569ac4bb46aa702581596[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Dec 16 16:50:29 2011 -0500
+
+    Merge mr_pick_inter_mode and pick_inter_mode
+    
+    Merged multi-resolution motion estimation with regular motion
+    estimation function in order to remove duplicated part. This
+    caused slight changes in multi-resulotion encoder [1;31mquality[m &
+    performance.
+    
+    Change-Id: Ib4ecc7acfebfe5eea959b5b91febae6db7b95fd1
+
+[33mcommit e542627b0c5a5e5e121ccac3f9eff649d5e38f08[m
+Merge: c4aeff94b f8b431c33
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed Dec 14 11:22:00 2011 -0800
+
+    Merge "fix: active_worst_[1;31mquality[m could be set above 127"
+
+[33mcommit f8b431c334f7c10a5c471ed17a3cc24e650d69c5[m
+Author: James Berry <jamesberry@google.com>
+Date:   Tue Dec 6 13:08:44 2011 -0500
+
+    fix: active_worst_[1;31mquality[m could be set above 127
+    
+    add check to set active_worst_[1;31mquality[m to 127 if it
+    is set above 127
+    
+    Change-Id: I7db353d5c1b1c8516a116542b6ed21c0110bb512
+
+[33mcommit 88e24f07aed48593f455db9839cdf792c858f4d7[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Thu Oct 20 15:32:34 2011 -0400
+
+    added code to clear 2nd order block when appropriate
+    
+    It is discovered that in rare situations the 2nd order block may
+    produce a few small magnitude coefficients that has no effect on
+    reconstruction. The situations are a combination of low quantizer
+    values (high [1;31mquality[m) and low energy in residual signals (content
+    dependent). This commit added code to detect such cases and reset
+    the 2nd order block to all 0.
+    
+    Patch 1 to 4 used code to do all-zero-check on idct result buffer,
+    and tests on derf set showed a consistent gain of .12%-.14% on all
+    metrics.But due to a recent change Ie31d90b, the idct result buffer
+    is not longer populated. So patch 5&6 use an alternative method to
+    detect the situations. Tests on derf set now shows a consistent
+    [1;31mquality[m gain of .16%-.20%.
+    
+    As suggested by Jim, Patch 7&8 removed the condition of all first
+    order block not having any coefficient, instead we reset 2nd order
+    coefficients to all 0 if sum of absolute value of the coefficients
+    is small. So it does slightly more than just detecting the oddity
+    as discussed above, but tests on derf set now show a consistent
+    gain of .20%-.23% on all metrics.
+    
+    It is worth noting here that this change does not have any effect
+    on mid/high quantizer range, it only affects the quantizer value
+    18 or blow. Within this range, the change helps compression by up
+    to 2.5% on clips in the derf set.
+    
+    Change-Id: I718e19cf59a4fc2462cb7070832759beb9f7e7dd
+
+[33mcommit b9f19f8917ccac145817c413c3f3268eef20d99a[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Aug 3 11:51:07 2011 -0400
+
+    Adjust half-pixel only search
+    
+    Changed motion search in vp8_find_best_half_pixel_step() to be the
+    same as in vp8_find_best_sub_pixel_step(), which checks 5 points
+    instead of 8 points. This only affects real-time mode with
+    cpu-used >=9. Tests showed it gives 2% encoding speedup with
+    a [1;31mquality[m loss(psnr) of up to 0.5%.
+    
+    Change-Id: I16049cad1535002346d46cfdfad345bfc3dc5146

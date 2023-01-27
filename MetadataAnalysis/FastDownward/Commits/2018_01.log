@@ -1,0 +1,74 @@
+Searching between 363e2fc9a8b7adb48b4c30e929097798928c7370 and 0e8acd2f2613e032040dc6b6d4bf1926848aa4cb
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: collection_max_size,num_samples,shrink_fh,blind,hmax,iPDB,cpdbs,lmcut,disjunctive_landmarks,landmark,PDB
+Keywords: slow fast time perf optim regression speed collection_max_size num_samples shrink_fh blind hmax iPDB cpdbs lmcut disjunctive_landmarks landmark PDB
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit 2a27566e5bb3f18234d60768e435dbc7918b5331[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Sun Jul 16 15:01:53 2017 +0200
+
+    [issue732] experiment v1: add default report attributes; use sum instead of avg.
+    for successor generator [1;31mtime[m and memory
+
+[33mcommit 5c115b5f77ab54b6cc8997d2345b6b6ddff7f092[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Sat Jul 15 15:11:35 2017 +0200
+
+    [main] more output on [1;31mtime[m and memory for root successor generator creation
+For keyword perf:
+For keyword optim:
+[33mcommit 33a2be2fa6c2e4befcfdc7993314a63ac59101ae[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Sun Sep 3 00:42:30 2017 +0200
+
+    [issue732] successor generator: updated comments on possible [1;31moptim[mizations
+For keyword regression:
+For keyword speed:
+For keyword collection_max_size:
+For keyword num_samples:
+For keyword shrink_fh:
+[33mcommit fb322500801caa48ae464b4d869aeac8d6dbace0[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Thu Jul 6 10:28:45 2017 +0200
+
+    [issue707] code review: fix [1;31mshrink_fh[m and its treatment of dead states
+
+[33mcommit 153d579a697230741779dee1ad5bd5646f8e0141[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Feb 22 15:30:03 2017 +0100
+
+    [issue707] remove max* values from Distances, [1;31mshrink_fh[m compute them on demand; use four bool options for distance computation/pruning
+For keyword blind:
+For keyword hmax:
+For keyword iPDB:
+For keyword cpdbs:
+For keyword lmcut:
+For keyword disjunctive_landmarks:
+For keyword landmark:
+For keyword PDB:
+[33mcommit b731637b1eb6beb52e142e89f4c89a48aaa1fbb8[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Dec 5 09:57:12 2017 +0100
+
+    [issue735] Only pass maximum additive subsets to Canonical[1;31mPDB[ms.
+
+[33mcommit 5a7b3a57d2e0622b41a09d62c0c763102dd5ac51[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Mon Dec 4 02:03:42 2017 +0100
+
+    [issue735] [1;31mPDB[m dominance pruning: precompute which patterns are dominated
+    by the current pattern collection
+
+[33mcommit ecdd704bc9f004764ccb08292b135022aa3e21d6[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Sun Dec 3 19:24:04 2017 +0100
+
+    [issue735] New implementation of [1;31mPDB[m dominance pruning.
+
+[33mcommit f159124d24f2993cc085e937541081200e8dd111[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sun Dec 3 10:14:09 2017 +0100
+
+    [issue735] experiments: detect whether dominance pruning or [1;31mPDB[m construction failed

@@ -1,0 +1,1269 @@
+Searching between v2.2.2 and v2.3.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: sha,lzo
+Keywords: slow fast time perf optim regression sha lzo
+For keyword slow:
+commit 5d4f5435a421299ed047485d8d99bdf9a0d22fd1
+Author: David Sommerseth <davids@redhat.com>
+Date:   Sun Sep 9 03:30:46 2012 +0200
+
+    Fix reconnect issues when --push and UDP is used on the server
+    
+    When the server is configured with UDP and --push statements, reconnecting
+    often fails by the client never receiving PUSH_REPLY.  The client sends
+    PUSH_REQUEST and the server logs these requests but does not send them.
+    
+    This bug got introduced in commit ff65da3a230b658b2c1d52dc1a48612e80a2eb42
+    which tries to avoid sending duplicated PUSH messages if the client/server
+    connection is slow.
+    
+    This patch keeps this behaviour, but instead of a session wide PUSH_REPLY
+    block it sets an expiry time for the PUSH_REPLY block.  The expiry time
+    is set to 30 seconds.
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Cc: James Yonan <james@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: James Yonan <james@openvpn.net>
+    Message-Id: 1347154246-20143-1-git-send-email-dazo@users.sourceforge.net
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7044
+
+commit ff65da3a230b658b2c1d52dc1a48612e80a2eb42
+Author: James Yonan <james@openvpn.net>
+Date:   Fri Mar 18 04:51:59 2011 +0000
+
+    Fixed issue where a client might receive multiple push replies from
+    a server if it sent multiple push requests due to the server being
+    slow to respond.  This could cause the client to process pushed
+    options twice, leading to duplicate pushed routes, among other issues.
+    The fix, implemented server-side, is to reply only once to a push
+    request even if multiple requests are received.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7060 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit ac0aaac662b07b3f0eb248cd74a20e3e5d8f9875
+Author: James Yonan <james@openvpn.net>
+Date:   Fri Mar 18 04:51:59 2011 +0000
+
+    Fixed issue where a client might receive multiple push replies from
+    a server if it sent multiple push requests due to the server being
+    slow to respond.  This could cause the client to process pushed
+    options twice, leading to duplicate pushed routes, among other issues.
+    The fix, implemented server-side, is to reply only once to a push
+    request even if multiple requests are received.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7060 e7ae566f-a301-0410-adde-c780ea21d3b5
+For keyword fast:
+For keyword time:
+commit 5d4f5435a421299ed047485d8d99bdf9a0d22fd1
+Author: David Sommerseth <davids@redhat.com>
+Date:   Sun Sep 9 03:30:46 2012 +0200
+
+    Fix reconnect issues when --push and UDP is used on the server
+    
+    When the server is configured with UDP and --push statements, reconnecting
+    often fails by the client never receiving PUSH_REPLY.  The client sends
+    PUSH_REQUEST and the server logs these requests but does not send them.
+    
+    This bug got introduced in commit ff65da3a230b658b2c1d52dc1a48612e80a2eb42
+    which tries to avoid sending duplicated PUSH messages if the client/server
+    connection is slow.
+    
+    This patch keeps this behaviour, but instead of a session wide PUSH_REPLY
+    block it sets an expiry time for the PUSH_REPLY block.  The expiry time
+    is set to 30 seconds.
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Cc: James Yonan <james@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: James Yonan <james@openvpn.net>
+    Message-Id: 1347154246-20143-1-git-send-email-dazo@users.sourceforge.net
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7044
+
+commit 4806cc102655f1a829d656f6deb83e5953c5eab2
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Thu Aug 2 15:37:48 2012 +0200
+
+    Fixes error: --key fails with EXTERNAL_PRIVATE_KEY: No such file or directory if --management-external-key is used
+    
+    Warn if both options are used at the same time.
+    
+    Signed-off-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: 1343914668-10696-1-git-send-email-arne@rfc2549.org
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/6943
+    Signed-off-by: David Sommerseth <dazo@users.sourceforge.net>
+
+commit 8acdb7291c4cc62134624c3a61049f2ec12e3ad9
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Mon Jun 18 20:39:07 2012 +0200
+
+    Remove ENABLE_CONNECTIONS ifdefs
+    
+    Connections were always on for a long time. Note that ENABLE_MAMAGEMENT_REMOTE
+    was only depending on ENABLE_CONNECTIONS and is removed as well
+    
+    Signed-off-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: James Yonan <james@openvpn.net>
+    Message-Id: 1340044749-10694-5-git-send-email-arne@rfc2549.org
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/6744
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 64a6bdf73cd624939a8f597fc5330b946f6bf1f1
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Thu Jun 7 17:35:53 2012 +0200
+
+    t_client.sh - fix for iproute2, print summary line
+    
+    Yet another postprocess-output fix for iproute2 (sometimes there was
+    no whitespace in the output, so substituting away expiry time failed).
+    
+    Print summary line of succeeded and failed test sets at the very end.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: David Sommerseth <davids@redhat.com>
+    Message-Id: 20120607174255.GV1059@greenie.muc.de
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/6704
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 47c990009c79fe2a96206c54e0240cb2dd8cdf02
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sun May 27 23:19:11 2012 +0300
+
+    repair t_client.sh test after build system revolution
+    
+    - run t_client.sh at "make check" time
+    - in t_client.sh, read t_client.rc from source *or* build dir (as before)
+    - @IP@ evaluates to "" now (not "ip") if iproute2 not found - adapt script
+    - introduce $SETUP_TIME_WAIT to delay "waiting for openvpn startup" longer
+      than the default delay of 10 seconds - this is needed for test servers
+      with a high network RTT
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: David Sommerseth <davids@redhat.com>
+    Message-Id: 20120527202737.GV1161@greenie.muc.de
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/6616
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit bff413d5c47645b525988a66c138abf7d198e228
+Author: David Sommerseth <davids@redhat.com>
+Date:   Fri Apr 27 12:10:25 2012 +0200
+
+    Clean-up: Presume that Linux is always IPv6 capable at build time
+    
+    These days it is highly unlikely that OpenVPN will be built in a non-IPv6
+    capable Linux environment.  So remove compile-time related macros identifying
+    that.
+    
+    This also solves an issue which was introduced in commit 51bd56f46f55177cf0f8b
+    where HAVE_TUN_PI is no longer detected.  The tun_pi struct is defined in
+    linux/if_tun.h, which will be checked for later on.  As this struct has history
+    in linux/if_tun.h all back to the beginning of the kernel git tree (2.6.12-rc2,
+    April 2005), it is considered not needed to check for this struct explicit.
+    
+    [ v2: Commit 7c0a2b5f2b4409 modifies some of the checks this patch touches.  This
+          patch just adopts to those changes ]
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Alon Bar-Lev <alon.barlev@gmail.com>
+    Message-Id: 1335521425-23391-1-git-send-email-davids@redhat.com
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/6351
+
+commit 3d163bc544ab9dfc62d9a2c865f8abb865bf6eb3
+Author: Alon Bar-Lev <alon.barlev@gmail.com>
+Date:   Wed Feb 29 22:12:15 2012 +0200
+
+    build: move gettimeofday() emulation to compat
+    
+    Remove all references to gettimeofday() from main project.
+    
+    SIDE EFFECT: mingw will use its own internal gettimeofday().
+    
+    Signed-off-by: Alon Bar-Lev <alon.barlev@gmail.com>
+    Acked-by: David Sommerseth <davids@redhat.com>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 14a382a3f1c70fdbc822bcad27096040ed394661
+Author: Heiko Hund <heiko.hund@sophos.com>
+Date:   Wed Aug 17 15:53:01 2011 +0000
+
+    remove wrapper code for Windows CryptoAPI function
+    
+    The CryptoAPI function CryptAcquireCertificatePrivateKey() was previously
+    unsupported in MinGW. With recent w32api headers it's now defined, mostly.
+    Since the code used to load the CryptoAPI DLL is prone to a DLL hijacking
+    attack [1], it's now a good time to get rid of wrapper completely.
+    
+    Just a few macros left that may still be undefined on some
+    systems using the original MinGW headers.
+    
+    [1] http://isc.sans.edu/diary.html?storyid=9445
+    
+    Signed-off-by: Heiko Hund <heiko.hund@sophos.com>
+    Acked-by: James Yonan <james@openvpn.net>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/4979
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 4ebc587eab73e03ef64d344a5707d84e7f8d875a
+Author: Heiko Hund <heiko.hund@sophos.com>
+Date:   Sat Feb 18 20:44:12 2012 +0100
+
+    define access mode flag X_OK as 0 on Windows
+    
+    The _access and _waccess functions in Windows don't know about
+    X_OK (1). If you pass an uneven mode flag the C runtime's default
+    invalid parameter handler ends execution of openvpn.
+    
+    Signed-off-by: Heiko Hund <heiko.hund@sophos.com>
+    Acked-by: David Sommerseth <davids@redhat.com>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit dc7be6d078ba106f9b0de12f3e879c3561c3c537
+Author: David Sommerseth <davids@redhat.com>
+Date:   Mon Feb 6 00:30:47 2012 +0100
+
+    Fix assert() situations where gc_malloc() is called without a gc_arena object
+    
+    In commit bee92b479414d12035b0422f81ac5fcfe14fa645 the gc_malloc() was hardened
+    to always require a gc_arena object for garbage collection.  Some places in the
+    code expected the old behaviour of a normal malloc() in these cases, that is a
+    memory allocation without garbage collection.
+    
+    This old behaviour is partly restored by allowing string_alloc() to do a non-gc
+    based allocation if no gc_arena object is available.  In addition some other
+    places string_alloc() will now be called with a gc_arena pointer where such an
+    object is available.
+    
+    The alloc_buf() function has also been refactored to not use gc_malloc() at
+    all.
+    
+    v2: - removes a memleak when --ifconfig-ipv6 is used several times
+        - makes string_alloc() behave properly if DMALLOC is enabled
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+
+commit 032f0045246846f566f7433e95376916beb980b0
+Author: David Sommerseth <davids@redhat.com>
+Date:   Mon Nov 21 16:17:44 2011 +0100
+
+    Fix compilation errors on Linux platforms without SO_MARK
+    
+    When trying to compile OpenVPN on RHEL5/CentOS5, it would fail
+    due to missing declaration of SO_MARK.  SO_MARK is a feature which
+    first arrived in 2.6.26, and was never backported to RHEL5's 2.6.18
+    kernel base.
+    
+    This patch adds a check at configure time, to see if SO_MARK is
+    available or not.
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 1d5c4433cdb7ab0a9d9f7496e6dc2cee189d375f
+Author: David Sommerseth <davids@redhat.com>
+Date:   Wed Dec 14 18:12:23 2011 +0100
+
+    Fix compiling with --disable-crypto and/or --disable-ssl
+    
+    The checks introduced in commit 0f2bc0dd92f43c91e33bba8a66b06b98f281efc1
+    didn't properly remove checks if crypto or SSL was disabled at compile time.
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+
+commit ffea644ce62a67ea06e375c17277cea4e9cb9873
+Author: James Yonan <james@openvpn.net>
+Date:   Tue Oct 18 08:12:51 2011 +0000
+
+    Added "memstats" option to maintain real-time operating stats
+    in a memory-mapped file.
+    
+    Version 2.1.16
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7653 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 7a8d707237bb18cb1c001205267f399772bdc840
+Author: Adriaan de Jong <dejong@fox-it.com>
+Date:   Mon Oct 31 16:29:18 2011 +0100
+
+    Added options to switch between OpenSSL and PolarSSL and PKCS11...
+    
+    at compile time. Also included the option to enable/disable PKCS11.
+    
+    Signed-off-by: Adriaan de Jong <dejong@fox-it.com>
+    Acked-by: Samuli Seppänen <samuli@openvpn.net>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 32ab329bc69c6292c205d4f33a4b8069341798d3
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sat Oct 8 12:26:52 2011 +0200
+
+    Move block for "stale-routes-check" config inside #ifdef P2MP_SERVER block
+    
+    options->stale_routes_ageing_time etc.  are not defined otherwise, and
+    compilation fails.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Davide Guerri <d.guerri@caspur.it>
+    Signed-off-by: David Sommerseth <dazo@users.sourceforge.net>
+
+commit 3a957aaef3ae512b217dd475a846a0ea35aae49c
+Author: Davide Guerri <d.guerri@caspur.it>
+Date:   Thu Sep 15 23:42:22 2011 +0200
+
+    New feauture: Add --stale-routes-check
+    
+    This patch adds a stale-routes-check option that takes 2 parameters: a ageing
+    time (in seconds) and a check interval (in seconds). The latter defaults to the
+    former if it's not present.  Internally, a new "check" is added in
+    multi_process_per_second_timers_dowork(). This check deletes stale routes and
+    it is inspired to the function multi_reap_range().
+    
+    We're running a very large connectivity infrastructure based on openVPN (more
+    than 4000 different clients connected per day per server), so we can throughly
+    check this patch (or, of course, any variant of it).
+    
+    Signed-off-by: Davide Guerri <d.guerri@caspur.it>
+    Reviewed-by: David Sommerseth <davids@redhat.com>
+    Acked-by: Adriaan de Jong <dejong@fox-it.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 576dc96ca1ef1badb651e05ac694f07c91e02518
+Merge: b7e0d372 9a105405
+Author: David Sommerseth <davids@redhat.com>
+Date:   Mon Jul 25 01:44:27 2011 +0200
+
+    Merge remote branch SVN 2.1 into the git tree
+    
+    Hopefully the last SVN merge we need to do, as these merges are getting
+    more and more difficult.  Most of the files had minor changes, but due to
+    the CRLF unification patch (commit 6b2883a637fe73492) we got an increased
+    number of conflicts.  In addition inclusion of IPv6 support makes the
+    creates a lot of merge issues in route.c and socket.c
+    
+    This merge also reverts commit 7c18c6353904f8c6e7 which merged
+    add_bypass_address() into add_host_route_if_nonlocal().  However the SVN
+    tree began to use add_bypass_address() another place, where at first glance
+    it did not be appropriate to use add_host_route_if_nonlocal().
+    
+    This merge has gone through a 'make check' without any errors, but have
+    not been tested more thoroughly yet.
+    
+    Conflicts:
+            ChangeLog
+            INSTALL
+            INSTALL-win32.txt
+            Makefile.am
+            acinclude.m4
+            base64.c
+            buffer.c
+            buffer.h
+            common.h
+            configure.ac
+            contrib/pull-resolv-conf/client.down
+            contrib/pull-resolv-conf/client.up
+            crypto.c
+            cryptoapi.c
+            easy-rsa/2.0/Makefile
+            easy-rsa/2.0/README
+            easy-rsa/2.0/build-ca
+            easy-rsa/2.0/build-dh
+            easy-rsa/2.0/build-inter
+            easy-rsa/2.0/build-key
+            easy-rsa/2.0/build-key-pass
+            easy-rsa/2.0/build-key-pkcs12
+            easy-rsa/2.0/build-key-server
+            easy-rsa/2.0/build-req
+            easy-rsa/2.0/build-req-pass
+            easy-rsa/2.0/clean-all
+            easy-rsa/2.0/inherit-inter
+            easy-rsa/2.0/list-crl
+            easy-rsa/2.0/pkitool
+            easy-rsa/2.0/revoke-full
+            easy-rsa/2.0/sign-req
+            easy-rsa/2.0/vars
+            easy-rsa/2.0/whichopensslcnf
+            easy-rsa/Windows/build-ca-pass.bat
+            easy-rsa/Windows/build-key-pass.bat
+            easy-rsa/Windows/build-key-server-pass.bat
+            easy-rsa/Windows/init-config.bat
+            easy-rsa/Windows/vars.bat.sample
+            error.c
+            error.h
+            forward.c
+            helper.c
+            httpdigest.c
+            httpdigest.h
+            ieproxy.c
+            init.c
+            init.h
+            install-win32/Makefile.am
+            install-win32/makeopenvpn
+            install-win32/openssl/openssl097.patch
+            install-win32/openssl/openssl098.patch
+            install-win32/openvpn.nsi
+            list.c
+            list.h
+            manage.c
+            manage.h
+            management/management-notes.txt
+            mbuf.c
+            mbuf.h
+            misc.c
+            misc.h
+            mroute.c
+            mroute.h
+            msvc/autodefs.h.in
+            msvc/config.py
+            msvc/msvc.mak
+            mtcp.c
+            mudp.c
+            multi.c
+            multi.h
+            occ.c
+            openvpn-plugin.h
+            openvpn.8
+            openvpn.h
+            options.c
+            options.h
+            otime.c
+            otime.h
+            perf.c
+            pf.c
+            ping.c
+            pkcs11.c
+            plugin.c
+            plugin.h
+            plugin/auth-pam/README
+            plugin/auth-pam/auth-pam.c
+            pool.c
+            pool.h
+            proto.h
+            proxy.c
+            ps.c
+            push.c
+            reliable.c
+            route.c
+            route.h
+            sample-config-files/firewall.sh
+            sample-scripts/bridge-start
+            sample-scripts/bridge-stop
+            sample-scripts/openvpn.init
+            sample-scripts/verify-cn
+            schedule.c
+            schedule.h
+            service-win32/openvpnserv.c
+            sig.c
+            socket.c
+            socket.h
+            socks.c
+            socks.h
+            ssl.c
+            ssl.h
+            status.c
+            syshead.h
+            tap-win32/SOURCES.in
+            tap-win32/common.h
+            tap-win32/proto.h
+            tap-win32/tapdrvr.c
+            tap-win32/types.h
+            tun.c
+            tun.h
+            version.m4
+            win/autodefs.h.in
+            win/build.py
+            win/build_all.py
+            win/build_ddk.py
+            win/build_exe.py
+            win/config.py
+            win/config_all.py
+            win/config_tap.py
+            win/config_ti.py
+            win/js.py
+            win/make_dist.py
+            win/msvc.mak.in
+            win/settings.in
+            win/show.py
+            win/sign.py
+            win/tap_span.py
+            win/wb.py
+            win32.c
+            win32.h
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Reviewed-by: Gert Doering <gert@greenie.muc.de>
+    Reviewed-by: James Yonan <james@openvpn.net>
+    Reviewed-by: Adriaan de Jong <dejong@fox-it.com>
+
+commit ce637abdafdc19547fc97192033a4d1703ecaf23
+Author: David Sommerseth <davids@redhat.com>
+Date:   Fri Jun 3 13:53:45 2011 +0200
+
+    Remove support for Linux 2.2 configuration fallback
+    
+    When configuring OpenVPN nowadays, the TUN/TAP configuration can
+    sometimes jump into the Linux 2.2 fallback code paths, which will
+    also fails.  The reason it jumps into fallback mode is that the
+    tun/tap device already exists or that /dev/net/tun does not exist.
+    This can be very confusing, as /dev/tunX which the fallback mode tries
+    to use, does not exist on Linux 2.4 and newer.
+    
+    Considering that the last Linux 2.2 update was released 25-Feb-2004
+    and the first Linux 2.4 release came 04-Jan-2001, there are no
+    reasonable reasons to help users to stay on outdated kernels.
+    I consider this extra code path just waste of bytes ... so lets make
+    the world simpler.
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+
+commit 7966d75a9d41453a56e41eaae7b0fd64f75f7ec3
+Author: James Yonan <james@openvpn.net>
+Date:   Mon Apr 25 04:58:34 2011 +0000
+
+    Added new "extra-certs" and "verify-hash" options (see man page for
+    details).
+    
+    Increase the timeout after SIGUSR1 restart when restart is not
+    due to server_poll_timeout.
+    
+    Version 2.1.3v
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7215 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit e51935df0ee3984a0464bfd72afc58836cb79d99
+Author: James Yonan <james@openvpn.net>
+Date:   Tue Apr 12 05:14:34 2011 +0000
+
+    For Mac OSX, when DARWIN_USE_IPCONFIG is defined, retry ipconfig
+    command on failure once every second for up to 15 seconds.  This
+    is necessary to work around an issue observed on OSX 10.5 where
+    the ipconfig command sometimes fails if executed immediately after
+    the tun device open.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7151 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 094f0305f9908210e204c66462e444fdef942b45
+Author: James Yonan <james@openvpn.net>
+Date:   Mon Apr 25 04:58:34 2011 +0000
+
+    Added new "extra-certs" and "verify-hash" options (see man page for
+    details).
+    
+    Increase the timeout after SIGUSR1 restart when restart is not
+    due to server_poll_timeout.
+    
+    Version 2.1.3v
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7215 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 670d1b57b63df92f29b5c5fc882da6941ff2b0b2
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Aug 10 12:39:28 2010 +0200
+
+    renamed t_client.sh to t_client.sh.in
+    build t_client.sh by configure at run-time, with proper paths to
+    ip/ifconfig/netstat binaries, and (most important) with proper #!SHELL
+    
+    extend configure.ac to find "netstat" binary and to chmod +x "t_client.sh"
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 2232f4b5ba74b7e0b77353e1e99f12637a8a15f6
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Mon Mar 29 17:05:02 2010 +0200
+
+    revert unconditionally-enabling of setenv_es() logging (too noisy)
+    replace with #ifdef DEBUG_VERBOSE_SETENV compile-time flag
+
+commit 285252d1a189c331becde940d948d7ca1fe778fd
+Author: Robert Fischer <ml-openvpn@trispace.org>
+Date:   Sun Apr 17 23:25:34 2011 +0200
+
+    Update man page with info about --connect-timeout
+    
+    Signed-off-by: Robert Fischer <ml-openvpn@trispace.org>
+    Acked-by: David Sommerseth <dazo@users.sourceforge.net>
+    Signed-off-by: David Sommerseth <dazo@users.sourceforge.net>
+
+commit 6a8270c29120473570ec6da4003226f36a4b71eb
+Author: Gisle Vanem <gvanem@broadpark.no>
+Date:   Sat Apr 9 12:56:52 2011 +0000
+
+    Avoid re-defining uint32_t when using mingw compiler
+    
+    Since MingW for quite a long time (since 3.2 in 2008?) has defined
+    'uint32_t' etc. in it's <stdint.h>, we need to guard against defining
+    them again. Ideally we should figure out in what version of MingW
+    this happened. But for now:
+    
+    Signed-off-by: Gisle Vanem <gvanem@broadpark.no>
+    Acked-by: David Sommerseth <dazo@users.sourceforge.net>
+    Signed-off-by: David Sommerseth <dazo@users.sourceforge.net>
+
+commit ca4c6d618d743ec4a3b6f7ef8003d891603ec1a6
+Author: David Sommerseth <davids@redhat.com>
+Date:   Thu Apr 14 16:21:16 2011 +0200
+
+    Change the default --tmp-dir path to a more suitable path
+    
+    In commit 4e1cc5f6dda22e9 the create_temp_filename() function was
+    reviewed and hardened, which in the end renamed this function to
+    create_temp_file() in commit 495e3cec5d156.
+    
+    With these changes it became more evident that OpenVPN needs a directory
+    where it can create temporary files.  The create_temp_file() will create
+    such files f.ex. if --client-connect or --plugin which makes use of
+    the OPENVPN_PLUGIN_AUTH_USER_PASS_VERIFY hook, such as openvpn-auth-pam.so.
+    
+    When this happens, OpenVPN will normally create these files in the directory
+    OpenVPN was started.  In many cases, this will fail due to restricted access.
+    By using --tmp-dir and pointing it to a directory writeable to the user
+    running OpenVPN, it works again.
+    
+    This patch makes OpenVPN use a more suitable temproary directory by default,
+    instead of the current working directory.  On non-Windows platforms this
+    default value is set to '/tmp', but can be modified at compile-time by
+    running ./configure --with-tmp-dir-path=<TEMP DIR PATH>.  On Windows, it
+    will use GetTempPath() to find temporary paths recommended by the OS.  If
+    this fails, it will fallback to the old behaviour, using the directory
+    where OpenVPN was started.
+    
+    In any cases, this default value can be overridden in the configuration
+    file by using the --tmp-dir option, as before.
+    
+    To check what the default is at runime, you can see this easily by doing
+    this:
+    
+          $ ./openvpn --verb 4 --dev tun | grep tmp_dir
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Tested-by: Jan Just Keijser <janjust@nikhef.nl>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+
+commit 2a12831a06c5ea73c4a7d68618a22d7ad18b2f01
+Author: James Yonan <james@openvpn.net>
+Date:   Tue Apr 12 05:14:34 2011 +0000
+
+    For Mac OSX, when DARWIN_USE_IPCONFIG is defined, retry ipconfig
+    command on failure once every second for up to 15 seconds.  This
+    is necessary to work around an issue observed on OSX 10.5 where
+    the ipconfig command sometimes fails if executed immediately after
+    the tun device open.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7151 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 3fa86d237721ca113fa020b7e888a1e10374a560
+Author: Markus Koetter <koetter@rrzn-hiwi.uni-hannover.de>
+Date:   Fri Dec 10 20:30:09 2010 +0100
+
+    Add extv3 X509 field support to --x509-username-field
+    
+    This allows using other X509 certificate fields for the certificate
+    authentication.  To use altSubjectName, use
+    --x509-username-field ext:altSubjectName
+    
+    This feature requires OpenVPN to be built with --enable-x509-alt-username
+    
+    This patch is slightly modified, to honour --enable-x509-alt-username
+    compile time configuration.  Two #ifdef's are added.
+    
+    Signed-off-by: Markus Koetter <koetter@rrzn-hiwi.uni-hannover.de>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Acked-by: David Sommerseth <davids@redhat.com>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+For keyword perf:
+commit dc4abbb3a8a184d9c696dbba90cdb98b7da70e77
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Thu Jun 14 16:41:37 2012 +0200
+
+    Remove #include "config.h" from ssl_polarssl.h
+    
+    This include is superfluous, as all callers already include config.h -
+    and under certain combinations of configure options and syshead.h
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Alon Bar-Lev <alon.barlev@gmail.com>
+    Message-Id: 20120614144454.GX1059@greenie.muc.de
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/6723
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 576dc96ca1ef1badb651e05ac694f07c91e02518
+Merge: b7e0d372 9a105405
+Author: David Sommerseth <davids@redhat.com>
+Date:   Mon Jul 25 01:44:27 2011 +0200
+
+    Merge remote branch SVN 2.1 into the git tree
+    
+    Hopefully the last SVN merge we need to do, as these merges are getting
+    more and more difficult.  Most of the files had minor changes, but due to
+    the CRLF unification patch (commit 6b2883a637fe73492) we got an increased
+    number of conflicts.  In addition inclusion of IPv6 support makes the
+    creates a lot of merge issues in route.c and socket.c
+    
+    This merge also reverts commit 7c18c6353904f8c6e7 which merged
+    add_bypass_address() into add_host_route_if_nonlocal().  However the SVN
+    tree began to use add_bypass_address() another place, where at first glance
+    it did not be appropriate to use add_host_route_if_nonlocal().
+    
+    This merge has gone through a 'make check' without any errors, but have
+    not been tested more thoroughly yet.
+    
+    Conflicts:
+            ChangeLog
+            INSTALL
+            INSTALL-win32.txt
+            Makefile.am
+            acinclude.m4
+            base64.c
+            buffer.c
+            buffer.h
+            common.h
+            configure.ac
+            contrib/pull-resolv-conf/client.down
+            contrib/pull-resolv-conf/client.up
+            crypto.c
+            cryptoapi.c
+            easy-rsa/2.0/Makefile
+            easy-rsa/2.0/README
+            easy-rsa/2.0/build-ca
+            easy-rsa/2.0/build-dh
+            easy-rsa/2.0/build-inter
+            easy-rsa/2.0/build-key
+            easy-rsa/2.0/build-key-pass
+            easy-rsa/2.0/build-key-pkcs12
+            easy-rsa/2.0/build-key-server
+            easy-rsa/2.0/build-req
+            easy-rsa/2.0/build-req-pass
+            easy-rsa/2.0/clean-all
+            easy-rsa/2.0/inherit-inter
+            easy-rsa/2.0/list-crl
+            easy-rsa/2.0/pkitool
+            easy-rsa/2.0/revoke-full
+            easy-rsa/2.0/sign-req
+            easy-rsa/2.0/vars
+            easy-rsa/2.0/whichopensslcnf
+            easy-rsa/Windows/build-ca-pass.bat
+            easy-rsa/Windows/build-key-pass.bat
+            easy-rsa/Windows/build-key-server-pass.bat
+            easy-rsa/Windows/init-config.bat
+            easy-rsa/Windows/vars.bat.sample
+            error.c
+            error.h
+            forward.c
+            helper.c
+            httpdigest.c
+            httpdigest.h
+            ieproxy.c
+            init.c
+            init.h
+            install-win32/Makefile.am
+            install-win32/makeopenvpn
+            install-win32/openssl/openssl097.patch
+            install-win32/openssl/openssl098.patch
+            install-win32/openvpn.nsi
+            list.c
+            list.h
+            manage.c
+            manage.h
+            management/management-notes.txt
+            mbuf.c
+            mbuf.h
+            misc.c
+            misc.h
+            mroute.c
+            mroute.h
+            msvc/autodefs.h.in
+            msvc/config.py
+            msvc/msvc.mak
+            mtcp.c
+            mudp.c
+            multi.c
+            multi.h
+            occ.c
+            openvpn-plugin.h
+            openvpn.8
+            openvpn.h
+            options.c
+            options.h
+            otime.c
+            otime.h
+            perf.c
+            pf.c
+            ping.c
+            pkcs11.c
+            plugin.c
+            plugin.h
+            plugin/auth-pam/README
+            plugin/auth-pam/auth-pam.c
+            pool.c
+            pool.h
+            proto.h
+            proxy.c
+            ps.c
+            push.c
+            reliable.c
+            route.c
+            route.h
+            sample-config-files/firewall.sh
+            sample-scripts/bridge-start
+            sample-scripts/bridge-stop
+            sample-scripts/openvpn.init
+            sample-scripts/verify-cn
+            schedule.c
+            schedule.h
+            service-win32/openvpnserv.c
+            sig.c
+            socket.c
+            socket.h
+            socks.c
+            socks.h
+            ssl.c
+            ssl.h
+            status.c
+            syshead.h
+            tap-win32/SOURCES.in
+            tap-win32/common.h
+            tap-win32/proto.h
+            tap-win32/tapdrvr.c
+            tap-win32/types.h
+            tun.c
+            tun.h
+            version.m4
+            win/autodefs.h.in
+            win/build.py
+            win/build_all.py
+            win/build_ddk.py
+            win/build_exe.py
+            win/config.py
+            win/config_all.py
+            win/config_tap.py
+            win/config_ti.py
+            win/js.py
+            win/make_dist.py
+            win/msvc.mak.in
+            win/settings.in
+            win/show.py
+            win/sign.py
+            win/tap_span.py
+            win/wb.py
+            win32.c
+            win32.h
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Reviewed-by: Gert Doering <gert@greenie.muc.de>
+    Reviewed-by: James Yonan <james@openvpn.net>
+    Reviewed-by: Adriaan de Jong <dejong@fox-it.com>
+
+commit cf69617bbea45a15423c4188daa9386debcbe1ec
+Author: James Yonan <james@openvpn.net>
+Date:   Thu Dec 9 11:21:04 2010 +0000
+
+    Added "management-external-key" option.  This option can be used
+    instead of "key" in client mode, and allows the client to run
+    without the need to load the actual private key.  When the SSL
+    protocol needs to perform an RSA sign operation, the data to
+    be signed will be sent to the management interface via a
+    notification as follows:
+    
+      >RSA_SIGN:[BASE64_DATA]
+    
+    The management interface client should then sign BASE64_DATA
+    using the private key and return the signature as follows:
+    
+      rsa-sig
+      [BASE64_SIG_LINE]
+      .
+      .
+      .
+      END
+    
+    This capability is intended to allow the use of arbitrary
+    cryptographic service providers with OpenVPN via the
+    management interface.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@6708 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 2a3d17ed182608cf60d731a237f9f926c28db522
+Author: James Yonan <james@openvpn.net>
+Date:   Thu Dec 9 11:21:04 2010 +0000
+
+    Added "management-external-key" option.  This option can be used
+    instead of "key" in client mode, and allows the client to run
+    without the need to load the actual private key.  When the SSL
+    protocol needs to perform an RSA sign operation, the data to
+    be signed will be sent to the management interface via a
+    notification as follows:
+    
+      >RSA_SIGN:[BASE64_DATA]
+    
+    The management interface client should then sign BASE64_DATA
+    using the private key and return the signature as follows:
+    
+      rsa-sig
+      [BASE64_SIG_LINE]
+      .
+      .
+      .
+      END
+    
+    This capability is intended to allow the use of arbitrary
+    cryptographic service providers with OpenVPN via the
+    management interface.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@6708 e7ae566f-a301-0410-adde-c780ea21d3b5
+For keyword optim:
+For keyword regression:
+commit 4f879daeb9b1b709c80d01e4872b30e23747c4a8
+Author: Heiko Hund <heiko.hund@sophos.com>
+Date:   Mon Jul 30 11:05:22 2012 +0200
+
+    fix regression with --http-proxy[-*] options
+    
+    Commit af1bf85a introducing the --management-query-proxy option
+    broke the initialization of HTTP proxy options by not assigning
+    the allocated object to the options element in the function
+    init_http_proxy_options_once().
+    
+    Signed-off-by: Heiko Hund <heiko.hund@sophos.com>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: 1343639122-8658-1-git-send-email-heiko.hund@sophos.com
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/6913
+    Signed-off-by: David Sommerseth <dazo@users.sourceforge.net>
+
+commit 354bc04286abe157f906309bb2ab463ac160c5a7
+Author: Samuli Seppänen <samuli@openvpn.net>
+Date:   Wed Nov 9 11:49:36 2011 +0200
+
+    Fixed a regression causing VS2008/Python build failure
+    
+    Patch "Added options to switch between OpenSSL and PolarSSL and PKCS11" caused a
+    regression when building OpenVPN with Visual Studio 2008/Python build system.
+    The underlying cause was a wrong path to lzo2.lib.
+    
+    Signed-off-by: Samuli Seppänen <samuli@openvpn.net>
+    Acked-by: Adriaan de Jong <dejong@fox-it.com>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 64d2297d398cbf131da5908858abcbb2dac8a033
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Feb 16 15:40:31 2010 +0100
+
+    add some TODOs to TODO.IPv6
+    --version: change printing of IPv6 payload patch version to [...] style
+    fix "make check" regression in tun.c (unnecessary change reverted)
+
+commit 4341f7c507f0a3e960c03f595dbeee7c3e1e628e
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Feb 16 15:40:31 2010 +0100
+
+    add some TODOs to TODO.IPv6
+    --version: change printing of IPv6 payload patch version to [...] style
+    fix "make check" regression in tun.c (unnecessary change reverted)
+For keyword sha:
+commit f99d8fa79d538c42f2ebb54d8bc2a7f891ea09f9
+Author: Alon Bar-Lev <alon.barlev@gmail.com>
+Date:   Mon Apr 2 14:37:41 2012 +0300
+
+    cleanup: add .gitattributes to control eol style explicitly
+    
+    Having the text auto detection is a risk, as the detection may detect
+    text files that are not text and vise versa.
+    
+    Having global setting will create confusion and differentiate between
+    users. So this patch also move this to local repository.
+    
+    Having git to check out files differently in different OS is also
+    a not correct, as checkouts may be used in shares or in *NIX emulation
+    environments, so it have no effect.
+    
+    Another issue is packaging, if we change out the tree differently
+    in several OSes, we may have different package content, which is
+    something that should be avoided.
+    
+    Currently any editor of MS supports LF end of lines, so there is no
+    need to convert source files while checking out.
+    
+    The visual studio files should be stored as CRLF as they are generated
+    by visual studio every save, in a way that CRLF are added.
+    
+    I handled only the files that may be touch by MS users.
+    
+    Signed-off-by: Alon Bar-Lev <alon.barlev@gmail.com>
+    Acked-by: Fabian Knittel <fabian.knittel@lettink.de>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 8e5613c2a8545a67cab2734569a8f088100d731b
+Author: Adriaan de Jong <dejong@fox-it.com>
+Date:   Tue Feb 14 11:11:26 2012 +0100
+
+    Migrated x509_get_sha1_hash to use the garbage collector
+    
+    Signed-off-by: Adriaan de Jong <dejong@fox-it.com>
+    Acked-by: James Yonan <james@openvpn.net>
+    Acked-by: David Sommerseth <davids@redhat.com>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit fceecbab9ddd58ccec28aeafa7be39c65f313458
+Author: Adriaan de Jong <dejong@fox-it.com>
+Date:   Fri Jul 1 14:39:13 2011 +0200
+
+    Final cleanup before PolarSSL addition:
+    
+     - Remove stray X509 entries
+     - Remove unnecessary USE_OPENSSL ifdefs
+     - Normalised x509_get_sha1_hash to look similar to x509_get_* functions
+    
+    Signed-off-by: Adriaan de Jong <dejong@fox-it.com>
+    Acked-by: James Yonan <james@openvpn.net>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 7fb0e07ec3f7c5f6514523085dbe02ea6b8933e2
+Author: James Yonan <james@openvpn.net>
+Date:   Sun Jun 12 01:14:36 2011 +0000
+
+    Added redirect-gateway block-local flag, with support for
+    Linux, Mac OS X, and Linux.  This flag (which is pushable
+    from server) blocks client access to local LAN while VPN
+    session is active.
+    
+    Added standalone --show-gateway option to show info about
+    default gateway.
+    
+    Extensively refactored get_default_gateway function in
+    route.c to ease implementation of block-local.
+    
+    Removed "Experimental" disclaimer from redirect-gateway
+    man page.
+    
+    Version 2.1.3y.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7334 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit ca0ed8458a355aea46d26c209984caaf533784ec
+Author: Matthew L. Creech <mlcreech@gmail.com>
+Date:   Wed May 11 17:57:28 2011 -0400
+
+    Fix 2.2.0 build failure when management interface disabled
+    
+    I just upgraded to 2.2.0, and my build fails with:
+    
+    ps.c: In function 'port_share_open':
+    ps.c:778:7: error: 'management' undeclared (first use in this function)
+    ps.c:778:7: note: each undeclared identifier is reported only once for
+    each function it appears in
+    make[5]: *** [ps.o] Error 1
+    
+    [Comment by David Sommerseth:
+     This happens only when building with --enable-small, --disable-management
+     and --disable-pkcs11
+    
+     Also changed MANAGEMENT_ENABLED to ENABLE_MANAGEMENT from the original
+     patch.
+    ]
+    
+    Mailing-list: http://thread.gmane.org/gmane.network.openvpn.devel/4639
+    Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 28c8776b65c2300b758cd2b707283a43b4a582e8
+Author: James Yonan <james@openvpn.net>
+Date:   Sun Apr 3 21:48:15 2011 +0000
+
+    Fixed bug in port-share that could cause port share process to
+    crash with output like this:
+    
+    TCP connection established with 85.190.0.3:41781
+    85.190.0.3:41781 SIGTERM[soft,port-share-redirect] received, client-instance exiting
+    MANAGEMENT: TCP recv error: Socket operation on non-socket
+    MANAGEMENT: Client disconnected
+    MANAGEMENT: Triggering management exit
+    Exiting due to fatal error
+    EVENT: epoll_ctl EPOLL_CTL_MOD failed, sd=6: Bad file descriptor (errno=9)
+    
+    Then an error like this for every incoming connection that should be
+    proxied:
+    
+    76.120.71.74:55302 PORT SHARE: sendmsg failed -- unable to communicate with background process (6,8,-1,-1): Connection refused (errno=111)
+    
+    Version 2.1.3s
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7127 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 4ff5b53ff8a1d6232e21a3e8f0538dc87ca4920b
+Author: James Yonan <james@openvpn.net>
+Date:   Sun Mar 20 19:43:06 2011 +0000
+
+    Client will now try to reconnect if no push reply received
+    within handshake-window seconds.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7066 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 9df9e13f7c20e0c046b71de859e08a07edf0eb4f
+Author: James Yonan <james@openvpn.net>
+Date:   Tue Mar 15 05:06:23 2011 +0000
+
+    Reduce log verbosity at level 3, with a focus on removing excessive log verbosity generated by port-share activity.
+    
+    Version 2.1.3k
+    
+    git-svn-id: http://svn.openvpn.net/projects/branches/BETA21@7033 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 1c5ff7722dbd3e32aa3e5b7d5cb77773f083472d
+Author: James Yonan <james@openvpn.net>
+Date:   Sun Mar 13 06:59:25 2011 +0000
+
+    Added optional journal directory argument to "port-share" directive, for reporting client IP origins of proxied connections.
+    
+    git-svn-id: http://svn.openvpn.net/projects/branches/BETA21@7031 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit 9ed122efe870288ea75ee62a4eae2373a655145b
+Author: James Yonan <james@openvpn.net>
+Date:   Sun Apr 3 23:48:15 2011 +0200
+
+    Fixed bug in port-share that could cause port share process to crash
+    with output like this:
+    
+    TCP connection established with 85.190.0.3:41781
+    85.190.0.3:41781 SIGTERM[soft,port-share-redirect] received, client-instance exiting
+    MANAGEMENT: TCP recv error: Socket operation on non-socket
+    MANAGEMENT: Client disconnected
+    MANAGEMENT: Triggering management exit
+    Exiting due to fatal error
+    EVENT: epoll_ctl EPOLL_CTL_MOD failed, sd=6: Bad file descriptor (errno=9)
+    
+    Then an error like this for every incoming connection that should be
+    proxied:
+    
+    76.120.71.74:55302 PORT SHARE: sendmsg failed -- unable to communicate with background process (6,8,-1,-1): Connection refused (errno=111)
+    
+    Version 2.1.3s
+
+commit fbfebb028cee6249fc096cd11632d2ba95f28e64
+Author: James Yonan <james@openvpn.net>
+Date:   Sun Apr 3 21:48:15 2011 +0000
+
+    Fixed bug in port-share that could cause port share process to
+    crash with output like this:
+    
+    TCP connection established with 85.190.0.3:41781
+    85.190.0.3:41781 SIGTERM[soft,port-share-redirect] received, client-instance exiting
+    MANAGEMENT: TCP recv error: Socket operation on non-socket
+    MANAGEMENT: Client disconnected
+    MANAGEMENT: Triggering management exit
+    Exiting due to fatal error
+    EVENT: epoll_ctl EPOLL_CTL_MOD failed, sd=6: Bad file descriptor (errno=9)
+    
+    Then an error like this for every incoming connection that should be
+    proxied:
+    
+    76.120.71.74:55302 PORT SHARE: sendmsg failed -- unable to communicate with background process (6,8,-1,-1): Connection refused (errno=111)
+    
+    Version 2.1.3s
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7127 e7ae566f-a301-0410-adde-c780ea21d3b5
+
+commit dc299b6e7d0413d0a311c33ffb14591b5c8d1d96
+Author: David Sommerseth <dazo@eurephia.net>
+Date:   Thu Jan 6 23:24:52 2011 +0100
+
+    Separate the general plug-in version constant and v3 plug-in structs version
+    
+    After a review of the second round of the the v3 plug-in implementation, it
+    was decided to use a separate constant defining the version of the structs
+    used for argument and return value passing, instead of OPENVPN_PLUGIN_VERSION.
+    
+    To not make it too complex, this patch uses a shared version constant for all
+    the v3 structures.  It is not expected that these strucutures will change too
+    much and too often.
+    
+    Signed-off-by: David Sommerseth <dazo@users.sourceforge.net>
+    Acked-by: James Yonan <james@openvpn.net>
+
+commit 15baa4d895410079191686a15685003d9e4f9c54
+Author: James Yonan <james@openvpn.net>
+Date:   Sun Mar 20 19:43:06 2011 +0000
+
+    Client will now try to reconnect if no push reply received
+    within handshake-window seconds.
+    
+    
+    git-svn-id: http://svn.openvpn.net/projects/openvpn/branches/BETA21/openvpn@7066 e7ae566f-a301-0410-adde-c780ea21d3b5
+For keyword lzo:
+commit 40a56e79d5d45c8e40c599f52349007155f7e475
+Author: Alon Bar-Lev <alon.barlev@gmail.com>
+Date:   Sat Mar 24 09:58:37 2012 +0200
+
+    build: enable lzo by default
+    
+    Signed-off-by: Alon Bar-Lev <alon.barlev@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 74bbc71b75bac49f5c9df81827fa184b8a365d36
+Author: Alon Bar-Lev <alon.barlev@gmail.com>
+Date:   Wed Feb 29 22:12:09 2012 +0200
+
+    build: proper lzo detection and usage
+    
+    Signed-off-by: Alon Bar-Lev <alon.barlev@gmail.com>
+    Acked-by: Adriaan de Jong <dejong@fox-it.com>
+    Acked-by: David Sommerseth <davids@redhat.com>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 0708426170fd578f598fb0f0d3df78bd1fca7117
+Author: Alon Bar-Lev <alon.barlev@gmail.com>
+Date:   Wed Feb 29 22:12:08 2012 +0200
+
+    build: properly process lzo-stub
+    
+    Signed-off-by: Alon Bar-Lev <alon.barlev@gmail.com>
+    Acked-by: Samuli Seppänen <samuli@openvpn.net>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 354bc04286abe157f906309bb2ab463ac160c5a7
+Author: Samuli Seppänen <samuli@openvpn.net>
+Date:   Wed Nov 9 11:49:36 2011 +0200
+
+    Fixed a regression causing VS2008/Python build failure
+    
+    Patch "Added options to switch between OpenSSL and PolarSSL and PKCS11" caused a
+    regression when building OpenVPN with Visual Studio 2008/Python build system.
+    The underlying cause was a wrong path to lzo2.lib.
+    
+    Signed-off-by: Samuli Seppänen <samuli@openvpn.net>
+    Acked-by: Adriaan de Jong <dejong@fox-it.com>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+
+commit 6c34e74f1340a72ab7dce077e4d326f03989322c
+Author: James Yonan <james@openvpn.net>
+Date:   Thu Mar 10 00:04:39 2011 +0000
+
+    Added --enable-lzo-stub configure option to build an OpenVPN client without LZO, but that has limited interoperability with LZO-enabled servers.
+    
+    Modified "push-peer-info" option to push IV_LZO_STUB=1 to server when
+    client was built with --enable-lzo-stub configure option.  This tells
+    the server that the client lacks LZO capabilities, so the server
+    should turn off LZO compression for this client via "lzo no".
+    
+    Added "setenv PUSH_PEER_INFO" option having the same effect as
+    "push-peer-info".
+    
+    Version 2.1.3j
+    
+    git-svn-id: http://svn.openvpn.net/projects/branches/BETA21@7023 e7ae566f-a301-0410-adde-c780ea21d3b5

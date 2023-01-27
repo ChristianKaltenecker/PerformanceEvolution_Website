@@ -1,0 +1,183 @@
+Searching between v1.0.2 and v1.0.3
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,compression
+Keywords: slow fast time perf optim regression quality compression
+For keyword slow:
+For keyword fast:
+commit 2d6b298e117576dc3e4fa41f53ba57400bf7beed
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Thu Nov 30 20:54:04 2017 +0100
+
+    Update Travis matrix (#626)
+    
+    * Use Clang-5.0
+    * Disable unholy ASAN leak detector (to unbreak build)
+    * Reduce build matrix and use faster env, where compiler version is not important
+    * Add autotools build to Travis matrix
+For keyword time:
+commit 1ca15159d6a7d4b202de17a94abf52c6c1d5988a
+Author: Bernard Spil <Sp1l@users.noreply.github.com>
+Date:   Wed Nov 29 22:38:16 2017 +0100
+
+    Fix missing symbols errors in libbrotlienc and dec (#623)
+    
+    When using autotools to build the binary and libraries, the resulting libraries don't link `brotlicommon` or `m`.
+    This was detected when building cURL 7.57.0 which has now has brotli support. During configure it was failing
+    ```
+    checking run-time libs availability... failed
+    configure: error: one or more libs available at link-time are not available run-time. Libs used at link-time: -lbrotlidec -lz -L/usr/local/lib
+    ```
+    inspection of config.log showed missing symbols from libbrotlicommon as the cause.
+    
+    This patch results in the encryption and decryption libs to be properly linked against libbrotlicommon and libm.
+    See also https://bugs.freebsd.org/223966
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword quality:
+commit 35e69fc7cf9421ab04ffc9d52cb36d07fa12984a
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Mon Feb 26 09:04:36 2018 -0500
+
+    New feature: "Large Window Brotli" (#640)
+    
+    * New feature: "Large Window Brotli"
+    
+    By setting special encoder/decoder flag it is now possible to extend
+    LZ-window up to 30 bits; though produced stream will not be RFC7932
+    compliant.
+    
+    Added new dictionary generator - "DSH". It combines speed of "Sieve"
+    and quality of "DM". Plus utilities to prepare train corpora
+    (remove unique strings).
+    
+    Improved compression ratio: now two sub-blocks could be stitched:
+    the last copy command could be extended to span the next sub-block.
+    
+    Fixed compression ineffectiveness caused by floating numbers rounding and
+    wrong cost heuristic.
+    
+    Other C changes:
+     - combined / moved `context.h` to `common`
+     - moved transforms to `common`
+     - unified some aspects of code formatting
+     - added an abstraction for encoder (static) dictionary
+     - moved default allocator/deallocator functions to `common`
+    
+    brotli CLI:
+     - window size is auto-adjusted if not specified explicitly
+    
+    Java:
+     - added "eager" decoding both to JNI wrapper and pure decoder
+     - huge speed-up of `DictionaryData` initialization
+    
+    * Add dictionaryless compressed dictionary
+    
+    * Fix `sources.lst`
+    
+    * Fix `sources.lst` and add a note that `libtool` is also required.
+    
+    * Update setup.py
+    
+    * Fix `EagerStreamTest`
+    
+    * Fix BUILD file
+    
+    * Add missing `libdivsufsort` dependency
+    
+    * Fix "unused parameter" warning.
+
+commit da254cffdb160bd6ac1cd6ea01944099978cbb71
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Dec 12 14:33:12 2017 +0100
+
+    Update (#630)
+    
+     * merge {dec|enc}/port.h into common/platform.h
+     * fix one-shot q=10 1-byte input compression
+     * fix some unprefixed definitions
+     * make hashers host-endianness-independent
+     * extract enc/params.h from enc/quality.h
+     * fix API documentation / typos
+     * improve `BrotliEncoderMaxCompressedSize`
+For keyword compression:
+commit 533843e3546cd24c8344eaa899c6b0b681c8d222
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Fri Mar 2 15:49:58 2018 +0100
+
+    Update (#643)
+    
+    Update
+     * make the zopflification aware of `NDIRECT`, `NPOSTFIX`
+       (better compression in `font` mode)
+     * add small and simple decoder tool
+     * fix typo
+     * Java: wrapper: make decoder channel more async-friendly
+    
+    Ramp up version to 1.0.3 / 1.0.3
+
+commit 35e69fc7cf9421ab04ffc9d52cb36d07fa12984a
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Mon Feb 26 09:04:36 2018 -0500
+
+    New feature: "Large Window Brotli" (#640)
+    
+    * New feature: "Large Window Brotli"
+    
+    By setting special encoder/decoder flag it is now possible to extend
+    LZ-window up to 30 bits; though produced stream will not be RFC7932
+    compliant.
+    
+    Added new dictionary generator - "DSH". It combines speed of "Sieve"
+    and quality of "DM". Plus utilities to prepare train corpora
+    (remove unique strings).
+    
+    Improved compression ratio: now two sub-blocks could be stitched:
+    the last copy command could be extended to span the next sub-block.
+    
+    Fixed compression ineffectiveness caused by floating numbers rounding and
+    wrong cost heuristic.
+    
+    Other C changes:
+     - combined / moved `context.h` to `common`
+     - moved transforms to `common`
+     - unified some aspects of code formatting
+     - added an abstraction for encoder (static) dictionary
+     - moved default allocator/deallocator functions to `common`
+    
+    brotli CLI:
+     - window size is auto-adjusted if not specified explicitly
+    
+    Java:
+     - added "eager" decoding both to JNI wrapper and pure decoder
+     - huge speed-up of `DictionaryData` initialization
+    
+    * Add dictionaryless compressed dictionary
+    
+    * Fix `sources.lst`
+    
+    * Fix `sources.lst` and add a note that `libtool` is also required.
+    
+    * Update setup.py
+    
+    * Fix `EagerStreamTest`
+    
+    * Fix BUILD file
+    
+    * Add missing `libdivsufsort` dependency
+    
+    * Fix "unused parameter" warning.
+
+commit da254cffdb160bd6ac1cd6ea01944099978cbb71
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Dec 12 14:33:12 2017 +0100
+
+    Update (#630)
+    
+     * merge {dec|enc}/port.h into common/platform.h
+     * fix one-shot q=10 1-byte input compression
+     * fix some unprefixed definitions
+     * make hashers host-endianness-independent
+     * extract enc/params.h from enc/quality.h
+     * fix API documentation / typos
+     * improve `BrotliEncoderMaxCompressedSize`

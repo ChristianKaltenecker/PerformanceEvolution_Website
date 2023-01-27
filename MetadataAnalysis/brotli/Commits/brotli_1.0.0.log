@@ -1,0 +1,135 @@
+Searching between v0.6.0 and v1.0.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,compression
+Keywords: slow fast time perf optim regression quality compression
+For keyword slow:
+For keyword fast:
+commit 653543541319e2318d2fc572cf5c7f3275b9c12c
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Thu Aug 24 13:29:48 2017 +0200
+
+    Update (#589)
+    
+    * cleanup
+     * fix `unbrotli` CLI
+     * Java retouch for faster JS decoder
+
+commit 4363f2d74b8af198f78b08e10cd0b3ead48af590
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Sun May 7 17:13:03 2017 +0200
+
+    Speedup Java decoder. (#547)
+    
+    * geo corpus decodes ~5% faster
+     * fetchlogs corpus decodes ~25% faster
+For keyword time:
+commit 4f455cac329d0c612887123c9dc6de9a66fa8490
+Author: Cosimo Lupo <cosimo@anthrotype.com>
+Date:   Wed Aug 23 19:45:13 2017 +0100
+
+    disable buidling/deployment of python wheels (#583)
+    
+    * [appveyor] remove 'deploy' stage; only test python 2.7 and 3.6
+    
+    all the other python versions are being built and tested on
+    https://github.com/google/brotli-wheels/blob/d571d63/appveyor.yml
+    
+    * remove terrify submodule as not needed any more
+    
+    * [travis] just test py2.7 and 3.6 on linux; remove extra osx python builds
+    
+    All the other python versions for OSX are being built/tested on:
+    https://github.com/google/brotli-wheels/blob/d571d63/.travis.yml
+    
+    Also, there's no need to build and deploy wheels here, as that's done
+    in the separate repository.
+    
+    * [setup.py] only rebuild if dependency are newer; fix typo in list of 'depends'
+    
+    https://github.com/python/cpython/blob/v3.6.2/Lib/distutils/command/build_ext.py#L485-L500
+    
+    * [ci] only run 'python setup.py test'
+    
+    if we run 'python setup.py built test', the setuptools 'test' command will
+    forcibly re-run the build_ext subcommand because it wants to pass the --inplace
+    option (it ignores whether it's up to date, just re-runs it all the time).
+    
+    with this we go from running built_ext twice, to running it only once per build
+    
+    * [Makefile] run 'build_ext --inplace' instead of 'develop' as default target
+    
+    The 'develop' command is like 'install' in the sense that it
+    modifies the user's python environment.
+    The default make target should be less intrusive, i.e. just building
+    the extension module in-place without modify anything in the user's
+    environment.
+    
+    We don't need to tell make about the dependency between 'test' and
+    'build' target as that is baked in the `python setup.py test` command.
+    
+    * [Makefile] add 'develop' target; remove unnecessary 'tests' target
+    
+    `make test` is good enough
+    
+    * [Makefile] `setup.py test` requires setuptools; run `python -m unittest`
+    
+    This will work even if setuptools is not installed, which is unlikely
+    nowadays but still our `setup.py` works with plain distutils, so
+    we may well have our tests work without setuptools.
+    
+    * [python/README.md] add ref to 'develop' target; remove 'tests', just 'make test'
+    
+    * [setup.py] import modules as per nicksay's comment
+    
+    https://github.com/google/brotli/pull/583#discussion_r131981049
+    
+    * [Makefile] add 'develop' to .PHONY targets
+    
+    remove 'tests' from .PHONY
+    
+    * [appveyor] remove unused setup scripts
+    
+    We don't need to install custom python versions, we are
+    using the pre-installed ones on Appveyor.
+    
+    * [appveyor] remove unneeded setup code
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword quality:
+For keyword compression:
+commit 37fb83ec0dd1c52b6b464bf17515db1aeed846b3
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Sep 19 15:57:15 2017 +0200
+
+    Update: (#600)
+    
+     * encoder: relax backward references candidates asserts
+     * encoder: make RNG more platform-independent
+     * encoder: remove "unused" param (context mode)
+     * CLI: improve first-encounter experience
+     * Java: update SynthTest
+     * Java: refine proguard config
+     * Java/JNI: fix one-shot compression workflow
+
+commit a629289e3297bcfd25648293df3e1d6dfd59df24
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Mon Aug 28 11:31:29 2017 +0200
+
+    Update (#590)
+    
+    * add transpiled JS decoder
+     * make PY wrapper accept memview
+     * fix dictionary generator
+     * speedup compression of RLEish data
+
+commit 58f5c37f3b5b07f3455a27671bdc48fd2e37cd54
+Author: Janek <ttnbs@fastmail.com>
+Date:   Wed Jun 28 16:32:28 2017 +0200
+
+    Python: Decompressor: Streaming decompression support (#546)
+    
+    python-brotli has Compressor for streaming compression but nothing for
+    streaming decompression.
+    This is a straight-forward copy of the Compressor code into the new
+    class Decompressor.

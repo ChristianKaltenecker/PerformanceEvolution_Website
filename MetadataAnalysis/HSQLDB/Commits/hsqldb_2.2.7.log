@@ -1,0 +1,25 @@
+Searching between 2.2.6 and 2.2.7
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Keywords: slow fast time perf optim regression speed
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+[33mcommit 22f6fd2d8d95a5bf66e0fbdd557c3298703c20e3[m
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Thu Nov 24 23:19:51 2011 +0000
+
+    Fixed [1;31mregression[m bug that broke all \j commands
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4817 7c7dc5f5-a22d-0410-a3af-b41755a11667
+
+[33mcommit 832ccb96296a4652277c4ad53c8a549edf8aa15b[m
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Thu Nov 24 22:48:44 2011 +0000
+
+    Added unit test to capture [1;31mregression[m bug reported by Fred
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4814 7c7dc5f5-a22d-0410-a3af-b41755a11667
+For keyword speed:

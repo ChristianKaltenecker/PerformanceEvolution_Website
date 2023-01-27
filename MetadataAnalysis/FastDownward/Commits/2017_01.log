@@ -1,0 +1,157 @@
+Searching between e4eb64c613ae34b97ab9409deac5331ec2ce5e43 and 91f44fa59ea57014a7769062a92aa752f503128e
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: collection_max_size,num_samples,iPDB,lm_rhw,landmark,disjunctive_landmarks
+Keywords: slow fast time perf optim regression speed collection_max_size num_samples iPDB lm_rhw landmark disjunctive_landmarks
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit 6b034cf235c260ab8b0daf43042d6e16217f8a9f[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Wed Nov 23 15:29:00 2016 +0100
+
+    [main] fix bug: include relative [1;31mtime[m for portfolio configs running in next round
+
+[33mcommit c86c7fb5657b21cbdbe8d21dd6731842cafcb8de[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Wed Nov 23 15:29:00 2016 +0100
+
+    [issue684] fix bug: include relative [1;31mtime[m for portfolio configs running in next round
+
+[33mcommit 959e05d930c0381887c25a49d9cd0793b4591fd1[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Oct 21 12:25:39 2016 +0200
+
+    [issue682] print "simplification was not f-preserving" at the right [1;31mtime[m
+
+[33mcommit a6db3202fc699414ef5960e79a0916ca9f4862e7[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Wed Aug 10 18:22:25 2016 +0200
+
+    [issue629] revert to using ids instead of proxies during [1;31mtime[m critical methods
+
+[33mcommit 7adabe4ee2f215a0515b892a5c391428078241d7[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Jul 5 12:15:52 2016 +0200
+
+    [issue659] use local [1;31mtime[mr
+
+[33mcommit d699a211734473d165e52fc52ef81324e9a43bf3[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Jul 5 11:10:39 2016 +0200
+
+    [issue635] use lower [1;31mtime[m limit
+
+[33mcommit 88dd4b29f4d8a7b7b5bdc96aee609135cc30b766[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Jun 21 12:12:35 2016 +0100
+
+    [issue591] log actual search [1;31mtime[m again
+
+[33mcommit 6db325eb531d7aba262be6e4d95aa983fd29fc53[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Mon Jun 6 23:20:09 2016 +0200
+
+    [issue591] remove "actual search [1;31mtime[m" output
+
+[33mcommit c7637d463c5b8fc5d829f2cbb6678ec54a4c8dbd[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Fri May 20 17:02:14 2016 +0200
+
+    [issue657] use max_[1;31mtime[m=infinity by default
+
+[33mcommit 834a4b56f06637a5213acc7ad917291a2c4fccc4[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Wed May 18 10:05:35 2016 +0200
+
+    [issue657] set default max_arcs to 2000000 (best value in experiments, even better than max_[1;31mtime[m=900)
+For keyword perf:
+[33mcommit 28fa5dafdf8007c05627583962bfc78ac3c2155d[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Tue Sep 6 11:15:23 2016 +0200
+
+    [issue670] code review: revert to using a shrink_fts method that [1;31mperf[morms the actual shrinking on the given fts with the given equivalence relation
+
+[33mcommit dfdccf815129f6d51d48cd502e5bdf77d4d0df97[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Mon Aug 15 18:00:30 2016 +0200
+
+    [issue629] Fix [1;31mperf[mormance issue: inline find_unsatisfied_* and avoid using proxies in it
+For keyword optim:
+[33mcommit cd39b32012d11b0a3e1d477ebd9274fc821c7116[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Thu Dec 22 14:22:27 2016 +0100
+
+    [issue629] avoid premature [1;31moptim[mization for swap calls
+
+[33mcommit 1468d9c1e780edf0010535bf06d08a03c8f48829[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Tue Dec 20 12:02:06 2016 +0100
+
+    [issue638] use more [1;31moptim[mal strips suite
+For keyword regression:
+For keyword speed:
+[33mcommit c7592a537e1c5a4f233895b2066eeca04fe44e92[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Tue Aug 9 20:02:00 2016 +0200
+
+    [issue660] Avoid using task interface in AxiomEvaluator::evaluate
+    (for [1;31mspeed[m reasons).
+For keyword collection_max_size:
+For keyword num_samples:
+For keyword iPDB:
+For keyword lm_rhw:
+For keyword landmark:
+[33mcommit 97944b49607d1e9967554cd8e3718a7326e7e185[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Wed Oct 26 19:01:25 2016 +0200
+
+    [issue685] restore 'transform' argument for [1;31mlandmark[m heuristic
+
+[33mcommit de17135aefbe19ea740f5ee251c259d9f14e06b9[m
+Author: Manuel Heusner <manuel.heusner@unibas.ch>
+Date:   Mon Oct 17 17:29:22 2016 +0200
+
+    [issue551] Cost assignment gets [1;31mlandmark[m graph by reference.
+
+[33mcommit db5b80d86cd4bfa990967365e99e31f84cbd1b54[m
+Author: Manuel Heusner <manuel.heusner@unibas.ch>
+Date:   Wed Sep 28 15:49:01 2016 +0200
+
+    [issue551] pass AbstractTask instead of TaskProxy to [1;31mlandmark[m generation functions
+
+[33mcommit 46838c2b47126c4b8ad4a8129d76341cf9a27261[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Sep 27 00:11:10 2016 +0200
+
+    [issue551] cleanup LandmarkCountHeuristic::convert_to_[1;31mlandmark[m_set() and the code calling it
+
+[33mcommit da3d61530239f380e259dc10f0f35c9a0792139b[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Sep 20 11:15:31 2016 +0200
+
+    [issue551] explicitly set task and reset cost type for [1;31mlandmark[m heuristics
+
+[33mcommit e153f84504e6b47da15be66400b85041e8cefc11[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Thu Sep 15 12:42:09 2016 +0200
+
+    [issue551] clean up hm [1;31mlandmark[ms a bit
+
+[33mcommit 41f14f51ca0e3b71979581eea12150d3f30d966e[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Wed Sep 14 21:55:49 2016 +0200
+
+    [issue551] use correct [1;31mlandmark[m graph in CEGAR heuristic
+
+[33mcommit 7a9203b73c778a3983c115eae49aa153f05aec27[m
+Author: Manuel Heusner <manuel.heusner@unibas.ch>
+Date:   Mon Sep 12 16:42:25 2016 +0200
+
+    [issue551] Pairs of integers replaced with FactPair in remaining [1;31mlandmark[m classes
+
+[33mcommit 089d7256b1f24a73a2d4739ea96d2d4c83fdc824[m
+Author: Cedric Geissmann <cedric.geissmann@unibas.ch>
+Date:   Wed Jun 29 10:09:21 2016 +0200
+
+    [issue635] Fixed comment: FactPair [1;31mlandmark[m -> Fact [1;31mlandmark[m
+For keyword disjunctive_landmarks:

@@ -1,0 +1,62 @@
+Searching between v1.0.6 and v1.0.7
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,compression
+Keywords: slow fast time perf optim regression quality compression
+For keyword slow:
+For keyword fast:
+commit 9402ac5c08806f4ba400bc390420c29ddd78ecd1
+Author: Stephen Kyle <stephen.kyle@arm.com>
+Date:   Thu Sep 27 12:15:46 2018 +0100
+
+    decode: faster huffman code loading on 32-bit Arm (#703)
+    
+    * platform: add macro for using the 'aligned' attribute
+    
+    * decode: add accessor macros for HuffmanCode fields
+    
+    Adds a constructor function for building HuffmanCode values
+    so they can be accessed quickly on different architectures.
+    
+    Also adds macros for marking a HuffmanCode table pointer
+    that can be accessed quickly (BROTLI_HC_MARK_TABLE_FOR_FAST_LOAD),
+    adjusting the index into that table (BROTLI_HC_ADJUST_TABLE_INDEX),
+    and getting the .bits or .value fields out of the table at the
+    current index (BROTLI_HC_GET_BITS/VALUE).
+    
+    For example, assuming |table| contains a HuffmanCode pointer:
+    
+      BROTLI_HC_MARK_TABLE_FOR_FAST_LOAD(table);
+      BROTLI_HC_ADJUST_TABLE_INDEX(table, index_into_table);
+      *bits = BROTLI_HC_GET_BITS(table);
+      *value = BROTLI_HC_GET_VALUE(table);
+      BROTLI_HC_ADJUST_TABLE_INDEX(table, offset);
+      *bits2 = BROTLI_HC_GET_BITS(table);
+      *value2 = BROTLI_HC_GET_VALUE(table);
+    
+    All uses of the HuffmanCode have been updated appropriately.
+    
+    * decode: add alternative accessors for HuffmanCode on Arm AArch32
+For keyword time:
+commit cc7a74f15fff163319be63a13ae822513336544e
+Author: Stephen Kyle <stephen.kyle@arm.com>
+Date:   Mon Oct 8 14:40:11 2018 +0100
+
+    decode: fix NEON inclusion (#714)
+    
+    The macro that checks for NEON support should be __ARM_NEON, not
+    __ARM_NEON__. [1]
+    
+    AArch64 compilers define __ARM_NEON but not __ARM_NEON__.
+    AArch32 compilers currently seem to define both, but could be within their
+    rights to drop __ARM_NEON__ in future versions.
+    
+    This change moves the check into the common/platform.h file, checks for
+    both forms, and sets BROTLI_TARGET_NEON if NEON support is available.
+    
+    [1] Section 6.5.4 of the ARM C Language Extensions.
+        (At the time of writing, the latest version was Release 2.1.)
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword quality:
+For keyword compression:

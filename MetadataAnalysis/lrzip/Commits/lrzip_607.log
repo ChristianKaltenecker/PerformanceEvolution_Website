@@ -1,0 +1,31 @@
+Searching between v0.606 and v0.607
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+For keyword lzo:
+For keyword lzma:
+commit 271a4077651d0f9a66afb1c5273658e67e7616e2
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Thu Sep 15 13:29:09 2011 +1000
+
+    Make lzma back end message maxverbose to minimise spamming.
+
+commit 71bb72f5da9711b1e390a79ed683bc2fde0c149c
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Sep 14 08:07:46 2011 +1000
+
+    Update to lzma 920 library.
+For keyword gzip:
+For keyword bzip:
+For keyword compression:
+For keyword processor:
+For keyword multi:
+For keyword level:
+For keyword thread:

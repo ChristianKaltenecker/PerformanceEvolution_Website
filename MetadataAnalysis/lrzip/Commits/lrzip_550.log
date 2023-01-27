@@ -1,0 +1,164 @@
+Searching between v0.544 and v0.550
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compressoion,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compressoion processor multi level thread
+For keyword slow:
+commit 50437a84470481a4b07e47f7145408945475841f
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Fri Dec 10 23:51:59 2010 +1100
+
+    Move the threading on compression to higher up in the code, allowing the next stream to start using compression threads before the previous stream has finished.
+    This overlapping of compressing streams means that when files are large enough to be split into multiple blocks, all CPUs will be used more effectively throughout the compression, affording a nice speedup.
+    Move the writing of the chunk byte size and initial headers into the compthread to prevent any races occurring.
+    Fix a few dodgy callocs that may have been overflowing!
+    The previous commit reverts were done because the changes designed to speed it up actually slowed it down instead.
+For keyword fast:
+commit e0265b33e10cbf201ca714a56a0bec2cf853d096
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Dec 8 20:53:26 2010 +1100
+
+    Default compression level and window size on lzma is set to 7 which is the highest it goes.
+    Scale the 9 levels down to the 7 that lzma has.
+    This makes the default lzma compression level 5 which is what lzma normally has, and uses a lot less ram and is significantly faster than previously, but at the cost of giving slightly less compression.
+For keyword time:
+commit 34f76fa73cfae46de1b203a6725f807029df6bd1
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Dec 12 10:39:52 2010 +1100
+
+    Don't wait on a semaphore the 2nd time attempting to compress/decompress.
+    Wait for all ucompthreads to be free.
+    Destroy the semaphores used by ucompthreads when a stream_in is closed.
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+commit 50437a84470481a4b07e47f7145408945475841f
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Fri Dec 10 23:51:59 2010 +1100
+
+    Move the threading on compression to higher up in the code, allowing the next stream to start using compression threads before the previous stream has finished.
+    This overlapping of compressing streams means that when files are large enough to be split into multiple blocks, all CPUs will be used more effectively throughout the compression, affording a nice speedup.
+    Move the writing of the chunk byte size and initial headers into the compthread to prevent any races occurring.
+    Fix a few dodgy callocs that may have been overflowing!
+    The previous commit reverts were done because the changes designed to speed it up actually slowed it down instead.
+
+commit 8dd9b00496894c19c457ff1919f08f8d3c255b1a
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Dec 8 21:25:00 2010 +1100
+
+    Revert "Make threads spawn at regular intervals along chunk size thus speeding up compression."
+    
+    This reverts commit 688aa55c7930c883d5a8ab9d963af673ad805445.
+For keyword lzo:
+For keyword lzma:
+commit aeeeedcab23515df86c4a663d6b105e2d4fbeee6
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 11 13:19:34 2010 +1100
+
+    Cope with multithreaded memory failures better.
+    Instead of failing completely, detect when a failure has occurred, and serialise work for that thread to decrease the memory required to complete compression / decompression.
+    Do that by waiting for the thread before it to complete before trying to work on that block again.
+    Check internally when lzma compress has failed and try a lower compression level before falling back to bzip2 compression.
+
+commit 6c33071118b934822aabe0f6e11525c82ecbdc15
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 11 01:07:43 2010 +1100
+
+    Rationalise the testing now that the default lzma settings use a lot less ram by default.
+
+commit e0265b33e10cbf201ca714a56a0bec2cf853d096
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Dec 8 20:53:26 2010 +1100
+
+    Default compression level and window size on lzma is set to 7 which is the highest it goes.
+    Scale the 9 levels down to the 7 that lzma has.
+    This makes the default lzma compression level 5 which is what lzma normally has, and uses a lot less ram and is significantly faster than previously, but at the cost of giving slightly less compression.
+For keyword gzip:
+For keyword bzip:
+commit aeeeedcab23515df86c4a663d6b105e2d4fbeee6
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 11 13:19:34 2010 +1100
+
+    Cope with multithreaded memory failures better.
+    Instead of failing completely, detect when a failure has occurred, and serialise work for that thread to decrease the memory required to complete compression / decompression.
+    Do that by waiting for the thread before it to complete before trying to work on that block again.
+    Check internally when lzma compress has failed and try a lower compression level before falling back to bzip2 compression.
+For keyword compressoion:
+For keyword processor:
+For keyword multi:
+commit aeeeedcab23515df86c4a663d6b105e2d4fbeee6
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 11 13:19:34 2010 +1100
+
+    Cope with multithreaded memory failures better.
+    Instead of failing completely, detect when a failure has occurred, and serialise work for that thread to decrease the memory required to complete compression / decompression.
+    Do that by waiting for the thread before it to complete before trying to work on that block again.
+    Check internally when lzma compress has failed and try a lower compression level before falling back to bzip2 compression.
+
+commit 50437a84470481a4b07e47f7145408945475841f
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Fri Dec 10 23:51:59 2010 +1100
+
+    Move the threading on compression to higher up in the code, allowing the next stream to start using compression threads before the previous stream has finished.
+    This overlapping of compressing streams means that when files are large enough to be split into multiple blocks, all CPUs will be used more effectively throughout the compression, affording a nice speedup.
+    Move the writing of the chunk byte size and initial headers into the compthread to prevent any races occurring.
+    Fix a few dodgy callocs that may have been overflowing!
+    The previous commit reverts were done because the changes designed to speed it up actually slowed it down instead.
+For keyword level:
+commit aeeeedcab23515df86c4a663d6b105e2d4fbeee6
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 11 13:19:34 2010 +1100
+
+    Cope with multithreaded memory failures better.
+    Instead of failing completely, detect when a failure has occurred, and serialise work for that thread to decrease the memory required to complete compression / decompression.
+    Do that by waiting for the thread before it to complete before trying to work on that block again.
+    Check internally when lzma compress has failed and try a lower compression level before falling back to bzip2 compression.
+
+commit e0265b33e10cbf201ca714a56a0bec2cf853d096
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Dec 8 20:53:26 2010 +1100
+
+    Default compression level and window size on lzma is set to 7 which is the highest it goes.
+    Scale the 9 levels down to the 7 that lzma has.
+    This makes the default lzma compression level 5 which is what lzma normally has, and uses a lot less ram and is significantly faster than previously, but at the cost of giving slightly less compression.
+For keyword thread:
+commit 34f76fa73cfae46de1b203a6725f807029df6bd1
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Dec 12 10:39:52 2010 +1100
+
+    Don't wait on a semaphore the 2nd time attempting to compress/decompress.
+    Wait for all ucompthreads to be free.
+    Destroy the semaphores used by ucompthreads when a stream_in is closed.
+
+commit aeeeedcab23515df86c4a663d6b105e2d4fbeee6
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 11 13:19:34 2010 +1100
+
+    Cope with multithreaded memory failures better.
+    Instead of failing completely, detect when a failure has occurred, and serialise work for that thread to decrease the memory required to complete compression / decompression.
+    Do that by waiting for the thread before it to complete before trying to work on that block again.
+    Check internally when lzma compress has failed and try a lower compression level before falling back to bzip2 compression.
+
+commit a6ab7c875b0a03cbbd597067d8643ffea281aaaf
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 11 00:04:30 2010 +1100
+
+    Limit the number of threads decompressing stream 0 to just 1 since it's always followed by stream 1 chunks, and it may lead to failure to decompress due to running out of memory by running too many threads.
+
+commit 50437a84470481a4b07e47f7145408945475841f
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Fri Dec 10 23:51:59 2010 +1100
+
+    Move the threading on compression to higher up in the code, allowing the next stream to start using compression threads before the previous stream has finished.
+    This overlapping of compressing streams means that when files are large enough to be split into multiple blocks, all CPUs will be used more effectively throughout the compression, affording a nice speedup.
+    Move the writing of the chunk byte size and initial headers into the compthread to prevent any races occurring.
+    Fix a few dodgy callocs that may have been overflowing!
+    The previous commit reverts were done because the changes designed to speed it up actually slowed it down instead.
+
+commit 8dd9b00496894c19c457ff1919f08f8d3c255b1a
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Dec 8 21:25:00 2010 +1100
+
+    Revert "Make threads spawn at regular intervals along chunk size thus speeding up compression."
+    
+    This reverts commit 688aa55c7930c883d5a8ab9d963af673ad805445.

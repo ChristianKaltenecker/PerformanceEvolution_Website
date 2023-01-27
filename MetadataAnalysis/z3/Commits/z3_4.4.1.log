@@ -1,0 +1,838 @@
+Searching between z3-4.4.0 and z3-4.4.1
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: QF_FP,proof
+Keywords: slow fast time perf optim regression speed QF_FP proof
+For keyword slow:
+[33mcommit 8df919b6bb3d32a34813401e5a0bcf46d6039cda[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jun 23 12:05:19 2015 +0200
+
+    fix mixed integer/real bugs for maximization exposed by non-termination in [1;31mslow[m.smt. partially fixes issue #56
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d9522cfd071ec752726d69206f7f10c01ae85bfa[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jun 23 12:05:19 2015 +0200
+
+    fix mixed integer/real bugs for maximization exposed by non-termination in [1;31mslow[m.smt. partially fixes issue #56
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 893d51eae8039e8f2b92d4bae3e6905e7698498b[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Mon Oct 6 18:10:03 2014 +0100
+
+    DoC: implement [1;31mslow[m path of filter_negated using join+project.
+    disable fast path since it's broken
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 9828b26379013990df2702ebdf15ccfd1c9514e7[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Thu Oct 2 09:56:06 2014 +0100
+
+    DoC: fix [1;31mslow[m path of filter_by_negation when columns are repeated in tgt relation
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 1606359dc9ca77091926c00d33ff18eb88a82e4b[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Tue Sep 30 15:58:38 2014 +0100
+
+    DoC: add [1;31mslow[m path to emptiness detection that uses SMT solving
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+For keyword fast:
+[33mcommit 1701af9dc97bf9bd29875ef2087c5cb85b097ad8[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Wed Jan 28 11:38:26 2015 +0000
+
+    DoC: fix [1;31mfast[m_empty() for tables without columns
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 4ee83c1774a86d973224241986f740b4947c2031[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Mon Dec 22 12:53:35 2014 +0000
+
+    Datalog/DoC: add [1;31mfast[m path for join_project for the case 'h(X) :- f(X), g(X).'
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 893d51eae8039e8f2b92d4bae3e6905e7698498b[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Mon Oct 6 18:10:03 2014 +0100
+
+    DoC: implement slow path of filter_negated using join+project.
+    disable [1;31mfast[m path since it's broken
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 04b5d436b3f0df6f512f25606dfac3735eede2b5[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Wed Oct 1 18:03:59 2014 +0100
+
+    DoC: fix [1;31mfast[m path of filter_negated
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+For keyword time:
+[33mcommit 702af71a2d4d95099d9cd2adc7a70b6d03f47068[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Aug 11 23:14:34 2015 +0200
+
+    Check more frequently for cancelation flags to address grep0095.stp.smt2 in issue #178. Z3 spends [1;31mtime[m in pre-processing simplification, which indicates there is some opportunity to tune this portion of the code
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 949f3f9201a282fb0fb0fe085b4a61f599973e00[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Jun 22 14:48:50 2015 +0100
+
+    Run link-[1;31mtime[m optimization on windows only when configured with --optimize
+    This should probably be revisited for VS 2015
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 4346966f002a85d8fc079899ad89d6827b2f4713[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Jun 22 14:48:50 2015 +0100
+
+    Run link-[1;31mtime[m optimization on windows only when configured with --optimize
+    This should probably be revisited for VS 2015
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit c2ef566ddcb397a18a9277671cb5d5d390fdf3a5[m
+Merge: 4d3d9f760 b882a94f6
+Author: Nuno Lopes <nuno.lopes@ist.utl.pt>
+Date:   Tue May 12 10:44:28 2015 +0100
+
+    Merge pull request #81 from ahorn/opt
+    
+    Fix g++ compile-[1;31mtime[m error
+
+[33mcommit b882a94f6ada2cc2ab63bf3e6341e16dab013bd9[m
+Author: U-EUROPE\t-alexh <t-alexh@microsoft.com>
+Date:   Tue May 12 10:23:04 2015 +0100
+
+    Fix g++ compile-[1;31mtime[m error
+    
+    Signed-off-by: U-EUROPE\t-alexh <t-alexh@microsoft.com>
+
+[33mcommit f8d04118d8eb4b020fa3b9ea821b2c2897fbf7f0[m
+Author: Nikolaj Bjorner <nbjorner@hotmail.com>
+Date:   Wed Apr 1 16:21:56 2015 -0700
+
+    switch models for multiple box objectives. Feature request at codeplex issue 194, George Karpenov. Usage model is same as Pareto fronts you call check-sat multiple [1;31mtime[ms until retrieving unsat
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@hotmail.com>
+
+[33mcommit fb0305d5ecfb9fdc30947d2e1d0217144e1ad321[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri May 9 22:27:35 2014 -0700
+
+    update [1;31mtime[mout logic
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 192ce11ca63a6d475e25a9a022bd3d91a79d5102[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Dec 5 11:42:04 2013 -0800
+
+    change model binding [1;31mtime[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 946b888b32d79e783e9793ff8bcbd4c491f2858e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Oct 30 13:24:21 2013 -0700
+
+    adding [1;31mtime[mout, parameters, statistics
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9fc84f13898774e24d7eff65fba60a26f09ad67d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Oct 30 13:23:04 2013 -0700
+
+    adding [1;31mtime[mout, parameters, statistics
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword perf:
+[33mcommit bea8744f7d133f1341e6c2babfa762a72de9a690[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Jul 31 11:20:01 2015 +0100
+
+    Disabled su[1;31mperf[mluous wellformedness check and fixed type checking in basic_decl_plugin::join
+
+[33mcommit 3d7785cc182bdbd40ddacac5e3a2426bacc97298[m
+Merge: 5718c2363 5fdc104f8
+Author: Nuno Lopes <nuno.lopes@ist.utl.pt>
+Date:   Thu Jul 23 16:55:09 2015 +0100
+
+    Merge pull request #166 from hguenther/unstable
+    
+    Improve filter_rules [1;31mperf[mormance
+
+[33mcommit 5fdc104f8247d60e91710377a6608a31c94b94c5[m
+Author: Henning Guenther <t-hennig@microsoft.com>
+Date:   Thu Jul 23 16:08:09 2015 +0100
+
+    Improve filter_rules [1;31mperf[mormance
+    
+    Perform lookup and insert in one operation to avoid duplicate work.
+
+[33mcommit b9287343487fdaf208fa32e9fc5c5a55478a462d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Aug 1 16:11:52 2014 -0700
+
+    [1;31mperf[m improvements, mus
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit caba15d6b3a0cd697eacc1b2285fe697568e12ee[m
+Author: Anh-Dung Phan <t-anphan@microsoft.com>
+Date:   Tue Dec 10 17:15:51 2013 -0800
+
+    Remove su[1;31mperf[mluouse indices to make .NET API thinner
+For keyword optim:
+[33mcommit 9ad065a538815a6c13b6d890920f44d9418df8d3[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Sat Aug 15 23:51:43 2015 +0100
+
+    Bugfixes for the [1;31moptim[mization module in the ML API
+
+[33mcommit 655b44c07bcaa30a0652dc23a74ac7277d381439[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Aug 15 00:48:22 2015 +0200
+
+    make :weight understand both decimal and integral values, remove dweight, remove deprecated commands for [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit eb5af100bda2a799669993dbd32c36dcc3d12260[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Aug 9 17:49:20 2015 +0200
+
+    adding [1;31moptim[mize bindings for ML, adding get_reason_unknown to [1;31moptim[mize, mentioned in pull request issue #188, second edition
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit a0894ac7bf1de07e70bdb02db786704267ffa535[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jul 30 11:32:14 2015 -0300
+
+    add basic example of using [1;31moptim[mizaiton context to Java as raised in issue #179
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d815cf9b7b658a5393d8cc96ae1b6af13adb67cb[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jul 7 16:01:48 2015 -0700
+
+    fix bug in [1;31moptim[mization where a variable is updated twice
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit eeef4d29d68285a505468715bccc892db76f1267[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Wed Jul 1 14:38:33 2015 +0100
+
+    remove the [1;31moptim[mization for 0-byte allocations
+    I wasn't able to trigger with any SMT or API benchmark
+    Removing it ensures the function never returns null and enables further [1;31moptim[mizations.
+    I get an amazing avg speedup of 0.9%
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 5cc8c8bde618b8a36f86778aa25812c6762e3d65[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Wed Jun 24 15:00:47 2015 +0100
+
+    udoc: micro [1;31moptim[mization for compiler_guard
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 949f3f9201a282fb0fb0fe085b4a61f599973e00[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Jun 22 14:48:50 2015 +0100
+
+    Run link-time [1;31moptim[mization on windows only when configured with --[1;31moptim[mize
+    This should probably be revisited for VS 2015
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 37cb5b95974ab00efcae985c0145029c7d841e0d[m
+Author: Matthias Schlaipfer <t-matsch@microsoft.com>
+Date:   Wed Jun 17 16:46:24 2015 +0100
+
+    Fixed a bug in udoc_relation's join project
+    
+    An [1;31moptim[mization was applied in too many cases and led to wrong results.
+    
+    Signed-off-by: Matthias Schlaipfer <t-matsch@microsoft.com>
+
+[33mcommit 4346966f002a85d8fc079899ad89d6827b2f4713[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Mon Jun 22 14:48:50 2015 +0100
+
+    Run link-time [1;31moptim[mization on windows only when configured with --[1;31moptim[mize
+    This should probably be revisited for VS 2015
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 32a00a70620cb261e2cf0006d2c0ac574a6c9ccf[m
+Author: Matthias Schlaipfer <t-matsch@microsoft.com>
+Date:   Wed Jun 17 16:46:24 2015 +0100
+
+    Fixed a bug in udoc_relation's join project
+    
+    An [1;31moptim[mization was applied in too many cases and led to wrong results.
+    
+    Signed-off-by: Matthias Schlaipfer <t-matsch@microsoft.com>
+
+[33mcommit b65d5797f805d1cd46fefc85fec029f7ea255b79[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Wed Jun 3 17:21:01 2015 +0100
+
+    [1;31moptim[mize expr_safe_replace for when a subexpression has no substitutions
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 51267f3aba31031bf966a6ccd75234f6b6559245[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Mar 11 00:26:49 2015 -0700
+
+    take into account that bound from [1;31moptim[mization may create atom that clashes with inequality bound from term
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0c4d82de58ec40c5c09143f79ea1a4f364938a18[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Mon Feb 2 11:49:58 2015 +0000
+
+    datalog: [1;31moptim[mize previous commit
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 5548ecc853eaf1b1ea6a09e6bea10f47500d08da[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Mon Feb 2 11:29:49 2015 +0000
+
+    Datalog: fix bug with the following 2 scenarios:
+    A(#x00) :- not B().
+    A() :- not B().
+    
+    The first case can be further [1;31moptim[mized, but committing this for correctness
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit a296023823fbb94da7a80307edc96b326fe271dd[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Dec 29 16:15:19 2014 -0800
+
+    incorrect offset calculation in diff logic [1;31moptim[mization. codeplex issue 156
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit dddb31fc37c87de35e97aa90fcc54d7ac55afe31[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Mon Dec 22 13:03:06 2014 +0000
+
+    minor [1;31moptim[mization to previous patch
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit f651145b4c14896a577b7e2d95e7382e84732c7f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Oct 10 14:23:58 2014 -0700
+
+    add [1;31moptim[mization front-ends directly to the shell
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d1a2e6122026573ab8d38ad86358677c0030d9b8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 9 17:58:38 2014 -0700
+
+    [1;31moptim[mization example that parses obp and wcnf formats natively
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e1e27f2c26474a15607e3aa92691e25949c3064f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 9 10:17:20 2014 -0700
+
+    [1;31moptim[mize the merge function
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d9c61464d0789f245583f97c606f47e4561f29cf[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Sep 7 16:46:46 2014 -0700
+
+    make difference logic simplex [1;31moptim[mizer incremental
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 3f8083dfa692b24a4525f548b3673fa274394dca[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Sep 2 09:32:38 2014 -0700
+
+    fix push/pop bugs in [1;31moptim[mize context, add example to c++, fix bug in arithemtic bounds axiom addition
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 31f16d7aa4f0fc54b78cac33c4477d656c6d4969[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Sep 1 14:58:58 2014 -0700
+
+    add push/pop to [1;31moptim[mization context for convenience
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 54c959783d0e83fc40890dee6da6f553e85dc625[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Aug 23 20:51:30 2014 -0700
+
+    profile, [1;31moptim[mize, trying out product-set
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 13e454ad63e01ce380ca9b72aef1d4efa79dee3a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Mar 28 09:29:21 2014 -0700
+
+    adding C++ API for [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f82f7f83b9f740c22931b122308741e89a465145[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Mar 14 14:42:01 2014 -0700
+
+    adding [1;31moptim[mization to dense difference logic
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 478b3160ace6b7c66d8ab44c78d864fd5df0bb5b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Feb 25 18:06:54 2014 -0800
+
+    [1;31moptim[mize theory pb
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e180cfe256ecd124fe352c9d898ebf82bb182077[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Feb 25 12:24:48 2014 -0800
+
+    [1;31moptim[mizing pb
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 4027de42f68bdad746e3374b2616148195774d0e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Dec 30 13:06:58 2013 -0800
+
+    add [1;31moptim[mized sorting network
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit eb1b578bfb876b85977f03347a16b40aceb5318c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Dec 18 08:43:07 2013 +0200
+
+    fixing [1;31moptim[mizaiton bug
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit ddd0bf875d3e7bec6435ef88179c5b586fedced8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Dec 15 08:46:24 2013 +0200
+
+    fix bugs in [1;31moptim[mization for integers
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 50f18a77af88b20083bf2116afd71cf6c850c626[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Dec 15 02:40:52 2013 +0200
+
+    disable '[1;31moptim[mization' that led to wrong model'
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8c85ee6b7c83eded4b9f1f46975473d827dca9ac[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Dec 13 23:36:42 2013 +0100
+
+    fixing lex [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 4d6aa1a0f363305c4354d0a50706476e8fa47f34[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Dec 6 11:34:41 2013 -0800
+
+    add to_string and get_help methods to [1;31moptim[mize API
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e3fe80fd4d2e00af1b19ba437a384effa2167ab3[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Dec 3 20:20:24 2013 -0800
+
+    add .NET interface and finish C interface for [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5ed8a48ac2ca8815edaf0926b511772307bc310f[m
+Author: Anh-Dung Phan <t-anphan@microsoft.com>
+Date:   Tue Nov 26 14:16:59 2013 -0800
+
+    Add push/pop to box [1;31moptim[mization
+
+[33mcommit 4aa9c742abc10de93612efab2c43b6144390320d[m
+Author: Anh-Dung Phan <t-anphan@microsoft.com>
+Date:   Tue Nov 26 12:54:18 2013 -0800
+
+    Revise [1;31moptim[mize commands
+
+[33mcommit 8fe50ff2d91a87913a4515fc74fc18a38492baa1[m
+Author: Anh-Dung Phan <t-anphan@microsoft.com>
+Date:   Mon Nov 25 02:15:21 2013 +0100
+
+    Display diff logic [1;31moptim[mization and min cost flow in smt2 format
+
+[33mcommit fff3a1aae5f117975da272fe7b5faec616db15ed[m
+Author: Anh-Dung Phan <t-anphan@microsoft.com>
+Date:   Mon Nov 25 00:30:15 2013 +0100
+
+    Normalize diff logic's [1;31moptim[mal assignments
+
+[33mcommit cc3d65e544bfdbe9036b62090092acbf155a87da[m
+Author: Anh-Dung Phan <t-anphan@microsoft.com>
+Date:   Sun Nov 24 22:31:52 2013 +0100
+
+    Add facilities to get [1;31moptim[mal assignments
+
+[33mcommit b35088f7e53e2a0f15f4e565e88a68d328d80b27[m
+Author: Anh-Dung Phan <t-anphan@microsoft.com>
+Date:   Fri Nov 22 18:15:34 2013 -0800
+
+    Update diff logic [1;31moptim[mization
+
+[33mcommit 883018b405ec47a8a54f15d3d86abc65d63e9eb2[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Nov 3 19:27:06 2013 -0800
+
+    v1 of conflict driven [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c0de1e34acdcd35a624168fa3db041c1d2504b20[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Nov 3 14:54:42 2013 -0800
+
+    working on upper bound [1;31moptim[mziation
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit bc44bcad102f9f07e8a694be4a3f0189da86ebda[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 29 20:26:54 2013 -0700
+
+    push blocking code to [1;31moptim[mizer context
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 7c8fbbb06a580f5cf69500ed19eb4754b1c87ade[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 24 12:03:05 2013 +0800
+
+    fixing bug with [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 11010086be4beb571a4036ee4da45293c0447b2e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Oct 24 11:57:30 2013 +0800
+
+    fixing bug with [1;31moptim[mization
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 6919f335a112dcc9764cd8f292664910cfdab006[m
+Author: Anh-Dung Phan <phananhdung309@yahoo.com>
+Date:   Tue Oct 22 16:28:03 2013 -0700
+
+    Sketch a skeleton of Difference Logic [1;31moptim[mizer
+
+[33mcommit 36d7948399d71168b31f34d72305436540c7f67a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Oct 22 10:36:13 2013 +0800
+
+    fixing [1;31moptim[mizer for multi-objectives and epsilon
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 3441fc29427242dc334204d36c2861623d4d4941[m
+Author: Anh-Dung Phan <phananhdung309@yahoo.com>
+Date:   Mon Oct 21 17:25:34 2013 -0700
+
+    A few changes based on previous reviews
+    
+    Tested the [1;31moptim[mization procedure with:
+    - unbounded objectives
+    - bounded with rational solutions
+    - bounded with irrational solutions
+
+[33mcommit a44044fb156cd2c13a84b105e7f68ef9f9d47388[m
+Author: Anh-Dung Phan <phananhdung309@yahoo.com>
+Date:   Fri Oct 18 18:00:24 2013 -0700
+
+    A rudimentary version of MathSAT [1;31moptim[mization
+    
+    Remarks:
+    (1) The core procedure accepts maximization only
+    (2) Add lazy initialization to min_maximize_cmd
+    (3) The procedure isn't working with composite objective yet.
+
+[33mcommit f4e2b232380f16b11e86280231eeedce3e0e05d9[m
+Author: Anh-Dung Phan <phananhdung309@yahoo.com>
+Date:   Wed Oct 16 17:56:35 2013 -0700
+
+    Create placeholders to [1;31moptim[mization methods
+For keyword regression:
+[33mcommit 5d711904687af9264a951e5a25157e914e76581d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Sep 29 16:50:59 2015 -0700
+
+    add catch for cancellation intermixed with return value l_true. To address [1;31mregression[ms in QF_LIA tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d4b66538f93a4e9b255690bf127ffae3f4cc493c[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Thu Sep 17 16:31:51 2015 +0100
+
+    Bug/assertion fix for power monomials in nlsat.
+    
+    Previously triggered an assertion on [1;31mregression[ms/smt2/fp-to_real-1.smt2, but only on OSX and FreeBSD
+
+[33mcommit 73a8f9960f264163978ab76355a978eccb35577e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Sep 7 20:17:46 2015 -0700
+
+    fix [1;31mregression[ms exposed in Internal
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 158a5dd2db0fd51b274c68606fa6bad0e4ae5998[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 22 07:45:40 2015 +0200
+
+    add count of memory allocations and way to limit allocations globally. Fix purification in nlsat_smt to fix [1;31mregression[ms on QF_UFNRA
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 564da787fbe842edef0ccef50a60f60f80e9f9e8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 22 07:45:40 2015 +0200
+
+    add count of memory allocations and way to limit allocations globally. Fix purification in nlsat_smt to fix [1;31mregression[ms on QF_UFNRA
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e8811748d39aac2b6f4797dc5a3ac4b8f895a2ff[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat May 16 19:08:37 2015 +0100
+
+    fix [1;31mregression[ms in nl/smt
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 75c114feabf6f931a435e773e3668c376c17798d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Sep 1 14:37:58 2014 -0700
+
+    fix [1;31mregression[m on push/pop
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 39dcc653df5dd51e3975f69d63c9ac8ff55b6533[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jan 13 20:20:26 2014 -0800
+
+    fix normalization [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b764c7bbeefd843480c5a9b877765ab242c50f74[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Dec 15 05:25:47 2013 +0200
+
+    fixes to bugs exposed by [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit fe5c42c90f0a3780f58498ef2e9d674e6c3a44e3[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Dec 15 05:23:47 2013 +0200
+
+    fixes to bugs exposed by [1;31mregression[ms
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d6f0c13f2a7dc9ba4a4a773f81fcc8e10b5dad7d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Dec 4 08:35:46 2013 -0800
+
+    bug fixes exposed from [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8fa0d6e4f3cfaa92ac12bfeb2669e167ada35f79[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Dec 4 08:35:27 2013 -0800
+
+    bug fixes exposed from [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 759d80dfe37177b9f9c6196624d5ea07027cf9d3[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 7 12:15:51 2013 -0800
+
+    fix [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2a907ea52a82c4a9ef40cd41d95b3242637a7f17[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Nov 1 12:45:26 2013 -0700
+
+    fix objective value [1;31mregression[m in simplex maximation
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+[33mcommit eeef4d29d68285a505468715bccc892db76f1267[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Wed Jul 1 14:38:33 2015 +0100
+
+    remove the optimization for 0-byte allocations
+    I wasn't able to trigger with any SMT or API benchmark
+    Removing it ensures the function never returns null and enables further optimizations.
+    I get an amazing avg [1;31mspeed[mup of 0.9%
+    
+    Signed-off-by: Nuno Lopes <nlopes@microsoft.com>
+
+[33mcommit 8d23b2b8131e18b72e49dd75d801ac5a31f05386[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Mar 28 18:26:42 2014 -0700
+
+    [1;31mspeed[m up parsing of large Datalog files, remove pinned
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword QF_FP:
+[33mcommit f84d6bf5bb2c031478dfa72c10bcbb957995dc7f[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Jun 12 12:58:07 2015 +0100
+
+    Bugfix for [1;31mQF_FP[m tactic
+
+[33mcommit 5ae2dd9c747946535f1f05771161b19d0e03ccf6[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Sat May 30 15:20:07 2015 +0100
+
+    Bugfix for [1;31mQF_FP[m default tactic.
+
+[33mcommit ba8864846816603742a06d60ab9191604fd1b6bd[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri May 29 14:49:53 2015 +0100
+
+    Added has_fp_to_real probe to detect when [1;31mQF_FP[m need QF_NRA.
+
+[33mcommit 85419ca503496b0cd873234320ef195199ac3093[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri May 29 14:21:27 2015 +0100
+
+    Added branch into QF_NRA from [1;31mQF_FP[m problems containing to_real terms.
+
+[33mcommit f2f6fc1994fcbfaa1c4191f51e75babf7f67544e[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri May 29 13:58:23 2015 +0100
+
+    Added QF_BVFP logic alias for [1;31mQF_FP[mBV
+For keyword proof:
+[33mcommit f145ceecb408b4e8ef9253d30ba0fd1d3126b364[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jul 8 22:12:41 2015 -0700
+
+    remove default failure on [1;31mproof[m mode fixes #121
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 13a3bdd7a3589c0a7e8b622acfba20e542c2f2b8[m
+Author: Ken McMillan <kenmcmil@microsoft.com>
+Date:   Fri May 22 10:28:19 2015 -0700
+
+    fix [1;31mproof[m for extended GCD rule
+
+[33mcommit 15e1c8459221cf7b9348c6772c2ee9e8726f5076[m
+Author: Nikolaj Bjorner <nbjorner@hotmail.com>
+Date:   Tue May 19 08:38:07 2015 -0700
+
+    update docuemntation for codeplex question 29927489/z3-[1;31mproof[ms-are-hypothesis-and-lemma-rules-always-cleanly-nested
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@hotmail.com>
+
+[33mcommit 2e627e78bc37003fd8070c3219088f6d2a9d7f7f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun May 10 14:55:28 2015 -0700
+
+    filter tactic on [1;31mproof[ms and cores
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 05b7aa3ebb6ce3bca4e849b5db150f3861e51c69[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jan 15 14:32:18 2015 +0530
+
+    flush cache when [1;31mproof[m mode changes
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 061ac0f23e13e18f842d9afda13bc4d4108feb7a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jan 5 16:44:33 2015 -0800
+
+    populate [1;31mproof[ms in opt specific tactics
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2f9e9e1a3c2aaf514e69d1bd944e22ce3fc3b264[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jan 3 11:04:08 2015 -0800
+
+    create [1;31mproof[m object in elim01. Codeplex issue 158
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit c54a19b0840867054eb65719af0b1a906886cb12[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Dec 29 12:57:02 2014 -0800
+
+    generate [1;31mproof[m justifications in theory_pb: codeplex issue 157
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 1ca44ed31686774864aaead880c79640ee091b13[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Dec 16 11:25:50 2013 +0200
+
+    handle [1;31mproof[m-wrapper justifications
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>

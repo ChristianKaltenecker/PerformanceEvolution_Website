@@ -1,0 +1,41 @@
+Searching between 91f44fa59ea57014a7769062a92aa752f503128e and 363e2fc9a8b7adb48b4c30e929097798928c7370
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: collection_max_size,num_samples,shrink_fh,blind,hmax,iPDB,lm_rhw,disjunctive_landmarks,landmark
+Keywords: slow fast time perf optim regression speed collection_max_size num_samples shrink_fh blind hmax iPDB lm_rhw disjunctive_landmarks landmark
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit f6fc719d0bead04be108c965022e8c5bd180b2a5[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Jan 17 17:21:05 2017 +0100
+
+    [issue693] scramble integers before hashing them, repeat each test 10 [1;31mtime[ms
+
+[33mcommit 9ffb631d1229d1be19cb01ae390bfa25099f102d[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Fri Jan 13 12:42:22 2017 +0100
+
+    [issue662] [1;31mtime[m limit
+For keyword perf:
+[33mcommit f27a3f495f476f99feef11297e6d0b45b0cbb949[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Thu Apr 27 18:53:36 2017 +0200
+
+    [issue688] reference [1;31mperf[mormance measurement in issue688
+For keyword optim:
+For keyword regression:
+For keyword speed:
+For keyword collection_max_size:
+For keyword num_samples:
+For keyword shrink_fh:
+For keyword blind:
+For keyword hmax:
+For keyword iPDB:
+For keyword lm_rhw:
+For keyword disjunctive_landmarks:
+For keyword landmark:
+[33mcommit f3fec8be30b4d7cebac842995df971550d2e06fc[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Wed Dec 21 14:14:56 2016 +0100
+
+    [issue688] use local successor generator in [1;31mlandmark[m code

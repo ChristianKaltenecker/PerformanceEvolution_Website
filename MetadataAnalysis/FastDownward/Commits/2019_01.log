@@ -1,0 +1,222 @@
+Searching between dd7ddfeea72a699d381dce35657d683259be77c0 and 2cc2a66e8073a73571e0a37cd806380f13751a7c
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lm_rhw,no_orders,shrink_fh,lm_hm,disjunctive_landmarks,landmark
+Keywords: slow fast time perf optim regression speed lm_rhw no_orders shrink_fh lm_hm disjunctive_landmarks landmark
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit 57b00ff98fa848e9f114838a505b740c77181599[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Dec 18 18:22:38 2018 +0100
+
+    [issue880] Add experiment for single abstraction and max_[1;31mtime[m=900.
+
+[33mcommit a036d4bf3771b23b1d1f320554b060b79ecc56bb[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sat Dec 15 10:01:56 2018 +0100
+
+    [main] CEGAR: print reasons for aborting refinement and log [1;31mtime[ms for finding traces and splitting states.
+
+[33mcommit 9b278e9fec9229472b381b1b60b67e4acd467692[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sun Dec 2 14:17:52 2018 +0100
+
+    [issue867] Avoid using a list for [1;31mtime[m limits.
+
+[33mcommit fcbbb10d32c9105c355a6301205b637359625be4[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Nov 13 12:13:52 2018 +0100
+
+    [issue867] Add test for setting hard [1;31mtime[m limits.
+
+[33mcommit 455b0c55560de633e07575e194484b5489457d78[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Nov 13 11:29:28 2018 +0100
+
+    [issue867] Let get_elapsed_[1;31mtime[m() raise NotImplementedError on Windows.
+
+[33mcommit c42549b1b5e0d188685a131ebc87ce00902f5d91[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Nov 13 11:23:23 2018 +0100
+
+    [issue867] Remove can_get_elapsed_[1;31mtime[m() function again.
+
+[33mcommit bbc8a877653572c4c2b6bed5b4db0325a1064b9b[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Fri Nov 9 12:44:26 2018 +0100
+
+    [issue867] Let driver ignore external [1;31mtime[m limits.
+
+[33mcommit dc960df79a94e8e44350ab70434487def948de81[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Sep 21 10:04:27 2018 +0200
+
+    [issue775] clearer responsibilites: when setting or getting [1;31mtime[m/memory limits, exit if this is not supported on the platform, but don't test that we can set these limits in internal functions
+
+[33mcommit 12a458892283cc7031d557fd324794ea98dc090f[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Sep 21 09:54:10 2018 +0200
+
+    [issue775] move functionality to convert parameters of ArgumentParser to integer [1;31mtime[m and memory limits from limits.py to arguments.py
+
+[33mcommit 6daac2fc1a549f18ff067dc9251f4215e5adbf38[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Sep 21 09:17:53 2018 +0200
+
+    [issue775] do not treat [1;31mtime[m and memory limits of validate as part of overall [1;31mtime[m and memory limits
+
+[33mcommit ef700e93ef5b8e1f3658d60d6eca38e7873aac1a[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Thu Sep 20 16:37:50 2018 +0200
+
+    [issue775] abort test-exitcodes if attempting to set [1;31mtime[m and memory limits on Windows
+
+[33mcommit c2193ec33ba4f021468b144e18694bba3d177f98[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Thu Sep 20 13:34:33 2018 +0200
+
+    [issue775] get rid of can_set_limits (use the two more precise methods can_set_[1;31mtime[m_limit and can_set_memory_limit)
+
+[33mcommit 21f3b68db7281e437aca125aa5759fb3f53595f6[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Sep 19 15:58:20 2018 +0200
+
+    [issue775] add --validate-{[1;31mtime[m,memory}-limit
+
+[33mcommit 7b118c7585dc196769154ebb51d14dddf50ecea2[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Sep 19 15:47:44 2018 +0200
+
+    [issue775] split can_set_limits() into two chunks for more easily supporting only enforcing one of [1;31mtime[m and memory limits
+
+[33mcommit 429eb1e7352e56b44f60abcd04670e206818367d[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Wed Sep 19 10:23:24 2018 +0200
+
+    [issue814] v3: increase [1;31mtime[mout to 5 minutes (see msg7558)
+
+[33mcommit eb2d4fb1abc1ffa5d508abeeb55e1c5493f33225[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Mon Sep 17 19:26:54 2018 +0200
+
+    [issue794] add hacky [1;31mtime[mr for experiment
+
+[33mcommit 9f6bdd468ce19d62d35c8142052023ab75e84c0d[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Mon Sep 17 19:17:43 2018 +0200
+
+    [issue814] relaxation heuristic: measure [1;31mtime[m to simplify
+
+[33mcommit 982a67e0422ee2a14c4d75661c2dfe74f06570e6[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Tue Sep 11 10:39:47 2018 +0200
+
+    [issue774] cannot measure [1;31mtime[m of int packer creation after task creation
+
+[33mcommit 9f508baf55fa8ecc4996664cd4bf85be23babaaa[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Jul 3 10:20:41 2018 +0200
+
+    [issue786] Use 5min [1;31mtime[m limit.
+
+[33mcommit 419b03727686ef241976fee022a92679e27ef71a[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Dec 1 11:46:45 2017 +0100
+
+    [issue739] test memory and [1;31mtime[m limit exit codes for search
+
+[33mcommit 709ad84ff955f66698da15e895e0667d7e1e16d8[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Thu Nov 30 18:08:16 2017 +0100
+
+    [issue739] search: convert sigxcpu into custom [1;31mtime[mout exit code
+For keyword perf:
+[33mcommit e4970b079d6a7fdbc04accf9ad7acd17907e6b87[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Tue Sep 18 23:49:29 2018 +0200
+
+    [issue814] RelaxationHeuristic::build_unary_operators: basic [1;31mperf[mormance tuning
+For keyword optim:
+[33mcommit c09c52758ecbbf6c66898d639ae3c84f2770b1ab[m
+Author: Augusto B. Corrêa <augusto.blaascorrea@unibas.ch>
+Date:   Mon Sep 24 17:50:52 2018 +0200
+
+    [issue311] Change from [1;31moptim[mal to satisficing suite in all scripts
+For keyword regression:
+[33mcommit a0a239129eab15928eb199f53d6ae095ed00b878[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Mon Dec 10 20:13:17 2018 +0100
+
+    [main] Buildbot experiment: exit with 1 if a [1;31mregression[m is found, use global revision for naming directories.
+
+[33mcommit 5e308e427ba13f6ae8fe1ee47d8f60dda696d164[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Fri Dec 7 18:00:19 2018 +0100
+
+    [issue876] Don't write file to flag a [1;31mregression[m.
+
+[33mcommit 832f2d73ef1be2646db9ad86231872245dd32231[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Fri Dec 7 17:06:17 2018 +0100
+
+    [issue876] Store results from failed [1;31mregression[m checks
+
+[33mcommit e8c05094131eaadcc3e53f1a2cca9b54842ab4d1[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Jul 24 12:47:19 2018 +0200
+
+    [main] Buildbot [1;31mregression[m test: update baseline and adapt to Downward Lab 3.0.
+For keyword speed:
+For keyword lm_rhw:
+For keyword no_orders:
+For keyword shrink_fh:
+For keyword lm_hm:
+For keyword disjunctive_landmarks:
+For keyword landmark:
+[33mcommit 951e98f730f84c95771b72efe0b49fbdf05e9d7d[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Thu Oct 4 00:01:36 2018 +0200
+
+    [issue846] Fix computing [1;31mlandmark[m graph for CEGAR.
+
+[33mcommit 63b3e1cbcb6a5b267d290e2cf233a7a59fdc83f1[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Wed Oct 3 23:42:22 2018 +0200
+
+    [issue846] Create exploration object in [1;31mlandmark[m factory.
+
+[33mcommit 4bef566981dd2a8dc5f93d9131fe2243cd6b15da[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Wed Oct 3 23:23:43 2018 +0200
+
+    [issue846] Remove expensive preferred operator computation from [1;31mlandmark[m count heuristic.
+
+[33mcommit c0be443a44120ea0c37e6b622e719d095e1afa69[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Fri Sep 21 01:54:01 2018 +0200
+
+    [main] Remove references to option caveats for cost types in [1;31mlandmark[m heuristics
+
+[33mcommit 71d38cb95803f510d56850b8006449935ff8e0b3[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Thu Sep 20 23:20:14 2018 +0200
+
+    [issue776] use plusone cost adaptation for [1;31mlandmark[m configs of IPC portfolios that used lm_cost_type=2 before
+
+[33mcommit b43b223ec1cfcf9282e14fc94e071f2c80ba1b86[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Thu Sep 20 16:29:17 2018 +0200
+
+    [issue776] guard against using the [1;31mlandmark[m factory for different tasks
+
+[33mcommit 6d6683b02ac46f10ff10f71a3559557580dd23d1[m
+Author: Salome Eriksson <salome.eriksson@unibas.ch>
+Date:   Wed Jul 5 16:23:06 2017 +0200
+
+    [issue695] convert_to_[1;31mlandmark[m_set now uses a Bitset&
+
+[33mcommit 56cdccb77e1e8f3c66b52ce6ebb5461d05da5e25[m
+Author: Salome Eriksson <salome.eriksson@unibas.ch>
+Date:   Wed Dec 21 17:37:10 2016 +0100
+
+    [issue695] changed [1;31mlandmark[m_reached information to PerStateArrayInformation<int>

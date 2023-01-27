@@ -1,0 +1,20 @@
+Searching between 2.1.0 and 2.2.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: log,logSize
+Keywords: slow fast time perf optim regression speed log logSize
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+For keyword log:
+[33mcommit 5f1340ae60aa21baf2ad5d960a7d40f0c060e3e6[m
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Tue Apr 26 02:15:31 2011 +0000
+
+    Prohibit Server [1;31mlog[mins while Server-served cata[1;31mlog[ms being shut down
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4215 7c7dc5f5-a22d-0410-a3af-b41755a11667
+For keyword logSize:

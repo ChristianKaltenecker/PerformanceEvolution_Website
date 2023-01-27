@@ -1,0 +1,32 @@
+Searching between v0.543 and v0.544
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compressoion,processor,multi,level
+Keywords: slow fast time perf optim regression lzo lzma gzip bzip compressoion processor multi level
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword lzo:
+For keyword lzma:
+commit c3dfcfcec1d89df355c13ef2b61711eb759a11c5
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 4 21:36:51 2010 +1100
+
+    Update version number to 0.544.
+    Change suggested maximum compression in README to disable threading with -p 1.
+    Use bzip2 as a fallback compression when lzma fails due to internal memory errors as may happen on 32 bits.
+For keyword gzip:
+For keyword bzip:
+commit c3dfcfcec1d89df355c13ef2b61711eb759a11c5
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Dec 4 21:36:51 2010 +1100
+
+    Update version number to 0.544.
+    Change suggested maximum compression in README to disable threading with -p 1.
+    Use bzip2 as a fallback compression when lzma fails due to internal memory errors as may happen on 32 bits.
+For keyword compressoion:
+For keyword processor:
+For keyword multi:
+For keyword level:

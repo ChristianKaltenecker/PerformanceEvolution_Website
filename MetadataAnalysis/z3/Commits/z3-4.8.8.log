@@ -1,0 +1,666 @@
+Searching between z3-4.8.7 and z3-4.8.8
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: LRA,proof,UFLRA,model_validate
+Keywords: slow fast time perf optim regression speed LRA proof UFLRA model_validate
+For keyword slow:
+For keyword fast:
+[33mcommit 0b893afee4934428def0955f22a8e56e57e27c29[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Nov 27 17:13:15 2019 -0800
+
+    pretty print algebraic numbers from [1;31mfast[m pretty printer
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword time:
+[33mcommit f501380e89add66b54013996823a88c3822f9d47[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Mar 6 23:36:04 2020 +0100
+
+    fix #3169 - set cancellation [1;31mtime[mout and limit during push. Also expose internalization outside of scope that disables cancellation
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit fb69139daa5274fa7d61fe31715c604abb6fea31[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Dec 15 12:12:42 2019 -0800
+
+    minor (#100)
+    
+    * streamline type conversions
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * nits
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * updates
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * use fixed array allocation for sum
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * use fixed array allocation for sum
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * revert creation [1;31mtime[m allocation
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix assertion
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * separate grobner_core
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * grobner_core simplifications
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * * -> &, remove unused functionality
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * m_allocated isn't used
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * neither is m_tmp_var_set
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * remove eq_stat
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * const qualifiers
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * mostly -> to .
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b46c67ce14d848f24942783343ee0720b12ac9d2[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Dec 14 20:16:30 2019 -0800
+
+    more code review (#99)
+    
+    * streamline type conversions
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * nits
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * updates
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * use fixed array allocation for sum
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * use fixed array allocation for sum
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * revert creation [1;31mtime[m allocation
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix assertion
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * separate grobner_core
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * grobner_core simplifications
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * * -> &, remove unused functionality
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * m_allocated isn't used
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * neither is m_tmp_var_set
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * remove eq_stat
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * const qualifiers
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 14094bb052acea03f536f446abddc563e4ae5598[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Dec 14 19:02:25 2019 -0800
+
+    code review (#98)
+    
+    * streamline type conversions
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * nits
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * updates
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * use fixed array allocation for sum
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * use fixed array allocation for sum
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * revert creation [1;31mtime[m allocation
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix assertion
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * separate grobner_core
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * grobner_core simplifications
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword perf:
+[33mcommit cf86e6ef73bf64669ccf48cc739e8447d4982c0f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Mar 25 16:41:01 2020 -0700
+
+    disable dubious eq adapter code causing [1;31mperf[m hit
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 140926e7c0ea0e526ac207aec1bf192ded03e03c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Feb 7 20:23:27 2020 -0800
+
+    move assume eqs until __after__ other checks, big [1;31mperf[m regression
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 1df6411580ba9f7f7cb8e344a9a431426841d8f6[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Thu Dec 12 16:58:41 2019 -1000
+
+    fix a bug in :divide_ignore_coeffs_[1;31mperf[morm_nex_mul()
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 0f2c8c21ff955713a4f70f3da8a8a387253b2ead[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Fri Aug 9 20:14:28 2019 -0700
+
+    [1;31mperf[mormance improvements in horner scheme
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 1230b460084ad8febeb943d34fffe70f1e90c628[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Fri Jan 25 11:37:48 2019 -0800
+
+    [1;31mperf[m in equiv_monomials
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit ba292346ae9115b24dbca086274b5a50becf9c05[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Jan 12 22:11:00 2020 -0800
+
+    some more string [1;31mperf[m profiling
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 991e5879500c939ae1edfa986e08e3688cdd6fac[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Dec 25 21:23:21 2019 -0800
+
+    User [1;31mperf[morms some parameter sweep for Christmas, ho ho ho
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword optim:
+[33mcommit 269522127b0c9d68b45f794d6a0963c4de4dabbe[m
+Author: ahumenberger <ahumenberger@gmail.com>
+Date:   Sat May 2 14:14:09 2020 +0200
+
+    [Julia bindings] Changes for libcxxwrap 0.7 (#4184)
+    
+    * First steps toward adding Julia bindings
+    
+    * Simplifications
+    
+    * Streamlining
+    
+    * Friends of tactic and probe
+    
+    * Add missing functions
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Changes for CxxWrap v0.9.0
+    
+    * Wrap enumeration and tuple sort
+    
+    * Wrap z3::fixedpoint
+    
+    * Wrap z3::[1;31moptim[mize
+    
+    * Wrap missing functions
+    
+    * Fix aux types
+    
+    * Add some missing functions
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit 5aab9f9240c43ce6b3f647c1dbd2bc7d5ae9b455.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit cfccd7ca2c2cff6579d04839a81d66907317a7ae.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit f24740c5952adf1444b4c4de633c897e8001ad6d.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit 592499eaa0719af8d5cc5b7ebcf3c5bc7231a693.
+    
+    * Checkout current version of pipeline
+    
+    * Build Julia bindings on macOS
+    
+    * Extract components of algebraic number
+    
+    * Add type to C API function name
+    
+    * Remove blank line
+    
+    * Typo in doc
+    
+    * Return Z3_ast_vector containing coefficients
+    
+    * Update Julia bindings
+
+[33mcommit de9bc930e9b3d77f971bd2059359bdd8bd5b89e4[m
+Author: ahumenberger <ahumenberger@gmail.com>
+Date:   Tue Mar 17 17:09:02 2020 +0100
+
+    Extract defining components of algebraic number via C and C++ API (#3321)
+    
+    * First steps toward adding Julia bindings
+    
+    * Simplifications
+    
+    * Streamlining
+    
+    * Friends of tactic and probe
+    
+    * Add missing functions
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Changes for CxxWrap v0.9.0
+    
+    * Wrap enumeration and tuple sort
+    
+    * Wrap z3::fixedpoint
+    
+    * Wrap z3::[1;31moptim[mize
+    
+    * Wrap missing functions
+    
+    * Fix aux types
+    
+    * Add some missing functions
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit 5aab9f9240c43ce6b3f647c1dbd2bc7d5ae9b455.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit cfccd7ca2c2cff6579d04839a81d66907317a7ae.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit f24740c5952adf1444b4c4de633c897e8001ad6d.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit 592499eaa0719af8d5cc5b7ebcf3c5bc7231a693.
+    
+    * Checkout current version of pipeline
+    
+    * Build Julia bindings on macOS
+    
+    * Extract components of algebraic number
+    
+    * Add type to C API function name
+    
+    * Remove blank line
+    
+    * Typo in doc
+    
+    * Return Z3_ast_vector containing coefficients
+
+[33mcommit df1b308dd0fefa7817704a6596cb1974bb5282c1[m
+Author: ahumenberger <ahumenberger@gmail.com>
+Date:   Tue Mar 10 17:16:34 2020 +0100
+
+    Julia bindings (#3228)
+    
+    * First steps toward adding Julia bindings
+    
+    * Simplifications
+    
+    * Streamlining
+    
+    * Friends of tactic and probe
+    
+    * Add missing functions
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Update azure-pipelines.yml for Azure Pipelines
+    
+    * Changes for CxxWrap v0.9.0
+    
+    * Wrap enumeration and tuple sort
+    
+    * Wrap z3::fixedpoint
+    
+    * Wrap z3::[1;31moptim[mize
+    
+    * Wrap missing functions
+    
+    * Fix aux types
+    
+    * Add some missing functions
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit 5aab9f9240c43ce6b3f647c1dbd2bc7d5ae9b455.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit cfccd7ca2c2cff6579d04839a81d66907317a7ae.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit f24740c5952adf1444b4c4de633c897e8001ad6d.
+    
+    * Revert "Update azure-pipelines.yml for Azure Pipelines"
+    
+    This reverts commit 592499eaa0719af8d5cc5b7ebcf3c5bc7231a693.
+    
+    * Checkout current version of pipeline
+    
+    * Build Julia bindings on macOS
+
+[33mcommit 03a0ead668e2695c1fd8071b5894cade471ab6c0[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Wed Aug 21 18:45:34 2019 -0700
+
+    [1;31moptim[mization in interval calculations
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit eb5b9557ed6ccfa325ccc6e462e818ffcc73c07e[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Tue Aug 20 17:34:47 2019 -0700
+
+    [1;31moptim[mize horner scheme
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 2584e777f9ebc3b6e3d5a94a73936a5fec9849d9[m
+Author: Lev Nachmanson <levnach@hotmail.com>
+Date:   Tue Aug 20 14:35:21 2019 -0700
+
+    [1;31moptim[mize horner scheme by freeing the memory ealier, and not pushing to front linear expessions
+    
+    Signed-off-by: Lev Nachmanson <levnach@hotmail.com>
+
+[33mcommit 773b27296fac8ad57e3f2868c24fd0e8243fd901[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jan 15 04:24:51 2020 -0800
+
+    translate [1;31moptim[mize from c++ API #2859
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword regression:
+[33mcommit 068f65c8ac7dcb89e71f7535f5c4f6a89b345c01[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Apr 15 10:36:33 2020 -0700
+
+    fix #3967 [1;31mregression[m from using rewriter mode that splits strings
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 1ec977930a534b83a40d658991b42ca35617021e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Apr 15 10:10:07 2020 -0700
+
+    fix #3972 [1;31mregression[m from changing the way assumptions are initialized
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit ae5a713e815eb884a7f60d54ac489b14689b90e8[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Sat Apr 11 00:18:25 2020 -0400
+
+    fix #3906 by fixing a [1;31mregression[m from today
+
+[33mcommit d14ce97b76b003340de4a13f45c3ac38bfa0668e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Apr 10 12:18:30 2020 -0700
+
+    multiple [1;31mregression[ms from previous commit
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit a7123062a0bd8802fc5a07207a9e3fefd03b510c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Apr 10 11:21:30 2020 -0700
+
+    fix #3899 [1;31mregression[m from transitioning to decompose_monomial
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit a7aff1bcf0ecd7691211a4521fb15f2450f0a864[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Apr 2 10:03:35 2020 -0700
+
+    fix [1;31mregression[m on string ops
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 4c69f9e31b31141d0a66851ce8a0b6cc35ddfb35[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Apr 1 15:27:06 2020 -0700
+
+    invalid model [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit f0a6837c6701d4cabb1879e33e483e5d65ce84be[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Apr 1 15:17:09 2020 -0700
+
+    invalid model [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit ea08fcf65c75283da4c8dc11da3dd3a993a45047[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Apr 1 15:15:48 2020 -0700
+
+    invalid model [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d8e00bc02e989172b167fdbd27a5a31c07c5069d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Apr 1 00:26:02 2020 -0700
+
+    fix #3644 [1;31mregression[m introduced in #3641
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9f6a0a0a48920ae77d807f4741761bcf38e7f987[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Mar 14 10:50:41 2020 -0700
+
+    fix #3289, recent [1;31mregression[m introduced when dealing with push on inconsistent state
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 1796fc32f5cd0c38c1399bac759e993b2e0cb852[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Mar 12 10:16:48 2020 -0700
+
+    breaking change to fix #3062 #3147 #2896 #2937 #3105
+    
+    This moves handling of contains into an axiomatization that unfolds on demand.
+    The previous handling, based on rewriting, proved too brittle. While it simplifies how contains is handled, it is likely to introduce [1;31mregression[ms in terms of what constraints can now be handled.
+
+[33mcommit 0a97f37be504331354b1db322d75507e125612a5[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Mar 12 08:37:43 2020 -0700
+
+    fix #3284 (and other recent [1;31mregression[ms)
+
+[33mcommit 2d0d527fe1af9349e172b181dfeacb50fa75c6fd[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Mar 10 16:56:49 2020 -0700
+
+    preserve model order to avoid clobbering [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8b720a0d6652aa32f88e311b38f5e5c232e69946[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Mar 2 16:38:33 2020 -0800
+
+    fix #3115 fix #3116 [1;31mregression[ms from #3111 etc
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 140926e7c0ea0e526ac207aec1bf192ded03e03c[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Feb 7 20:23:27 2020 -0800
+
+    move assume eqs until __after__ other checks, big perf [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d14b083bc9717f246569b3153e728d8aa2093b67[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Nov 26 19:50:09 2019 -0800
+
+    disable [1;31mregression[ms from msan
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+[33mcommit ff5bdd6f1f0a931df4271e6883a71f3237cf896f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jan 28 15:21:39 2020 -0800
+
+    [1;31mspeed[m up freedom interval computation
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword LRA:
+For keyword proof:
+[33mcommit 20d72e5d9771e4d2efca568ccba767d982af6cbc[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Sat Apr 11 14:37:15 2020 -0400
+
+    (spacer) fix (get-[1;31mproof[m) to return proper refutations
+
+[33mcommit a261bd94ed3c5b3f2bbce510b2ec52337f168b84[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Fri Apr 10 15:19:57 2020 -0400
+
+    silence #3788
+    
+    better [1;31mproof[m generation for the case when the query is reachable from initial
+    states. This case needs to be handled better so that spacer can assume
+    the problem is non-trivial.
+
+[33mcommit b1b77e57e1ba9e2cc9f9037af93082a18bd12bc5[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Fri Apr 10 12:26:31 2020 -0400
+
+    (partial) fix #3788
+    
+    Fixes a bug in computation of implicants inside spacer.
+    The instance now returns `unknown`. The root cause is the difference in what
+    [1;31mproof[ms are in spacer and SMT. Spacer returns a [1;31mproof[m of query, but horn_tactic
+    expects a [1;31mproof[m of FALSE.
+
+[33mcommit 1a995da0aebfae0b5b4ddbfd5461da781a9fe2b8[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Mar 28 12:54:06 2020 -0700
+
+    fix #3538, turn on [1;31mproof[m checking assertions in goal.cpp for earlier coverage
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword UFLRA:
+For keyword model_validate:

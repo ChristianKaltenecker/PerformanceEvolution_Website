@@ -1,0 +1,47 @@
+Searching between v0.614 and v0.615
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+[33mcommit 0b8c0818a042a2eea53695315c43fa5826c0baf3[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Dec 31 13:16:03 2012 +1100
+
+    Check for successful calloc of hash table only after [1;31mperf[morming it.
+For keyword optim:
+[33mcommit 87fe6258297581e77f6292b602a3fdedc000311a[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Mar 18 23:58:10 2013 +1100
+
+    Micro-[1;31moptim[mise sliding_get_sb_range.
+
+[33mcommit 6f0410d28f9cd9f8ed9afd86ba00b74ea881499e[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Dec 31 15:02:49 2012 +1100
+
+    Micro[1;31moptim[mise in hash_search.
+For keyword regression:
+For keyword speed:
+For keyword lzo:
+For keyword lzma:
+[33mcommit eff1efdbc580def8a7610b360e0eefa4bded67ba[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Sep 1 12:25:06 2013 +1000
+
+    Rewrite the magic if we receive [1;31mlzma[m properties and have not yet written them yet during stdout operation.
+
+[33mcommit b076dbb59d824efb90e5a504e6875548f598dc92[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Sep 1 12:17:51 2013 +1000
+
+    Set the control [1;31mlzma[m properties only once.
+For keyword gzip:
+For keyword bzip:
+For keyword compression:
+For keyword processor:
+For keyword multi:
+For keyword level:
+For keyword thread:

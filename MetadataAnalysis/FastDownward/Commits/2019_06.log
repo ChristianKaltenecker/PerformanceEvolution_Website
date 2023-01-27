@@ -1,0 +1,257 @@
+Searching between 2cc2a66e8073a73571e0a37cd806380f13751a7c and release-19.06.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: collection_max_size,min_improvement,num_samples,shrink_fh,iPDB,lm_hm,lm_rhw,disjunctive_landmarks,PDB,landmark
+Keywords: slow fast time perf optim regression speed collection_max_size min_improvement num_samples shrink_fh iPDB lm_hm lm_rhw disjunctive_landmarks PDB landmark
+For keyword slow:
+For keyword fast:
+[33mcommit bd975f5c5305ef27be2d0d9e1f627a1194ae55da[m
+Author: Guillem Francès <guillem.frances@gmail.com>
+Date:   Tue Jun 11 16:28:13 2019 +0200
+
+    [main] [1;31mfast[m-downward.py --version omits trailing ".0"
+For keyword time:
+[33mcommit 198b8057cc92335bc367f8e6db0915bb71cec044[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Mar 13 15:04:15 2019 +0100
+
+    [issue908] parse more detailed run[1;31mtime[ms
+
+[33mcommit ec21e49d395c9f676afb37556b695d9a2d39a26f[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Mar 1 17:29:06 2019 +0100
+
+    [issue896] don't print timing for CPDB heuristic, instead let the pattern collection information dump run[1;31mtime[ms for computing PDBs or max additive subsets on demand
+
+[33mcommit 15d29405f5bb9d3c1659d78b6635ce21937ac05e[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Feb 27 12:10:13 2019 +0100
+
+    [issue892] code review: do not support dumping PDB construction [1;31mtime[m in PatternInformation; remove unused includes; polish doc
+
+[33mcommit 212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Mon Jan 7 18:09:53 2019 +0100
+
+    [issue887] Fix bugs in normalization.
+    
+    Variables in conditions are now always uniquified and simplified
+    upon parsing. Uniquification used to happen later on, but not for
+    all kinds of conditions (for example not for the goal), and
+    simplification would also not happen for all kinds of conditions
+    (for example not for the goal).
+    
+    It is possible that the new code now uniquifies certain conditions
+    multiple [1;31mtime[ms, but there is no harm in that other than a slight
+    performance cost.
+
+[33mcommit 94b91bfd45fb63ab84ac702751f1d386fe6df6f5[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sun Dec 16 12:24:04 2018 +0100
+
+    [issue881] Let custom exceptions inherit from std::run[1;31mtime[m_error.
+
+[33mcommit c86b9d69dcea1321e88c31f54a0672aa9454e9e9[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Dec 14 17:00:00 2018 +0100
+
+    [issue802] add ostream<< overload for CountdownTimer; use only one function print_[1;31mtime[m for general M&S algorithm output, and a separate local lambda function for main loop output
+
+[33mcommit 26879fa49ceb51bf06b64931458ff425c523da7f[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Dec 14 13:53:48 2018 +0100
+
+    [issue802] use countdown [1;31mtime[mr
+
+[33mcommit ec6da6ed3e6125674beab31290808f5f6be73131[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Dec 5 11:18:28 2018 +0100
+
+    [issue802] remove num_transitions_to_exclude limit; change max_[1;31mtime[m to main_loop_max_[1;31mtime[m and do not apply it to computation of atomic FTS
+
+[33mcommit 36016dcf2074c3a89e6eb0149ef544a219828240[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Fri Sep 14 23:12:42 2018 +0200
+
+    [issue213] Use 30 minute [1;31mtime[m limit.
+
+[33mcommit 63aef81eee535d65b21677d15454152c402c47dc[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Jun 22 11:40:18 2018 +0200
+
+    [issue802] do not check for running out of [1;31mtime[m when creating irrelevant transitions after having run out of [1;31mtime[m
+
+[33mcommit 17a68637526befe01890afc144b40883b87e6132[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Jun 22 11:22:02 2018 +0200
+
+    [issue802] add support for partial merge-and-shrink abstractions: add [1;31mtime[m limit and transition limit options; add factor scoring functions
+
+[33mcommit d65bab48b9cac73d78546d37e39897e3ef92054d[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Mon Dec 5 00:33:00 2016 +0100
+
+    [issue213] use jenkins_one_at_a_[1;31mtime[m_hash()
+For keyword perf:
+[33mcommit a700a2abac3c42cdaa2303e872a924bdf1d617aa[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Wed Jun 5 18:38:49 2019 +0200
+
+    [issue919] Use dictionary to look up action costs in initial state rather than
+    [1;31mperf[morming a linear search.
+
+[33mcommit 212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Mon Jan 7 18:09:53 2019 +0100
+
+    [issue887] Fix bugs in normalization.
+    
+    Variables in conditions are now always uniquified and simplified
+    upon parsing. Uniquification used to happen later on, but not for
+    all kinds of conditions (for example not for the goal), and
+    simplification would also not happen for all kinds of conditions
+    (for example not for the goal).
+    
+    It is possible that the new code now uniquifies certain conditions
+    multiple times, but there is no harm in that other than a slight
+    [1;31mperf[mormance cost.
+For keyword optim:
+[33mcommit fec15326c84992543259711d3ac818c4c4dbc516[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Mon Nov 28 23:52:32 2016 +0100
+
+    [issue213] add experiment comparing [1;31moptim[mal configs
+For keyword regression:
+For keyword speed:
+For keyword collection_max_size:
+For keyword min_improvement:
+For keyword num_samples:
+For keyword shrink_fh:
+For keyword iPDB:
+For keyword lm_hm:
+For keyword lm_rhw:
+For keyword disjunctive_landmarks:
+[33mcommit 1b8685eea3c0bd9898e3901a5c1e707e6d8a0931[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sat Mar 2 23:20:25 2019 +0100
+
+    [issue899] Move discard_[1;31mdisjunctive_landmarks[m() to LandmarkGraph.
+For keyword PDB:
+[33mcommit 7c25fb16794d7859eeee5b7fb50503ca164e26e4[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Tue Mar 19 11:21:49 2019 +0100
+
+    [issue908] rename MaxAdditive[1;31mPDB[mSubsets to vector<PatternClique>, where PatternClique = vector<PatternID> with PatternID = int
+
+[33mcommit 5c59dd0a982bc6ca70735617133aa402d526cfe0[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Mon Mar 18 16:00:26 2019 +0100
+
+    [issue908] use vector<bool> instead of set<int> to collect remaining [1;31mPDB[m indices
+
+[33mcommit ae547ce2f845cb763274329c68e4d1123a2dda8e[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Mar 15 16:40:53 2019 +0100
+
+    [issue908] do not use a member to avoid reallocating space for h-values in C[1;31mPDB[m heuristic
+
+[33mcommit 52f1d51b69de3857b895d8a0e7e90fd7c46bf4dc[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Thu Mar 14 09:33:58 2019 +0100
+
+    [issue908] hill climbing: compute [1;31mPDB[m values once for all samples when computing max. additive subset values
+
+[33mcommit 34757df58edb60f5895a352995fa3f67ad13870d[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Mar 13 21:13:08 2019 +0100
+
+    [issue908] compute [1;31mPDB[m values once and then compute the max over max. additive subsets over the stored values
+
+[33mcommit 27a3cdbe2e82d905b09302fac1b65c893ac56cb9[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Mar 13 15:15:35 2019 +0100
+
+    [issue908] change pruning to in-place modify patterns, [1;31mPDB[ms, and max add subsets
+
+[33mcommit 2d1a2dbfd219e6cd0d47e70f575e495449b88440[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Tue Mar 12 22:05:51 2019 +0100
+
+    [issue908] max additive subsets: use indices into the pattern/[1;31mPDB[m collection instead of [1;31mPDB[m pointers
+
+[33mcommit 395a765b80cd0e496904a6faf8a03cda506f29f9[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Thu Mar 7 17:02:39 2019 +0100
+
+    [issue896] simplify dumping pattern collections; document why we currently don't dump the final collection of the C[1;31mPDB[m heuristic
+
+[33mcommit ec21e49d395c9f676afb37556b695d9a2d39a26f[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Mar 1 17:29:06 2019 +0100
+
+    [issue896] don't print timing for C[1;31mPDB[m heuristic, instead let the pattern collection information dump runtimes for computing [1;31mPDB[ms or max additive subsets on demand
+
+[33mcommit 5234193f03c42f998031ff05453af6f63e403ee7[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri Mar 1 16:25:51 2019 +0100
+
+    [issue896] summed [1;31mPDB[m size -> total [1;31mPDB[m size
+
+[33mcommit 44b1322bf96225e8393391cd362e1a7ba38db511[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Feb 27 17:08:14 2019 +0100
+
+    [issue896] all pattern (collection) generators and the C[1;31mPDB[m heuristic print (more) statistics at the end
+
+[33mcommit 15d29405f5bb9d3c1659d78b6635ce21937ac05e[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Feb 27 12:10:13 2019 +0100
+
+    [issue892] code review: do not support dumping [1;31mPDB[m construction time in PatternInformation; remove unused includes; polish doc
+
+[33mcommit c59e5708f232cf63ee918324024d42a63492c82f[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Feb 27 11:36:36 2019 +0100
+
+    [issue892] change interface of PatternGenerator to return PatternInformation objects (added) which allow keeping already-computed [1;31mPDB[ms
+For keyword landmark:
+[33mcommit 4a3bf1ae6c1ae87a13fdf74d771cd4601fbb12d7[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Thu Mar 7 10:05:37 2019 +0100
+
+    [issue899] Restore separate [1;31mlandmark[m discarding methods.
+
+[33mcommit e1e3178509cc83fe2c0e0e38e2eed7f50e9f06a3[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sun Mar 3 00:00:34 2019 +0100
+
+    [issue899] Remove [1;31mlandmark[ms_count member from LandmarkGraph.
+
+[33mcommit 41d761ac2faa3c3fd5dc771dcecae959af64aeeb[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sat Mar 2 23:50:26 2019 +0100
+
+    [issue899] Only use generic method for removing [1;31mlandmark[m nodes.
+
+[33mcommit 1b8685eea3c0bd9898e3901a5c1e707e6d8a0931[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sat Mar 2 23:20:25 2019 +0100
+
+    [issue899] Move discard_disjunctive_[1;31mlandmark[ms() to LandmarkGraph.
+
+[33mcommit 3b65f5b7a4531939d5b8a0b4a355c1d5397e6a99[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sat Mar 2 20:57:09 2019 +0100
+
+    [issue899] lm_exhaust: only add [1;31mlandmark[m nodes to graph if they're really [1;31mlandmark[ms.
+
+[33mcommit f570be7ecc7fa8c0fbde25f2ba6d49a51693446c[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sat Mar 2 20:20:00 2019 +0100
+
+    [issue899] Use unique_ptr to store [1;31mlandmark[m nodes.
+
+[33mcommit a3926cf575510d7d65fdc5e4f21d2d14c50d5829[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Fri Mar 1 14:19:39 2019 +0100
+
+    [issue703] Fix memory leaks in CG heuristic and [1;31mlandmark[m graph.

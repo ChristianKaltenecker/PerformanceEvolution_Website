@@ -1,0 +1,59 @@
+Searching between 0e8acd2f2613e032040dc6b6d4bf1926848aa4cb and dd7ddfeea72a699d381dce35657d683259be77c0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: collection_max_size,min_improvement,num_samples,shrink_fh,blind,hmax,lm_hm,disjunctive_landmarks,landmark
+Keywords: slow fast time perf optim regression speed collection_max_size min_improvement num_samples shrink_fh blind hmax lm_hm disjunctive_landmarks landmark
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit c238c46f1dccd3899efb1147a806baeb2ba34ed2[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Mon Apr 30 17:00:05 2018 +0200
+
+    [main] Log [1;31mtime[m for computing Cartesian abstractions.
+
+[33mcommit ba03dcc23154ac240211068c715b45bcf34c1ee7[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue Apr 10 10:11:04 2018 +0200
+
+    [main] limit [1;31mtime[m (1800s) and memory (3.5 GiB) for VAL
+
+[33mcommit 80f027911e0251dd0936156580c464af91fa5977[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Thu Mar 15 09:24:31 2018 +0100
+
+    [issue578] test higher [1;31mtime[m limits with sys
+
+[33mcommit 09d942472ec03d1a7c1bc90ecc23af0d2d43f73e[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Mar 14 14:23:51 2018 +0100
+
+    [issue578] code review: remove option dominance_pruning (use dominance_pruning_[1;31mtime[m_limit=0); make static method a function; polish
+
+[33mcommit a75c49176be1a0a77b1ca4ba5f8fef4483a6bb6a[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Wed Mar 14 12:49:27 2018 +0100
+
+    [issue578] add [1;31mtime[m limit option for dominance pruning
+For keyword perf:
+For keyword optim:
+[33mcommit 3021d1115929a696ef22d6f85b09fdc5866bea18[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Tue Apr 3 23:39:47 2018 +0200
+
+    [issue764] [1;31moptim[mize includes of globals.h/cc
+For keyword regression:
+For keyword speed:
+For keyword collection_max_size:
+For keyword min_improvement:
+For keyword num_samples:
+For keyword shrink_fh:
+For keyword blind:
+For keyword hmax:
+For keyword lm_hm:
+For keyword disjunctive_landmarks:
+For keyword landmark:
+[33mcommit 8c65e9f8c7e3010f1b3c518a72fe6a0fb27a3892[m
+Author: Cedric Geissmann <cedric.geissmann@unibas.ch>
+Date:   Fri Mar 16 09:48:57 2018 +0100
+
+    [issue524] added experiments for all [1;31mlandmark[ms

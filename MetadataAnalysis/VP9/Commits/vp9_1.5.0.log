@@ -1,0 +1,3898 @@
+Searching between v1.4.0 and v1.5.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,tiling
+Keywords: slow fast time perf optim regression speed quality tiling
+For keyword slow:
+[33mcommit 37c68efee2daa98d8abc9853d2210477d5c0104f[m
+Author: Julia Robson <juliamrobson@gmail.com>
+Date:   Tue Oct 6 12:11:14 2015 +0100
+
+    SSSE3 optimisation for quantize in high bit depth
+    
+    When configured with high bit detpth enabled, the 8bit quantize
+    function stopped using optimised code. This made 8bit content
+    decode [1;31mslow[mly. This commit re-enables the SSSE3 optimisations.
+    
+    Change-Id: I194b505dd3f4c494e5c5e53e020f5d94534b16b5
+
+[33mcommit 5e6533e70730e0798b4b00d795d400bc87f8927c[m
+Author: Julia Robson <juliamrobson@gmail.com>
+Date:   Fri Oct 2 10:20:06 2015 +0100
+
+    SSE2 optimisation for quantize in high bit depth
+    
+    When configured with high bit detpth enabled, the 8bit quantize
+    function stopped using optimised code. This made 8bit content
+    decode [1;31mslow[mly. This commit re-enables the SSE2 optimisation
+    (but not the SSSE3 optimisation).
+    
+    Change-Id: Id015fe3c1c44580a4bff3f4bd985170f2806a9d9
+
+[33mcommit 406030d1b0278b1373c62e1a70fb0711e2fbde2b[m
+Author: Julia Robson <juliamrobson@gmail.com>
+Date:   Mon Sep 28 16:50:39 2015 +0100
+
+    Accelerated transform in high bit depth
+    
+    When configured with high bitdepth enabled, the 8bit transform
+    stopped using optimised code. This made 8bit content decode [1;31mslow[mly.
+    
+    Change-Id: I67d91f9b212921d5320f949fc0a0d3f32f90c0ea
+
+[33mcommit 557ae511cbd8df5b9e1072039a7bc2d7b0953e7b[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Jun 19 16:02:28 2015 -0700
+
+    build: add *test-no-data-check targets
+    
+    skips testdata verification; useful with [1;31mslow[m media or if the data was
+    retrieved via a separate call to testdata
+    
+    Change-Id: Ifd97892cee6c04b0111874cc8071675e90ec852b
+
+[33mcommit d02aa04422b56b22cf8a9605ec94de6db66c5835[m
+Author: Johnny Klonaris <google@jawknee.com>
+Date:   Sun May 31 23:29:16 2015 -0700
+
+    Adds subsecond frame rates to webm
+    
+    Numerator was being range checked against the
+    denominator - preventing any frame rate [1;31mslow[mer
+    than 1 fps.
+    
+    I've tested this on a Mac using using ffmpeg and
+    results are comparable to mp4 and ogg files generated
+    at the same time.
+    
+    Not yet tested on Windows.
+    
+    Johnny Klonaris
+    google@jawknee.com
+    
+    Change-Id: Idb358dbc2e7dc000037880ede4a1b0df248a42c8
+For keyword fast:
+[33mcommit 9cfba09ac0e5182722bc562a5a071388611c2a04[m
+Author: Geza Lore <gezalore@gmail.com>
+Date:   Mon Oct 19 14:05:35 2015 +0100
+
+    Optimize vpx_quantize_{b,b_32x32} assembler.
+    
+    Added optimization of the 8 bit assembly quantizer routines. This makes
+    these functions up to 100% [1;31mfast[mer, depending on encoding parameters.
+    
+    This patch maskes the encoder [1;31mfast[mer in both the high bitdepth and 8bit
+    configurations. In the high bitdepth configuration, it effects profile 0
+    only.
+    
+    Based on my profiling using 1080p input the net gain is between 1-3% for
+    the 8 bit config, and around 2.5-4.5% for the high bitdepth config,
+    depending on target bitrate. The difference between the 8 bit and high
+    bitdepth configurations for the same encoder run is reduced by 1% in all
+    cases I have profiled.
+    
+    Change-Id: I86714a6b7364da20cd468cd784247009663a5140
+
+[33mcommit 0c00af126dcda6fddcc683cc15c1be06b3285054[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Tue Oct 6 15:59:03 2015 -0700
+
+    Add vpx_highbd_convolve_{copy,avg}_sse2
+    
+    single-threaded:
+    swanky (silvermont): ~1% [1;31mfast[mer overall
+    peppy (celeron,haswell): ~1.5% [1;31mfast[mer overall
+    
+    Change-Id: Ib74f014374c63c9eaf2d38191cbd8e2edcc52073
+
+[33mcommit b0a2ba2ffa8f66b41dca402f17ef2ae7724569b9[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Wed Oct 7 13:21:25 2015 -0700
+
+    VP9_denoiser: pass address in copy_frame to make it [1;31mfast[mer.
+    
+    Change-Id: I65269ddb3ea5f911d5be38614b93c97be7e1ba76
+
+[33mcommit a3df343cda2b6f3d554138ce5dae831e2f946d0c[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Tue Sep 8 14:26:42 2015 -0400
+
+    vp10: code sign bit before absolute value in non-arithcoded header.
+    
+    For reading, this makes the operation branchless, although it still
+    requires two shifts. For writing, this makes the operation as [1;31mfast[m
+    as writing an unsigned value, branchlessly. This is also how other
+    codecs typically code signed, non-arithcoded bitstream elements.
+    
+    See issue 1039.
+    
+    Change-Id: I6a8182cc88a16842fb431688c38f6b52d7f24ead
+
+[33mcommit 4d1424faf95df177b4815064ac2d1d7f1b75b5e4[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Sep 14 10:13:33 2015 -0700
+
+    For 1 pass: always use the normative filter in vp9_scale_if_required()
+    
+    The normative (convolve8) filter is optimized/[1;31mfast[mer than
+    the nonnormative one. Pass usage of scaler (normative/nonomorative)
+    to vp9_scale_if_required(), and always use normative one for 1 pass.
+    
+    Change-Id: I2b71d9ff18b3c7499b058d1325a9554de993dd52
+
+[33mcommit 93ffe9d6dc00f573ea61b5d82a13ef2dda035183[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Aug 20 16:29:24 2015 -0700
+
+    Update to dynamic resize for 1 pass CBR: source scaling.
+    
+    Switch to use the normative (convolve8) filter for source scaling,
+    only for 1/2x1/2 scaling for now. This is [1;31mfast[mer and has better
+    quality than either the vpx_scale_frame or the nonnormative scaler.
+    
+    Remove the vp9_scale_if_required_[1;31mfast[m, which is now not used.
+    
+    Change-Id: I2f7d73950589d19baafb1fa650eac987d531bcc8
+
+[33mcommit 29d0cc2431427f29ddaa6b226910dcdb4f87924e[m
+Merge: 20d902a37 4ea7f2be4
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Mon Aug 10 17:49:39 2015 +0000
+
+    Merge "[1;31mfast[mssim: Add some missing consts"
+
+[33mcommit 4ea7f2be43de8c832f01c5741be8df6125f65dc2[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Fri Aug 7 12:02:49 2015 -0700
+
+    [1;31mfast[mssim: Add some missing consts
+    
+    Change-Id: Id36f180032c8a92c686da6f716a7468332b23b94
+
+[33mcommit 9f7fdcbe6061c1034e978bdff0b775802627dc67[m
+Merge: 5c4a037c8 17cfee3cb
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Fri Aug 7 19:21:42 2015 +0000
+
+    Merge "[1;31mfast[mssim: Add stdlib.h for malloc/free"
+
+[33mcommit 17cfee3cb55b016aa2c1677bdebb9d2b8d0d7f3d[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Thu Aug 6 13:37:36 2015 -0700
+
+    [1;31mfast[mssim: Add stdlib.h for malloc/free
+    
+    Change-Id: I4d734febc14c534dba20b67cf6bd628996cc9ab7
+
+[33mcommit 7dc5a689b4bef3071ac032f3cb53917cf440d3f0[m
+Author: James Zern <jzern@google.com>
+Date:   Thu Jul 30 19:46:55 2015 -0700
+
+    add vp9_vector_var_neon
+    
+    ~50-60% [1;31mfast[mer depending on the width
+    
+    Change-Id: I9d007cfa10b9aaa2169c8c009d95522df6123a92
+
+[33mcommit ea990af7f5e780bd90d67249a2db631404a42dc1[m
+Author: James Zern <jzern@google.com>
+Date:   Sat Jul 25 12:27:56 2015 -0700
+
+    add vp9_block_error_fp_neon
+    
+    ~60-70% [1;31mfast[mer depending on the block size
+    
+    Change-Id: Icdbaa9977a91a63cbcc6ead0cf19d5a2af7f27e1
+
+[33mcommit 7b756183aa84b97d2e787d70adb266c6ae652e4e[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Jul 14 10:01:45 2015 -0700
+
+    Fix to source scaling for dynamic_resize.
+    
+    The [1;31mfast[m scaling for 1 pass mode was being used only on the
+    first frame after resizing event (because resize_scale_num/den
+    is set to 1 and only changed for first frame following resize event).
+    
+    Change-Id: I723b63e21823eb858f25f5662d2bbe4f1842e61f
+
+[33mcommit 4bbd95512afa1f8e202f25ca111e42d97a2cd3cf[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Jul 8 18:01:01 2015 -0700
+
+    Dynamic resize for real-time: source scaling
+    
+    Use [1;31mfast[mer scaling on source.
+    
+    Change-Id: I968df97239a86834c96126b86832d3d6d0875a53
+
+[33mcommit 9db1f24c47e543cc14eff3e8dc375cca1476b4d1[m
+Author: James Zern <jzern@google.com>
+Date:   Mon Jun 22 20:57:14 2015 -0700
+
+    vp9_reconintra_neon: add d45 16x16
+    
+    ~90% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: I92d80f66e91e0a870a672cfb5dd29bf1a17cb11a
+
+[33mcommit 12c6688e31a307e63924ae75d9ffea6d303295b1[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Jun 19 19:19:22 2015 -0700
+
+    vp9_reconintra_neon: add d45 8x8
+    
+    based on ssse3 implementation
+    
+    ~91% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: I6d743a53352c2d6de0efe7899d7996e8b0f7fa29
+
+[33mcommit ce88d74d349da857828f0b7e9c1ce44cf7f56530[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Jun 17 20:52:13 2015 -0700
+
+    vp9_reconintra_neon: add d45 4x4
+    
+    based on webp's LD4()
+    
+    ~59% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: I371eaed9ce8f470451046997e130b0ba1a2f7a9c
+
+[33mcommit 337b221e00116d1e0557f2c8a245aa91a3d7ff8a[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Jun 17 18:23:19 2015 -0700
+
+    vp9_reconintra_neon: add d135 4x4
+    
+    based on webp's RD4()
+    
+    ~50% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: Ifcb7bf7f7fc8eabf79d9e3b219ce1be67abc524a
+
+[33mcommit 6e44bf20f72aab0e3a930d25fd0745cfde9a149b[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Jun 17 16:34:14 2015 -0700
+
+    vp9_reconintra_neon: add DC 4x4 predictors
+    
+    ~85-89% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: I3812e8adfffe5255034da88dfe6546e12f4d10ee
+
+[33mcommit 79fb3a013eb09c4b0ffae86188fd1fe0f701b261[m
+Author: James Zern <jzern@google.com>
+Date:   Mon Jun 15 20:57:28 2015 -0700
+
+    vp9_reconintra_neon: add DC 32x32 predictors
+    
+    ~84-85% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: Ia67a7f4a342bf7b0a9280e05c25d81a774d90469
+
+[33mcommit 98f0178611b238db4618dacdea6e98e12d2ad336[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Jun 12 19:11:48 2015 -0700
+
+    enable vp9_d153_predictor_32x32_ssse3
+    
+    unused since its initial commit
+    ~91% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: Ic8b5b3246bc97c8406be8bc4496601370403b70a
+
+[33mcommit 65d9599807330af74033b50f3063b2bafd539995[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Jun 3 18:51:13 2015 -0700
+
+    vp9_reconintra_neon_asm/tm4x4: simplify left load
+    
+    use vld1.8 {d0[]}, [r0] rather than ldrb+vdup; mildly [1;31mfast[mer
+    
+    Change-Id: Ia5ffc736bcb0f5497b7d9e55a93bf5a5f5f6928c
+
+[33mcommit 7621b48a1c89287529b86266d9a4e7ee3ac28667[m
+Author: James Zern <jzern@google.com>
+Date:   Fri May 29 19:10:27 2015 -0700
+
+    vp9_reconintra_neon/tm: improve above_left load
+    
+    use vld1?_dup_u8 over vdup?_n_u8, reduces general register use; mildly
+    [1;31mfast[mer
+    
+    Change-Id: Ie0e4e550849a207b34b378541196b553c9f12011
+
+[33mcommit b337c54cc41cc4ca8cb12f027c395089adddd0d5[m
+Author: James Zern <jzern@google.com>
+Date:   Fri May 29 18:56:16 2015 -0700
+
+    vp9_reconintra_neon_asm/tm: simplify above_left load
+    
+    use vld1.8 {d0[]}, [r0] rather than ldrb+vdup; mildly [1;31mfast[mer
+    
+    Change-Id: I5c24d49a90c2855c94395184774b289da8e9d5a7
+
+[33mcommit a2a13cbe5f330d32ea702c034819cb213c8ca1ee[m
+Author: James Zern <jzern@google.com>
+Date:   Wed May 27 20:17:27 2015 -0700
+
+    vp9_reconintra_neon: add DC 16x16 predictors
+    
+    85-89% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: I9b320ed6b9e67f27df738b84c8b43b65a93c50c2
+
+[33mcommit e97b84921941dd40dd6464a59558c75815ac8e9f[m
+Author: James Zern <jzern@google.com>
+Date:   Wed May 27 18:59:57 2015 -0700
+
+    vp9_reconintra_neon: add DC 8x8 predictors
+    
+    ~90% [1;31mfast[mer over 20M pixels
+    
+    Change-Id: Iab791510cc57c8332c2f9a5da0ed50702e5f5763
+
+[33mcommit 11a4a3c065ef4cce3b121ce20884394b207c924c[m
+Merge: fd3658b0e 802e1d84c
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu May 7 23:32:17 2015 +0000
+
+    Merge "Remove only remaining uses of '[1;31mfast[m_unaligned'"
+
+[33mcommit 802e1d84cc10a99060a9fa6c770f3ffafa4e0555[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu May 7 14:26:25 2015 -0700
+
+    Remove only remaining uses of '[1;31mfast[m_unaligned'
+    
+    Use memcpy instead of casting.
+    
+    Change-Id: Ieca725cc628883985bde23c7d742af8781c5dbb5
+
+[33mcommit f2cbee9a0461b94ee90a2fc8b8dc896fc97efdb0[m
+Merge: 3a7ebf9c3 3f7f19430
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Fri Apr 17 16:05:53 2015 -0700
+
+    Merge "Adds a [1;31mfast[mssim metric to VPX internal stats."
+
+[33mcommit 3f7f194304bed850ebba15eb6b5c983eeb8a6438[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Fri Apr 17 10:23:24 2015 -0700
+
+    Adds a [1;31mfast[mssim metric to VPX internal stats.
+    
+    This code appeared in the Daala project first and was originally
+    committed by Nathan Egge.
+    
+    Change-Id: Iadce416a091929c51b46637ebdec984cddcaf18c
+
+[33mcommit eed1badeddcbc79e6c232194cce513774cb25a30[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Apr 1 11:39:36 2015 -0700
+
+    Optimize quantization simd implementation
+    
+    This commit allows the quantizer to compare the AC coefficients to
+    the quantization step size to determine if further multiplication
+    operations are needed. It makes the quantization process 20% [1;31mfast[mer
+    without coding statistics change.
+    
+    Change-Id: I735aaf6a9c0874c82175bb565b20e131464db64a
+
+[33mcommit ebe1be9186b4f20e8d30c4bbad79ba78403de0d2[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Mar 31 09:25:21 2015 -0700
+
+    Allow block skip coding option in RTC mode
+    
+    When the estimated rate-distortion cost of skip coding mode is
+    lower than that of sending quantized coefficients, allow the
+    encoder to drop these coefficients. This improves the compression
+    performance of speed -6 by 0.268% and makes the encoding speed
+    slightly [1;31mfast[mer.
+    
+    Change-Id: Idff2d7ba59f27ead33dd5a0e9f68746ed3c2ab68
+
+[33mcommit 26d3d3af6ace50ee20c474771a580e38f86c7864[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Mar 30 12:31:46 2015 -0700
+
+    Enable 16x16 Hadamard transform in SATD based mode decision
+    
+    This commit replaces the 16x16 2D-DCT transform with Hadamard
+    transform for RTC coding mode. It reduces the CPU cycles cost
+    on 16x16 transform by 5X. Overall it makes the speed -6 encoding
+    speed 1.5% [1;31mfast[mer without compromise on compression performance.
+    
+    Change-Id: If6c993831dc4c678d841edc804ff395ed37f2a1b
+
+[33mcommit a1e20ec58f3b562af536be80f8dd061878cbaffd[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Fri Mar 20 14:51:59 2015 -0700
+
+    Refactor [1;31mfast[m loop filter code to handle 444.
+    
+    Change-Id: I921b1ebabdf617049f8fa26fbe462c3ff115c1ce
+For keyword time:
+[33mcommit 6e5a1165bef829b3fcc73c36e5c950592b5c6801[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Tue Oct 13 14:06:28 2015 -0400
+
+    vp10: make segmentation probs use generic probability model.
+    
+    Locate them (code-wise) in frame_context, and have them be updated
+    as any other probability using the subexp forward and adaptive bw
+    updates.
+    
+    See issue 1040 point 1.
+    
+    TODOs:
+    - real-world default probabilities
+    - why is counts some[1;31mtime[ms NULL in the decoder? Does that mean bw
+      adaptivity updates only work on some frames? (I haven't looked
+      very closely yet, maybe this is a red herring.)
+    
+    Change-Id: I23b57b4e5e7574b75f16eb64823b29c22fbab42e
+
+[33mcommit 7dd7a7da206bddb7d3d3deffa23984719bb89d87[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Oct 9 16:31:17 2015 -0700
+
+    vpx/*.h: add VPX_CTRL_* preproc defines
+    
+    allows controls to be tested for at compile-[1;31mtime[m
+    
+    Change-Id: I1cd01287dc144392956c82e6dbac003f37703039
+
+[33mcommit 37293583cd53f2bf8a5ff32018bf6e3f3ff6ad04[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Sep 30 18:27:49 2015 -0700
+
+    Stabilize the encoder buffer from going too negative.
+    
+    For screen-content mode, with frame dropper off, put a limit
+    on how low encoder buffer can go.
+    
+    Under hard slide changes, the buffer level can go too low and then
+    take long [1;31mtime[m to come back up (in particular when frame-dropping
+    is not used), which will affect the active_worst and target frame size.
+    
+    Change-Id: Ie9fca097e05cd71141f978ec687f852daf9de332
+
+[33mcommit 3f7656cc23dfce0d6a9849a0460626258579f647[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Jun 23 08:34:06 2015 -0700
+
+    Limit cyclic refresh on steady background blocks.
+    
+    Use the existing QP condition on limiting cyclic refresh, and add
+    addiitonal condition that block has been encoded with zero/small motion
+    x frames in row (where x is at least several [1;31mtime[ms the refresh period).
+    Additional condition only affect non-screen content mode.
+    
+    This helps to improve visual stability for noisy input, where on steady
+    background areas the application of delta_qp may lead to encoding the noise.
+    
+    Also added a change to use the true skip (after encoding) to update the
+    last QP.
+    
+    Change-Id: I234a1128d017d284cf767fdb58ef6c59d809f679
+
+[33mcommit 571b7c978ec5fed594f7abdd451974e671e6b8bb[m
+Author: James Zern <jzern@google.com>
+Date:   Sat Sep 19 09:14:18 2015 -0700
+
+    vp9_end_to_end_test: disable vp10 w/high bitdepth
+    
+    the range check in dct.c (abs(input[i]) < (1 << bit)) will fail in many
+    cases. this was broken at the [1;31mtime[m this check was added
+    
+    BUG=1076
+    
+    Change-Id: I3df8c7a555e95567d73ac16acda997096ab8d6e2
+
+[33mcommit e00470aef85f150cb93bda287ff03ad033c127a1[m
+Author: James Zern <jzern@google.com>
+Date:   Thu Sep 17 19:44:17 2015 -0700
+
+    vp9_arf_freq_test: disable vp10 w/high bitdepth
+    
+    the range check in dct.c (abs(input[i]) < (1 << bit)) will fail in the
+    25-29 range. this was broken at the [1;31mtime[m this check was added
+    
+    Change-Id: I8ca9607f6cbdc8be7f47696ffeabbab3ac5727e2
+
+[33mcommit ca8f8fd304afa845f81859cb04cb1b920ec14eb3[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Tue Sep 15 15:47:11 2015 -0700
+
+    VP9 dynamic resizing unit test with bitrate change.
+    
+    Verify the dynamic resizer behavior for real [1;31mtime[m, 1 pass CBR mode.
+    Start at low target bitrate, raise the bitrate in the middle of the
+    clip, verify that scaling-up does occur after bitrate changed.
+    
+    Change-Id: I7ad8c9a4c8288387d897dd6bdda592f142d8870c
+
+[33mcommit 9ac42bc15c7010d15c66b6ef0a81b7ad970f4a54[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Tue Sep 15 14:17:04 2015 -0700
+
+    VP9 dynamic resizing unit test.
+    
+    Verify the dynamic resizer behavior for real [1;31mtime[m, 1 pass CBR mode.
+    Run at low bitrate, with resize_allowed = 1, and verify that we get
+    one resize down event.
+    
+    Change-Id: Ic347be60972fa87f7d68310da2a055679788929d
+
+[33mcommit 419456617ef9991abf54d106fdb1b776f04c61bd[m
+Author: Jacky Chen <jackychen@google.com>
+Date:   Mon Sep 14 16:15:07 2015 -0700
+
+    Change parameters for VP9 dynamic resizing.
+    
+    Use a smaller window in dynamic resizing and wait a shorter
+    [1;31mtime[m after key frame.
+    
+    Change-Id: I086f840cdec3c6bdaa9acfe11346d919e445973d
+
+[33mcommit e8a4a3e2b1a4b6ff62a33ca47841617c0e75e288[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Sep 11 11:23:26 2015 -0700
+
+    Avoid scaling last_source, unless needed.
+    
+    Save some encoding [1;31mtime[m, for the case of spatial layers
+    or under dynamic resizing mode.
+    
+    Change-Id: If4a8eb6f0376c3d2dde8465fde6bfd86ab704920
+
+[33mcommit a28b2c6ff0ebd4452423dc728d4bb8e0150650c3[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Aug 27 09:55:42 2015 -0700
+
+    Add sse2 versions of halfpix variance
+    
+    These were lost in the great sub pixel variance move of
+    6a82f0d7fb9ee908c389e8d55444bbaed3d54e9c
+    
+    Not having these functions caused a ~10% performance regression in
+    some real[1;31mtime[m vp8 encodes.
+    
+    Change-Id: I50658483d9198391806b27899f2c0d309233c4b5
+
+[33mcommit 9a733b399ca99a073eb86f8e87adb077c0f57b6b[m
+Merge: 42ef854f9 1b556e1f9
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Aug 26 23:37:00 2015 +0000
+
+    Merge "vp9_spatial_svc_encoder: Enable aq-mode for real-[1;31mtime[m mode."
+
+[33mcommit 1b556e1f9a87c2e935b3f11aa268b5f767a11fd3[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Aug 26 15:18:13 2015 -0700
+
+    vp9_spatial_svc_encoder: Enable aq-mode for real-[1;31mtime[m mode.
+    
+    For real-[1;31mtime[m mode (speeds >=5) enable aq-mode=3.
+    
+    Change-Id: Ib8b4ef7609bc30ac935742c8d27e8cd89933c6af
+
+[33mcommit 1c0769107bf7303069c8d0b3c045c5557f5428db[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Aug 26 13:36:54 2015 -0700
+
+    vp10 cleanup: remove nonrd and real-[1;31mtime[m code
+    
+    Code cleanup.
+    
+    Change-Id: I668bd5a4e5fbe96969d51d9ee777fc5f1d8abfe6
+
+[33mcommit 413a0392c0ecf9cdc223e6c0a093ac00cea3782e[m
+Merge: c50f6739f 4ebded684
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Aug 26 19:47:15 2015 +0000
+
+    Merge "vp9_spatial_svc_encoder: Add encoding [1;31mtime[m log."
+
+[33mcommit 4ebded6840927d57ec6eb601fbaa2f65dafc2a56[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Aug 26 12:18:46 2015 -0700
+
+    vp9_spatial_svc_encoder: Add encoding [1;31mtime[m log.
+    
+    Change-Id: Iab4e4a13a65c9dc5314e5107b126c30667c7b448
+
+[33mcommit 821f02947e0500e48eb0c48611f0bcda9b135a2b[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Tue Aug 25 16:45:09 2015 -0700
+
+    Clean up unused function warnings in vp8 onyx_if.c
+    
+    Remove really unused segmentation_test_function
+    
+    Hide decide_key_frame and recode_loop_test under non-real[1;31mtime[m check.
+    
+    Change-Id: Ie0113945ffbd096dbb89a553548f526b2a0ee0c6
+
+[33mcommit 51b654e8f01dab42326a0020be038e5b4dd025e6[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Tue Aug 25 16:38:59 2015 -0700
+
+    Remove vp8_priv_sz
+    
+    This is a leftover of the XMA code which was removed a long [1;31mtime[m ago.
+    
+    Found while looking for unused functions.
+    
+    Change-Id: I07a3d542ae55440af59380dcdcf9a6c11cdfcb75
+
+[33mcommit 653832ea064dc61083056aaf7931e420db718cbe[m
+Author: Deb Mukherjee <debargha@google.com>
+Date:   Mon Aug 24 10:28:02 2015 -0700
+
+    Prevent an ASAN failure for svc tests
+    
+    This patch just fixes the test for the [1;31mtime[m being, but does not
+    actually solve the underlying issue, which still needs investigation.
+    
+    Change-Id: I54a35de839723f5b499b57e38dd2bdd400adc427
+
+[33mcommit 3d181a4516391c7f4509b6324194f2faca56287e[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Aug 11 11:06:08 2015 -0700
+
+    Adjust speed setting for temporal layers in 1 pass non-rd mode.
+    
+    For speed 7, real-[1;31mtime[m mode: Base layer frames are further apart
+    (for #temporal layers = 3, this is every 4 frames) so worth keeping
+    same motion search parameters (as in speed 6) on the base layer frames.
+    
+    Change-Id: Idebf49dda6ef4f3d9a55aee55129a68253f692fb
+
+[33mcommit c54d16501460dd15764a2debd19fd8002b003124[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Aug 5 15:09:16 2015 -0700
+
+    Rate control adjustment for temporal-svc 1pass.
+    
+    -For ambient qp in active_worst setting: increase the initial
+    averaging [1;31mtime[m (from very first frame) to account for avg_qp of key_frame.
+    -In postencode on key frame: update the last_q/avg_q[key_frame] for
+    all temporal layers.
+    
+    Change-Id: I5313153d350b1045b4835ce948dfffb7d2039b52
+
+[33mcommit c353da68aa10a8d75513e32e25188aedfc8d532f[m
+Author: James Zern <jzern@google.com>
+Date:   Mon Aug 3 20:24:44 2015 -0700
+
+    third_party/libwebm: pull from upstream
+    
+    Changes:
+    b6de61a Adds support for simple tags
+    75a6d2d sample_muxer: Don't write huge files.
+    cec1f85 mkvmuxer: remove unused [1;31mtime[mcode_scale variable
+    8a61b40 Merge "mkvparser: Tiny whitespace fix."
+    7affc5c clang-format re-run
+    d6d04ac mkvmuxer: use generic Cluster::AddFrame
+    4928b0b Merge "mkvmuxer: Write Block key frames correctly."
+    c2e4a46 Merge "sample_muxer: Use AddGenericFrame to add frames."
+    e97f296 mkvparser: Tiny whitespace fix.
+    d66ba44 Merge "Add support to parse DisplayUnit."
+    deb41c2 Add support to parse DisplayUnit.
+    42e5660 Fix issues on EBML lacing block parsing
+    fe1e9bb Fix block parsing to not allow frame_size = 0
+    2cb6a28 Change assertions to checks when parsing TrackPositions
+    d04580f Fixes issues on Block Group parsing
+    c3550fd mkvmuxer: Write Block key frames correctly.
+    5dd0e40 Merge "mkvmuxer: Set is_key to true for metadata blocks."
+    8e96863 mkvmuxer: Set is_key to true for metadata blocks.
+    a9e4819 sample_muxer: Use AddGenericFrame to add frames.
+    5a3be73 Change assertions to checks when load CuePoints
+    f99f3b2 mkvmuxerutil::EbmlDateElementSize: remove value param
+    ff572b5 Frame::IsValid: fix track_number check
+    b6311dc mkvmuxer: Refactor to remove a lot of duplicate code
+    256cd02 Merge "mkvmuxer: DiscardPadding should be signed integer."
+    16c8e78 mkvmuxer: s/frame/data in all AddFrame* functions.
+    c5e511c mkvmuxer: DiscardPadding should be signed integer.
+    4baaa2c Add framework build script: iosbuild.sh
+    3d06eb1 PATENTS: fix a typo: constitutes -> constitute
+    d3849c2 mkvparser: Dead code removal.
+    f439e52 Change assertions to checks when preloading Cues
+    d3a44cd Fix track transversal when listing Cues on sample
+    c6255af Tweak .gitignore so git status is clean after checkout and
+    build: - added missing underscore to sample_muxer - added cmake and make
+    related files
+    b5229c7 Makefile.unix: s/samplemuxer/sample_muxer/
+    e3616a6 Add support to parse stereo mode, display width and display
+    height in mkvparser
+    a4b68f8 parser: Fix bug in Chapters::Atom::Parse()
+    bab0a00 cmake: Set library and project name the proper way on Windows.
+    feeb9b1 Set library name to match Windows expectations.
+    b9a549b Fix CMakefile to generate libwebm.a
+    b386aa5 Add CMakeLists.txt and msvc_run[1;31mtime[m.cmake.
+    b0f8a81 parser: Fix memory leak in Chapter parsing
+    f06e152 mkvmuxer: Fix MoveCuesBeforeClustersHelper recursive call.
+    27bb747 allow subtitle tracks with ContentEncodings
+    623d182 DoLoadCluster: tolerate empty clusters
+    1156da8 Update PATENTS to reflect s/VP8/WebM/g
+    0d4cb40 mkvmuxerutil: Use rand() in MSVC builds.
+    e12fff0 mkvmuxer: Overload WriteEbmlHeader for backward compatibility
+    a321704 mkvmuxer: write correct DocTypeVersion
+    574045e mkvmuxer: fix DiscardPadding
+    8be6397 Include crop elements when calculating size of Video element
+    8f2d1b3 mkvparser: fix DiscardPadding extraction
+    1c36c24 mkvmuxer: fix style guide violations
+    568504e Merge "UUIDs can have their high bit set"
+    acf788b Add support for CropLeft, CropRight, CropTop and CropBottom
+    elements.
+    418188b Merge "muxer: codec_id is a mandatory element"
+    07688c9 mkvmuxer: Reject frames if invalid track number is passed.
+    2a63e47 muxer: codec_id is a mandatory element
+    d13c017 UUIDs can have their high bit set
+    
+    Change-Id: Iba28acb1ff774349d03e565f2641ddea132cf1e7
+
+[33mcommit 749c393c8df3aaeb3f0089c724f07b46ab304b36[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Mon Aug 3 14:27:03 2015 -0700
+
+    Rename vp8 loopfilter_mmx.asm
+    
+    Chromium puts all the yasm output in the same directory. Looking at ways
+    to improve this but in the mean[1;31mtime[m get rid of collisions.
+    
+    Change-Id: I923c5231d14e895ab96521eb89807ede868a0753
+
+[33mcommit 73422d3b2d7d9c2f08d491de708662740b6b3e6d[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Thu Jul 30 15:33:47 2015 -0700
+
+    Short circuit rate_block in block_rd_txfm.
+    
+    Don't run rate_block (cost_coeffs) if distortion alone is enough to
+    surpass best_rd.
+    
+    This decreases 2nd pass run[1;31mtime[m on HD at speed 2 by about 2%. There is
+    zero effect on output if tx_cache is removed.
+    
+    Change-Id: Ia3b1cc77bfbe6ee988c395fde06c0eb92940b784
+
+[33mcommit 55c6a74bd4f228e48d56de200f25154eb733fc40[m
+Merge: 48de07d88 f01c769dc
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Jul 24 22:23:10 2015 +0000
+
+    Merge "Dynamic resize for real-[1;31mtime[m: reference scaling."
+
+[33mcommit f01c769dc6589790325b297be2d402d555811f5a[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Jul 10 10:28:51 2015 -0700
+
+    Dynamic resize for real-[1;31mtime[m: reference scaling.
+    
+    Avoid scaling the references if they have already been scaled.
+    Change only affects 1 pass non-svc mode for now.
+    
+    Change-Id: I204f4079c026cba7adce7a7f855d072f6139ccec
+
+[33mcommit e03b8b78b2f358b90a053d08eebdb2c69816516e[m
+Merge: 0cdc85d8c 4bbd95512
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Jul 13 19:06:25 2015 +0000
+
+    Merge "Dynamic resize for real-[1;31mtime[m: source scaling"
+
+[33mcommit 4bbd95512afa1f8e202f25ca111e42d97a2cd3cf[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Jul 8 18:01:01 2015 -0700
+
+    Dynamic resize for real-[1;31mtime[m: source scaling
+    
+    Use faster scaling on source.
+    
+    Change-Id: I968df97239a86834c96126b86832d3d6d0875a53
+
+[33mcommit 8281a19465a6bfcffa9ba1935bed1417e6b16ad6[m
+Author: Tom Finegan <tomfinegan@google.com>
+Date:   Tue Jun 23 18:30:52 2015 -0700
+
+    vpxenc.sh: Add basic vp9 multithread encode test.
+    
+    - Change default real [1;31mtime[m speed to -6.
+    - Add vpxenc_vp9_webm_rt_multithread, which encodes
+      niklas_1280_720_30.y4m with 2 to 4 threads using 2 to 4
+      tile columns.
+    
+    Change-Id: I4d86c3360aec67ae5d1ba82eb6e0f0be8068b5af
+
+[33mcommit debe4e920f39fa5eccdcf608f416903b9e4b38d7[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Jun 19 16:40:01 2015 -0700
+
+    Reduce max_partition_size for low resolutions at speed 5.
+    
+    For speed 5 real-[1;31mtime[m mode, the selection of the partition size for
+    superblocks on the segment (aq-mode=3) uses the non-rd recursive
+    pick partition search, and can some[1;31mtime[ms select 64x64.
+    
+    For low resolutions, visually better to limit this to 32x32.
+    
+    Change-Id: I69657a7ed8899f8b3cf8c9c318a2509c5c72c565
+
+[33mcommit 90c9ede8e653a10855c583510aa2b071cc2f02c2[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Thu Jun 18 16:05:56 2015 -0700
+
+    Limit cyclic refresh revisitng blocks at the same quantizer.
+    
+    For screen content don't refresh a block at a quantizer higher than
+    it was last coded at. PReviosuly at real[1;31mtime[m speeds the encoder had a
+    tendency to recode a block from GOLDEN with a higher Q than it was last
+    coded at.
+    
+    Change-Id: Iacd561806c769dcce1a81b9827ffc70090f5ba18
+
+[33mcommit d77f51ba9ed10f4c26ee694445f9b0ec53c2500c[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Jun 8 10:03:51 2015 -0700
+
+    Add dynamic resize logic for 1 pass CBR.
+    
+    Decision to scale down/up is based on buffer state and average QP
+    over previous [1;31mtime[m window. Limit the total amount of down-scaling
+    to be at most one scale down for now.
+    
+    Reset certain quantities after resize (buffer level, cyclic refresh,
+    rate correction factor).
+    
+    Feature is enable via the setting rc_resize_allowed = 1.
+    
+    Change-Id: I9b1a53024e1e1e953fb8a1e1f75d21d160280dc7
+
+[33mcommit 4a28da58434d364337d9a6724e9ae79e0e264bd7[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Sat May 30 00:56:19 2015 +0100
+
+    Enable more split modes for animated content.
+    
+    For content that is identified as likely to contain some
+    animation or graphics content, increase the availability
+    of split modes for good quality speeds 1-3.
+    
+    On a problem test animation clip this improves metrics
+    results by about 0.25 db and makes a noticeable difference
+    visually. It also causes a small drop in file size (~0.5%) but
+    a rise in encode [1;31mtime[m of about 5-6% at speed  2.
+    
+    For more normal content it should have no effect.
+    
+    Change-Id: Ic4cd9a8de065af9f9402f4477a17442aebf0e439
+
+[33mcommit 8710cceb45ad64a50287a555e8803df1df5e72ad[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Jun 4 17:05:11 2015 -0700
+
+    Fix to spatial svc: set reference_frame masking.
+    
+    For real-[1;31mtime[m mode: keep reference_frame masking off
+    for spatial svc.
+    
+    Change-Id: I15e123c06f67ea040172b8d4042a672f3525b9d8
+
+[33mcommit d02aa04422b56b22cf8a9605ec94de6db66c5835[m
+Author: Johnny Klonaris <google@jawknee.com>
+Date:   Sun May 31 23:29:16 2015 -0700
+
+    Adds subsecond frame rates to webm
+    
+    Numerator was being range checked against the
+    denominator - preventing any frame rate slower
+    than 1 fps.
+    
+    I've tested this on a Mac using using ffmpeg and
+    results are comparable to mp4 and ogg files generated
+    at the same [1;31mtime[m.
+    
+    Not yet tested on Windows.
+    
+    Johnny Klonaris
+    google@jawknee.com
+    
+    Change-Id: Idb358dbc2e7dc000037880ede4a1b0df248a42c8
+
+[33mcommit 30181c46d871452f960fb0dadfe4088df51b77e5[m
+Merge: dee70d355 15353216c
+Author: Minghai Shang <minghai@google.com>
+Date:   Wed May 27 17:48:59 2015 +0000
+
+    Merge "[svc] Make size of empty frame to be 16x16 all the [1;31mtime[m"
+
+[33mcommit 15353216c5b345e9df8500ce4f8fbba659a7f131[m
+Author: Minghai Shang <minghai@google.com>
+Date:   Wed May 20 16:43:27 2015 -0700
+
+    [svc] Make size of empty frame to be 16x16 all the [1;31mtime[m
+    
+    Change-Id: Ibab09aa0e8c69cf5efea2f0ec035e5da9cc894b0
+
+[33mcommit 92b199061a13173d29247257f4ef906d38b012bf[m
+Author: Hangyu Kuang <hkuang@google.com>
+Date:   Wed May 6 10:55:56 2015 -0700
+
+    Correct the inter prediction coordinate calculation which greatly reduced the
+    [1;31mtime[ms of border extension.
+    
+    Change-Id: I8e5bd590cc696ee71cfe1f4cc66c12fb24aaf44e
+
+[33mcommit b9a72d3c4d755d0c99b9cdce92ff8b319a92e74d[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Apr 30 11:39:02 2015 -0700
+
+    Allow for H and V intra modes for non-rd mode.
+    
+    For non-rd mode (speed >=5): use mask based on prediction block size, and
+    (for non-screen content mode) allow for checking horiz and vert intra modes
+    for blocks sizes < 16x16.
+    
+    Avg psnr/ssim metrics go up by about ~0.2%.
+    
+    Only allowing H/V intra on block sizes below 16x16 for now, to keep
+    encoding [1;31mtime[m increase very small, and also when allowing H/V on 16x16 blocks,
+    metrics went down on a few clips which need to be further examined.
+    
+    Change-Id: I8ae0bc8cb2a964f9709612c76c5661acaab1381e
+
+[33mcommit 486a73a9ce6983671280d883a3bf19558ec3102e[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Wed Apr 29 16:25:28 2015 -0700
+
+    Disable ssse3 version idct16x16_256_add()
+    
+    The version is currently producing different result from c version
+    for some input. Disable the use of it for now to allow [1;31mtime[m for
+    investigation the source of mismatch.
+    
+    Change-Id: Id039455494ee531db4886a9f1fa4761174ef6df3
+
+[33mcommit b3e411e48164cda6913b659128549858b6f69ba3[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Fri Apr 24 08:22:13 2015 -0700
+
+    Add validation of UV partition size
+    
+    For color sampling format other than 420, valid partion size in Y may
+    not work for UV plane. This commit adds validation of UV partition
+    size before select the partition choice.
+    
+    This fixes a crash for real [1;31mtime[m encoding of 422 input.
+    
+    Change-Id: I1fe3282accfd58625e8b5e6a4c8d2c84199751b6
+
+[33mcommit 3606b78108f8db4b8cfc2ae7fed8de34be8d21e2[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Apr 16 11:15:36 2015 +0100
+
+    Modified test for auto key frame detection.
+    
+    The existing test was triggering a lot of false positives on some types
+    of animated material with very plain backgrounds. These were triggering
+    code designed to catch key frames in letter box format clips.
+    
+    This patch tightens up the criteria and imposes a minimum requirement
+    on the % blocks coded intra in the first pass and the ratio between the
+    % coded intra and the modified inter % after discounting neutral (flat)
+    blocks that are coded equally well either way.
+    
+    On a particular problem animation clip this change eliminated a large
+    number of false positives including some cases where the old code
+    selected kf several [1;31mtime[ms in a row. Marginal false negatives are less
+    damaging typically to compression and in the problem clip there are now
+    a couple of cases where "visual" scene cuts are ignored because of well
+    correlated content across the scene cut.
+    
+    Replaced some magic numbers related to this with #defines and added
+    explanatory comments.
+    
+    Change-Id: Ia3d304ac60eb7e4323e3817eaf83b4752cd63ecf
+
+[33mcommit 63c5bf2b9cc024bf324ef9b149d4cc5876e7d329[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Apr 15 10:49:07 2015 -0700
+
+    Fix Tsan errors
+    
+    This patch fixed 2 reported Tsan errors while running VP9 real-[1;31mtime[m
+    encoder.
+    
+    Change-Id: Ib0278fe802852862c3ce87c4a500e544d7089f67
+
+[33mcommit 4009b63c42734eb720e6244b183e4be974fd7cf6[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Apr 13 14:13:07 2015 +0530
+
+    mips msa configuration fix
+    
+    for big endian disable msa
+    removed -flax-vector-conversion flag
+    disable run[1;31mtime[m_cpu_detect feature if enabled
+    
+    Change-Id: Icd5130b733f2ddcdb94ffb6e4d170e6ca0f9832b
+
+[33mcommit eb8c667570aa83134c7db0690de9dbdde4d90291[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Mar 18 13:55:19 2015 -0700
+
+    Force_split on 16x16 blocks in variance partition.
+    
+    Force split on 16x16 block (to 8x8) based on the minmax over the 8x8 sub-blocks.
+    
+    Also increase variance threshold for 32x32, and add exit condiiton in choose_partition
+    (with very safe threshold) based on sad used to select reference frame.
+    
+    Some visual improvement near moving boundaries.
+    Average gain in psnr/ssim: ~0.6%, some clips go up ~1 or 2%.
+    Encoding [1;31mtime[m increase (due to more 8x8 blocks) from ~1-4%, depending on clip.
+    
+    Change-Id: I4759bb181251ac41517cd45e326ce2997dadb577
+
+[33mcommit b4b5af6acddfec0bf28a79f74afb15de3dee6f66[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Mar 30 11:09:29 2015 -0700
+
+    Use SATD based mode decision for block sizes below 16x16
+    
+    This commit makes the encoder to select between SATD/variance as
+    metric for mode decision. It also allows to account chroma
+    component costs for mode decision as well. The overall encoding
+    [1;31mtime[m increase as compared to variance based mode selection is about
+    15% for speed -6. The compression performance is on average 2.2%
+    better than variance based approach, with about 5% compression
+    performance gains for hard clips (e.g., jimredvga, nikas720p, and
+    mmmoving) at lower bit-rate range.
+    
+    Change-Id: I4d04a31d36f4fcb3f5f491dacd6e7fe44cb9d815
+
+[33mcommit fa20a60f0d97012300f90977370c726d74392333[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Mar 25 14:40:33 2015 -0700
+
+    Speed 5: use non-rd mode for key frame coding.
+    
+    Metrics on RTC set go down by ~1.5% on average.
+    Key frame encoding [1;31mtime[m goes down by factor of ~5.
+    
+    Change-Id: Ia83acc55848613870e5ac6efe7f3d904d877febb
+For keyword perf:
+[33mcommit d6fc63ac31797a5f537bcf057047b8c7f33394bc[m
+Merge: dbefcc060 aa1125655
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Thu Oct 22 21:14:06 2015 +0000
+
+    Merge "Adjust su[1;31mperf[mrame-is-optional unit test for vp10 su[1;31mperf[mrame syntax."
+
+[33mcommit aa1125655519965c2c5bd2f99966d23ff6180d8a[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Wed Oct 21 10:24:49 2015 -0400
+
+    Adjust su[1;31mperf[mrame-is-optional unit test for vp10 su[1;31mperf[mrame syntax.
+    
+    Change-Id: Ic64b6928af7ae8ecc987f845b0bf0faecdacb072
+
+[33mcommit 56cfbeefb43011aec4ef94e1296da0fe30747ee1[m
+Merge: be3f2713a dec4405cf
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Tue Oct 20 19:58:00 2015 +0000
+
+    Merge "vp10: disallow coding zero-sized tiles-in-frame/frames-in-su[1;31mperf[mrame."
+
+[33mcommit dec4405cfa2a940fa24972fa1def50d8e02b7cb2[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Tue Oct 20 12:13:03 2015 -0400
+
+    vp10: disallow coding zero-sized tiles-in-frame/frames-in-su[1;31mperf[mrame.
+    
+    See issue 1088.
+    
+    Change-Id: Icb15d33b4e316add848f210b50cbccd7c7847207
+
+[33mcommit b60b15bc1189aa512c48b94766e25e933205e31b[m
+Merge: 0f6e9c5d3 d77a84bf5
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Thu Oct 8 18:50:08 2015 +0000
+
+    Merge "vp10: remove su[1;31mperf[mrame size field for last frame in su[1;31mperf[mrame."
+
+[33mcommit 5dd85e525d85a6e5da295588bc574a815e099e1b[m
+Merge: a83e8ec00 7460798ba
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Thu Oct 8 17:32:52 2015 +0000
+
+    Merge "vp10: use su[1;31mperf[mrame marker index/size mechanism for tile size."
+
+[33mcommit 1f4a6c8a4e92addc5624a8b55dd9cf6a05797dcc[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Sep 25 20:43:04 2015 -0700
+
+    vp9/tile_worker_hook: add multiple tile decoding
+    
+    this reduces the number of synchronizations in decode_tiles_mt() and
+    improves overall [1;31mperf[mormance when the number of threads is less than the
+    number of tiles
+    
+    Change-Id: Iaee6082673dc187ffe0e3d91a701d1e470c62924
+
+[33mcommit d77a84bf52ea678b8ad484d492e8ef51b32cdf48[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Wed Sep 30 17:16:28 2015 -0400
+
+    vp10: remove su[1;31mperf[mrame size field for last frame in su[1;31mperf[mrame.
+    
+    This is identical to what the tile size does for the last tile. See
+    issue 1042 (which covers generalizing the su[1;31mperf[mrame/tile concepts).
+    
+    Change-Id: I1f187d2e3b984e424e3b6d79201b8723069e1a50
+
+[33mcommit 7460798ba5666e25258a05f1dc7ad462cb3f1b19[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Wed Sep 30 16:42:59 2015 -0400
+
+    vp10: use su[1;31mperf[mrame marker index/size mechanism for tile size.
+    
+    See issue 1042. Should provide slight bitstream savings in most cases
+    where tiles are being used.
+    
+    Change-Id: Ie2808cf8ef30b3efe50804396900c4d63a3fa026
+
+[33mcommit c26a9ecaa21f41156afafee2576a2afed7d9e284[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Wed Sep 30 18:44:37 2015 -0400
+
+    vp8: change build_intra4x4_predictors() to use vpx_dsp.
+    
+    I've added a few new functions (d45e, d63e, he, ve) to cover the
+    filtered h/v 4x4 predictors that are vp8-specific, the "correct"
+    d45 with the correctly filtered bottom-right pixel (as opposed to
+    the unfiltered version in vp9), and the "broken" d63 with weirdly
+    filtered bottom-right pixels (which is correctly filtered in vp9).
+    
+    There may be a minor [1;31mperf[mormance impact on all systems because we
+    have to do an extra copy of the Above pixel array to incorporate
+    the topleft pixel in the same array (thus fitting the vpx_dsp API).
+    In addition, armv6 will have a more serious [1;31mperf[mormance impact b/c
+    I removed the armv6/vp8-specific assembly. I'm not sure anyone
+    cares...
+    
+    Change-Id: I7f9e5ebee11d8e21aca2cd517a69eefc181b2e86
+
+[33mcommit 50f944272cedc7b150963f5e9492f2ba99244634[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Tue Sep 8 14:48:33 2015 -0400
+
+    vp10: do sub8x8 block reconstruction in full subblocks.
+    
+    This means that we don't reconstruct in 4x4 dimensions, but in
+    blocksize dimensions, e.g. 4x8 or 8x4. This may in some cases lead
+    to [1;31mperf[mormance improvements. Also, if we decide to re-introduce
+    scalable coding support, this would fix the fact that you need to
+    re-scale the MV halfway the block in sub8x8 non-4x4 blocks.
+    
+    See issue 1013.
+    
+    Change-Id: If39c890cad20dff96635720d8c75b910cafac495
+
+[33mcommit eb53c69ece6b97f65afed81fd4c2ef9624501ea7[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Sep 8 08:47:42 2015 -0700
+
+    Add cyclic refresh parameters to svc-layer context.
+    
+    For 1 pass CBR spatial-SVC:
+    Add cyclic refresh parameters to the svc-layer context.
+    
+    This allows cyclic refresh (aq-mode=3) to be applied to
+    the whole super-frame (all spatial layers).
+    This gives a [1;31mperf[mormance improvement for spatial layer encoding.
+    
+    Addd the aq_mode mode on/off setting as command line option.
+    
+    Change-Id: Ib9c3b5ba3cb7851bfb8c37d4f911664bef38e165
+
+[33mcommit 4fa8e73249de240868ef5b7c74fba79a01c35448[m
+Author: Jingning Han <jingning@google.com>
+Date:   Thu Sep 10 12:24:06 2015 -0700
+
+    Remove speed features in vp10
+    
+    Take out speed features that affect the compression [1;31mperf[mormance
+    to simplify the coding route. This commit removes the motion field
+    mode search used in speed 3.
+    
+    Change-Id: Ifdf6862cb1ece8261125a56d9d89bcef60758c00
+
+[33mcommit 2ff108aac65c54154c5b181a8f00c4fe7a7d2d46[m
+Merge: 992d9a062 3140e9017
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Sep 10 15:47:49 2015 +0000
+
+    Merge "vp8: Small adjustment to cyclic_refresh max_mbs_[1;31mperf[mrame."
+
+[33mcommit 3140e9017525e2967e84debbb77fc231d7a265d6[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Sep 9 14:51:14 2015 -0700
+
+    vp8: Small adjustment to cyclic_refresh max_mbs_[1;31mperf[mrame.
+    
+    For 3 temporal layers, reduce somewhat the
+    cyclic_refresh_mode_max_mbs_[1;31mperf[mrame parameter, from 20% to ~14%.
+    Small increase in PSNR/SSIM metrics.
+    
+    Change-Id: Ia216fa5474048f1ef7fe3db88cd60dfef2a1bf8a
+
+[33mcommit ad0ac045d5a5d53a47520018d12a6951b0e8416f[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Sep 4 20:24:29 2015 -0700
+
+    vp9/decode_tiles_mt: move frame count accum from loop
+    
+    the check [1;31mperf[mormed within the while was redundant; simply place the
+    accumulation after all tiles are decoded.
+    
+    Change-Id: I6a74e87257c775fd8bfc8ac4511e4a6ad8f18346
+
+[33mcommit a28b2c6ff0ebd4452423dc728d4bb8e0150650c3[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Aug 27 09:55:42 2015 -0700
+
+    Add sse2 versions of halfpix variance
+    
+    These were lost in the great sub pixel variance move of
+    6a82f0d7fb9ee908c389e8d55444bbaed3d54e9c
+    
+    Not having these functions caused a ~10% [1;31mperf[mormance regression in
+    some realtime vp8 encodes.
+    
+    Change-Id: I50658483d9198391806b27899f2c0d309233c4b5
+
+[33mcommit afd2f68daef62d1185ba1e65971fdd3a7fc1d8eb[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Aug 4 17:52:57 2015 -0700
+
+    Revert "VP9_COPY_CONVOLVE_SSE2 optimization"
+    
+    This reverts commit a5e97d874b16ae5826b68515f1e35ffb44361cf8.
+    
+    Additionally:
+    Revert "vpx_convolve_copy_sse2: fix win64"
+    
+    This reverts commit 22a8474fe7ec30d96f746dc6e4b23771758c071e.
+    
+    This change [1;31mperf[morms poorly on various x86_64 devices affecting
+    [1;31mperf[mormance by 1-3% at 1080P. Performance on chromebook like devices was
+    mixed neutral to slightly negative, so there should be minimal change
+    there.
+    
+    Change-Id: I95831233b4b84ee96369baa192a2d4cc7639658c
+
+[33mcommit cccad1c5de41e29d6cc64c6e11a1d91c8486d090[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Jul 7 11:36:05 2015 -0700
+
+    Reduce dqcoeff array size in decoder
+    
+    The decoding process handles detokenization and reconstruction per
+    transform block sequentially. There is no need to offset the dqcoeff
+    buffer according to the transform block index. This allows to
+    reduce the memory spill and improve cache [1;31mperf[mormance.
+    
+    Change-Id: Ibb8bfe532a7a08fcabaf6d42cbec1e986901d32d
+
+[33mcommit 3c5256d572152f2937a741076491ab5cf22eafa0[m
+Author: Tamar Levy <tamar.levy@intel.com>
+Date:   Wed Apr 29 11:54:11 2015 -0700
+
+    VP9_LPF_VERTICAL_16_DUAL_SSE2 optimization
+    
+    The vp9_lpf_vertical_16_dual function optimized for x86 32bit target. The hot code in that function was caused by the call to the transpose8x16.
+    The gcc generated assembly created uneeded fills and spills to the stack. By interleaving 2 loads and unpack instructions, in addition to hoisting the consumer
+    instruction closer to the producer instructions, we eliminated most of the fills and spills and improve the function-level [1;31mperf[mormance by 17%.
+    credit for writing the function as well as finding the root cause goes to Erik Niemeyer (erik.a.niemeyer@intel.com)
+    
+    Change-Id: I6173cf53956d52918a047d1c53d9a673f952ec46
+
+[33mcommit bc7074508a3d0d877fadee02fb2027347f4a9c04[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Jun 16 12:00:50 2015 -0700
+
+    Fix integer overflow issue in rtc coding flow intra mode search
+    
+    The overflow issue affects a variable that is only used in inter
+    mode. This commit fixes the ioc warning triggered in the intra
+    mode. It does not affect the compression [1;31mperf[mormance.
+    
+    Change-Id: I593d1b5650599de07f3e68176dd1442c6cb7bdbc
+
+[33mcommit c9976b32b4397360192caef74a1bfee026d52b9c[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Mon Jun 8 03:38:13 2015 -0700
+
+    Update use_prev_frame_mvs flag in decoder.
+    
+    Added check to see if last frame was all intra.  This will
+    eliminate two checks in find_mv_refs_idx().  Also, do not
+    update the frame mvs if the current frame is all intra.
+    
+    This improved [1;31mperf[mormance on material with frequent
+    intra-only frames.
+    
+    Change-Id: I44a4042c3670ab0d38439d565062a0e2a1ba9d1e
+
+[33mcommit f76d42a98a2df10e926ef93f204a8e0a98180e6c[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu May 21 08:35:11 2015 -0700
+
+    Refactor set_vbp_thresholds.
+    
+    Break out the setting of the block variance split thresholds,
+    since they are locally modified, e.g., based on local/segment qp.
+    
+    No change in [1;31mperf[mormance.
+    
+    Change-Id: I0a3238e6dab05140657539fc4bd27ac5ff7a554e
+
+[33mcommit e0786c280e3b4fca3e6236eb2043b17c112aa9a2[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Apr 30 14:24:28 2015 +0100
+
+    Adjust ARF min and max interval.
+    
+    Previously limit on max interval  set to 0.5 seconds.
+    Though this helped some low frame rate material it
+    appears to be a bit too aggressive for some 24 and 25 fps
+    content. This patch relaxes the limit to 0.75 seconds.
+    
+    The patch also adds a new minimum interval variable
+    to replace the current hard wired value. This allows us
+    to impose a limit on the maximum number of primary
+    arfs per second for high frame rate (e.g. 50 & 60fps)
+    content. This is to address concerns regarding playback
+    [1;31mperf[mormance on some platforms if there is a high base
+    frame rate and very frequent arfs.
+    
+    Change-Id: I373e8b6b2a8ef522eced6c6d2cceb234ff763fcf
+
+[33mcommit 8b17f7f4eb86107ac9ed9e31a2a8bba238a1247a[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Tue Apr 21 05:36:58 2015 -0700
+
+    Revert "Remove mi_grid_* structures."
+    
+    (see I3a05cf1610679fed26e0b2eadd315a9ae91afdd6)
+    
+    For the test clip used, the decoder [1;31mperf[mormance improved by ~2%.
+    This is also an intermediate step towards adding back the
+    mode_info streams.
+    
+    Change-Id: Idddc4a3f46e4180fbebddc156c4bbf177d5c2e0d
+
+[33mcommit 5668dcc7b988f1a2d083eadec6832469de2043af[m
+Author: Frank Galligan <fgalligan@google.com>
+Date:   Sun Mar 22 13:41:13 2015 -0700
+
+    Refactor dec_build_inter_predictors
+    
+    Refactor the loops in dec_build_inter_predictors to try and decrease
+    the number of instructions. Limited testing saw about 1% [1;31mperf[m
+    increase on x86 and about 0.67 % [1;31mperf[m increase on Arm.
+    
+    Change-Id: I69cfe6335bb562fbaaebf43fb3f5c5a2a28882a2
+
+[33mcommit 0bb897211deb61bf76354330d8d9d9bf63ce7759[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Mon Apr 6 17:53:55 2015 -0700
+
+    Optimize the checking for transform skipping
+    
+    If U is not skippable, then do not [1;31mperf[morm the check on V.
+    
+    Change-Id: Iba5e8362bd42390197f373c44388a426a4404549
+
+[33mcommit 9922e4344a40a147abab06f16c7a9d9403d1a33b[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Apr 3 11:33:24 2015 -0700
+
+    Enable Hadamard transform based cost estimate for all block sizes
+    
+    This commit turns on the Hadamard transform based rate distortion
+    estimate for all block sizes in RTC coding mode. It conditionally
+    skips the rate distortion estimation if all zero block flag is set
+    on. No significant encoding speed change is observed. The
+    compression [1;31mperf[mormance of speed -6 is improved by 1.7% over using
+    it only for block sizes of 32x32 and below.
+    
+    Change-Id: I768145e6f05c737b05b5b5f1ee674e929532cafb
+
+[33mcommit 60e01c65302d08e3e8c5b7f22a111b003545dc34[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Apr 3 09:20:25 2015 -0700
+
+    Account for eob cost in the RTC mode decision process
+    
+    This commit accounts for the transform block end of coefficient flag
+    cost in the RTC mode decision process. This allows a more precise
+    rate estimate. It also turns on the model to block sizes up to 32x32.
+    The test sequences shows about 3% - 5% speed penalty for speed -6.
+    The average compression [1;31mperf[mormance improvement for speed -6 is
+    1.58% in PSNR. The compression gains for hard clips like jimredvga,
+    mmmoving, and tacomascmv at low bit-rate range are 1.8%, 2.1%, and
+    3.2%, respectively.
+    
+    Change-Id: Ic2ae211888e25a93979eac56b274c6e5ebcc21fb
+
+[33mcommit ebe1be9186b4f20e8d30c4bbad79ba78403de0d2[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Mar 31 09:25:21 2015 -0700
+
+    Allow block skip coding option in RTC mode
+    
+    When the estimated rate-distortion cost of skip coding mode is
+    lower than that of sending quantized coefficients, allow the
+    encoder to drop these coefficients. This improves the compression
+    [1;31mperf[mormance of speed -6 by 0.268% and makes the encoding speed
+    slightly faster.
+    
+    Change-Id: Idff2d7ba59f27ead33dd5a0e9f68746ed3c2ab68
+
+[33mcommit 26d3d3af6ace50ee20c474771a580e38f86c7864[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Mar 30 12:31:46 2015 -0700
+
+    Enable 16x16 Hadamard transform in SATD based mode decision
+    
+    This commit replaces the 16x16 2D-DCT transform with Hadamard
+    transform for RTC coding mode. It reduces the CPU cycles cost
+    on 16x16 transform by 5X. Overall it makes the speed -6 encoding
+    speed 1.5% faster without compromise on compression [1;31mperf[mormance.
+    
+    Change-Id: If6c993831dc4c678d841edc804ff395ed37f2a1b
+
+[33mcommit b4b5af6acddfec0bf28a79f74afb15de3dee6f66[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Mar 30 11:09:29 2015 -0700
+
+    Use SATD based mode decision for block sizes below 16x16
+    
+    This commit makes the encoder to select between SATD/variance as
+    metric for mode decision. It also allows to account chroma
+    component costs for mode decision as well. The overall encoding
+    time increase as compared to variance based mode selection is about
+    15% for speed -6. The compression [1;31mperf[mormance is on average 2.2%
+    better than variance based approach, with about 5% compression
+    [1;31mperf[mormance gains for hard clips (e.g., jimredvga, nikas720p, and
+    mmmoving) at lower bit-rate range.
+    
+    Change-Id: I4d04a31d36f4fcb3f5f491dacd6e7fe44cb9d815
+
+[33mcommit 8c411f74e000457b43bc75093b5908819b34e394[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Mar 23 10:02:42 2015 -0700
+
+    Hadamard transform based coding mode decision process
+    
+    This commit uses Hadamard transform based rate-distortion cost
+    estimate for rtc coding mode decision. It improves the compression
+    [1;31mperf[mormance of speed -6 for many hard clips at lower bit-rates.
+    For example, 5.5% for jimredvga, 6.7% for mmmoving, 6.1% for
+    niklas720p. This will introduce extra encoding cycle costs at
+    this point.
+    
+    Change-Id: Iaf70634fa2417a705ee29f2456175b981db3d375
+
+[33mcommit 9a1ce7be7d4a3056b9da1df64cb7d5115a513dd9[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Fri Mar 6 17:21:36 2015 +0000
+
+    Experimental rd bias based on source vs recon variance.
+    
+    This experiment biases the rd decision based on the impact
+    a mode decision has on the relative spatial complexity of the
+    reconstruction vs the source.
+    
+    The aim is to better retain a semblance of texture even if it
+    is slightly misaligned / wrong, rather than use a simple rd
+    measure that tends to favor use of a flat predictor if a [1;31mperf[mect
+    match can't be found.
+    
+    This improves the appearance of texture and visual quality
+    on specific test clips but is hidden under a flag and currently
+    off by default pending visual quality testing on a wider Yt set.
+    
+    Change-Id: Idf6e754a8949bf39ed9d314c6f2daaa20c888aad
+For keyword optim:
+[33mcommit aa8f85223b7ed3568914c10dba0cd76d530d3369[m
+Author: Geza Lore <gezalore@gmail.com>
+Date:   Thu Oct 15 18:28:31 2015 +0100
+
+    Optimize vp9_highbd_block_error_8bit assembly.
+    
+    A new version of vp9_highbd_error_8bit is now available which is
+    [1;31moptim[mized with AVX assembly. AVX itself does not buy us too much, but
+    the non-destructive 3 operand format encoding of the 128bit SSEn integer
+    instructions helps to eliminate move instructions. The Sandy Bridge
+    micro-architecture cannot eliminate move instructions in the processor
+    front end, so AVX will help on these machines.
+    
+    Further 2 [1;31moptim[mizations are applied:
+    
+    1. The common case of computing block error on 4x4 blocks is [1;31moptim[mized
+    as a special case.
+    2. All arithmetic is speculatively done on 32 bits only. At the end of
+    the loop, the code detects if overflow might have happened and if so,
+    the whole computation is re-executed using higher precision arithmetic.
+    This case however is extremely rare in real use, so we can achieve a
+    large net gain here.
+    
+    The [1;31moptim[mizations rely on the fact that the coefficients are in the
+    range [-(2^15-1), 2^15-1], and that the quantized coefficients always
+    have the same sign as the input coefficients (in the worst case they are
+    0). These are the same assumptions that the old SSE2 assembly code for
+    the non high bitdepth configuration relied on. The unit tests have been
+    updated to take this constraint into consideration when generating test
+    input data.
+    
+    Change-Id: I57d9888a74715e7145a5d9987d67891ef68f39b7
+
+[33mcommit 9cfba09ac0e5182722bc562a5a071388611c2a04[m
+Author: Geza Lore <gezalore@gmail.com>
+Date:   Mon Oct 19 14:05:35 2015 +0100
+
+    Optimize vpx_quantize_{b,b_32x32} assembler.
+    
+    Added [1;31moptim[mization of the 8 bit assembly quantizer routines. This makes
+    these functions up to 100% faster, depending on encoding parameters.
+    
+    This patch maskes the encoder faster in both the high bitdepth and 8bit
+    configurations. In the high bitdepth configuration, it effects profile 0
+    only.
+    
+    Based on my profiling using 1080p input the net gain is between 1-3% for
+    the 8 bit config, and around 2.5-4.5% for the high bitdepth config,
+    depending on target bitrate. The difference between the 8 bit and high
+    bitdepth configurations for the same encoder run is reduced by 1% in all
+    cases I have profiled.
+    
+    Change-Id: I86714a6b7364da20cd468cd784247009663a5140
+
+[33mcommit 0134764fa6be4c46bd24b7bcf2fd092321335341[m
+Author: Geza Lore <gezalore@gmail.com>
+Date:   Thu Oct 8 15:44:49 2015 +0100
+
+    Optimization of 8bit block error for high bitdepth
+    
+    If high bit depth configuration is enabled, but encoding in profile 0,
+    the code now falls back on [1;31moptim[mized SSE2 assembler to compute the
+    block errors, similar to when high bit depth is not enabled.
+    
+    Change-Id: I471d1494e541de61a4008f852dbc0d548856484f
+
+[33mcommit ce3f4ade670cf02e05998f4ca50e08736802f5e7[m
+Merge: 7266bedc0 37c68efee
+Author: Deb Mukherjee <debargha@google.com>
+Date:   Tue Oct 6 22:28:11 2015 +0000
+
+    Merge "SSSE3 [1;31moptim[misation for quantize in high bit depth"
+
+[33mcommit 37c68efee2daa98d8abc9853d2210477d5c0104f[m
+Author: Julia Robson <juliamrobson@gmail.com>
+Date:   Tue Oct 6 12:11:14 2015 +0100
+
+    SSSE3 [1;31moptim[misation for quantize in high bit depth
+    
+    When configured with high bit detpth enabled, the 8bit quantize
+    function stopped using [1;31moptim[mised code. This made 8bit content
+    decode slowly. This commit re-enables the SSSE3 [1;31moptim[misations.
+    
+    Change-Id: I194b505dd3f4c494e5c5e53e020f5d94534b16b5
+
+[33mcommit 5e6533e70730e0798b4b00d795d400bc87f8927c[m
+Author: Julia Robson <juliamrobson@gmail.com>
+Date:   Fri Oct 2 10:20:06 2015 +0100
+
+    SSE2 [1;31moptim[misation for quantize in high bit depth
+    
+    When configured with high bit detpth enabled, the 8bit quantize
+    function stopped using [1;31moptim[mised code. This made 8bit content
+    decode slowly. This commit re-enables the SSE2 [1;31moptim[misation
+    (but not the SSSE3 [1;31moptim[misation).
+    
+    Change-Id: Id015fe3c1c44580a4bff3f4bd985170f2806a9d9
+
+[33mcommit 406030d1b0278b1373c62e1a70fb0711e2fbde2b[m
+Author: Julia Robson <juliamrobson@gmail.com>
+Date:   Mon Sep 28 16:50:39 2015 +0100
+
+    Accelerated transform in high bit depth
+    
+    When configured with high bitdepth enabled, the 8bit transform
+    stopped using [1;31moptim[mised code. This made 8bit content decode slowly.
+    
+    Change-Id: I67d91f9b212921d5320f949fc0a0d3f32f90c0ea
+
+[33mcommit 4d1424faf95df177b4815064ac2d1d7f1b75b5e4[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Sep 14 10:13:33 2015 -0700
+
+    For 1 pass: always use the normative filter in vp9_scale_if_required()
+    
+    The normative (convolve8) filter is [1;31moptim[mized/faster than
+    the nonnormative one. Pass usage of scaler (normative/nonomorative)
+    to vp9_scale_if_required(), and always use normative one for 1 pass.
+    
+    Change-Id: I2b71d9ff18b3c7499b058d1325a9554de993dd52
+
+[33mcommit b6d71a308ce4a110652d737c6e9f6cf65c1e8e96[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Sep 9 12:29:57 2015 -0700
+
+    Fix ioc warnings related to sub8x8 reference frame
+    
+    Access scaled reference frame in the sub8x8 rate-distortion
+    [1;31moptim[mization loop only when the current test mode is an inter mode.
+    This prevents an ioc warning triggered by sending intra_frame index
+    to fetch scaled reference frame.
+    
+    Change-Id: I6177ecc946651dd86c7ce362e3f65c4074444604
+
+[33mcommit 50461166b748b00ea18e6e362b8b1bba0709ab91[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Sep 8 09:53:23 2015 -0700
+
+    Enable sub8x8 inter mode with scaled ref frame in RD [1;31moptim[mization
+    
+    This commit allows the encoder to include sub8x8 inter mode with
+    scaled reference frame in the rate-distortion [1;31moptim[mization scheme.
+    
+    Change-Id: Ibbe9678801592826ef22566566dcdeeb008350d5
+
+[33mcommit 195883023bb39b5ee5c6811a316ab96d9225034d[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Wed Sep 2 13:15:52 2015 -0700
+
+    VPX: subpixel_8t_ssse3 asm using x86inc
+    
+    This is based on the original patch [1;31moptim[mized for 32bit
+    platforms by Tamar/Ilya and now uses the x86inc style asm.
+    The assembly was also modified to support 64bit platforms.
+    
+    Change-Id: Ice12f249bbbc162a7427e3d23fbf0cbe4135aff2
+
+[33mcommit 15de7bd3344910c70a93c36bc4d3b71f65d79aa5[m
+Merge: c54d16501 afd2f68da
+Author: James Zern <jzern@google.com>
+Date:   Thu Aug 6 19:28:49 2015 +0000
+
+    Merge "Revert "VP9_COPY_CONVOLVE_SSE2 [1;31moptim[mization""
+
+[33mcommit afd2f68daef62d1185ba1e65971fdd3a7fc1d8eb[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Aug 4 17:52:57 2015 -0700
+
+    Revert "VP9_COPY_CONVOLVE_SSE2 [1;31moptim[mization"
+    
+    This reverts commit a5e97d874b16ae5826b68515f1e35ffb44361cf8.
+    
+    Additionally:
+    Revert "vpx_convolve_copy_sse2: fix win64"
+    
+    This reverts commit 22a8474fe7ec30d96f746dc6e4b23771758c071e.
+    
+    This change performs poorly on various x86_64 devices affecting
+    performance by 1-3% at 1080P. Performance on chromebook like devices was
+    mixed neutral to slightly negative, so there should be minimal change
+    there.
+    
+    Change-Id: I95831233b4b84ee96369baa192a2d4cc7639658c
+
+[33mcommit 805a12c75b9c4c2f8631b3aa3ea636d696166c17[m
+Merge: 814e1346a d35f99259
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Aug 4 04:30:44 2015 +0000
+
+    Merge "mips msa vp8 denoising filter [1;31moptim[mization"
+
+[33mcommit 814e1346a61c9c5a1fe2bd2ccbfd025a398ed636[m
+Merge: cc4c5de22 1579bb88c
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Aug 4 04:30:22 2015 +0000
+
+    Merge "mips msa vpx convolve [1;31moptim[mzation"
+
+[33mcommit cc4c5de22f76e53b1e816f21fcdb910934855c00[m
+Merge: 5a9f36d39 9b375871d
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Aug 4 04:30:11 2015 +0000
+
+    Merge "mips msa vpx subpel variance [1;31moptim[mization"
+
+[33mcommit 1579bb88c5f2015e3d947d2d067824426f945715[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Aug 3 14:03:40 2015 +0530
+
+    mips msa vpx convolve [1;31moptim[mzation
+    
+    Removed redundant clip/saturate code from 2tap filter functions
+    average improvement 10%-40%
+    
+    Change-Id: I1dafb5f7d2ce7a021d883d8af30fb93cd9ace173
+
+[33mcommit 9b375871db69f7d65c3bc79857fafafc47b9812b[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Aug 3 13:00:55 2015 +0530
+
+    mips msa vpx subpel variance [1;31moptim[mization
+    
+    Removed redundant clip/saturate code from 2tap filter functions
+    average improvement 20%-40%
+    
+    Change-Id: I362540b0c7d5d3d69932c39d61b7d2a44da533d2
+
+[33mcommit d35f992599f1f5460bd6a9320247f12b90937907[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Sat Aug 1 08:05:25 2015 +0530
+
+    mips msa vp8 denoising filter [1;31moptim[mization
+    
+    average improvement ~2x-3x
+    
+    Change-Id: I6c17012c731fa4d56e0343f8de0df47b2dde289b
+
+[33mcommit c1b233dd43dfc257476e8775765c7907c3a851b2[m
+Merge: 4dc390b15 8fbc64154
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Sat Aug 1 02:12:20 2015 +0000
+
+    Merge "mips msa vp8 temporal filter [1;31moptim[mization"
+
+[33mcommit d8642d831f03d0a339b711e252c34ce34a9903f0[m
+Merge: e184b613b a5e97d874
+Author: James Zern <jzern@google.com>
+Date:   Fri Jul 31 23:22:34 2015 +0000
+
+    Merge "VP9_COPY_CONVOLVE_SSE2 [1;31moptim[mization"
+
+[33mcommit a5e97d874b16ae5826b68515f1e35ffb44361cf8[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Thu Jul 30 05:02:04 2015 -0700
+
+    VP9_COPY_CONVOLVE_SSE2 [1;31moptim[mization
+    
+    This function suffers from a couple problems in small core(tablets):
+    -The load of the next iteration is blocked by the store of previous iteration
+    -4k aliasing (between future store and older loads)
+    -current small core machine are in-order machine and because of it the store will spin the rehabQ until the load is finished
+    fixed by:
+    - prefetching 2 lines ahead
+    - unroll copy of 2 rows of block
+    - pre-load all xmm regiters before the loop, final stores after the loop
+    The function is [1;31moptim[mized by:
+    copy_convolve_sse2 64x64 - 16%
+    copy_convolve_sse2 32x32 - 52%
+    copy_convolve_sse2 16x16 - 6%
+    copy_convolve_sse2 8x8 - 2.5%
+    copy_convolve_sse2 4x4 - 2.7%
+    credit goes to Tom Craver(tom.r.craver@intel.com) and Ilya Albrekht(ilya.albrekht@intel.com)
+    
+    Change-Id: I63d3428799c50b2bf7b5677c8268bacb9fc29671
+
+[33mcommit 8fbc641540d78000be05a5b0357d9b04e1cb2132[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jul 31 12:03:19 2015 +0530
+
+    mips msa vp8 temporal filter [1;31moptim[mization
+    
+    average improvement ~2x-3x
+    
+    Change-Id: I05593bed583234dc7809aaec6cab82773a29505d
+
+[33mcommit 0e3f494b217bde5e1d47107cdfbb044e4d801cec[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jul 31 09:29:10 2015 +0530
+
+    mips msa vp8 block subtract [1;31moptim[mization
+    
+    average improvement ~2x-3x
+    
+    Change-Id: I30abf4c92cddcc9e87b7a40d4106076e1ec701c2
+
+[33mcommit e3ee8c292b8abb9de718af76f19d5cd40f5c9655[m
+Merge: 3b2e73b9a 56aa0da40
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jul 31 03:44:03 2015 +0000
+
+    Merge "mips msa vp8 quantize [1;31moptim[mization"
+
+[33mcommit 3b2e73b9a476ad1b6cffb126118e394c65cfecab[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Jul 29 13:37:41 2015 -0700
+
+    Remove tx cache and speed up tx size selection
+    
+    1. The RD scores obtained during the tx size selection were stored in the
+    tx cache, and used to help make the tx decision for the following frames.
+    This wasn't used anymore in VP9 encoder. Recovered the related decision
+    making code from 1.5+ years ago, and borg tests didn't show any quality
+    gain. This patch removed it to lower the complexity.
+    
+    2. An [1;31moptim[mization was done after the above refactoring. If the tx_mode
+    is not TX_MODE_SELECT, we only need to test the chosen tx size instead
+    of all posible tx sizes. This gave a 1.5% average speed gain at speed 2,
+    and a 1% average speed gain at speed 3.
+    
+    Change-Id: Id8cd650e066a8cef33829d8c15388a8138adc78c
+
+[33mcommit 56aa0da405b072447bf8165650983fdb36d272a5[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jul 30 10:56:40 2015 +0530
+
+    mips msa vp8 quantize [1;31moptim[mization
+    
+    average improvement ~2x-3x
+    
+    Change-Id: I6fc37191bf9cb5a67e1af9787d0d27659c17bdba
+
+[33mcommit 0c2a14f9e24fda448161bbaf13878b202ea57f1f[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jul 30 08:14:42 2015 +0530
+
+    mips msa vp8 fdct [1;31moptim[mization
+    
+    average improvement ~2x-4x
+    
+    Change-Id: Id0bc600440f7ef53348f585ebadb1ac6869e9a00
+
+[33mcommit 7c6ae373acf4419c0e1b7e615ed58a051222afff[m
+Merge: 583c20527 a5d9416fd
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jul 30 02:34:06 2015 +0000
+
+    Merge "mips msa vp8 post proc [1;31moptim[mization"
+
+[33mcommit a5d9416fd7da3f66485642af9a6f62f686d3b70a[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 29 09:40:26 2015 +0530
+
+    mips msa vp8 post proc [1;31moptim[mization
+    
+    average improvement ~2x-4x
+    
+    Change-Id: I93abc15389649c169bb8b69127c0b95407d34692
+
+[33mcommit ce4c4b96e4ad28c2ba326629dd9ffdab95d63274[m
+Merge: f42012e52 5deb98374
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 29 04:00:41 2015 +0000
+
+    Merge "mips msa vp8 filter by weight [1;31moptim[mization"
+
+[33mcommit 5deb9837447cee8e2239bad5844d5b904b62e773[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jul 28 08:16:34 2015 +0530
+
+    mips msa vp8 filter by weight [1;31moptim[mization
+    
+    average improvement ~3x-5x
+    
+    Change-Id: Ia808ae56b118e0e1b293901447aa5a0f597b405b
+
+[33mcommit f8b869f573cd2503847f80043bfd4751a78a091b[m
+Merge: 4f08d3d6c af6733aec
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jul 28 02:27:31 2015 +0000
+
+    Merge "mips msa vp8 recon intra [1;31moptim[mization"
+
+[33mcommit af6733aec65f49c6dd5306d4f5bca60f7af4824b[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Sat Jul 25 12:32:26 2015 +0530
+
+    mips msa vp8 recon intra [1;31moptim[mization
+    
+    average improvement ~3x-5x
+    
+    Change-Id: I73306863e9bf172d5adc06b8dd54e43985d1e063
+
+[33mcommit 16dcf013d37d57ced6e97b74b46f083375a29d50[m
+Merge: a15edeb76 fb73ceae8
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jul 24 18:16:23 2015 +0000
+
+    Merge "mips msa vp8 bilinear filter [1;31moptim[mization"
+
+[33mcommit fb73ceae854bd7a3be1f9203844cecb24c5e543d[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jul 24 09:21:35 2015 +0530
+
+    mips msa vp8 bilinear filter [1;31moptim[mization
+    
+    average improvement ~3x-4x
+    
+    Change-Id: I8c0b3d5c86c9eb4f802b87c971864d2cfceeb7cc
+
+[33mcommit fd660f0164a2857ef2d3ec170f4efe6eccfeb60f[m
+Merge: d4657a7ef 509fb0bc9
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jul 24 03:43:37 2015 +0000
+
+    Merge "mips msa vp8 copy mem [1;31moptim[mization"
+
+[33mcommit 509fb0bc9dbdbd7380bbc5a5d318ccf51e6b62dc[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jul 23 10:29:40 2015 +0530
+
+    mips msa vp8 copy mem [1;31moptim[mization
+    
+    average improvement ~2x-4x
+    
+    Change-Id: I3af3ecced96c5b8e0cb811256e5089e28fe013a2
+
+[33mcommit 00a35fdedacde01a8a2bb23cae1e1270d7834c3a[m
+Merge: 963b9b881 55c0df5ef
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jul 23 01:03:39 2015 +0000
+
+    Merge "mips msa vp8 sixtap filter [1;31moptim[mization"
+
+[33mcommit 2cdd3beac90cf35eab5ff0d25da937150fca2bc0[m
+Merge: aeee70f9d 1d7f1ca7d
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jul 21 06:07:00 2015 +0000
+
+    Merge "mips msa vp9 avg subpel variance [1;31moptim[mization rebased"
+
+[33mcommit f62805fae0e0dcf5a45ee51d73c416241e3af786[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Jul 20 15:11:43 2015 -0700
+
+    Make local functions in vp9_dct.c static
+    
+    This commit limits the scope of 1-D DCT and ADST functions within
+    vp9_dct.c and makes them static. This largely clears out the cross
+    referencing issue between vp9_dct.c and the SIMD [1;31moptim[mizations.
+    
+    Change-Id: If7cac478b11bb32328ccf70a9f60b709dad43d7f
+
+[33mcommit 50adfdf5baf4243eecacb94282141568ef4b666a[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 15 19:14:54 2015 -0700
+
+    Migrate loop filter functions from vp9/ to vpx_dsp/
+    
+    The various tap loop filter operations are common functions across
+    codec. This commit moves them along with SIMD [1;31moptim[mizations to
+    vpx_dsp folder.
+    
+    Change-Id: Ia5fa0b2e5289cdb98467502a549c380b9c60e92c
+
+[33mcommit 55c0df5ef13f2c828b968788a319f27bf5b944cf[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Jul 13 09:23:52 2015 +0530
+
+    mips msa vp8 sixtap filter [1;31moptim[mization
+    
+    average improvement ~3x-5x
+    
+    Change-Id: I5fd88cb088814be443d04be384b9fca99b22adef
+
+[33mcommit e4fb53ea6effe1873c6eb025ccac9f4e88771d46[m
+Merge: db50037ec 0ea2684c2
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Jul 13 01:16:42 2015 +0000
+
+    Merge "mips msa vp8 loop filter [1;31moptim[mization"
+
+[33mcommit b770def572e91c563bfa4bc18b4c7d271ed55bc2[m
+Merge: 340d82efb 3c5256d57
+Author: Frank Galligan <fgalligan@google.com>
+Date:   Wed Jul 8 18:15:38 2015 +0000
+
+    Merge "VP9_LPF_VERTICAL_16_DUAL_SSE2 [1;31moptim[mization"
+
+[33mcommit 0ea2684c2ca596675aaa993acb4bf235559c03a5[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 8 12:41:00 2015 +0530
+
+    mips msa vp8 loop filter [1;31moptim[mization
+    
+    average improvement ~2x-4x
+    
+    Change-Id: I20c4f900ef95d99b18f9cf4db592cd352c2212eb
+
+[33mcommit 1d7f1ca7da1d4e49615788394d307477aa7573a2[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 8 12:07:28 2015 +0530
+
+    mips msa vp9 avg subpel variance [1;31moptim[mization rebased
+    
+    Change-Id: Ia21987010dbb688e2a8fa204ca9129d2f34c9581
+
+[33mcommit ea5450b2802178ed5b8298f89d7e760000058d59[m
+Merge: 3caf2bb60 a8f8b83ce
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Tue Jul 7 19:28:56 2015 +0000
+
+    Merge "Allows using [1;31moptim[mzed version vp9_fdct8x8"
+
+[33mcommit 45b7e160d8ebc12b7a8529b482b907400c2514af[m
+Merge: 9cb3a1342 3d938d71b
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jul 7 18:14:18 2015 +0000
+
+    Merge "mips msa vp8 idct [1;31moptim[mization"
+
+[33mcommit a8f8b83cef8589cc064b960f9f77dacd25a67ae0[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Tue Jul 7 10:28:42 2015 -0700
+
+    Allows using [1;31moptim[mzed version vp9_fdct8x8
+    
+    Change-Id: I59cecb7178a93cdee7ad535fa996ef0caa6e988c
+
+[33mcommit 0ede9f52b796b6d8e02046b24f68a3db8b9f5920[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Jul 6 16:52:24 2015 -0700
+
+    Unify subtract function used in VP8/9
+    
+    This commit replaces the vp8_ prefixed subtract function with the
+    common vpx_subtract_block function. It removes redundant SIMD
+    [1;31moptim[mization codes and unit tests.
+    
+    Change-Id: I42e086c32c93c6125e452dcaa6ed04337fe028d9
+
+[33mcommit 3d938d71b029a9c0b2127b32750d323848ea2ce9[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jul 2 18:08:06 2015 +0530
+
+    mips msa vp8 idct [1;31moptim[mization
+    
+    average improvement ~2x-5x
+    
+    Change-Id: I19e82f78772993bcd67fcf975fe180232172f86d
+
+[33mcommit 33a0deb92835500f4f1edf71fe085f530acd0cc5[m
+Merge: 8c6d5a874 6abf1aea6
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jul 7 02:10:21 2015 +0000
+
+    Merge "mips msa vpx_dsp sadx3 sadx8 [1;31moptim[mization"
+
+[33mcommit 1696114587368ba8d48f23dda32a98a86c37242d[m
+Merge: fcb5a8692 fbe67d307
+Author: James Zern <jzern@google.com>
+Date:   Mon Jul 6 22:43:01 2015 +0000
+
+    Merge "mips msa vp9 subpel variance [1;31moptim[mization"
+
+[33mcommit fbe67d307a4edaa1854b6e6435a7d3c4924de9d9[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Sun Jul 5 21:44:06 2015 +0530
+
+    mips msa vp9 subpel variance [1;31moptim[mization
+    
+    Change-Id: If88401bf8c5d8ee58200278734d7a5058d1585d0
+
+[33mcommit 3d4526322ba2446ea31aa29fe6bd5151cd0b9356[m
+Merge: 4c5ac477c 97946622c
+Author: James Zern <jzern@google.com>
+Date:   Thu Jul 2 21:07:31 2015 +0000
+
+    Merge "Revert "mips msa vp9 subpel variance [1;31moptim[mization""
+
+[33mcommit 4c5ac477cb90373eb252ba529ae87cbf0202f54f[m
+Merge: 8565a1c99 ced982640
+Author: James Zern <jzern@google.com>
+Date:   Thu Jul 2 21:07:22 2015 +0000
+
+    Merge "Revert "mips msa vp9 avg subpel variance [1;31moptim[mization""
+
+[33mcommit 97946622c05575d2b9c205fed9b77a1a916c0374[m
+Author: James Zern <jzern@google.com>
+Date:   Thu Jul 2 12:02:52 2015 -0700
+
+    Revert "mips msa vp9 subpel variance [1;31moptim[mization"
+    
+    This reverts commit a42df86c035d1bc007dbc816b4b758605135d6d9.
+    
+    this change causes MSA/VP9SubpelVarianceTest.Ref and
+    MSA/VP9SubpelVarianceTest.ExtremeRef failures under
+    mips32r5el-msa-linux-gnu and mips64r6el-msa-linux-gnu
+    
+    Change-Id: I40b71a0b774eaeb31f66f795733f95cf360909f7
+
+[33mcommit ced982640b981751ecce62e5d8276fa81ee230e3[m
+Author: James Zern <jzern@google.com>
+Date:   Thu Jul 2 12:01:16 2015 -0700
+
+    Revert "mips msa vp9 avg subpel variance [1;31moptim[mization"
+    
+    This reverts commit 61774ad1c44c73ccde48a2e3456e86196965b5dc.
+    
+    this change causes MSA/VP9SubpelAvgVarianceTest.Ref failures under
+    mips32r5el-msa-linux-gnu and mips64r6el-msa-linux-gnu
+    
+    Change-Id: I7fb520c12b2a3b212d5e84b7619a380a48e49bb0
+
+[33mcommit 3c5256d572152f2937a741076491ab5cf22eafa0[m
+Author: Tamar Levy <tamar.levy@intel.com>
+Date:   Wed Apr 29 11:54:11 2015 -0700
+
+    VP9_LPF_VERTICAL_16_DUAL_SSE2 [1;31moptim[mization
+    
+    The vp9_lpf_vertical_16_dual function [1;31moptim[mized for x86 32bit target. The hot code in that function was caused by the call to the transpose8x16.
+    The gcc generated assembly created uneeded fills and spills to the stack. By interleaving 2 loads and unpack instructions, in addition to hoisting the consumer
+    instruction closer to the producer instructions, we eliminated most of the fills and spills and improve the function-level performance by 17%.
+    credit for writing the function as well as finding the root cause goes to Erik Niemeyer (erik.a.niemeyer@intel.com)
+    
+    Change-Id: I6173cf53956d52918a047d1c53d9a673f952ec46
+
+[33mcommit 6abf1aea6323df0bcc27e3806f8efda27837ba78[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jul 2 08:02:19 2015 +0530
+
+    mips msa vpx_dsp sadx3 sadx8 [1;31moptim[mization
+    
+    average improvement ~3x-5x
+    
+    Change-Id: Ifdb4670d31ae83c4e22a4238293d1377b16c90db
+
+[33mcommit 4f7e7c4d49344aa8c5d817cbc3882d24127d65a7[m
+Merge: dc6d954bd 61774ad1c
+Author: James Zern <jzern@google.com>
+Date:   Wed Jul 1 20:05:49 2015 +0000
+
+    Merge "mips msa vp9 avg subpel variance [1;31moptim[mization"
+
+[33mcommit 29a17db9134188f481e8fe5f6955c6d88618acce[m
+Merge: 440995cab bc3ec8ef0
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 1 18:23:08 2015 +0000
+
+    Merge "mips msa vpx_dsp sad sad4d avgsad [1;31moptim[mization"
+
+[33mcommit 61774ad1c44c73ccde48a2e3456e86196965b5dc[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 1 13:46:41 2015 +0530
+
+    mips msa vp9 avg subpel variance [1;31moptim[mization
+    
+    average improvement ~3x-5x
+    
+    Change-Id: Iefbcafc05daab77b38a4e63b551e427867a501a4
+
+[33mcommit bc3ec8ef07b553e478676b8b75462e822f642d80[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 1 11:19:42 2015 +0530
+
+    mips msa vpx_dsp sad sad4d avgsad [1;31moptim[mization
+    
+    average improvement ~3x-5x
+    
+    Change-Id: Ie30748cfbedebbd544b7ef4f286055ccb7f60306
+
+[33mcommit a42df86c035d1bc007dbc816b4b758605135d6d9[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 1 07:32:44 2015 +0530
+
+    mips msa vp9 subpel variance [1;31moptim[mization
+    
+    average improvement ~3x-5x
+    
+    Change-Id: I4cbba2711467b0e205904769ebbb4a1fcbb1a311
+
+[33mcommit c96bb8004e89d311c68d32a662d2b4a4f6691e05[m
+Merge: fc5f3b8f4 2d730a289
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jul 1 01:40:24 2015 +0000
+
+    Merge "mips msa vpx_dsp variance [1;31moptim[mization"
+
+[33mcommit 2d730a289a75b7a098e2c03d6db07fb4fdfd9850[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 26 14:02:16 2015 +0530
+
+    mips msa vpx_dsp variance [1;31moptim[mization
+    
+    average improvement ~2x-4x
+    
+    Change-Id: Ia3eef3f390148c2eb5cdc580a94cb26369737f82
+
+[33mcommit f3a1295cffe62806255bace4abb49c8831b7a61f[m
+Merge: 8fdfeb3f4 b92cc27b7
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Sat Jun 27 01:29:02 2015 +0000
+
+    Merge "mips msa vp9 temporal filter [1;31moptim[mization"
+
+[33mcommit b92cc27b76ee5158515beb2e2656a0117d1c2dda[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 26 12:00:24 2015 +0530
+
+    mips msa vp9 temporal filter [1;31moptim[mization
+    
+    average improvement ~4x-5x
+    
+    Change-Id: Iad9c0a296dbc2ea96d000bd009077999ed58a3c5
+
+[33mcommit c040f96e4b4cf42b48696f1460780bcbed445bb9[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 26 09:23:56 2015 +0530
+
+    mips msa vp9 subtract block [1;31moptim[mization
+    
+    average improvement ~3x-4x
+    
+    Change-Id: Idbe4d13a00d05ff8be6559b116f416e42c3b4097
+
+[33mcommit d017f5ba38ee9176c80cfcf5ef35ebb64d90e3c8[m
+Merge: 1c7b1f9ae 1543f2b60
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 26 03:42:30 2015 +0000
+
+    Merge "mips msa vp9 block error [1;31moptim[mization"
+
+[33mcommit 1543f2b60e1d6e0f4ea89860160cacdfd9eea32e[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jun 23 12:48:50 2015 +0530
+
+    mips msa vp9 block error [1;31moptim[mization
+    
+    average improvement ~3x-4x
+    
+    Change-Id: If0fdcc34b17437a7e3e7fb4caaf1067bc175f291
+
+[33mcommit 7555e2b8225e9387e30288cd4eb5b26414badf14[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jun 23 07:32:25 2015 +0530
+
+    mips msa vp9 avg [1;31moptim[mization
+    
+    average improvement ~2x-3x
+    
+    Change-Id: I76f7fc00c0ffdf2b4ba41bf3819f3b6044bcdeff
+
+[33mcommit 7b71cdb0b4639ffd351717dbc91b52e2109edb99[m
+Merge: fb2a89b1f bc9499914
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jun 23 01:46:52 2015 +0000
+
+    Merge "mips msa vp9 fdct 4x4 [1;31moptim[mization"
+
+[33mcommit bc949991488dc30b6b35313917cca74326d3ba6b[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Jun 22 14:30:24 2015 +0530
+
+    mips msa vp9 fdct 4x4 [1;31moptim[mization
+    
+    average improvement ~2x-3x
+    
+    Change-Id: Idf8be780b8b4228fc91f110a94e4ee1fd9af0163
+
+[33mcommit b6131a733d0ce09b053a2f4e866510c9b77452e7[m
+Merge: 7b480ee90 7ca84888c
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Sat Jun 20 02:58:08 2015 +0000
+
+    Merge "mips msa vp9 fdct 8x8 [1;31moptim[mization"
+
+[33mcommit 7ca84888c23af29d34c7fc05f8860ab6acb29e3a[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jun 18 12:03:30 2015 +0530
+
+    mips msa vp9 fdct 8x8 [1;31moptim[mization
+    
+    average improvement ~4x-5x
+    
+    Change-Id: I37582efc2622bc20b2bf99617a76110ab24e9f6a
+
+[33mcommit b6ea0c4c5774ecf223e0ad39bbdc2a08ed323e77[m
+Merge: 7f6cddb58 d9fedf783
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jun 18 04:30:52 2015 +0000
+
+    Merge "mips msa vp9 fdct 32x32 [1;31moptim[mization"
+
+[33mcommit d9fedf7832292b4f8f83d60444064dc5066cb0e1[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jun 17 07:53:06 2015 +0530
+
+    mips msa vp9 fdct 32x32 [1;31moptim[mization
+    
+    average improvement ~4x-6x
+    
+    Change-Id: Ibcac3ef8ed5e207cf8c121e696570e6b63d3c0f4
+
+[33mcommit fa53008fb739f2ce64a391552cc50804321683c1[m
+Merge: 97b3913dc 89b4b315a
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jun 17 01:21:57 2015 +0000
+
+    Merge "mips msa vp9 fdct 16x16 [1;31moptim[mization"
+
+[33mcommit 89b4b315aa3b2ff90766672272af69505cd13f0f[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Sat Jun 13 10:18:47 2015 +0530
+
+    mips msa vp9 fdct 16x16 [1;31moptim[mization
+    
+    average improvement ~4x-6x
+    
+    Change-Id: Id3b2243e5b3c7844c90c4231a5e75fa69911362c
+
+[33mcommit ecbbef6b67efab352af6a45333263bc2ead64cc5[m
+Merge: 254a4c033 fbac961b4
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 12 18:30:10 2015 +0000
+
+    Merge "mips msa vp9 filter by weight [1;31moptim[mization"
+
+[33mcommit 4f52d49f1e21dde76640f22c5932ce6ec08cb534[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Jun 12 10:38:45 2015 -0700
+
+    Add dynamic range comment to hadamard_8x8()
+    
+    Add comment to assist SIMD [1;31moptim[mization.
+    
+    Change-Id: I300d5a848e6e9947e451de2a871a88940703fc9f
+
+[33mcommit fbac961b4763f276e97cfee217e327f91bb9c456[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jun 11 09:11:04 2015 +0530
+
+    mips msa vp9 filter by weight [1;31moptim[mization
+    
+    filter by weight - average improvement ~2x-3x
+    
+    Change-Id: I4832033335d339cdafdce697f07ce3e643920057
+
+[33mcommit c7489f48151c482d10e9c880ddf1313f5a210be9[m
+Merge: 44afbbb72 a2288d274
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jun 11 03:31:48 2015 +0000
+
+    Merge "mips msa vp9 intra-pred [1;31moptim[mization"
+
+[33mcommit a2288d274c19b6604d10e9261e39feb8b03b6e35[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 5 17:32:34 2015 +0530
+
+    mips msa vp9 intra-pred [1;31moptim[mization
+    
+    intra pred - average improvement ~2x-3x
+    
+    Change-Id: Ie3f7d6eded5ecb7ed7ee506ba8e4d98f93803b09
+
+[33mcommit 78b434e8b1c770c8abbd719cc838317f1b8e303c[m
+Merge: 0d0db3e8c d43fd9982
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 5 05:32:17 2015 +0000
+
+    Merge "mips msa vp9 loopfilter 4, 8 [1;31moptim[mization"
+
+[33mcommit d43fd99822a501efdc0051562291dba85127a543[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 5 07:52:40 2015 +0530
+
+    mips msa vp9 loopfilter 4, 8 [1;31moptim[mization
+    
+    average improvement ~3x-4x
+    
+    Change-Id: I59279293ce4b2a1e99bd10579ac97740e943643f
+
+[33mcommit dc07cc6fedac6a07dee1607622d119c2e31413ae[m
+Merge: c2cf347fe 914f8f9ee
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri Jun 5 02:15:24 2015 +0000
+
+    Merge "mips msa vp9 loopfilter 16 [1;31moptim[mization"
+
+[33mcommit 914f8f9ee01f1b07005488634b4532b9afbd3892[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jun 4 11:50:41 2015 +0530
+
+    mips msa vp9 loopfilter 16 [1;31moptim[mization
+    
+    average improvement ~3x-4x
+    
+    Change-Id: I8ef263da6ebcf8f20aabaefeccf25a84640ba048
+
+[33mcommit fd891a965572315f971effd908c4a499127cebcf[m
+Merge: ce5e17072 bdfbc3e87
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jun 4 05:44:23 2015 +0000
+
+    Merge "mips msa vp9 convolve8 avg hv [1;31moptim[mization"
+
+[33mcommit bdfbc3e8763791eb54a6629879b040761dfa8554[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jun 4 08:11:01 2015 +0530
+
+    mips msa vp9 convolve8 avg hv [1;31moptim[mization
+    
+    average improvement ~4x-6x
+    
+    Change-Id: I7c8b4f2334491be8a859592606e568bc95d019aa
+
+[33mcommit f1b09c0433b74df430aca9f878f55420701d7f0a[m
+Merge: 5df6c0458 b8c1cdcd1
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Jun 4 01:16:18 2015 +0000
+
+    Merge "mips msa vp9 convolve8 avg horiz [1;31moptim[mization"
+
+[33mcommit ce2ca9f777dcb64932d15af8c27453f993869904[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Wed Jun 3 13:23:27 2015 -0700
+
+    Duplicate reference variance code
+    
+    Some places are using the un[1;31moptim[mized variance function. This was never
+    intended and does not fit into the [1;31moptim[mization framework.
+    
+    Change-Id: Id96238407aad03b0ffd4a46cd183555a026daedc
+
+[33mcommit b8c1cdcd128f421550d4b7b5e4010b311f94eeb9[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jun 3 11:33:42 2015 +0530
+
+    mips msa vp9 convolve8 avg horiz [1;31moptim[mization
+    
+    average improvement ~5x-8x
+    
+    Change-Id: I179a69ec620fbd69979bd128f05d18113618aab4
+
+[33mcommit 179bceffdbc36500d1c46e11dbc70ca8f4496793[m
+Merge: 0601f92a8 c543d38ac
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jun 3 05:58:42 2015 +0000
+
+    Merge "mips msa vp9 convolve8 avg vert [1;31moptim[mization"
+
+[33mcommit c543d38ac7de3c6357993d2e4aa110fd4258c027[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jun 3 09:55:25 2015 +0530
+
+    mips msa vp9 convolve8 avg vert [1;31moptim[mization
+    
+    average improvement ~4x-6x
+    
+    Change-Id: Ia2e6f770da46416ebec31fdcea5cc7878879a9d9
+
+[33mcommit 622beaba67dfd4b12877081a20ff16f98bddee77[m
+Merge: 01853d7ce 54a6f7395
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed Jun 3 04:10:14 2015 +0000
+
+    Merge "mips msa vp9 idct4x4 and iwht4x4 [1;31moptim[mization"
+
+[33mcommit 54a6f739585fc9879df0087304c6979a69c92710[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Jun 2 12:16:28 2015 +0530
+
+    mips msa vp9 idct4x4 and iwht4x4 [1;31moptim[mization
+    
+    average improvement ~3x-4x
+    moved assert to respective files
+    
+    Change-Id: I6c915059d456a00bdd76fab0dd2eede8b6c6ea58
+
+[33mcommit 0d2f348392754a1e5a06ea7e08cbae73c965f6eb[m
+Author: James Zern <jzern@google.com>
+Date:   Mon May 11 19:36:59 2015 -0700
+
+    tests: add test_intra_pred_speed
+    
+    useful for speed testing / verifying individual function [1;31moptim[mizations;
+    currently tests non-high-bitdepth VP9 intra predictors
+    
+    Change-Id: Ibd247765e43a31894697d43f1d39d312e0ba2090
+
+[33mcommit 686616a98959e901df8cd8d13082f2fcdf74decd[m
+Merge: f72af2630 7c5f00f86
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed May 13 04:36:32 2015 +0000
+
+    Merge "mips msa vp9 idct 8x8 [1;31moptim[mization"
+
+[33mcommit 7c5f00f868357146e70e78bcf8f3f95412309826[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri May 8 12:23:27 2015 +0530
+
+    mips msa vp9 idct 8x8 [1;31moptim[mization
+    
+    average improvement ~4x-6x
+    
+    Change-Id: I5edf713721b9e24c7e0ce2e69d8fc3ecab625d91
+
+[33mcommit a8a9c2bb45868fb9009ca1ce8e9a4d14947855a3[m
+Merge: 11a4a3c06 1601c1385
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Fri May 8 04:27:43 2015 +0000
+
+    Merge "mips msa vp9 idct 32x32 [1;31moptim[mization"
+
+[33mcommit 1601c1385a2edd87d9d4f23220f75e9de948d27f[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed May 6 12:37:38 2015 +0530
+
+    mips msa vp9 idct 32x32 [1;31moptim[mization
+    
+    average improvement ~4x-6x
+    
+    Change-Id: Idaba7e49fbd7f388caee0d73773ccf6e4807ef17
+
+[33mcommit d1cdda88bd3d98b4e8c84dafa3dfecfebbfb8c88[m
+Merge: ccae5d99d 60052b618
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Wed May 6 06:40:54 2015 +0000
+
+    Merge "mips msa vp9 idct 16x16 [1;31moptim[mization"
+
+[33mcommit 60052b618f69768f3ce82212bd55e722685c59c9[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon May 4 13:45:55 2015 +0530
+
+    mips msa vp9 idct 16x16 [1;31moptim[mization
+    
+    average improvement ~4x-6x
+    
+    Change-Id: I55e95b7f2ba403dff11813958dc7c73a900dd022
+
+[33mcommit 47767609fed41f0273d4786f0e26f3d44f60500e[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Thu Apr 30 09:01:49 2015 -0700
+
+    Remove vp9_idct16x16_10_add_ssse3()
+    
+    The rotation computation using 2X of cos(pi/16) has a potential to
+    overflow 32 bit, this commit disable the function to allow further
+    investigation and [1;31moptim[mization.
+    
+    Change-Id: I4a9803bc71303d459cb1ec5bbd7c4aaf8968e5cf
+
+[33mcommit 95cb130f327e233443a750816bc2af72fa972baf[m
+Merge: d45870be8 2301d10f7
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Apr 30 04:39:11 2015 +0000
+
+    Merge "mips msa vp9 copy and avg convolve [1;31moptim[mization"
+
+[33mcommit 2301d10f739a13f9f04eb016036e044484cf9d5d[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Apr 27 12:26:10 2015 +0530
+
+    mips msa vp9 copy and avg convolve [1;31moptim[mization
+    
+    average improvement ~3x-5x
+    
+    Change-Id: I422e4c33ea7e6d6783ba40029438ccf21b0e76bb
+
+[33mcommit 1c9af9833d5b1d61abe76343129c61ac33dc9fb3[m
+Merge: 3b35e962e ca90d4fd9
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Apr 21 22:08:25 2015 -0700
+
+    Merge "mips msa vp9 convolve8 horiz [1;31moptim[mization"
+
+[33mcommit ca90d4fd960c93d3f923454e52ee5f44664ada5e[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Tue Apr 21 12:27:32 2015 +0530
+
+    mips msa vp9 convolve8 horiz [1;31moptim[mization
+    
+    average improvement ~6x-8x
+    
+    Change-Id: I7c91eec41aada3b0a5231dda7869b3b968f3ad18
+
+[33mcommit 391ecffed91200a5c48f0388ce494d70cc86fc37[m
+Merge: 305492c37 ef51c1ab5
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Apr 20 23:39:24 2015 -0700
+
+    Merge "mips msa vp9 convolve8 hv [1;31moptim[mization"
+
+[33mcommit ef51c1ab5bb3e12f5ef384d96595527057bf173b[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Mon Apr 20 10:56:51 2015 +0530
+
+    mips msa vp9 convolve8 hv [1;31moptim[mization
+    
+    average improvement ~5x-8x
+    
+    Change-Id: I3214734cb3716e742907ce0d2d7a042d953df82b
+
+[33mcommit 2e36149ccd4427feac725ca222f7ab5d8c38e0c7[m
+Merge: 03829f2fe 27d083c1b
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Sat Apr 18 23:39:25 2015 -0700
+
+    Merge "mips msa vp9 convolve8 vert [1;31moptim[mization"
+
+[33mcommit 27d083c1b9bf31b0b55e02766530146f95736726[m
+Author: Parag Salasakar <img.mips1@gmail.com>
+Date:   Thu Apr 16 11:03:24 2015 +0530
+
+    mips msa vp9 convolve8 vert [1;31moptim[mization
+    
+    average improvement ~6x-10x
+    
+    Change-Id: Ie3f3ab3a9005be84935919701e56b404e420affa
+
+[33mcommit bc98e93b53e417392a5044b7c6441c640e9cc850[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Apr 2 09:13:57 2015 -0700
+
+    Remove PPC build support
+    
+    There are no functional [1;31moptim[mizations for AltiVec/PPC
+    
+    Change-Id: I6877a7a9739017fe36fc769be22679c65ea99976
+
+[33mcommit c77d4dcb355798870bde4e759a547203e899bcc9[m
+Merge: 02697e35d 9fd8abc54
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Tue Mar 24 10:36:51 2015 -0700
+
+    Merge "vp9_pred_mv(): misc fixes and [1;31moptim[mizations"
+
+[33mcommit 9fd8abc541402eaea29aea839863569116ee1d84[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Fri Mar 20 17:13:13 2015 -0700
+
+    vp9_pred_mv(): misc fixes and [1;31moptim[mizations
+    
+    1. skip near if it is same as nearest
+    2. correct rounding for converting mv to fullpel position
+    3. update pred_mv_sad after new mv search.
+    
+    Overall .1%~.25% compression gains on rtc set for speed 5, 6, 7, 8.
+    
+    Change-Id: Ic300ca53f7da18073771f1bb993c58cde9deee89
+For keyword regression:
+[33mcommit a28b2c6ff0ebd4452423dc728d4bb8e0150650c3[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Aug 27 09:55:42 2015 -0700
+
+    Add sse2 versions of halfpix variance
+    
+    These were lost in the great sub pixel variance move of
+    6a82f0d7fb9ee908c389e8d55444bbaed3d54e9c
+    
+    Not having these functions caused a ~10% performance [1;31mregression[m in
+    some realtime vp8 encodes.
+    
+    Change-Id: I50658483d9198391806b27899f2c0d309233c4b5
+
+[33mcommit 3c5244886a804c8c05898ca8d78c3356f6c40507[m
+Author: Deb Mukherjee <debargha@google.com>
+Date:   Fri Jul 10 09:49:17 2015 -0700
+
+    Fixes part of merge [1;31mregression[m from adding arf parameters.
+    
+    From Change  Ibf0c30b72074b3f71918ab278ccccc02a95a70a0
+    There is still an issue relating to one animated test clip with repeat
+    patterns where this change effectively increase the default  maximum
+    arf interval by +1. This can be examined seperately.
+    
+    Change-Id: Idd01d5480fc45202d8a059a0c3afc0997cc5bdd1
+For keyword speed:
+[33mcommit b44c5cf639d179eb5016a226fba06a16216f72a0[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Sep 29 15:38:49 2015 -0700
+
+    Adjustment on limiting cyclic refresh on steady blocks.
+    
+    Adjust the qp threshold and consec_zeromv threshold for
+    limiting cyclic refresh. Also increase the refresh period
+    when the limit amount is significant, and some code-cleanup.
+    
+    Small gain in PSNR/SSIM metrics: ~0.25/0.3 gain on RTC set, [1;31mspeed[m 7.
+    
+    Change only affects non-screen content.
+    
+    Change-Id: I1ced87a89a132684c071e722616e445b2d18236a
+
+[33mcommit cdc359989a140cb2f25b81d768583e23d1a9ad85[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Sep 23 11:13:52 2015 +0100
+
+    Changes to partition breakout rules.
+    
+    Changes to the breakout behavior for partition selection.
+    The biggest impact is on [1;31mspeed[m 0 where encode [1;31mspeed[m in
+    some cases more than doubles with typically less than 1%
+    impact on quality.
+    
+    Speed 0 encode [1;31mspeed[m impact examples
+    Animation test clip: +128%
+    Park Joy:  +59%
+    Old town Cross: + 109%
+    
+    Change-Id: I222720657e56cede1b2a5539096f788ffb2df3a1
+
+[33mcommit 01860f6fe4ad45c86630d4b5b3079afada6f0628[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Sep 22 10:42:55 2015 -0700
+
+    Non-rd mode: Limit transform size for intra to 16x16.
+    
+    Limit transform size for intra to 16x16, for non-screen content mode.
+    Little/no change in [1;31mspeed[m or metrics.
+    32x32 intra block is rarley selected in RTC (non-screen content) case,
+    but some visual improvement can be seen in some example,
+    e.g., captured_video_dark_whd.yuv.
+    
+    Change-Id: I68e2db87875343b3fb9bb407a7709f0088f84072
+
+[33mcommit 38ad2dcea6cd20c46a0d6c6ba21df6363cb7f0f9[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Sep 21 10:20:14 2015 -0700
+
+    Non-rd pickmode: Don't skip checking zeromv-last mode.
+    
+    Reference frame masking logic may skip checking zeromv-last mode.
+    Fix to avoid this and make sure zero-last is always checked.
+    
+    No noticeable change in [1;31mspeed[m, and PSNR/SSIM metrics on RTC set overall
+    neutral (very small gain ~0.02).
+    Small visual improvement on few RTC clips.
+    
+    Change-Id: I26eacdc449126424001a4a64e5ac31949f064417
+
+[33mcommit b50e0badbcbbe618a184e90006207e067cc71429[m
+Merge: b999f1509 1eb760e55
+Author: Jingning Han <jingning@google.com>
+Date:   Thu Sep 10 23:03:06 2015 +0000
+
+    Merge "Take out reference_masking [1;31mspeed[m feature"
+
+[33mcommit b999f1509c6900d4f80a30a6ae6e5c9730691c81[m
+Merge: 7f71d1e00 f137697c3
+Author: Jingning Han <jingning@google.com>
+Date:   Thu Sep 10 23:02:38 2015 +0000
+
+    Merge "Take out skip_encode [1;31mspeed[m feature in vp10"
+
+[33mcommit 7f71d1e00a323257c22389fa9e6cf85ef33aa398[m
+Merge: b0bfea4f5 4fa8e7324
+Author: Jingning Han <jingning@google.com>
+Date:   Thu Sep 10 23:02:27 2015 +0000
+
+    Merge "Remove [1;31mspeed[m features in vp10"
+
+[33mcommit 1eb760e55d799475b361176bdf9e83532c77e9ba[m
+Author: Jingning Han <jingning@google.com>
+Date:   Thu Sep 10 12:56:41 2015 -0700
+
+    Take out reference_masking [1;31mspeed[m feature
+    
+    This condition is not effectively in use. The actual reference
+    frame masking is done in other route.
+    
+    Change-Id: Ia59c843bcac7243dada92f0f67658d7ce43df5e8
+
+[33mcommit f137697c3294c9de01141a5a4b1405dcba4e98c8[m
+Author: Jingning Han <jingning@google.com>
+Date:   Thu Sep 10 12:42:21 2015 -0700
+
+    Take out skip_encode [1;31mspeed[m feature in vp10
+    
+    Change-Id: Ic39d4523e78863c816b0fc85f56ea5ae5e0b3310
+
+[33mcommit 4fa8e73249de240868ef5b7c74fba79a01c35448[m
+Author: Jingning Han <jingning@google.com>
+Date:   Thu Sep 10 12:24:06 2015 -0700
+
+    Remove [1;31mspeed[m features in vp10
+    
+    Take out [1;31mspeed[m features that affect the compression performance
+    to simplify the coding route. This commit removes the motion field
+    mode search used in [1;31mspeed[m 3.
+    
+    Change-Id: Ifdf6862cb1ece8261125a56d9d89bcef60758c00
+
+[33mcommit 1b556e1f9a87c2e935b3f11aa268b5f767a11fd3[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Wed Aug 26 15:18:13 2015 -0700
+
+    vp9_spatial_svc_encoder: Enable aq-mode for real-time mode.
+    
+    For real-time mode ([1;31mspeed[ms >=5) enable aq-mode=3.
+    
+    Change-Id: Ib8b4ef7609bc30ac935742c8d27e8cd89933c6af
+
+[33mcommit 762641baccd4db63a6cb99404872b690a5dc0722[m
+Merge: fe4a14af7 3d181a451
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Aug 11 21:33:47 2015 +0000
+
+    Merge "Adjust [1;31mspeed[m setting for temporal layers in 1 pass non-rd mode."
+
+[33mcommit 3d181a4516391c7f4509b6324194f2faca56287e[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Aug 11 11:06:08 2015 -0700
+
+    Adjust [1;31mspeed[m setting for temporal layers in 1 pass non-rd mode.
+    
+    For [1;31mspeed[m 7, real-time mode: Base layer frames are further apart
+    (for #temporal layers = 3, this is every 4 frames) so worth keeping
+    same motion search parameters (as in [1;31mspeed[m 6) on the base layer frames.
+    
+    Change-Id: Idebf49dda6ef4f3d9a55aee55129a68253f692fb
+
+[33mcommit 7418b176ce1c985637c639280d70b12bdc850e57[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Aug 5 09:15:03 2015 -0700
+
+    Improve the second-level sub-pixel motion search
+    
+    Re-investigated the second-level sub-pixel motion search. Improved the
+    way of choosing search points. Rewrote the second-level search code.
+    
+    At [1;31mspeed[m 0, the borg tests showed:
+    1. for stdhd set, Avg PSNR gain: 0.216%; Overall PSNR gain: 0.196%;
+       SSIM gain: 0.206%. Only 1 out of 15 clips showed PSNR loss.
+    2. for derf set, Avg PSNR gain: 0.171%; Overall PSNR gain: 0.192%;
+       SSIM gain: 0.207%. Only 3 out of 30 clips showed PSNR losses.
+    Added the condition for third-point checking, namely, less points
+    were checked. Speed tests showed no [1;31mspeed[m loss(Avg 0.3% [1;31mspeed[mup at
+    [1;31mspeed[m 0).
+    
+    Change-Id: I6284ebb3fa7ba63be8528184c49e06757211a7f1
+
+[33mcommit 726d1b841b8101fbfa75eb9832e9baa9e477c1d5[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Tue Aug 4 12:16:47 2015 -0700
+
+    Minor adjustment in diagonal sub-pixel point checking
+    
+    Choose a different diagonal point to check when the two costs are
+    the same, making it consistent with the way we choose the best mv.
+    This slightly changes the encoding result, and the derflr set borg
+    test at [1;31mspeed[m 0 shows 0.027% Overall PSNR gain, 0.024% Avg PSNR
+    gain, and 0.043% SSIM gain.
+    
+    Change-Id: Ic8ee3a6767394866d159e4f9e1c777604dd73c17
+
+[33mcommit a3d22aa2a4e9946f5dd5e0e77c351511fb5d97ec[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Tue Aug 4 12:06:21 2015 -0700
+
+    Small improvement in sub-pixel motion search
+    
+    If the current best mv(namely, the search center) is still the best mv
+    after the first level search, the second level checks is skipped. This
+    patch doesn't change the bitstream. At [1;31mspeed[m 0, it [1;31mspeed[ms up the encoder
+    by 1% - 2%.
+    
+    Change-Id: I054c91b884d3f7aef157436c061744562bd6506d
+
+[33mcommit fd22c492f7b53653d5aba22761015297f73031d3[m
+Merge: d8642d831 af6d2c7d4
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Fri Jul 31 23:51:01 2015 +0000
+
+    Merge "Turn off simple_model_rd_from_var at [1;31mspeed[m 4."
+
+[33mcommit af6d2c7d42c181ff8b89ab0fe849b71301d8cc1b[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Fri Jul 31 15:50:17 2015 -0700
+
+    Turn off simple_model_rd_from_var at [1;31mspeed[m 4.
+    
+    This got erroneously changed during the refactor. This fixes
+    SvcTest.TwoPassEncode2TemporalLayersWithMultipleFrameContextsAndTiles.
+    
+    Change-Id: Ifa5ab0e098396c5e2d10478db87df256eadfa4c7
+
+[33mcommit 73422d3b2d7d9c2f08d491de708662740b6b3e6d[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Thu Jul 30 15:33:47 2015 -0700
+
+    Short circuit rate_block in block_rd_txfm.
+    
+    Don't run rate_block (cost_coeffs) if distortion alone is enough to
+    surpass best_rd.
+    
+    This decreases 2nd pass runtime on HD at [1;31mspeed[m 2 by about 2%. There is
+    zero effect on output if tx_cache is removed.
+    
+    Change-Id: Ia3b1cc77bfbe6ee988c395fde06c0eb92940b784
+
+[33mcommit 3b2e73b9a476ad1b6cffb126118e394c65cfecab[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Jul 29 13:37:41 2015 -0700
+
+    Remove tx cache and [1;31mspeed[m up tx size selection
+    
+    1. The RD scores obtained during the tx size selection were stored in the
+    tx cache, and used to help make the tx decision for the following frames.
+    This wasn't used anymore in VP9 encoder. Recovered the related decision
+    making code from 1.5+ years ago, and borg tests didn't show any quality
+    gain. This patch removed it to lower the complexity.
+    
+    2. An optimization was done after the above refactoring. If the tx_mode
+    is not TX_MODE_SELECT, we only need to test the chosen tx size instead
+    of all posible tx sizes. This gave a 1.5% average [1;31mspeed[m gain at [1;31mspeed[m 2,
+    and a 1% average [1;31mspeed[m gain at [1;31mspeed[m 3.
+    
+    Change-Id: Id8cd650e066a8cef33829d8c15388a8138adc78c
+
+[33mcommit eb6b443bd266d3c1f7931830de92fd11b86e27cd[m
+Merge: a71c5c0ee c827c59ea
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Thu Jul 30 23:04:28 2015 +0000
+
+    Merge "Convert simple_model_rd_from_var from a [1;31mspeed[m check to a [1;31mspeed[m feature."
+
+[33mcommit c827c59eafac8f03933c33a0dfa8deceed2a8255[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Thu Jul 30 13:52:02 2015 -0700
+
+    Convert simple_model_rd_from_var from a [1;31mspeed[m check to a [1;31mspeed[m feature.
+    
+    Change-Id: I8877025e172fff29bc4e270790211463b676b4d7
+
+[33mcommit 0fe589f21ea75db7fbee2a84749d24b5666ad232[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Tue Jul 14 09:19:01 2015 -0700
+
+    Fill buffer [1;31mspeed[m up
+    
+    Eliminates the byte by byte read from bool decoder,  by reading
+    in a size_t and then shifting it into place.
+    
+    Change-Id: I0ed8c7b6f942847e79cc90105dc1d2b5b3deb0d6
+
+[33mcommit 7d15444d0708cd1ff39fdec4405fd0b835d21bde[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Jul 16 16:20:39 2015 +0100
+
+    Fix bug in setting sf->use_square_partition_only.
+    
+    Fix bug in setting this flag for animated content.
+    The bug did cause quality to increase because far
+    more frames are not boosted than boosted.
+    
+    However, the [1;31mspeed[m trade off to gain is a lot less
+    favorable and the behavior was not as intended.
+    
+    Change-Id: I89fb70419c88b26f40b3534de0481730a1b3fcfa
+
+[33mcommit c243835303f196bab5a4a830a92b2048b836d9e4[m
+Merge: e4fb53ea6 da9db8327
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Mon Jul 13 14:39:00 2015 +0000
+
+    Merge "Revert "Fill buffer [1;31mspeed[m up""
+
+[33mcommit da9db832707943d3d5dbd40e063f3617b8d8e87c[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Mon Jul 13 13:47:46 2015 +0000
+
+    Revert "Fill buffer [1;31mspeed[m up"
+    
+    This reverts commit 9b4f9f45eee4d63cef3cd10f24923ed0bdd5ab7b.
+    
+    Change-Id: I23545ac8c7464127f7466fc6a58de517874fe0cf
+
+[33mcommit db50037ecee7130afdc381f1b33e70c3a07db558[m
+Merge: 4b44e46de 9b4f9f45e
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Thu Jul 9 20:26:22 2015 +0000
+
+    Merge "Fill buffer [1;31mspeed[m up"
+
+[33mcommit 9b4f9f45eee4d63cef3cd10f24923ed0bdd5ab7b[m
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Thu Jul 9 11:41:30 2015 -0700
+
+    Fill buffer [1;31mspeed[m up
+    
+    Eliminates the byte by byte read from bool decoder,  by reading
+    in a size_t and then shifting it into place.
+    
+    Change-Id: Id89241977103fc3b973e4ed172a5cbf246998e5d
+
+[33mcommit 2d637ca36d56314d6b1838f7be88926fd57cfb3d[m
+Merge: 535cc6d87 a126b6ce7
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Jul 9 16:38:37 2015 +0000
+
+    Merge "Change [1;31mspeed[m and rd features for formatting bars."
+
+[33mcommit 8783a8a97c6caa6ca5be81aab66fe83726b13077[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Jul 8 09:15:39 2015 -0700
+
+    Refactor transform block loop for inter mode decoding
+    
+    Rework the inter mode transform block decoding loop. Replace the
+    block index with the row and col index as the input argument. It
+    saves function call to compute the row and col index according to
+    the block index and overall block size, and many if statements
+    associated with the transform block position relative to the coding
+    block. For the test bit-stream pedestrian_area 1080p at 5 Mbps,
+    the decoding [1;31mspeed[m goes up from 81.13 fps to 81.92 fps.
+    
+    Note that the intra coded block decoding needs more refactoring
+    work than the inter ones. So keep it using foreach_transforme_block
+    as for now.
+    
+    Change-Id: I5622bdae7be28ed5af96693274057f55ba9b4fb4
+
+[33mcommit 8dd466edc84f0e641f84ca79e8edb76b87554762[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Jun 24 11:36:51 2015 +0100
+
+    Changes to use of rectangular partitions.
+    
+    Changes to allow more use of rectangular partitions at
+    [1;31mspeed[ms 1 and 2 for content classed by the first pass as
+    animation and for blocks near the active image edge.
+    
+    This has quite a big impact in quality for the animated
+    test sequence but also hurts encode [1;31mspeed[m for [1;31mspeed[m 2.
+    
+    For other content types the impact on both [1;31mspeed[m and
+    quality is small.
+    
+    Added some plumbing for detection of internal vertical
+    image edges.
+    
+    Change-Id: I3fc48de2349f8cb87946caaf0b06dbb0ea261a9a
+
+[33mcommit a126b6ce7d9f81552e02fbe76d4fac276916992e[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Jun 24 11:36:51 2015 +0100
+
+    Change [1;31mspeed[m and rd features for formatting bars.
+    
+    Change [1;31mspeed[m features / behavior for split mode when there
+    is an internal active edge (e.g. formatting bars).
+    
+    Remove some threshold constraints in rd code near the active
+    edge of the image.
+    
+    Add some plumbing for left and right active edge detection.
+    
+    Patch set 5. Limit rd pass through for sub 8x8 to internal active edges.
+    This takes away any [1;31mspeed[m penalty for most clips but keeps the enhanced
+    edge coding for the more critical case of internal image edges
+    
+    Change-Id: If644e4762874de4fe9cbb0a66211953fa74c13a5
+
+[33mcommit 7e0d0de2113fcfa255803814f5c8872ddf490f65[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Jul 7 15:32:27 2015 -0700
+
+    Refactor inverse_transform_block argument list
+    
+    Replace block index with transform type in the argument list. This
+    allows to save an extra fetch to the prediction mode. For pedestrian
+    area 1080p coded at 5 Mbps with single tile, the average decoding
+    [1;31mspeed[m goes up from 80.55 fps (before the refactoring series) to
+    81.13 fps.
+    
+    Change-Id: Icbebf84ce63c19c0c92f3690ed201f6c3eab7881
+
+[33mcommit 155b9416b36d9708b18f22ef2bc396fba264f513[m
+Merge: c2d0f9dde 478fbc8f2
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Jul 7 22:47:43 2015 +0000
+
+    Merge "Update to [1;31mspeed[m 5 non-rd mode partition search."
+
+[33mcommit 478fbc8f236ee4118e032074eb7c0a1be11d0d10[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Jul 7 11:43:15 2015 -0700
+
+    Update to [1;31mspeed[m 5 non-rd mode partition search.
+    
+    If the pre-selected partition size (from variance partition) is
+    32x32, also apply nonrd partition search for 32x32 and 16x16 size.
+    
+    Overall small positive gain in metrics, average ~1%.
+    Some visual improvement, for lower resolutions.
+    
+    Change-Id: I69cb425bda94f7d13d34c451ab30e9276335a30e
+
+[33mcommit 8281a19465a6bfcffa9ba1935bed1417e6b16ad6[m
+Author: Tom Finegan <tomfinegan@google.com>
+Date:   Tue Jun 23 18:30:52 2015 -0700
+
+    vpxenc.sh: Add basic vp9 multithread encode test.
+    
+    - Change default real time [1;31mspeed[m to -6.
+    - Add vpxenc_vp9_webm_rt_multithread, which encodes
+      niklas_1280_720_30.y4m with 2 to 4 threads using 2 to 4
+      tile columns.
+    
+    Change-Id: I4d86c3360aec67ae5d1ba82eb6e0f0be8068b5af
+
+[33mcommit fb2a89b1fb3726b9a761f04eac79c2d4c8d32eef[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Jun 22 15:20:28 2015 -0700
+
+    Fixes for key frame coding at [1;31mspeed[m 5.
+    
+    Keep the same transform cutoff and partition selection
+    for [1;31mspeed[m 5 as in [1;31mspeed[ms >=6 (non-rd [1;31mspeed[m settings).
+    
+    Existing setting for key frame at [1;31mspeed[m 5 allowed transform size
+    up to 32x32 on key frames, and did not allow for 4x4 block partition size.
+    This created more visual artifacts on first few frames.
+    
+    avgPSNR/overallPSNR/SSIM gains of 0.2/0.7/0.8 for rtc_derf(low-res) set,
+    and 0/0.7/1.1 gains for rtc set.
+    
+    Change-Id: I8c139ec6c9bb74e14b4ffbad5f12e94f18a59c0b
+
+[33mcommit 8e029fcfa9dbb017b190645b04a3cd5838abaf71[m
+Merge: 1395b56a1 debe4e920
+Author: Marco Paniconi <marpan@google.com>
+Date:   Mon Jun 22 16:59:47 2015 +0000
+
+    Merge "Reduce max_partition_size for low resolutions at [1;31mspeed[m 5."
+
+[33mcommit debe4e920f39fa5eccdcf608f416903b9e4b38d7[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri Jun 19 16:40:01 2015 -0700
+
+    Reduce max_partition_size for low resolutions at [1;31mspeed[m 5.
+    
+    For [1;31mspeed[m 5 real-time mode, the selection of the partition size for
+    superblocks on the segment (aq-mode=3) uses the non-rd recursive
+    pick partition search, and can sometimes select 64x64.
+    
+    For low resolutions, visually better to limit this to 32x32.
+    
+    Change-Id: I69657a7ed8899f8b3cf8c9c318a2509c5c72c565
+
+[33mcommit 90c9ede8e653a10855c583510aa2b071cc2f02c2[m
+Author: Aℓex Converse <alexconv@twitch.tv>
+Date:   Thu Jun 18 16:05:56 2015 -0700
+
+    Limit cyclic refresh revisitng blocks at the same quantizer.
+    
+    For screen content don't refresh a block at a quantizer higher than
+    it was last coded at. PReviosuly at realtime [1;31mspeed[ms the encoder had a
+    tendency to recode a block from GOLDEN with a higher Q than it was last
+    coded at.
+    
+    Change-Id: Iacd561806c769dcce1a81b9827ffc70090f5ba18
+
+[33mcommit 31509af247ceb5c1ead051935b6ac46e0b6b981c[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Jun 12 17:57:37 2015 -0700
+
+    vp9_encodeframe: delete auto_partition_range()
+    
+    unused since:
+    1f00a9b Fix choose_partitioning threshold setup for [1;31mspeed[m -5
+    
+    Change-Id: I51952c0a1be3e6e0aa36ff2ffcfbbea60a505960
+
+[33mcommit 07799ef28a6397fa01fff625291549cc8a98f2b7[m
+Merge: 33b3953c5 1898d1336
+Author: James Zern <jzern@google.com>
+Date:   Fri Jun 12 06:27:44 2015 +0000
+
+    Merge "test_intra_pred_[1;31mspeed[m: add ClearSystemState() call"
+
+[33mcommit 1898d1336dd852053afa14780bc537f077999773[m
+Author: James Zern <jzern@google.com>
+Date:   Wed Jun 10 12:44:07 2015 -0700
+
+    test_intra_pred_[1;31mspeed[m: add ClearSystemState() call
+    
+    fixes instability; noticed on mingw
+    
+    Change-Id: Idef4349339444ec84916e5fcd908ee9633d28aaa
+
+[33mcommit 4ded624ff33d1696d43b87d62745b718887cf2c1[m
+Merge: 59114915b 39d93f389
+Author: James Zern <jzern@google.com>
+Date:   Wed Jun 10 19:18:03 2015 +0000
+
+    Merge changes I89a8440f,Ifa3926e1
+    
+    * changes:
+      libs.mk: relocate TEST_INTRA_PRED_SPEED_OBJS init
+      test_intra_pred_[1;31mspeed[m: remove #if w/in another macro
+
+[33mcommit 6a422e445215e71ef08243c6fb0797b8f2461314[m
+Author: James Zern <jzern@google.com>
+Date:   Tue Jun 9 19:30:04 2015 -0700
+
+    test_intra_pred_[1;31mspeed[m: remove #if w/in another macro
+    
+    fixes the compile under visual studio
+    
+    Change-Id: Ifa3926e198af97d73250540c6d0ef692f5e354ff
+
+[33mcommit 4a28da58434d364337d9a6724e9ae79e0e264bd7[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Sat May 30 00:56:19 2015 +0100
+
+    Enable more split modes for animated content.
+    
+    For content that is identified as likely to contain some
+    animation or graphics content, increase the availability
+    of split modes for good quality [1;31mspeed[ms 1-3.
+    
+    On a problem test animation clip this improves metrics
+    results by about 0.25 db and makes a noticeable difference
+    visually. It also causes a small drop in file size (~0.5%) but
+    a rise in encode time of about 5-6% at [1;31mspeed[m  2.
+    
+    For more normal content it should have no effect.
+    
+    Change-Id: Ic4cd9a8de065af9f9402f4477a17442aebf0e439
+
+[33mcommit 26ab314176a4f4c64ba4c5b5c639870e258d8fe2[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu May 28 17:21:00 2015 -0700
+
+    For non-rd pickmode: remove VAR_PARTITION condition.
+    
+    Keep the logic, transform size based on cyclic refresh and bsize,
+    (that was conditioned on VAR_PARTITION conditions) the same
+    for all [1;31mspeed[ms in non-rd mode ([1;31mspeed[ms >= 5).
+    
+    No change to [1;31mspeed[ms >=6.
+    Small improvement for [1;31mspeed[m 5, ~0.5/1.5% gain for avg psnr/ssim.
+    
+    Change-Id: If9c5657f3d30efd3c7f147166bba7cb69ea55114
+
+[33mcommit 8089f1cf1355953210c3cd0584bcc64a4eed6dd6[m
+Author: James Zern <jzern@google.com>
+Date:   Sat May 16 11:55:04 2015 -0700
+
+    test_intra_pred_[1;31mspeed[m: reuse test_libvpx's main()
+    
+    this allows test_libvpx's simd caps check to be used; it also fixes a
+    link error on OS X with -fcommon.
+    
+    Change-Id: I1a62a3e74ba06b8f3b37a22fcfdebf90c04ab289
+
+[33mcommit cdf16c22baea1ead5900bcdbd4d44b8c2ce80728[m
+Merge: 985f19bc6 0d2f34839
+Author: James Zern <jzern@google.com>
+Date:   Fri May 15 23:34:06 2015 +0000
+
+    Merge "tests: add test_intra_pred_[1;31mspeed[m"
+
+[33mcommit beec69cfe233ea4aa67ec8e3587e46d225d8a2cb[m
+Merge: 8371c897d e88de49fa
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri May 15 21:28:59 2015 +0000
+
+    Merge "Change tx_size_search_method setting for non-rd [1;31mspeed[m 5."
+
+[33mcommit e88de49faae156ee84000b32033dda4b1b2cb3a7[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Fri May 15 11:08:24 2015 -0700
+
+    Change tx_size_search_method setting for non-rd [1;31mspeed[m 5.
+    
+    Use the same settting as in [1;31mspeed[m >=6.
+    This will use same logic for tx_size selecton as in [1;31mspeed[m >=6,
+    which limits the transform size and reduces ringing artifact.
+    Also metrics go up on average with this change: ~2% for PSNR, ~10% for SSIM.
+    
+    Change-Id: Ia2d50db236ae1cc72f742bfa6c9ec5ea50ff0e0a
+
+[33mcommit 0d2f348392754a1e5a06ea7e08cbae73c965f6eb[m
+Author: James Zern <jzern@google.com>
+Date:   Mon May 11 19:36:59 2015 -0700
+
+    tests: add test_intra_pred_[1;31mspeed[m
+    
+    useful for [1;31mspeed[m testing / verifying individual function optimizations;
+    currently tests non-high-bitdepth VP9 intra predictors
+    
+    Change-Id: Ibd247765e43a31894697d43f1d39d312e0ba2090
+
+[33mcommit 36eabb1c3cf182173109643a7031e4c5ed2c7114[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri May 1 13:20:50 2015 -0700
+
+    Add intra mode early termination in non-rd mode
+    
+    Added the intra mode early termination in order to
+    [1;31mspeed[m up the mode search in non-rd case since we
+    started to include more intra modes in the search
+    list. Borg tests(rtc set) showed a 0.048% PSNR gain
+    and 0.061 SSIM gain. No [1;31mspeed[m change.
+    
+    Change-Id: I6f255fe534dc50b736e6a66a726ad458eb9b4443
+
+[33mcommit b9a72d3c4d755d0c99b9cdce92ff8b319a92e74d[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Apr 30 11:39:02 2015 -0700
+
+    Allow for H and V intra modes for non-rd mode.
+    
+    For non-rd mode ([1;31mspeed[m >=5): use mask based on prediction block size, and
+    (for non-screen content mode) allow for checking horiz and vert intra modes
+    for blocks sizes < 16x16.
+    
+    Avg psnr/ssim metrics go up by about ~0.2%.
+    
+    Only allowing H/V intra on block sizes below 16x16 for now, to keep
+    encoding time increase very small, and also when allowing H/V on 16x16 blocks,
+    metrics went down on a few clips which need to be further examined.
+    
+    Change-Id: I8ae0bc8cb2a964f9709612c76c5661acaab1381e
+
+[33mcommit 4907c299047cee6d1d45928d41c69984d49ee339[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Apr 30 11:03:06 2015 -0700
+
+    Reduce intra_cost_penalty for BLOCK_8X8
+    
+    This patch reduced the BLOCK_8X8's intra_cost_penalty, which
+    allows 8x8 blocks to conduct intra mode search. Borg test
+    result(rtc set): 0.077% PSNR gain, 0.228% SSIM gain. No [1;31mspeed[m
+    changes.
+    
+    Change-Id: Icfe90c4f6969de24bda8ecacbd3da50330bf22b2
+
+[33mcommit a257e469e170db485faf870472a1f31b3aa06413[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Mon Apr 27 12:40:00 2015 -0700
+
+    Adjust the vbp early termination threshold slightly
+    
+    Calculated cpi->vbp_threshold_sad from this frame's dequant value.
+    The encoding quality and [1;31mspeed[m didn't change much. Borg test
+    result: PSNR: -0.002%, SSIM: -0.003%.
+    
+    Change-Id: I97c9826986f39582f29910d637d08a69c90afdee
+
+[33mcommit d31698b0e08ccb78543e1046090a5bc79f016f78[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Apr 24 12:12:17 2015 -0700
+
+    Improve golden frame refreshing in non-rd mode
+    
+    The default golden frame interval was doubled. After encoding a
+    frame, the background motion was measured. If the motion was high,
+    the current frame was set as the golden frame. Currently, the
+    changes were applied only while aq-mode 3 was on.
+    
+    Borg tests(rtc set) showed a 0.226% PSNR gain and 0.312% SSIM gain.
+    No [1;31mspeed[m changes.
+    
+    Change-Id: Id1e2793cc5be37e8a9bacec1380af6f36182f9b1
+
+[33mcommit 9922e4344a40a147abab06f16c7a9d9403d1a33b[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Apr 3 11:33:24 2015 -0700
+
+    Enable Hadamard transform based cost estimate for all block sizes
+    
+    This commit turns on the Hadamard transform based rate distortion
+    estimate for all block sizes in RTC coding mode. It conditionally
+    skips the rate distortion estimation if all zero block flag is set
+    on. No significant encoding [1;31mspeed[m change is observed. The
+    compression performance of [1;31mspeed[m -6 is improved by 1.7% over using
+    it only for block sizes of 32x32 and below.
+    
+    Change-Id: I768145e6f05c737b05b5b5f1ee674e929532cafb
+
+[33mcommit 1a1114d21c94e3e5ee3406fe871aee4e0ab477b0[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Fri Apr 3 15:35:31 2015 -0700
+
+    Fix the scaling factor in UV skipping test
+    
+    The threshold scaling factor was calculated wrong using partition
+    size "bsize". Thank Yaowu for pointing it out. It was fixed and no
+    [1;31mspeed[m change was seen.
+    
+    Change-Id: If7a5564456f0f68d6957df3bd2d1876bbb8dfd27
+
+[33mcommit 30e9c091c08e570b484fb0bc4c443ddd17fd7443[m
+Merge: d72ed3537 657cabe0f
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Apr 3 11:24:28 2015 -0700
+
+    Merge "Tune SSSE3 assembly implementation to improve quantization [1;31mspeed[m"
+
+[33mcommit 60e01c65302d08e3e8c5b7f22a111b003545dc34[m
+Author: Jingning Han <jingning@google.com>
+Date:   Fri Apr 3 09:20:25 2015 -0700
+
+    Account for eob cost in the RTC mode decision process
+    
+    This commit accounts for the transform block end of coefficient flag
+    cost in the RTC mode decision process. This allows a more precise
+    rate estimate. It also turns on the model to block sizes up to 32x32.
+    The test sequences shows about 3% - 5% [1;31mspeed[m penalty for [1;31mspeed[m -6.
+    The average compression performance improvement for [1;31mspeed[m -6 is
+    1.58% in PSNR. The compression gains for hard clips like jimredvga,
+    mmmoving, and tacomascmv at low bit-rate range are 1.8%, 2.1%, and
+    3.2%, respectively.
+    
+    Change-Id: Ic2ae211888e25a93979eac56b274c6e5ebcc21fb
+
+[33mcommit cae03a7ef57594c6d4762a83ff63eaa2a44c8ecd[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Apr 2 13:57:22 2015 -0700
+
+    Set vbp thresholds for aq3 boosted blocks
+    
+    The vbp thresholds are set seperately for boosted/non-boosted
+    superblocks according to their segment_id. This way we don't
+    have to force the boosted blocks to split to 32x32.
+    
+    Speed 6 RTC set borg test result showed some quality gains.
+    Overall PSNR: +0.199%; Avg PSNR: +0.245%; SSIM: +0.802%.
+    No [1;31mspeed[m change was observed.
+    
+    Change-Id: I37c6643a3e2da59c4b7dc10ebe05abc8abf4026a
+
+[33mcommit 657cabe0f754a9da11a05670969234dae2520a6d[m
+Author: Jingning Han <jingning@google.com>
+Date:   Wed Apr 1 15:22:39 2015 -0700
+
+    Tune SSSE3 assembly implementation to improve quantization [1;31mspeed[m
+    
+    Change-Id: If0ca8b25b4800d4336e6cbc97194cd9b01c5b5a3
+
+[33mcommit a0043c6d3027339eec6db415a88af975e0274bab[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Mar 25 14:19:29 2015 -0700
+
+    Enhance the transform skipping decision-making in non-rd mode
+    
+    For large partition blocks(block_size > 32x32), the variance
+    calculation is modified so that every 8x8 block's variance
+    is stored during the calculation, which is used in the
+    following transform skipping test. Also, the variance for
+    every tx block is calculated. The skipping test checks all tx
+    blocks in the partition, and sets the skip flag only if all tx
+    blocks are skippable. If the skip flag of Y plane is 1, a
+    quick evaluation is done on UV planes. If the current partition
+    block is skippable in YUV planes, the mode search checks fewer
+    inter modes and doesn't check intra modes.
+    
+    The rtc set borg test(at [1;31mspeed[m 6) showed that:
+    Overall psnr: -0.527%; Avg psnr: -0.510%; ssim: -0.573%.
+    Average single-thread [1;31mspeed[mup on rtc set was 3.5%.
+    For 720p clips, more [1;31mspeed[mups were seen.
+    gipsrecmotion: 13%
+    gipsrestat: 12%
+    vidyo: 5 - 9%
+    dark: 15%
+    niklas: 6%
+    
+    Change-Id: I8d8ebec0cb305f1de016516400bf007c3042666e
+
+[33mcommit 502ac7223328614cfd3af88764bcb866dbdba9da[m
+Merge: 1c39c5b96 531468a07
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Mar 31 14:24:26 2015 -0700
+
+    Merge "Tuning SATD rate calculation for [1;31mspeed[m"
+
+[33mcommit 531468a07a62de99521e92377b440d7c87705812[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Mar 31 10:57:41 2015 -0700
+
+    Tuning SATD rate calculation for [1;31mspeed[m
+    
+    This commit allows the encoder to check the eob per transform
+    block to decide how to compute the SATD rate cost. If the entire
+    block is quantized to zero, there is no need to add anything; if
+    only the DC coefficient is non-zero, add its absolute value;
+    otherwise, sum over the block. This reduces the CPU cycles spent
+    on vp9_satd_sse2 to one third.
+    
+    Change-Id: I0d56044b793b286efc0875fafc0b8bf2d2047e32
+
+[33mcommit ebe1be9186b4f20e8d30c4bbad79ba78403de0d2[m
+Author: Jingning Han <jingning@google.com>
+Date:   Tue Mar 31 09:25:21 2015 -0700
+
+    Allow block skip coding option in RTC mode
+    
+    When the estimated rate-distortion cost of skip coding mode is
+    lower than that of sending quantized coefficients, allow the
+    encoder to drop these coefficients. This improves the compression
+    performance of [1;31mspeed[m -6 by 0.268% and makes the encoding [1;31mspeed[m
+    slightly faster.
+    
+    Change-Id: Idff2d7ba59f27ead33dd5a0e9f68746ed3c2ab68
+
+[33mcommit 26d3d3af6ace50ee20c474771a580e38f86c7864[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Mar 30 12:31:46 2015 -0700
+
+    Enable 16x16 Hadamard transform in SATD based mode decision
+    
+    This commit replaces the 16x16 2D-DCT transform with Hadamard
+    transform for RTC coding mode. It reduces the CPU cycles cost
+    on 16x16 transform by 5X. Overall it makes the [1;31mspeed[m -6 encoding
+    [1;31mspeed[m 1.5% faster without compromise on compression performance.
+    
+    Change-Id: If6c993831dc4c678d841edc804ff395ed37f2a1b
+
+[33mcommit b4b5af6acddfec0bf28a79f74afb15de3dee6f66[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Mar 30 11:09:29 2015 -0700
+
+    Use SATD based mode decision for block sizes below 16x16
+    
+    This commit makes the encoder to select between SATD/variance as
+    metric for mode decision. It also allows to account chroma
+    component costs for mode decision as well. The overall encoding
+    time increase as compared to variance based mode selection is about
+    15% for [1;31mspeed[m -6. The compression performance is on average 2.2%
+    better than variance based approach, with about 5% compression
+    performance gains for hard clips (e.g., jimredvga, nikas720p, and
+    mmmoving) at lower bit-rate range.
+    
+    Change-Id: I4d04a31d36f4fcb3f5f491dacd6e7fe44cb9d815
+
+[33mcommit 8c411f74e000457b43bc75093b5908819b34e394[m
+Author: Jingning Han <jingning@google.com>
+Date:   Mon Mar 23 10:02:42 2015 -0700
+
+    Hadamard transform based coding mode decision process
+    
+    This commit uses Hadamard transform based rate-distortion cost
+    estimate for rtc coding mode decision. It improves the compression
+    performance of [1;31mspeed[m -6 for many hard clips at lower bit-rates.
+    For example, 5.5% for jimredvga, 6.7% for mmmoving, 6.1% for
+    niklas720p. This will introduce extra encoding cycle costs at
+    this point.
+    
+    Change-Id: Iaf70634fa2417a705ee29f2456175b981db3d375
+
+[33mcommit 85107641a48447875da27b56417430f3ec30e8b0[m
+Author: Hangyu Kuang <hkuang@google.com>
+Date:   Tue Mar 17 14:08:16 2015 -0700
+
+    Optimize the intra frame decode to skip some unnecessary copy.
+    
+    This [1;31mspeed[ms up a normal YT style 1080P clip decode by ~1% on nexus 7.
+    
+    Change-Id: Ied7fa0d8bc941b2adb4db9382f549ee4d5654f3a
+
+[33mcommit 9fd8abc541402eaea29aea839863569116ee1d84[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Fri Mar 20 17:13:13 2015 -0700
+
+    vp9_pred_mv(): misc fixes and optimizations
+    
+    1. skip near if it is same as nearest
+    2. correct rounding for converting mv to fullpel position
+    3. update pred_mv_sad after new mv search.
+    
+    Overall .1%~.25% compression gains on rtc set for [1;31mspeed[m 5, 6, 7, 8.
+    
+    Change-Id: Ic300ca53f7da18073771f1bb993c58cde9deee89
+For keyword quality:
+[33mcommit cdc359989a140cb2f25b81d768583e23d1a9ad85[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Sep 23 11:13:52 2015 +0100
+
+    Changes to partition breakout rules.
+    
+    Changes to the breakout behavior for partition selection.
+    The biggest impact is on speed 0 where encode speed in
+    some cases more than doubles with typically less than 1%
+    impact on [1;31mquality[m.
+    
+    Speed 0 encode speed impact examples
+    Animation test clip: +128%
+    Park Joy:  +59%
+    Old town Cross: + 109%
+    
+    Change-Id: I222720657e56cede1b2a5539096f788ffb2df3a1
+
+[33mcommit 1799f2f81dc0da5359139ff4375fbe29772f0e37[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Fri Oct 2 15:07:04 2015 -0400
+
+    vp10: remove ref-MV-dependent use of HP.
+    
+    This change (in a new config experiment: universal_hp) removes the
+    bitstream parsing dependency of the HP MV bit on the ref MV to be
+    coded. It also cleans up clearing of the HP bit in near/nearestMV,
+    since HP is always on if it's set in the frame header.
+    
+    This admittedly doesn't clean up the crap that could be cleaned up,
+    but that's mostly because I think this needs some careful review;
+    not so much for coding style, but more from hardware people and from
+    the codec team on what we/you want. It would also be nice to get some
+    actual numbers on the real [1;31mquality[m impact of this change. If, for
+    example, hardware people come up and tell us they don't actually care
+    anymore, we should probably just this code as-is and do nothing (i.e.
+    discard this patch).
+    
+    See issue 1036.
+    
+    Change-Id: Ic9b106f34422aa0f79de0c28125b72d566bd511a
+
+[33mcommit 3461e8ce64739f8e70a9bcb8b062382e23a09cf9[m
+Author: Ronald S. Bultje <rsbultje@gmail.com>
+Date:   Wed Sep 30 21:37:20 2015 -0400
+
+    vp10: skip unreachable cat6 token extrabits.
+    
+    We have historically added new bits to cat6 whenever we added a new
+    transform size (or bitdepth, for that matter). However, we have
+    always coded these new bits regardless of the actual transform size,
+    which means that for smaller transforms, we code bits that cannot
+    possibly be set. The coding ([1;31mquality[m) impact of this is negligible,
+    but the bigger issue is that this allows creating bitstreams with
+    coefficient values that are nonsensible and can cause int overflows,
+    which then de facto become part of the bitstream spec. By not coding
+    these bits, we remove this possibility.
+    
+    See issue 1065.
+    
+    Change-Id: Ib3186eca2df6a7a15ddc60c8b55af182aadd964d
+
+[33mcommit f6097ef2432221e916b8e37a20b8508f9b7cb018[m
+Merge: eb53c69ec 15c43d9ac
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Sep 15 22:06:13 2015 +0000
+
+    Merge "SVC fix to set worst/best_[1;31mquality[m per layer."
+
+[33mcommit 15c43d9ac78785036f84ef35c6418b3db93ed4a0[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Tue Sep 15 09:54:19 2015 -0700
+
+    SVC fix to set worst/best_[1;31mquality[m per layer.
+    
+    Allow the worst/best_[1;31mquality[m to be set per layer via the
+    VP9E_SET_SVC_PARAMETERS control.
+    
+    Change-Id: Icba5ec8ac757152f3bb7860d6010d9174a7bd578
+
+[33mcommit 93ffe9d6dc00f573ea61b5d82a13ef2dda035183[m
+Author: Marco Paniconi <marpan@google.com>
+Date:   Thu Aug 20 16:29:24 2015 -0700
+
+    Update to dynamic resize for 1 pass CBR: source scaling.
+    
+    Switch to use the normative (convolve8) filter for source scaling,
+    only for 1/2x1/2 scaling for now. This is faster and has better
+    [1;31mquality[m than either the vpx_scale_frame or the nonnormative scaler.
+    
+    Remove the vp9_scale_if_required_fast, which is now not used.
+    
+    Change-Id: I2f7d73950589d19baafb1fa650eac987d531bcc8
+
+[33mcommit 3b2e73b9a476ad1b6cffb126118e394c65cfecab[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Wed Jul 29 13:37:41 2015 -0700
+
+    Remove tx cache and speed up tx size selection
+    
+    1. The RD scores obtained during the tx size selection were stored in the
+    tx cache, and used to help make the tx decision for the following frames.
+    This wasn't used anymore in VP9 encoder. Recovered the related decision
+    making code from 1.5+ years ago, and borg tests didn't show any [1;31mquality[m
+    gain. This patch removed it to lower the complexity.
+    
+    2. An optimization was done after the above refactoring. If the tx_mode
+    is not TX_MODE_SELECT, we only need to test the chosen tx size instead
+    of all posible tx sizes. This gave a 1.5% average speed gain at speed 2,
+    and a 1% average speed gain at speed 3.
+    
+    Change-Id: Id8cd650e066a8cef33829d8c15388a8138adc78c
+
+[33mcommit 7d15444d0708cd1ff39fdec4405fd0b835d21bde[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Jul 16 16:20:39 2015 +0100
+
+    Fix bug in setting sf->use_square_partition_only.
+    
+    Fix bug in setting this flag for animated content.
+    The bug did cause [1;31mquality[m to increase because far
+    more frames are not boosted than boosted.
+    
+    However, the speed trade off to gain is a lot less
+    favorable and the behavior was not as intended.
+    
+    Change-Id: I89fb70419c88b26f40b3534de0481730a1b3fcfa
+
+[33mcommit 8dd466edc84f0e641f84ca79e8edb76b87554762[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Jun 24 11:36:51 2015 +0100
+
+    Changes to use of rectangular partitions.
+    
+    Changes to allow more use of rectangular partitions at
+    speeds 1 and 2 for content classed by the first pass as
+    animation and for blocks near the active image edge.
+    
+    This has quite a big impact in [1;31mquality[m for the animated
+    test sequence but also hurts encode speed for speed 2.
+    
+    For other content types the impact on both speed and
+    [1;31mquality[m is small.
+    
+    Added some plumbing for detection of internal vertical
+    image edges.
+    
+    Change-Id: I3fc48de2349f8cb87946caaf0b06dbb0ea261a9a
+
+[33mcommit 4a28da58434d364337d9a6724e9ae79e0e264bd7[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Sat May 30 00:56:19 2015 +0100
+
+    Enable more split modes for animated content.
+    
+    For content that is identified as likely to contain some
+    animation or graphics content, increase the availability
+    of split modes for good [1;31mquality[m speeds 1-3.
+    
+    On a problem test animation clip this improves metrics
+    results by about 0.25 db and makes a noticeable difference
+    visually. It also causes a small drop in file size (~0.5%) but
+    a rise in encode time of about 5-6% at speed  2.
+    
+    For more normal content it should have no effect.
+    
+    Change-Id: Ic4cd9a8de065af9f9402f4477a17442aebf0e439
+
+[33mcommit 287b0c6da95d74f7f20e23f29aa0ff964856f4e4[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Fri May 1 11:31:13 2015 +0100
+
+    Remove CONSTRAIN_NEIGHBORING_MIN_MAX.
+    
+    Remove one of the auto partition size cases.
+    This case can behaves badly in some types of animated content
+    and was only used for the rd encode path. A subsequent patch
+    will add additional checks to help further improve visual [1;31mquality[m.
+    
+    Change-Id: I0ebd8da3d45ab8501afa45d7959ced8c2d60ee4e
+
+[33mcommit a257e469e170db485faf870472a1f31b3aa06413[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Mon Apr 27 12:40:00 2015 -0700
+
+    Adjust the vbp early termination threshold slightly
+    
+    Calculated cpi->vbp_threshold_sad from this frame's dequant value.
+    The encoding [1;31mquality[m and speed didn't change much. Borg test
+    result: PSNR: -0.002%, SSIM: -0.003%.
+    
+    Change-Id: I97c9826986f39582f29910d637d08a69c90afdee
+
+[33mcommit effd974b16d4ac8bdb2415b25ba39b09a0e280bf[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Thu Apr 16 11:24:38 2015 +0100
+
+    Limit arf interval for low fpf clips.
+    
+    This patch limits  the maximum arf interval length to
+    approximately half a second. In some low fps animations in
+    particular the existing code was selecting an overly long interval
+    which was hurting visual [1;31mquality[m. For a sample problem test clip
+    (360P animation , 15fps, ~200Kbit/s) this change also improved
+    metrics by >0.5 db.
+    
+    There may be some clips where this hurts metrics a little, but the
+    worst case impact visually is likely to be less than having an
+    interval that is much too long. On more normal material at 24
+    fps or higher, the impact is likely to be nil/minimal.
+    
+    Change-Id: Id8b57413931a670c861213ea91d7cc596375a297
+
+[33mcommit 60bd744c8800423fe28deb65d9129030f2928332[m
+Author: Deb Mukherjee <debargha@google.com>
+Date:   Tue Apr 7 16:15:11 2015 -0700
+
+    Improve accuracy of rate control in CQ mode
+    
+    Modifies a special handling that improves rate control accuracy in
+    the constrained [1;31mquality[m mode, when the undershoot and overshoot
+    limits are set tighter.
+    
+    Change-Id: If62103f0ef3ed1cac92807400678c93da50cf046
+
+[33mcommit 5e300cac2ca3c7cc628a05a41e1e270387c5a690[m
+Merge: b2baaa215 5afa7d1f8
+Author: Jim Bankoski <jimbankoski@google.com>
+Date:   Mon Apr 6 17:05:35 2015 -0700
+
+    Merge changes Ide5eefad,I28026b86,Ie9a6fac0,Ia8a20c67,I8c7f5b97,I33ca9cdd,I438cbf49
+    
+    * changes:
+      vp8_regular_quantize_b_sse2: remove dead init
+      vp8cx_pick_filter_level*: remove dead inits
+      vp8_decode_frame: remove dead increment
+      rdopt: remove dead stores
+      find_next_key_frame: remove dead init & store
+      multiframe_[1;31mquality[m_enhance_block: remove dead stores
+      vp8_print_modes_and_motion_vectors: remove dead stores
+
+[33mcommit 970acffa8fb52e40064f329d0fe43eb6f4402b5c[m
+Author: James Zern <jzern@google.com>
+Date:   Fri Apr 3 16:15:51 2015 -0700
+
+    multiframe_[1;31mquality[m_enhance_block: remove dead stores
+    
+    Change-Id: I33ca9cddfdd54c3d8a23c1cb978986a537a20bf2
+
+[33mcommit cae03a7ef57594c6d4762a83ff63eaa2a44c8ecd[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Apr 2 13:57:22 2015 -0700
+
+    Set vbp thresholds for aq3 boosted blocks
+    
+    The vbp thresholds are set seperately for boosted/non-boosted
+    superblocks according to their segment_id. This way we don't
+    have to force the boosted blocks to split to 32x32.
+    
+    Speed 6 RTC set borg test result showed some [1;31mquality[m gains.
+    Overall PSNR: +0.199%; Avg PSNR: +0.245%; SSIM: +0.802%.
+    No speed change was observed.
+    
+    Change-Id: I37c6643a3e2da59c4b7dc10ebe05abc8abf4026a
+
+[33mcommit 9a1ce7be7d4a3056b9da1df64cb7d5115a513dd9[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Fri Mar 6 17:21:36 2015 +0000
+
+    Experimental rd bias based on source vs recon variance.
+    
+    This experiment biases the rd decision based on the impact
+    a mode decision has on the relative spatial complexity of the
+    reconstruction vs the source.
+    
+    The aim is to better retain a semblance of texture even if it
+    is slightly misaligned / wrong, rather than use a simple rd
+    measure that tends to favor use of a flat predictor if a perfect
+    match can't be found.
+    
+    This improves the appearance of texture and visual [1;31mquality[m
+    on specific test clips but is hidden under a flag and currently
+    off by default pending visual [1;31mquality[m testing on a wider Yt set.
+    
+    Change-Id: Idf6e754a8949bf39ed9d314c6f2daaa20c888aad
+For keyword tiling:

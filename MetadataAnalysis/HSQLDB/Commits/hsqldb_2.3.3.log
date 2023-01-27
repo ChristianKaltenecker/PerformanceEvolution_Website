@@ -1,0 +1,22 @@
+Searching between 2.3.2 and 2.3.3
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: defrag,log,blowfish,encrypt
+Keywords: slow fast time perf optim regression speed defrag log blowfish encrypt
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+For keyword defrag:
+For keyword log:
+commit e3d6d4ef2e1e319750b91c8c4be501e16225ca46
+Author: unsaved <unsaved@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Sat Mar 21 15:14:03 2015 +0000
+
+    Re-arranged FrameworkLogger to accommodate future support of log4j v2
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@5441 7c7dc5f5-a22d-0410-a3af-b41755a11667
+For keyword blowfish:
+For keyword encrypt:

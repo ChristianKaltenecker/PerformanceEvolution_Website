@@ -1,0 +1,4 @@
+Changelogs: 
+5.5-series: https://mariadb.com/kb/en/mariadb-galera-55-changelogs/ 
+10.0-series: https://mariadb.com/kb/en/changelogs-mariadb-100-series/ 
+10.2-series: https://mariadb.com/kb/en/changelogs-mariadb-102-series/

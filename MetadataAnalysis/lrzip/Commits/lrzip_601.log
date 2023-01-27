@@ -1,0 +1,97 @@
+Searching between v0.571 and v0.601
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compressoion,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compressoion processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+commit 4bc8faa52695e6f4441c14b4e257791301377673
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Mar 22 21:37:10 2011 +1100
+
+    Storage time is only meaningful on compression.
+
+commit 63fb1bafea069c8d0b8eba70eeef48a9fc72422b
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Fri Mar 18 23:18:36 2011 +1100
+
+    Modify the file format further to make all block header information only encode the number of bytes determined in chunk_bytes instead of 8 full bytes all the time.
+
+commit acb023988fcce99fe43949b12cc18216a86e1462
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Mar 15 21:18:29 2011 +1100
+
+    Generate sha512 hash and hash iv required to encrypt based on password, timestamp, loops and random salt.
+
+commit 1397c0f8327f7f2b7fdace1f222138ec7e6f308d
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Mar 12 20:31:56 2011 +1100
+
+    Create custom "loop count" system to determine how many times to hash a password when encrypting based on the datestamp.
+    This data will be stored as a 2 byte entry in the header in the future (b1 and b2).
+
+commit 885c6b327f7f0bb7821871b4dbc4d0ef8db362ec
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Mar 12 11:55:15 2011 +1100
+
+    Add storage time display if it exists in maxverbose info.
+For keyword perf:
+commit fca5d4232c292f3f7422faf957d91af18688c225
+Author: ckolivas <kernel@kolivas.org>
+Date:   Tue Mar 15 09:56:45 2011 +1100
+
+    Refuse to perform file info from STDIN.
+For keyword optim:
+commit d2ae072a3ccd65d0d7791f5e2d999ca63c277cee
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Mar 12 22:58:39 2011 +1100
+
+    Round to page for optimum efficiency.
+For keyword regression:
+commit 3e3759fb098e0163f555801cd681b09dc39144da
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 23 11:10:02 2011 +1100
+
+    Remove the crappy regression test script from release tarballs.
+
+commit 06a76bc4aa6104360c1341639e015f13f5314f8f
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Mar 21 19:01:24 2011 +1100
+
+    Revert "More big endian fixes."
+    
+    This reverts commit edbcc797e0e58b33adffe8b7ada13088ab62d981.
+    
+    Broke regression text. Needs more attention.
+
+commit deb2df90b0feb8696c335748190a77eaf61c3bcb
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Fri Mar 11 08:38:24 2011 +1100
+
+    Add rzip only compress+test to regression tests.
+For keyword speed:
+For keyword lzo:
+commit 11052f56f3a7a5e92868a8f1b48c5c4d2a45bd3a
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 9 13:25:33 2011 +1100
+
+    Ignore the lzo_1 return value entirely.
+For keyword lzma:
+commit 8fcedbc43eab77a9bb128478987cc5059e1de6b6
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 23 07:42:45 2011 +1100
+
+    Fix big endian decompression from lzma.
+For keyword gzip:
+For keyword bzip:
+For keyword compressoion:
+For keyword processor:
+For keyword multi:
+For keyword level:
+For keyword thread:
+commit 643054ae22517b4cee31c74985dd43ffb9e1158e
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Fri Mar 11 08:33:35 2011 +1100
+
+    Fix threading errors.
+    Patch by <mike@zentific.com>

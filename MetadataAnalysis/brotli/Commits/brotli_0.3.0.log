@@ -1,0 +1,60 @@
+Searching between v0.4.0 and v0.5.2
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,compression
+Keywords: slow fast time perf optim regression quality compression
+For keyword slow:
+commit 2048189048f130b0e8fb60307277379743dc5a2d
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Jul 26 14:41:59 2016 +0200
+
+    Update encoder:
+     * booleanification
+     * integer BR scores, may improve performance if FPU is slow
+     * condense speed-quality constants in quality.h
+     * code massage to calm down CoverityScan
+     * hashers refactoring
+     * new hasher - improved speed, compression and reduced memory usage for q:5-9 w:10-16
+     * reduced static recources -> binary size
+For keyword fast:
+For keyword time:
+For keyword perf:
+commit 2048189048f130b0e8fb60307277379743dc5a2d
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Jul 26 14:41:59 2016 +0200
+
+    Update encoder:
+     * booleanification
+     * integer BR scores, may improve performance if FPU is slow
+     * condense speed-quality constants in quality.h
+     * code massage to calm down CoverityScan
+     * hashers refactoring
+     * new hasher - improved speed, compression and reduced memory usage for q:5-9 w:10-16
+     * reduced static recources -> binary size
+For keyword optim:
+For keyword regression:
+For keyword quality:
+commit 2048189048f130b0e8fb60307277379743dc5a2d
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Jul 26 14:41:59 2016 +0200
+
+    Update encoder:
+     * booleanification
+     * integer BR scores, may improve performance if FPU is slow
+     * condense speed-quality constants in quality.h
+     * code massage to calm down CoverityScan
+     * hashers refactoring
+     * new hasher - improved speed, compression and reduced memory usage for q:5-9 w:10-16
+     * reduced static recources -> binary size
+For keyword compression:
+commit 2048189048f130b0e8fb60307277379743dc5a2d
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Tue Jul 26 14:41:59 2016 +0200
+
+    Update encoder:
+     * booleanification
+     * integer BR scores, may improve performance if FPU is slow
+     * condense speed-quality constants in quality.h
+     * code massage to calm down CoverityScan
+     * hashers refactoring
+     * new hasher - improved speed, compression and reduced memory usage for q:5-9 w:10-16
+     * reduced static recources -> binary size

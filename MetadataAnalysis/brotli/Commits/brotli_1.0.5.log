@@ -1,0 +1,38 @@
+Searching between v1.0.4 and v1.0.5
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: quality,compression
+Keywords: slow fast time perf optim regression quality compression
+For keyword slow:
+For keyword fast:
+commit 1e7ea1d8e61b7cd51149a2dd491bc86ff8ef460c
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Mon Jun 4 17:53:16 2018 +0200
+
+    Inverse bazel project/workspace tree (#677)
+    
+    * Inverse bazel workspace tree.
+    
+    Now each subproject directly depends on root (c) project.
+    
+    This helps to mitigate Bazel bug bazelbuild/bazel#2391; short summary:
+    Bazel does not work if referenced subproject `WORKSPACE` uses any
+    repositories that embedding project does not.
+    
+    Bright side: building C project is much faster;
+    no need to download closure, go and JDK...
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword quality:
+For keyword compression:
+commit 68db5c0272d46f316efab575b67dae5b9ce4378d
+Author: Eugene Kliuchnikov <eustas@google.com>
+Date:   Fri Apr 13 11:44:34 2018 +0200
+
+    Update (#660)
+    
+    * Update
+     * improve q=1 compression on small files
+     * fix "left shift before promotion"
+     * fix osx Travis builds

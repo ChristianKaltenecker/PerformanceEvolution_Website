@@ -1,0 +1,94 @@
+Searching between z3-4.8.3 and z3-4.8.4
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: UFLRA,proof
+Keywords: slow fast time perf optim regression speed UFLRA proof
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit 51a947b73d9d597029c30c62fe8d59d013a48f3c[m
+Author: Bruce Mitchener <bruce.mitchener@gmail.com>
+Date:   Sun Dec 9 16:16:20 2018 +0700
+
+    Change how 64 bit builds are detected.
+    
+    Instead of doing this at configure [1;31mtime[m, we look at the actual
+    compile [1;31mtime[m status. This also avoids hardcoding checks based on
+    what CPU architecture is present, which doesn't work when Z3 is
+    being built on non-x86_64 platforms.
+For keyword perf:
+[33mcommit bfcea7a8198efd9ff4b0da6e30266a350cefa503[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Dec 11 09:38:36 2018 -0800
+
+    [1;31mperf[m improvements by reordering variable branching #1676
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit a20e68facc92e60a71d6b61dc0e2cc1e0dd501f1[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Dec 7 17:54:49 2018 +0000
+
+    throttel extract/ite rewriting to avoid [1;31mperf[m-bug exposed in example from Lucas Cordeiro and Alessandro Trindade
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9e5aaf074e248084a1dc1555109d5ff66301f73f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Dec 4 10:13:55 2018 -0800
+
+    [1;31mperf[m improvements for #1979
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 67f22d8d659e4ef287dcdc8e9123aa2fb3bee932[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 29 11:32:52 2018 -0800
+
+    improving [1;31mperf[mormance for length constraints
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit e96f9de70b56554ec6564741607041a5c12f795e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Nov 29 06:02:32 2018 -0800
+
+    [1;31mperf[m #1988
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword optim:
+[33mcommit 74e031ba926d78557e33edca1f7debf03d73d7ae[m
+Merge: 1cfd14fd7 fbc33b20c
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Nov 30 07:47:33 2018 -0800
+
+    Merge pull request #1992 from waywardmonkeys/save-clang-[1;31moptim[mization-records
+    
+    cmake: Allow saving clang's [1;31moptim[mization records.
+
+[33mcommit fbc33b20c869ece56ee6b7a985e846b61a02a14b[m
+Author: Bruce Mitchener <bruce.mitchener@gmail.com>
+Date:   Fri Nov 30 19:52:57 2018 +0700
+
+    cmake: Allow saving clang's [1;31moptim[mization records.
+    
+    This gives some insight into what the compiler has decided to do
+    or not do.
+For keyword regression:
+[33mcommit b3d0ed6143420fbb174a62da7ab62aa525b7022d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Dec 11 20:27:28 2018 -0800
+
+    fix #2035 [1;31mregression[m. correct axiom is |extract(s,i,l)| <= l or l < 0, but it is subsumed by encoding of extract, so new axiom is not useful
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8d940f64b88774877f8cc64a74c09bbedcc7b0fe[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Nov 23 10:57:07 2018 -0800
+
+    fix build [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+For keyword UFLRA:
+For keyword proof:

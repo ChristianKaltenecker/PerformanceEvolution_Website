@@ -1,0 +1,254 @@
+Searching between v0.560 and v0.571
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit 44ed5727b3dc797296f8e63a4b6ed4e53f9a2d86[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 2 14:16:57 2011 +1100
+
+    Clean up and fix [1;31mtime[ms displayed.
+    
+    Merge fixes.
+For keyword perf:
+For keyword optim:
+For keyword regression:
+[33mcommit b9470b43dc3e0ce2e6807732d76c67a22d3a669d[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Mar 8 08:21:15 2011 +1100
+
+    Basic local [1;31mregression[m testing.
+For keyword speed:
+[33mcommit cf03cb0c04772f9b128dec948dc9643be146c0b6[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Feb 26 23:26:00 2011 +1100
+
+    Fallocate space in advance on decompression.
+    This often can [1;31mspeed[m up decompression of large files and decreases fragmentation.
+
+[33mcommit f9f880908c15a2a1d52f5658ce0c72be28ecace1[m
+Author: ckolivas <kernel@kolivas.org>
+Date:   Fri Feb 25 10:10:22 2011 +1100
+
+    Remove the slightly fragile exponential growth buffer size.
+    It was only [1;31mspeed[ming up compression a small amount, yet adversely affected compression and would segfault due to the size not being consistent on successive passes.
+
+[33mcommit bb33f7571cca2d151192bcb7bb60f53f2e40447b[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 00:49:50 2011 +1100
+
+    Multi-threading [1;31mspeed[m ups.
+    Add one more thread on compression and decompression to account for the staggered nature of thread recruitment.
+    Make the initial buffer slightly smaller and make it progressively larger, thus recruiting threads sooner and more evenly.
+    This also [1;31mspeed[ms up decompression for the same reason.
+    Check the amount of memory being used by each thread on decompression to ensure we don't try to recruit too much ram.
+For keyword lzo:
+[33mcommit 94673d3fe3d8a2c439cf4fd39f7baa55763438b4[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Feb 23 01:15:18 2011 +1100
+
+    Change the LZO testing option to be a bool on/off instead of taking a confusing parameter.
+    Make the [1;31mlzo[m testing message simpler and only appear when max verbose mode is enabled.
+For keyword lzma:
+[33mcommit 556803752b449d2e544342f5d754a814c4a21ac7[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Mar 7 00:58:45 2011 +1100
+
+    Fix windows EOL to unix on [1;31mlzma[m.txt.
+
+[33mcommit 011344753ac63d0c724dcb3c24c1fc57e9f6d291[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 15:19:31 2011 +1100
+
+    With [1;31mlzma[m and zpaq, the compression overhead per thread is significant.
+    As we can work out what that compression overhead is, we can factor that into testing how much ram we can allocate.
+    There is no advantage to running multiple threads when there is no compression back end so drop to 1 only.
+    Limit ram for compression back end to 1/3 ram regardless for when OSs lie due to heavy overcommit.
+For keyword gzip:
+For keyword bzip:
+For keyword compression:
+[33mcommit 9499a7b45322e4c3a3b65a32dfd16261b9c23e84[m
+Author: ckolivas <kernel@kolivas.org>
+Date:   Tue Mar 8 08:24:05 2011 +1100
+
+    STDOUT does not affect the [1;31mcompression[m window in master branch.
+
+[33mcommit 13a6fb5b430998075eb63246a1a9debb8a330db4[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Mar 7 17:14:07 2011 +1100
+
+    Dump the temporary file generated to emulate stdout at the end of each chunk on de[1;31mcompression[m and then truncate the file instead of writing the whole file before dumping it.
+
+[33mcommit 32e182c95a7f472967bb88253558ac9acaf554b6[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Mar 7 17:00:28 2011 +1100
+
+    Check for free space in the right place for [1;31mcompression[m and give the right message.
+
+[33mcommit 624de254ced11dc3100de65a75b5bed2bfefae47[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Feb 28 22:13:36 2011 +1100
+
+    Revert "Fallocate space in advance on de[1;31mcompression[m."
+    
+    This reverts commit cf03cb0c04772f9b128dec948dc9643be146c0b6.
+    
+    Fallocating for some reason fails to write the end of the file! Revert change pending further investigation.
+
+[33mcommit cf03cb0c04772f9b128dec948dc9643be146c0b6[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Feb 26 23:26:00 2011 +1100
+
+    Fallocate space in advance on de[1;31mcompression[m.
+    This often can speed up de[1;31mcompression[m of large files and decreases fragmentation.
+
+[33mcommit fd5a77ac21bd80053add402cefe6e2b3fb1ae37a[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Feb 26 23:19:50 2011 +1100
+
+    Check on the fd_out on de[1;31mcompression[m, NOT on fd_in.
+
+[33mcommit 8bdd5688c8971611830b1c680dd68f727f3265c9[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Feb 26 23:10:28 2011 +1100
+
+    Check for free space before [1;31mcompression[m/de[1;31mcompression[m and abort if -f option is not enabled.
+
+[33mcommit f9f880908c15a2a1d52f5658ce0c72be28ecace1[m
+Author: ckolivas <kernel@kolivas.org>
+Date:   Fri Feb 25 10:10:22 2011 +1100
+
+    Remove the slightly fragile exponential growth buffer size.
+    It was only speeding up [1;31mcompression[m a small amount, yet adversely affected [1;31mcompression[m and would segfault due to the size not being consistent on successive passes.
+
+[33mcommit 22ae326d013cf03fe19248bf5ed1c079203e69e2[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Thu Feb 24 11:52:30 2011 +1100
+
+    Make it always clear that a failure to allocate a buffer has occurred on [1;31mcompression[m.
+
+[33mcommit 32ff6edf9ae1f6ec08c5ba2cbd78aae11dbc5f1b[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Feb 23 01:26:51 2011 +1100
+
+    Only set the main process nice value to less when a back-end [1;31mcompression[m is enabled.
+
+[33mcommit 011344753ac63d0c724dcb3c24c1fc57e9f6d291[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 15:19:31 2011 +1100
+
+    With lzma and zpaq, the [1;31mcompression[m overhead per thread is significant.
+    As we can work out what that [1;31mcompression[m overhead is, we can factor that into testing how much ram we can allocate.
+    There is no advantage to running multiple threads when there is no [1;31mcompression[m back end so drop to 1 only.
+    Limit ram for [1;31mcompression[m back end to 1/3 ram regardless for when OSs lie due to heavy overcommit.
+
+[33mcommit bcb857d9343b0c96d63ba4d6ca71a6df24a80863[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 00:58:55 2011 +1100
+
+    Don't add extra threads for single-threaded de[1;31mcompression[m case.
+
+[33mcommit bb33f7571cca2d151192bcb7bb60f53f2e40447b[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 00:49:50 2011 +1100
+
+    Multi-threading speed ups.
+    Add one more thread on [1;31mcompression[m and de[1;31mcompression[m to account for the staggered nature of thread recruitment.
+    Make the initial buffer slightly smaller and make it progressively larger, thus recruiting threads sooner and more evenly.
+    This also speeds up de[1;31mcompression[m for the same reason.
+    Check the amount of memory being used by each thread on de[1;31mcompression[m to ensure we don't try to recruit too much ram.
+
+[33mcommit 74df2b5973db20e064d7db6007621bc6936fa29e[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Feb 21 12:03:08 2011 +1100
+
+    Minor updates to man pages, lrzip.conf example file.
+    Update main help screen to include environment settings.
+    Update to respect $TMP environment variable for TMP files.
+    Updated control structure to include tmpdir pointer.
+    Update lrzip.conf parser to respect -U -M options.
+    Update lrzip.conf example to include new parameters.
+    Reorder main Switch loop in main.c for readability.
+    Have MAXRAM and control.window be exclusive. MAXRAM wins.
+    Have UNLIMITED and control.window be exclusive. UNLIMITED wins.
+    Have UNLIMITED and MAXRAM be exclusive. UNLIMITED wins.
+    Corrects heuristic computation in rzip.c which would override
+    MAXRAM or UNLIMITED if control.window set
+    Show heuristically computed control.window when computed.
+    Remove display [1;31mcompression[m level from control.window verbose output.
+    Update print_verbose format for Testing for incompressible data in stream.c
+    to omit extra \n.
+    
+    Changes by Peter Hyman <pete@peterhyman.com>
+For keyword processor:
+For keyword multi:
+[33mcommit 011344753ac63d0c724dcb3c24c1fc57e9f6d291[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 15:19:31 2011 +1100
+
+    With lzma and zpaq, the compression overhead per thread is significant.
+    As we can work out what that compression overhead is, we can factor that into testing how much ram we can allocate.
+    There is no advantage to running [1;31mmulti[mple threads when there is no compression back end so drop to 1 only.
+    Limit ram for compression back end to 1/3 ram regardless for when OSs lie due to heavy overcommit.
+For keyword level:
+[33mcommit 74df2b5973db20e064d7db6007621bc6936fa29e[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Feb 21 12:03:08 2011 +1100
+
+    Minor updates to man pages, lrzip.conf example file.
+    Update main help screen to include environment settings.
+    Update to respect $TMP environment variable for TMP files.
+    Updated control structure to include tmpdir pointer.
+    Update lrzip.conf parser to respect -U -M options.
+    Update lrzip.conf example to include new parameters.
+    Reorder main Switch loop in main.c for readability.
+    Have MAXRAM and control.window be exclusive. MAXRAM wins.
+    Have UNLIMITED and control.window be exclusive. UNLIMITED wins.
+    Have UNLIMITED and MAXRAM be exclusive. UNLIMITED wins.
+    Corrects heuristic computation in rzip.c which would override
+    MAXRAM or UNLIMITED if control.window set
+    Show heuristically computed control.window when computed.
+    Remove display compression [1;31mlevel[m from control.window verbose output.
+    Update print_verbose format for Testing for incompressible data in stream.c
+    to omit extra \n.
+    
+    Changes by Peter Hyman <pete@peterhyman.com>
+For keyword thread:
+[33mcommit 38eca38743c38df1f64c53ee31395f1bf630cd8d[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Mar 7 13:23:14 2011 +1100
+
+    Unify maxram allocation and limit [1;31mthread[ms when there isn't enough ram.
+
+[33mcommit aa9056b461332d75a4c00b368b41edfce0837dfd[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 20:39:13 2011 +1100
+
+    Minor output fix to prevent %% showing when one [1;31mthread[m changes from 100% to be replaced with 10%.
+
+[33mcommit 011344753ac63d0c724dcb3c24c1fc57e9f6d291[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 15:19:31 2011 +1100
+
+    With lzma and zpaq, the compression overhead per [1;31mthread[m is significant.
+    As we can work out what that compression overhead is, we can factor that into testing how much ram we can allocate.
+    There is no advantage to running multiple [1;31mthread[ms when there is no compression back end so drop to 1 only.
+    Limit ram for compression back end to 1/3 ram regardless for when OSs lie due to heavy overcommit.
+
+[33mcommit bcb857d9343b0c96d63ba4d6ca71a6df24a80863[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 00:58:55 2011 +1100
+
+    Don't add extra [1;31mthread[ms for single-[1;31mthread[med decompression case.
+
+[33mcommit bb33f7571cca2d151192bcb7bb60f53f2e40447b[m
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Feb 22 00:49:50 2011 +1100
+
+    Multi-[1;31mthread[ming speed ups.
+    Add one more [1;31mthread[m on compression and decompression to account for the staggered nature of [1;31mthread[m recruitment.
+    Make the initial buffer slightly smaller and make it progressively larger, thus recruiting [1;31mthread[ms sooner and more evenly.
+    This also speeds up decompression for the same reason.
+    Check the amount of memory being used by each [1;31mthread[m on decompression to ensure we don't try to recruit too much ram.

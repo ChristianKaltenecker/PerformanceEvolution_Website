@@ -1,0 +1,143 @@
+Searching between Z3-4.8.5 and z3-4.8.6
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: UFLRA,proof
+Keywords: slow fast time perf optim regression speed UFLRA proof
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit e0a44894cf480908ddc8110b1761e682af4e4644[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Jun 21 16:56:24 2019 +0200
+
+    purge smt.[1;31mtime[mout, use [1;31mtime[mout instead to control solver timing #2354
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword perf:
+[33mcommit da805f6016a846e45c7c2c2a0560759f95fee6fa[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Sep 13 18:31:52 2019 +0200
+
+    address [1;31mperf[m bottleneck exposed by #2552
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 000e485794992c2e30a2052ce5be65f1e55e331d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Sep 1 12:17:10 2019 -0700
+
+    add array selects to basic ackerman reduction improves [1;31mperf[mormance significantly for #2525 as it now uses the SAT solver core instead of SMT core
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 43a19cadf6c80ea0b31a7638b5b7939b69b264c6[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jul 20 12:40:22 2019 -0700
+
+    avoid reorder regression. affects [1;31mperf[mormance of SAT and also noticably for #2405
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword optim:
+[33mcommit 876cfb4dc968f33e7319dd19aa679ae71a918ba1[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Aug 12 09:50:31 2019 -0700
+
+    [1;31moptim[mization of phase
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 930db7597972cb0d4d6994c39dd51134c7c27e2a[m
+Author: Kyung Mo Beak <kybeak@microsoft.com>
+Date:   Tue Jun 11 19:37:45 2019 -0700
+
+    Add build options:/GF Enables the compiler to create a single copy of identical strings in the program image and in memory during execution. This is an [1;31moptim[mization called string pooling that can create smaller programs /Gy Allows the compiler to package individual functions in the form of packaged functions /profile This informs the linker to emit full fixup information so that Vulcan completely identifies code and data cross-references
+For keyword regression:
+[33mcommit 64f4c9794deaa84d8d888a2195d73bcca3ed9950[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sun Aug 25 10:00:26 2019 +0100
+
+    fix [1;31mregression[ms during string fixes
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 43a19cadf6c80ea0b31a7638b5b7939b69b264c6[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jul 20 12:40:22 2019 -0700
+
+    avoid reorder [1;31mregression[m. affects performance of SAT and also noticably for #2405
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b8734273c80884b27acd4d97b4eaf4cca21aab37[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat Jun 22 17:49:46 2019 -0800
+
+    pydoc [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5dfc40bf50efbb8781a62cd33150271c90494286[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Jun 21 22:29:08 2019 +0200
+
+    python [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit b4290d4b3d7c021965e9ce7ee636caac0f9cac74[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Jun 21 22:26:21 2019 +0200
+
+    python [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 88d51d33770bc74cff91d6c0d7ea784cb80d3a50[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 17 12:34:56 2019 -0700
+
+    fix python doc [1;31mregression[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 0ac462108f3507ad1e297a2744fc2228b9f8541e[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jun 11 11:56:05 2019 -0700
+
+    templatize [1;31mregression[m test
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9b68072797e3c9b538c3a5ede59256a48362d3f1[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jun 11 11:55:26 2019 -0700
+
+    templatize [1;31mregression[m test
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 9d783628db48e4cf48ed0986c9c464efe01d1cfc[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Jun 7 16:55:02 2019 -0700
+
+    add [1;31mregression[m tests to nightly
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+For keyword UFLRA:
+For keyword proof:
+[33mcommit 1b83c677ea9e8683c3ba33ab8e7b33589055b309[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Wed Sep 11 21:53:13 2019 +0200
+
+    spacer: fixes lim_num_generalizer
+    
+    Must check that newly constructed generalization blocks
+    the [1;31mproof[m obligation.
+    
+    Was only checking that generalization is entailed by the transition system!
+
+[33mcommit 375c0ff9a9bc594bad2e14ec0c1141203600489a[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Mon Aug 12 11:03:50 2019 -0400
+
+    Implement get_[1;31mproof[m() in bmc and spacer engines

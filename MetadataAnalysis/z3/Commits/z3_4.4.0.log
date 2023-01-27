@@ -1,0 +1,186 @@
+Searching between z3-4.3.2 and z3-4.4.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: QF_LRA,proof
+Keywords: slow fast time perf optim regression speed QF_LRA proof
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit b7bb53406f7807daddf025d7849b2cf7b49c1fb4[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Wed Apr 8 13:16:32 2015 +0100
+
+    Turned Z3Exception into a Run[1;31mtime[mException such that throws declarations are not needed anymore. Thanks to codeplex user steimann for this suggestion.
+
+[33mcommit b76d588c281c4ca1d08bec4477f903490cd7d412[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Sat Mar 21 16:10:30 2015 +0000
+
+    Renamed the soft_[1;31mtime[mout option to just [1;31mtime[mout.
+    
+    Signed-off-by: Christoph M. Wintersteiger <cwinter@microsoft.com>
+
+[33mcommit 8d303a09b5dc156fa67508c67559225b45510ed6[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Wed Feb 25 13:10:29 2015 +0000
+
+    Compile Z3 with link-[1;31mtime[m optimizations on Windows, yielding a 2-3% speedup
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+For keyword perf:
+[33mcommit 0482e7fe727c75e259ac55a932b28cf1842c530e[m
+Author: Nikolaj Bjorner <nbjorner@hotmail.com>
+Date:   Wed Mar 25 11:46:28 2015 -0700
+
+    cache datatype util in context to avoid [1;31mperf[mormance bug, codeplex issue 195
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@hotmail.com>
+
+[33mcommit 39892aae10c28810b8db5e4b9a6addda36a09520[m
+Author: Nikolaj Bjorner <nbjorner@hotmail.com>
+Date:   Wed Mar 25 11:46:17 2015 -0700
+
+    cache datatype util in context to avoid [1;31mperf[mormance bug, codeplex issue 195
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@hotmail.com>
+
+[33mcommit 8059a5a0b75e1ff4bbf25e946efece8de7f25278[m
+Author: Nikolaj Bjorner <nbjorner@hotmail.com>
+Date:   Wed Mar 25 11:36:01 2015 -0700
+
+    cache datatype util in context to avoid [1;31mperf[mormance bug, codeplex issue 195
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@hotmail.com>
+
+[33mcommit 86ac20faf65ea3aaaed43aa17c3682e4e6a8dadf[m
+Author: Nikolaj Bjorner <nbjorner@hotmail.com>
+Date:   Wed Mar 25 11:35:44 2015 -0700
+
+    cache datatype util in context to avoid [1;31mperf[mormance bug, codeplex issue 195
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@hotmail.com>
+
+[33mcommit 2aa91eee70569d10f978aa46497d0215b13e0e56[m
+Author: Nikolaj Bjorner <nbjorner@hotmail.com>
+Date:   Wed Mar 25 11:24:47 2015 -0700
+
+    cache datatype util in context to avoid [1;31mperf[mormance bug, codeplex issue 195
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@hotmail.com>
+
+[33mcommit a7927908827e60216c89fddbc2cecb45cfdec859[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Wed Mar 25 18:08:56 2015 +0000
+
+    Fixed [1;31mperf[mormance problems with enumeration sorts (Codeplex #190).
+
+[33mcommit 3478cdb75693801b97bc0aa92a819e9cc5e9dac9[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Tue Feb 3 12:30:42 2015 +0000
+
+    Added smt kernel setup for QF_FP(BV). Thanks to codeplex user smccamant for reporting this [1;31mperf[mormance problem.
+    
+    Signed-off-by: Christoph M. Wintersteiger <cwinter@microsoft.com>
+
+[33mcommit d20c7bc9eeaf952fd40f4604dac3c1a748507f56[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Mon Jan 19 18:19:43 2015 +0000
+
+    Added is_qfaufbv_probe and is_qfauflia_probe.
+    
+    Potential [1;31mperf[mormance disruption for some users:
+    Changed default_tactic to call the respective tactics,
+    where previously they would have run the default 'smt'
+    tactic.
+    
+    Signed-off-by: Christoph M. Wintersteiger <cwinter@microsoft.com>
+
+[33mcommit a6f58bdd173f7d8b4ee55c710c4158f59a76b8cb[m
+Author: Ken McMillan <kenmcmil@microsoft.com>
+Date:   Thu Oct 30 17:22:34 2014 -0700
+
+    fixes and [1;31mperf[mormance improvements for interp and duality
+For keyword optim:
+[33mcommit 71d31c126730e13b00cc87806564f9ed40b10ab3[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Fri Feb 27 11:48:14 2015 +0000
+
+    minor [1;31moptim[mization to reset() methods in smt::ketnel and smt::quantifier_manager
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@MSRC-4051274.europe.corp.microsoft.com>
+
+[33mcommit 8d303a09b5dc156fa67508c67559225b45510ed6[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Wed Feb 25 13:10:29 2015 +0000
+
+    Compile Z3 with link-time [1;31moptim[mizations on Windows, yielding a 2-3% speedup
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 168c3eb363e89b245cd4d36b3a7e744b3e979748[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Dec 19 12:32:57 2014 +0000
+
+    BV-SLS [1;31moptim[mization
+    
+    Signed-off-by: Christoph M. Wintersteiger <cwinter@microsoft.com>
+
+[33mcommit 387f036f93287e912650b3738ef896d730b98152[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Dec 19 12:32:57 2014 +0000
+
+    BV-SLS [1;31moptim[mization
+    
+    Signed-off-by: Christoph M. Wintersteiger <cwinter@microsoft.com>
+
+[33mcommit 75bae1b00c507dc4a85d7e9046063611b611507a[m
+Author: Christoph M. Wintersteiger <cwinter@microsoft.com>
+Date:   Fri Dec 19 12:32:57 2014 +0000
+
+    BV-SLS [1;31moptim[mization
+    
+    Signed-off-by: Christoph M. Wintersteiger <cwinter@microsoft.com>
+For keyword regression:
+[33mcommit 80a13977fcd94b5ebe4cc458f0633c5b213c867d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Apr 15 05:44:10 2015 +0100
+
+    fix race condition from cancellation exposed by build [1;31mregression[m tests
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+[33mcommit 44e647e72b5e019e245fbaa66e40c68bdde6c939[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Tue Mar 10 16:53:47 2015 +0000
+
+    add reallocate() function and use it in bit_vector and vector containers
+    give a [1;31mspeed[mup of 1-4%
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 89c43676d5719b70ffa4fbfe334dc826f43239f0[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Mon Mar 2 09:50:35 2015 +0000
+
+    save memory in the sat solver to tentatively [1;31mspeed[m things up.
+    I get a slight [1;31mspeed[mup on my benchmarks. There's still one extra sign extend, which will be removed in a follow-up patch
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 8d303a09b5dc156fa67508c67559225b45510ed6[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Wed Feb 25 13:10:29 2015 +0000
+
+    Compile Z3 with link-time optimizations on Windows, yielding a 2-3% [1;31mspeed[mup
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+
+[33mcommit 1e30fd2c65da1d3293a19ef2bef55eab80eefc5d[m
+Author: Nuno Lopes <a-nlopes@microsoft.com>
+Date:   Sun Feb 22 11:38:46 2015 +0000
+
+    Hide non-exported symbols when compiling with gcc/clang.
+    I get a 17% reduction in the size of libz3.so on linux 32 bits, plus a 0.5-1% [1;31mspeed[mup when using the API.
+    
+    Signed-off-by: Nuno Lopes <a-nlopes@microsoft.com>
+For keyword QF_LRA:
+For keyword proof:

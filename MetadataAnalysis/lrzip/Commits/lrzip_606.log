@@ -1,0 +1,32 @@
+Searching between v0.604 and v0.606
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+For keyword lzo:
+For keyword lzma:
+For keyword gzip:
+commit d033743e6f41efe97bbea843222c71dfd2eb3391
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat May 7 13:22:35 2011 +1000
+
+    Add lrzcat symlink which automatically decompresses to stdout.
+    Revert automatic compression/decompression to stdout when not outputting to a tty, to be consistent with gzip.
+For keyword bzip:
+For keyword compression:
+commit d033743e6f41efe97bbea843222c71dfd2eb3391
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat May 7 13:22:35 2011 +1000
+
+    Add lrzcat symlink which automatically decompresses to stdout.
+    Revert automatic compression/decompression to stdout when not outputting to a tty, to be consistent with gzip.
+For keyword processor:
+For keyword multi:
+For keyword level:
+For keyword thread:

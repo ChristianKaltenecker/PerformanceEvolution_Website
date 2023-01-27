@@ -1,0 +1,30 @@
+Searching between v0.602 and v0.604
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+For keyword lzo:
+For keyword lzma:
+For keyword gzip:
+For keyword bzip:
+For keyword compression:
+commit 7ed977b1c18bc9956946cf2b4253aa2850411b85
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Apr 23 08:15:44 2011 +1000
+
+    Detach threads from the compression side since we don't explicitly join them as they may count towards max thread count otherwise.
+For keyword processor:
+For keyword multi:
+For keyword level:
+For keyword thread:
+commit 7ed977b1c18bc9956946cf2b4253aa2850411b85
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sat Apr 23 08:15:44 2011 +1000
+
+    Detach threads from the compression side since we don't explicitly join them as they may count towards max thread count otherwise.

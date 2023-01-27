@@ -1,0 +1,44 @@
+Searching between v0.607 and v0.608
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+For keyword time:
+commit f496e0705dc7acdcca7524cbd2f1920911669d05
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Sep 18 17:00:32 2011 +1000
+
+    get_sb only allows accessing one byte at a time, yet we don't need that functionality when sliding mmap is not in use.
+    User different versions of the function and the larger memcpys depending on whether sliding mmap is in use or not.
+    This affords a substantial speedup in the rzip phase of files not requiring sliding mmap.
+    A small optimisation of moving the check for remapping the low buffer also speeds up the sliding mmap version slightly.
+For keyword perf:
+For keyword optim:
+commit f496e0705dc7acdcca7524cbd2f1920911669d05
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Sep 18 17:00:32 2011 +1000
+
+    get_sb only allows accessing one byte at a time, yet we don't need that functionality when sliding mmap is not in use.
+    User different versions of the function and the larger memcpys depending on whether sliding mmap is in use or not.
+    This affords a substantial speedup in the rzip phase of files not requiring sliding mmap.
+    A small optimisation of moving the check for remapping the low buffer also speeds up the sliding mmap version slightly.
+For keyword regression:
+For keyword speed:
+commit f496e0705dc7acdcca7524cbd2f1920911669d05
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Sep 18 17:00:32 2011 +1000
+
+    get_sb only allows accessing one byte at a time, yet we don't need that functionality when sliding mmap is not in use.
+    User different versions of the function and the larger memcpys depending on whether sliding mmap is in use or not.
+    This affords a substantial speedup in the rzip phase of files not requiring sliding mmap.
+    A small optimisation of moving the check for remapping the low buffer also speeds up the sliding mmap version slightly.
+For keyword lzo:
+For keyword lzma:
+For keyword gzip:
+For keyword bzip:
+For keyword compression:
+For keyword processor:
+For keyword multi:
+For keyword level:
+For keyword thread:

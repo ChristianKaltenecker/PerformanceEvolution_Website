@@ -1,0 +1,17 @@
+Searching between release-19.06.0 and release-19.12.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: disjunctive_landmarks
+Keywords: slow fast time perf optim regression speed disjunctive_landmarks
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit dfaa6fbd94d0cd2486bb7c21549553abdcc36b46[m
+Author: Cedric Geissmann <cedric.geissmann@unibas.ch>
+Date:   Mon Dec 9 12:30:55 2019 +0100
+
+    [issue939] No longer use deprecated function [1;31mtime[m.clock().
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+For keyword disjunctive_landmarks:

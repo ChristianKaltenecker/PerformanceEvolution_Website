@@ -1,0 +1,162 @@
+Searching between v0.608 and v0.611
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+commit f792f72aa5086439c266433b39303c6377df909b
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 00:11:11 2012 +1100
+
+    Use ffsl for a faster lesser_bitness function.
+For keyword time:
+commit 30bfe06f1af3e53052d70e01155b54f97908bfc1
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Thu Mar 8 00:15:58 2012 +1100
+
+    Preserve the compressed time on decompression where suitable.
+For keyword perf:
+commit 43402d1c769900cf93e51844778562a59416984e
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 7 21:57:07 2012 +1100
+
+    Revert "Bypass most checks performed via the inbuilt expect macros likely and unlikely for non-debug builds."
+    
+    This reverts commit 3a1d0978303d9d67416656a333d8fd5d60b1699d.
+    
+    Did not offer any substantial speedup.
+
+commit 3a1d0978303d9d67416656a333d8fd5d60b1699d
+Author: ckolivas <kernel@kolivas.org>
+Date:   Wed Mar 7 17:54:04 2012 +1100
+
+    Bypass most checks performed via the inbuilt expect macros likely and unlikely for non-debug builds.
+For keyword optim:
+commit f4165ec263157597223a7896c14c6b365a4759a5
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 09:50:42 2012 +1100
+
+    Further micro-optimise match_len.
+
+commit 2fada9fb76cf38827645c0c48aaf995fcb7a6dca
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 02:17:26 2012 +1100
+
+    Micro-optimise the hot next_tag function.
+
+commit c13642414082d49c9550a28ebccdd0f50984c8aa
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 01:56:40 2012 +1100
+
+    Micro-optimise the match_len function.
+
+commit 0e593f76814371d399018abca5eabcf158122d02
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 01:04:44 2012 +1100
+
+    Pass one less variable to the get_sb function as an optimisation.
+
+commit 92c09a75889a0b41f0d0a8ee74c05f6e89c4aa8a
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 00:52:38 2012 +1100
+
+    Cache the hash_entry value passing one less variable to hash_empty as a micro-optimisation.
+
+commit 65e8ca4b039401c865dd4202694d131526d39cae
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 7 21:57:35 2012 +1100
+
+    Revert "Add a debug build option to allow optimising out checks in hot code paths."
+    
+    This reverts commit fcb1a3568874a6a29cbe2a3e16120e30460f548e.
+    
+    Did not end up using this in any meaningful fashion.
+
+commit fcb1a3568874a6a29cbe2a3e16120e30460f548e
+Author: ckolivas <kernel@kolivas.org>
+Date:   Wed Mar 7 17:08:24 2012 +1100
+
+    Add a debug build option to allow optimising out checks in hot code paths.
+For keyword regression:
+For keyword speed:
+commit 5edf8471d1eedf29ad2e477653062b3b7ca33c9e
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 11:49:40 2012 +1100
+
+    Perform all checksumming in a separate thread to speed up the hash search in the rzip phase.
+
+commit 43402d1c769900cf93e51844778562a59416984e
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 7 21:57:07 2012 +1100
+
+    Revert "Bypass most checks performed via the inbuilt expect macros likely and unlikely for non-debug builds."
+    
+    This reverts commit 3a1d0978303d9d67416656a333d8fd5d60b1699d.
+    
+    Did not offer any substantial speedup.
+For keyword lzo:
+For keyword lzma:
+commit e6ae7c528af04cb5151e9090c962f7f5e5f91da5
+Author: ckolivas <kernel@kolivas.org>
+Date:   Wed Mar 7 12:58:58 2012 +1100
+
+    Add __maybe_unused macro and use to stop warnings from lzma dummy allocs.
+For keyword gzip:
+For keyword bzip:
+For keyword compression:
+commit 30bfe06f1af3e53052d70e01155b54f97908bfc1
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Thu Mar 8 00:15:58 2012 +1100
+
+    Preserve the compressed time on decompression where suitable.
+
+commit cea59cd5687000a974b7b3d04f56bd9776b6a377
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 7 23:16:43 2012 +1100
+
+    No need for all those backspaces on decompression progress.
+
+commit dbc71eceb11cc4c33771d57e328ca3fcf0c534b5
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Mar 7 22:19:14 2012 +1100
+
+    Store a copy of the control struct to be reused on subsequent files to prevent variables being modified in the control struct on the first file that
+    corrupt compression/decompression of the 2nd file.
+
+commit 949c6d7a97af4196d4e0de1c5a368c8b6d25e39f
+Author: discomfitor <mike@zentific.com>
+Date:   Sat Aug 13 02:21:45 2011 -0400
+
+    another semi-clusterfuck commit: *new logging macros *allow compression to and from any FILE, not just stdin/stdout *update main.c to work with the above
+
+commit e85e4df0efbe6e7e19969c8d5dbec5bdeac5276a
+Author: discomfitor <mike@zentific.com>
+Date:   Thu Aug 11 00:57:43 2011 -0400
+
+    move compression overhead calcs out of main()
+For keyword processor:
+For keyword multi:
+For keyword level:
+commit 651c4f6252f8aa5fa51b40a4af0856cd99f829b9
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Wed Aug 17 21:03:02 2011 +1000
+
+    Add simple high level liblrzip interfaces.
+
+commit 6e702f49c42c50812d842b61ee781014eb85d59c
+Author: discomfitor <mike@zentific.com>
+Date:   Sat Aug 13 03:51:41 2011 -0400
+
+    add lrzip log level enum
+For keyword thread:
+commit 704d7b5eb68d8cf6aae45fe45a2666bf9954a8ca
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 12:22:35 2012 +1100
+
+    There is no point using a thread on the last checksum update, nor to add the value to cksum_limit.
+
+commit 5edf8471d1eedf29ad2e477653062b3b7ca33c9e
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Sun Mar 11 11:49:40 2012 +1100
+
+    Perform all checksumming in a separate thread to speed up the hash search in the rzip phase.

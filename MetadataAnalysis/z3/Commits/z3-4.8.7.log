@@ -1,0 +1,40 @@
+Searching between z3-4.8.6 and z3-4.8.7
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Keywords: slow fast time perf optim regression speed
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit 5122b2da7ebe7f38681306d14150676ccec9930b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Oct 16 09:01:02 2019 -0700
+
+    add solver.[1;31mtime[mout as another entry point #2354
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d25c7e67ebb20f47017b14618faae75ea3489ef6[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Oct 9 09:29:54 2019 -0700
+
+    increase [1;31mtime[mout for LTO
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit a424ab918b16f12290dd16e4e17cba103e4429d0[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Sep 27 06:48:17 2019 -0700
+
+    remove setting [1;31mtime[mout proc to null #2591
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword perf:
+[33mcommit 18fe28c0f0db547e52f96d7d7a2755a8becbaf7f[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Sep 25 20:01:06 2019 -0700
+
+    fix [1;31mperf[m bug exposed by Shelly Grossman
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword optim:
+For keyword regression:
+For keyword speed:

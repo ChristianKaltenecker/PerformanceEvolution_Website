@@ -1,0 +1,22 @@
+Searching between 2.2.1 and 2.2.2
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: blowfish,encrypt,log,defrag
+Keywords: slow fast time perf optim regression speed blowfish encrypt log defrag
+For keyword slow:
+For keyword fast:
+For keyword time:
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:
+commit 796fa0ccedcf1f719a7a430a5cdaf1351a0df1ac
+Author: fredt <fredt@7c7dc5f5-a22d-0410-a3af-b41755a11667>
+Date:   Fri May 20 23:52:09 2011 +0000
+
+    core code updates - improved query speed
+    
+    git-svn-id: https://svn.code.sf.net/p/hsqldb/svn/base/trunk@4274 7c7dc5f5-a22d-0410-a3af-b41755a11667
+For keyword blowfish:
+For keyword encrypt:
+For keyword log:
+For keyword defrag:

@@ -1,0 +1,1029 @@
+Searching between v0.9.2 and v0.9.5
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: pass,bitrate
+Keywords: slow fast time perf optim regression speed pass bitrate
+For keyword slow:
+[33mcommit 788c0eb54ef741153557953c22fe3f14bceb13d3[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Sat Oct 2 17:31:46 2010 +0100
+
+    Tune effect of motion on KF/GF boost in two pass;
+    
+    This code adjust the impact of the amount and speed of motion
+    on GF and KF boost.
+    
+    Sections with lots of [1;31mslow[m motion will tend to have a
+    somewhat bigger boost and sections with fast motion may
+    have less.
+    
+    There is a knock on effect to the selection of the active
+    quantizer range.
+    
+    This will likely require further tuning but helps with a couple
+    of particularly bad edge cases.
+    
+    Change-Id: Ic2449cda7305672b69acf42fc0a845b77ac98d40
+
+[33mcommit 18dc92fd664357db31d7ef43337e2dee3a0f5062[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Mon Sep 27 17:18:18 2010 -0700
+
+    Add 4-tap version of 2nd-pass ARMv6 MC filter.
+    
+    The existing code applied a 6-tap filter with 0's on either end.
+    We're already paying the branch penalty to avoid computing the two
+     extra columns needed as input to this filter.
+    We might as well save time computing the filter as well.
+    This reduces the inner loop from 21 instructions to 16, the number
+     of loads per iteration from 4 to 1, and the number of multiplies
+     from 7 to 4.
+    The gain in overall decoding performance, however, is small (less
+     than 1%).
+    
+    This change also means we now valgrind clean on ARMv6, which is
+     its real purpose.
+    The errors reported here were valgrind's fault (it does not detect
+     that 0 times an uninitialized value is initialized), but Julian
+     Seward says it would [1;31mslow[m down valgrind considerably to make such
+     checks.
+    Speeding up libvpx rather, even by a small amount, seems a much
+     better idea if only to enable proper valgrind checking of the
+     rest of the codec.
+    
+    Change-Id: Ifb376ea195e086b60f61daf1097d8910c4d8ff16
+For keyword fast:
+[33mcommit 96cf6588dea579d151679aec7c17ea9aeb1437ac[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Oct 26 10:46:31 2010 -0400
+
+    make arm hex search the generic implementation
+    
+    The ARM version of vp8_hex_search() is a [1;31mfast[mer implementation
+    of the same algorithm. Since it doesn't use any ARM specific
+    code, it can be made the default implementation. This removes
+    a linking error.
+    
+    Change-Id: I77d10f2c16b2515bff4522c350004e03b7659934
+
+[33mcommit 1dc0ca13404b072f14df29b40c79b71bd49a4763[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Wed Oct 13 17:08:13 2010 -0700
+
+    Fix compiler warning about vp8_[1;31mfast[m_quantize_b_impl_ssse2.
+    
+    Typo had function defined as _ssse2 and prototyped as _sse2.
+    
+    Change-Id: If9f19da1a83cff40774a90cf936d601c0bf1b7fe
+
+[33mcommit 6b1b28a83c3aa4eb25173a95708b55b722190e99[m
+Merge: 4d2b178a2 d860f685b
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Mon Oct 11 09:34:48 2010 -0700
+
+    Merge "Added vp8_[1;31mfast[m_quantize_b_sse2"
+
+[33mcommit d860f685b85ffafb32dfc20da53aaa81cb62c5c5[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Thu Oct 7 11:43:19 2010 -0400
+
+    Added vp8_[1;31mfast[m_quantize_b_sse2
+    
+    Moved vp8_[1;31mfast[m_quantize_b_sse from quantize_mmx.asm into
+    quantize_sse2.asm and renamed.  Updated the assembly code to
+    match the C version.
+    
+    Change-Id: I1766d9e1ca60e173f65badc0ca0c160c2b51b200
+
+[33mcommit d338d14c6bcf1bd9f9d028cf7ee177503076da47[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Wed Oct 6 13:28:36 2010 -0700
+
+    optimize [1;31mfast[m_quantizer c version
+    
+    As the zbin and rounding constants are normalized, rounding effectively
+    does the zbinning, therefore the zbin operation can be removed. In
+    addition, the memset on the two arrays are no longer necessary.
+    
+    Change-Id: If39c353c42d7e052296cb65322e5218810b5cc4c
+
+[33mcommit 788c0eb54ef741153557953c22fe3f14bceb13d3[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Sat Oct 2 17:31:46 2010 +0100
+
+    Tune effect of motion on KF/GF boost in two pass;
+    
+    This code adjust the impact of the amount and speed of motion
+    on GF and KF boost.
+    
+    Sections with lots of slow motion will tend to have a
+    somewhat bigger boost and sections with [1;31mfast[m motion may
+    have less.
+    
+    There is a knock on effect to the selection of the active
+    quantizer range.
+    
+    This will likely require further tuning but helps with a couple
+    of particularly bad edge cases.
+    
+    Change-Id: Ic2449cda7305672b69acf42fc0a845b77ac98d40
+For keyword time:
+[33mcommit 19638c23098537803a8efec7ca675b905c7d2777[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Oct 26 09:51:35 2010 -0400
+
+    arm: move unrolled loops back to generic code
+    
+    Some of the ARM functions differed from their generic counterparts
+    only by unrolling their loops. Since this change may be useful
+    on other platforms, or might even supercede the looped version
+    in the generic case, move it back to the generic file.
+    
+    This code is left under #if ARCH_ARM for now, but it may be worth
+    considering a different (possibly new) conditional for these. If
+    it turns out that this should be run[1;31mtime[m selectable, these
+    functions will have to move to the RTCD infrastructure. Don't want
+    to take that step at this [1;31mtime[m without more profile data.
+    
+    Change-Id: I4612fdbc606fbebba4971a690fb743ad184ff15f
+
+[33mcommit f9d9824047d5d94f0e7312815e99f8347ec09581[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed Oct 20 11:06:48 2010 -0400
+
+    Import webmquick[1;31mtime[m webm writer
+    
+    Initial import of the libmkv directory from the webmquick[1;31mtime[m[1]
+    project, at commit fedbda1.
+    
+    [1]: git://review.webmproject.org/webmquick[1;31mtime[m.git
+         commit fedbda18de899ff94855cb334de7e471036fbf1d
+    
+    Change-Id: I1564a0ebfa72293fc296ee02178196530dfd90e4
+
+[33mcommit 1258cf62aeb8846f0f319d1149cd69a5c517c7ba[m
+Author: Frank Galligan <fgalligan@google.com>
+Date:   Wed Oct 6 12:51:00 2010 -0400
+
+    Fixed the [1;31mtime[mbase parameter of ivfenc.
+    
+    Ivfenc will use [1;31mtime[mbase if it is set. If it is not set ivfenc will
+    still double the [1;31mtime[mbase so altref frames will have a unique pts.
+    Patch Set #3: Use integer math to generate source pts. Added a
+    framerate parameter. Increased the default [1;31mtime[mbase to milliseconds to
+    remove the *2 everywhere.
+    
+    Change-Id: I8d25b5b2cb26deef7eb72d74b5f76c98cafaf4db
+
+[33mcommit ad252daf65bcc989f5265b7bef7b04430cafcef4[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Oct 19 17:20:17 2010 -0400
+
+    ivfdec: webm reader support
+    
+    This patch enables ivfdec to decode WebM files. WebM demuxing is
+    provided by the Matthew Gregan's Nestegg library.
+    
+    This patch also makes minor changes to the [1;31mtime[mbase->framerate
+    handling when doing Y4M output. For WebM files, the framerate is
+    guessed by looking at the first second of video. For IVF files,
+    the [1;31mtime[mbase=1/(2*fps) hack is still in place, but is only used
+    if the [1;31mtime[mbase denominator is less than 1000. This is in anticipation
+    of change I8d25b5b, which introduces the distinction between
+    framerate and [1;31mtime[mbase to ivfenc. In the case of high resolution
+    [1;31mtime[mbases, like 100ns, we would have to guess the framerate
+    like we do for WebM, but since WebM support in ivfenc will
+    deprecate IVF output, we just assume 30fps rather than writing the
+    lookahead code.
+    
+    Change-Id: I1dd8600f13bf6071533d2816f005da9ede4f60a2
+
+[33mcommit b71962fdc98c3fb9fdf95d74191452cd51cbc2b5[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Wed Oct 20 15:39:11 2010 -0700
+
+    Add run[1;31mtime[m CPU detection support for ARM.
+    
+    The primary goal is to allow a binary to be built which supports
+     NEON, but can fall back to non-NEON routines, since some Android
+     devices do not have NEON, even if they are otherwise ARMv7 (e.g.,
+     Tegra).
+    The configure-generated flags HAVE_ARMV7, etc., are used to decide
+     which versions of each function to build, and when
+     CONFIG_RUNTIME_CPU_DETECT is enabled, the correct version is chosen
+     at run [1;31mtime[m.
+    In order for this to work, the CFLAGS must be set to something
+     appropriate (e.g., without -mfpu=neon for ARMv7, and with
+     appropriate -march and -mcpu for even earlier configurations), or
+     the native C code will not be able to run.
+    The ASFLAGS must remain set for the most advanced instruction set
+     required at build [1;31mtime[m, since the ARM assembler will refuse to emit
+     them otherwise.
+    I have not attempted to make any changes to configure to do this
+     automatically.
+    Doing so will probably require the addition of new configure options.
+    
+    Many of the hooks for RTCD on ARM were already there, but a lot of
+     the code had bit-rotted, and a good deal of the ARM-specific code
+     is not integrated into the RTCD structs at all.
+    I did not try to resolve the latter, merely to add the minimal amount
+     of protection around them to allow RTCD to work.
+    Those functions that were called based on an ifdef at the calling
+     site were expanded to check the RTCD flags at that site, but they
+     should be added to an RTCD struct somewhere in the future.
+    The functions invoked with global function pointers still are, but
+     these should be moved into an RTCD struct for thread safety (I
+     believe every platform currently supported has atomic pointer
+     stores, but this is not guaranteed).
+    
+    The encoder's boolhuff functions did not even have _c and armv7
+     suffixes, and the correct version was resolved at link [1;31mtime[m.
+    The token packing functions did have appropriate suffixes, but the
+     version was selected with a define, with no associated RTCD struct.
+    However, for both of these, the only armv7 instruction they actually
+     used was rbit, and this was completely superfluous, so I reworked
+     them to avoid it.
+    The only non-ARMv4 instruction remaining in them is clz, which is
+     ARMv5 (not even ARMv5TE is required).
+    Considering that there are no ARM-specific configs which are not at
+     least ARMv5TE, I did not try to detect these at run[1;31mtime[m, and simply
+     enable them for ARMv5 and above.
+    
+    Finally, the NEON register saving code was completely non-reentrant,
+     since it saved the registers to a global, static variable.
+    I moved the storage for this onto the stack.
+    A single binary built with this code was tested on an ARM11 (ARMv6)
+     and a Cortex A8 (ARMv7 w/NEON), for both the encoder and decoder,
+     and produced identical output, while using the correct accelerated
+     functions on each.
+    I did not test on any earlier processors.
+    
+    Change-Id: I45cbd63a614f4554c3b325c45d46c0806f009eaa
+
+[33mcommit 45e64941778058312d72711dbfcf039bb4ba5171[m
+Author: Frank Galligan <fgalligan@google.com>
+Date:   Tue Oct 5 17:46:37 2010 -0400
+
+    Change altref [1;31mtime[ms to preceding pts+1.
+    
+    Change the pts of the altref frame to be as close as possible to the
+    pts of the preceding frame and still be strictly increasing.
+    
+    Change-Id: Iae3033a4c89ae5a9d0e5c4198e9196e5f3ee57c7
+
+[33mcommit a465076e02aece158093ebe55f30c3420ab1ad14[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Thu Sep 30 20:40:45 2010 -0700
+
+    Fix valgrind errors in the NEON loop filters.
+    
+    Like the ARMv6 code, these functions were accessing values below
+     the stack pointer, which can be corrupted by signal delivery at
+     any [1;31mtime[m.
+
+[33mcommit 18dc92fd664357db31d7ef43337e2dee3a0f5062[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Mon Sep 27 17:18:18 2010 -0700
+
+    Add 4-tap version of 2nd-pass ARMv6 MC filter.
+    
+    The existing code applied a 6-tap filter with 0's on either end.
+    We're already paying the branch penalty to avoid computing the two
+     extra columns needed as input to this filter.
+    We might as well save [1;31mtime[m computing the filter as well.
+    This reduces the inner loop from 21 instructions to 16, the number
+     of loads per iteration from 4 to 1, and the number of multiplies
+     from 7 to 4.
+    The gain in overall decoding performance, however, is small (less
+     than 1%).
+    
+    This change also means we now valgrind clean on ARMv6, which is
+     its real purpose.
+    The errors reported here were valgrind's fault (it does not detect
+     that 0 [1;31mtime[ms an uninitialized value is initialized), but Julian
+     Seward says it would slow down valgrind considerably to make such
+     checks.
+    Speeding up libvpx rather, even by a small amount, seems a much
+     better idea if only to enable proper valgrind checking of the
+     rest of the codec.
+    
+    Change-Id: Ifb376ea195e086b60f61daf1097d8910c4d8ff16
+
+[33mcommit e2795e9978580a21e7399d3ccf919dc2f06f97ca[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Fri Sep 24 14:30:13 2010 -0700
+
+    Fix valgrind errors in vp8_sixtap_predict8x4_armv6().
+    
+    This function was accessing values below the stack pointer, which
+     can be corrupted by signal delivery at any [1;31mtime[m.
+    
+    Change-Id: I92945b30817562eb0340f289e74c108da72aeaca
+
+[33mcommit e913eb97c9eb2abd325d3416423925e501710098[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Sep 21 10:34:51 2010 -0400
+
+    configure: enable PIC for shared libs by default
+    
+    Shared libs generally require PIC, so this saves a little typing at
+    configure [1;31mtime[m.
+    
+    Change-Id: I357d70cc68434f3283fee78873052d2b7d77c777
+
+[33mcommit fa7a55bb043a6abfc661a8d06a2611b54372fe1c[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Sep 21 10:35:52 2010 -0400
+
+    Add getter functions for the interface data symbols
+    
+    Having these symbols be available as functions rather than data is
+    occasionally more convenient. Implemented this way rather than a
+    get-codec-by-id style to avoid creating a link-[1;31mtime[m dependency
+    between the encoder and the decoder.
+    
+    Fixes issue #169
+    
+    Change-Id: I319f281277033a5e7e3ee3b092b9a87cce2f463d
+
+[33mcommit 022323bf856084e812354464a0302f5cb710ee78[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Sep 9 15:55:19 2010 -0400
+
+    reorder data to use wider instructions
+    
+    the previous commit laid the groundwork by doing two sets of idcts
+    together. this moved that further by grouping the interesting data
+    (q[0], q+16[0]) together to allow using wider instructions. also
+    managed to drop a few instructions by recognizing that the constant
+    for sinpi8sqrt2 could be downshifted all the [1;31mtime[m which avoided a
+    dowshift as well as workarounds for a function which only accepted
+    signed data
+    
+    looks like a modest gain for performance: at qcif, went from ~180
+    fps to ~183
+    Change-Id: I842673f3080b8239e026cc9b50346dbccbab4adf
+
+[33mcommit 14ba764219296ec74fab5647ca7bdc2e4ca693ce[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Tue Sep 7 14:21:27 2010 -0400
+
+    Update NEON wide idcts
+    
+    Expand 93c32a55 which used SSE2 instructions to do two
+    idct/dequant/recons at a [1;31mtime[m to NEON. Initial working
+    commit. More work needs to be put into rearranging and
+    interlacing the data to take advantage of quadword
+    operations, which is when we'll hopefully see a much
+    better boost
+    
+    Change-Id: I86d59d96f15e0d0f9710253e2c098ac2ff2865d1
+For keyword perf:
+[33mcommit 1376f061dae199af3378339367a1bc9f95fd4187[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Mon Oct 18 14:57:40 2010 -0400
+
+    reuse common loopfilter code
+    
+    there were four versions for the regular and
+    macroblock loopfilters:
+    horizontal [y|uv]
+    vertical [y|uv]
+    
+    this moves all the common code into 2 functions:
+    vp8_loop_filter_neon
+    vp8_mbloop_filter_neon
+    
+    this provides no gain in [1;31mperf[mormance. there's a bit
+    of jitter, but it trends down ~0.25-0.5%. however,
+    this is a huge gain maintenance. also, there is the
+    potential to drop some stack usage in the macroblock
+    loopfilter.
+    
+    Change-Id: I91506f07d2f449631ff67ad6f1b3f3be63b81a92
+
+[33mcommit b71962fdc98c3fb9fdf95d74191452cd51cbc2b5[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Wed Oct 20 15:39:11 2010 -0700
+
+    Add runtime CPU detection support for ARM.
+    
+    The primary goal is to allow a binary to be built which supports
+     NEON, but can fall back to non-NEON routines, since some Android
+     devices do not have NEON, even if they are otherwise ARMv7 (e.g.,
+     Tegra).
+    The configure-generated flags HAVE_ARMV7, etc., are used to decide
+     which versions of each function to build, and when
+     CONFIG_RUNTIME_CPU_DETECT is enabled, the correct version is chosen
+     at run time.
+    In order for this to work, the CFLAGS must be set to something
+     appropriate (e.g., without -mfpu=neon for ARMv7, and with
+     appropriate -march and -mcpu for even earlier configurations), or
+     the native C code will not be able to run.
+    The ASFLAGS must remain set for the most advanced instruction set
+     required at build time, since the ARM assembler will refuse to emit
+     them otherwise.
+    I have not attempted to make any changes to configure to do this
+     automatically.
+    Doing so will probably require the addition of new configure options.
+    
+    Many of the hooks for RTCD on ARM were already there, but a lot of
+     the code had bit-rotted, and a good deal of the ARM-specific code
+     is not integrated into the RTCD structs at all.
+    I did not try to resolve the latter, merely to add the minimal amount
+     of protection around them to allow RTCD to work.
+    Those functions that were called based on an ifdef at the calling
+     site were expanded to check the RTCD flags at that site, but they
+     should be added to an RTCD struct somewhere in the future.
+    The functions invoked with global function pointers still are, but
+     these should be moved into an RTCD struct for thread safety (I
+     believe every platform currently supported has atomic pointer
+     stores, but this is not guaranteed).
+    
+    The encoder's boolhuff functions did not even have _c and armv7
+     suffixes, and the correct version was resolved at link time.
+    The token packing functions did have appropriate suffixes, but the
+     version was selected with a define, with no associated RTCD struct.
+    However, for both of these, the only armv7 instruction they actually
+     used was rbit, and this was completely su[1;31mperf[mluous, so I reworked
+     them to avoid it.
+    The only non-ARMv4 instruction remaining in them is clz, which is
+     ARMv5 (not even ARMv5TE is required).
+    Considering that there are no ARM-specific configs which are not at
+     least ARMv5TE, I did not try to detect these at runtime, and simply
+     enable them for ARMv5 and above.
+    
+    Finally, the NEON register saving code was completely non-reentrant,
+     since it saved the registers to a global, static variable.
+    I moved the storage for this onto the stack.
+    A single binary built with this code was tested on an ARM11 (ARMv6)
+     and a Cortex A8 (ARMv7 w/NEON), for both the encoder and decoder,
+     and produced identical output, while using the correct accelerated
+     functions on each.
+    I did not test on any earlier processors.
+    
+    Change-Id: I45cbd63a614f4554c3b325c45d46c0806f009eaa
+
+[33mcommit 8f75ea6b5c0a72c233d1ff9a75e16e6fe43fda77[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Thu Oct 21 17:04:30 2010 -0700
+
+    Convert [4][4] matrices to [16] arrays.
+    
+    Most of the code that actually uses these matrices indexes them as
+     if they were a single contiguous array, and coverity produces
+     reports about the resulting accesses that overflow the static
+     bounds of the first row.
+    This is [1;31mperf[mectly legal in C, but converting them to actual [16]
+     arrays should eliminate the report, and removes a good deal of
+     extraneous indexing and address operators from the code.
+    
+    Change-Id: Ibda479e2232b3e51f9edf3b355b8640520fdbf23
+
+[33mcommit fc94ffcea4225428335093c36278e5757b3de934[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Oct 21 10:26:50 2010 -0400
+
+    Rewrite vp8_short_walsh4x4_sse2()
+    
+    This rewriting reflects changes made in commit "Improve the
+    accuracy of forward walsh-hadamard transform". Since this function
+    is not called much, only a small encoder [1;31mperf[mormance gain (~0.5% )
+    is seen.
+    
+    Change-Id: Ie9df58a43028a11fd5b115c4bbe3141f7596578b
+
+[33mcommit d6da7b8ea1092d3c99591b2087811ad22d667d1b[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Oct 14 11:06:37 2010 -0400
+
+    Improve bounds checking in vp8_diamond_search_sadx4()
+    
+    In order to know if all 4/8 neighbor points are within the bounds,
+    4 bounds checking are enough instead of checking 4 bounds for
+    each points (16/32 checkings). This improvement reduces cost of
+    vp8_diamond_search_sadx4() by 30%, and gives encoder a 1.5%
+    [1;31mperf[mormance gain (test options: 1 pass, good, speed=4).
+    
+    Change-Id: Ie8da29d18a6ecfc9829e74ac02f6fa70e042331a
+
+[33mcommit 18dc92fd664357db31d7ef43337e2dee3a0f5062[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Mon Sep 27 17:18:18 2010 -0700
+
+    Add 4-tap version of 2nd-pass ARMv6 MC filter.
+    
+    The existing code applied a 6-tap filter with 0's on either end.
+    We're already paying the branch penalty to avoid computing the two
+     extra columns needed as input to this filter.
+    We might as well save time computing the filter as well.
+    This reduces the inner loop from 21 instructions to 16, the number
+     of loads per iteration from 4 to 1, and the number of multiplies
+     from 7 to 4.
+    The gain in overall decoding [1;31mperf[mormance, however, is small (less
+     than 1%).
+    
+    This change also means we now valgrind clean on ARMv6, which is
+     its real purpose.
+    The errors reported here were valgrind's fault (it does not detect
+     that 0 times an uninitialized value is initialized), but Julian
+     Seward says it would slow down valgrind considerably to make such
+     checks.
+    Speeding up libvpx rather, even by a small amount, seems a much
+     better idea if only to enable proper valgrind checking of the
+     rest of the codec.
+    
+    Change-Id: Ifb376ea195e086b60f61daf1097d8910c4d8ff16
+
+[33mcommit 8ca779aba84866f97665705fc30d662ae8bc06c0[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Sep 24 11:10:25 2010 -0400
+
+    disable compilation of debugging code
+    
+    This patch avoids compiling some debugging code in onyx_if.c. The most
+    significant fix is to avoid generating code for vp8_write_yuv_frame,
+    which is never called. Some other code was removed by the dead code
+    elimination [1;31mperf[mormed by the compiler, and this patch does it with the
+    preprocessor instead. There are advantages both ways.
+    
+    Change-Id: I044fd43179d2e947553f0d6f2cad5b40907ac458
+
+[33mcommit 022323bf856084e812354464a0302f5cb710ee78[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Thu Sep 9 15:55:19 2010 -0400
+
+    reorder data to use wider instructions
+    
+    the previous commit laid the groundwork by doing two sets of idcts
+    together. this moved that further by grouping the interesting data
+    (q[0], q+16[0]) together to allow using wider instructions. also
+    managed to drop a few instructions by recognizing that the constant
+    for sinpi8sqrt2 could be downshifted all the time which avoided a
+    dowshift as well as workarounds for a function which only accepted
+    signed data
+    
+    looks like a modest gain for [1;31mperf[mormance: at qcif, went from ~180
+    fps to ~183
+    Change-Id: I842673f3080b8239e026cc9b50346dbccbab4adf
+
+[33mcommit f857a85088eaf515f599a1040098528863d2f657[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Sep 16 14:08:52 2010 -0400
+
+    Restructure multi-threaded decoder
+    
+    On each MB, loopfiltering is done right after MB decoding. This
+    combines two loops in multi-threaded code into one, which reduces
+    number of synchronizations to half.
+    
+    The above-row/left-col data are saved in temp buffers for
+    next-row/next MB decoding.
+    
+    Tests on 4-core gLucid machine showed 10% decoder [1;31mperf[mormance
+    gain with threads=4 (tulip clip). Testing on other platforms
+    isn't done yet.
+    
+    Change-Id: Id18ea7c1e84965dabea65d4c01ca5bc056ddeac9
+
+[33mcommit 746439ef6c1dd2fedbe0c24ddb76d40cb9d26357[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Tue Sep 14 15:46:37 2010 -0700
+
+    Modify GET_GOT macro for [1;31mperf[mormance.
+    
+    GET_GOT was producing a zero length call.  This resulted in
+    pipeline flushes occuring when returing from the assembly
+    functions.  Masked on out of order cores, but evident on
+    Atom cores.
+    
+    Change-Id: I8c375af313e8a169c77adbaf956693c0cfeb5ccd
+
+[33mcommit 0de458f6b9627844160768c0b2417058c7a865bc[m
+Author: Scott LaVarnway <slavarnway@google.com>
+Date:   Thu Sep 2 16:17:52 2010 -0400
+
+    Reduced the size of MB_MODE_INFO
+    
+    Moved partition_bmi and partition_count out of MB_MODE_INFO and
+    placed into MACROBLOCK.  Also reduced the size of other members
+    of the MB_MODE_INFO struct.  For 1080p, the memory was reduced
+    by 1,209,516 bytes.  The decoder [1;31mperf[mormance appeared to improve
+    by 3% for the clip used.
+    Note:  The main goal for this change is to improve the decoder
+    [1;31mperf[mormance.  The encoder will be revisited at a later date for
+    further structure cleanup.
+    
+    Change-Id: I4733621292ee9cc3fffa4046cb3fd4d99bd14613
+For keyword optim:
+[33mcommit 6fda7668e84808230d69a9d1f7580bd4b14ff977[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Wed Oct 27 12:50:16 2010 -0700
+
+    postproc: Tweaks to line drawing and blending.
+    
+    Turned down the blending level to make colored blocks obscure
+    the video less.
+    Not blending the entire block to give distinction to macro
+    block edges.
+    Added configuration so that macro block blending function can
+    be [1;31moptim[mized.
+    Change to constrain line as to when dx and dy are computed.
+    Now draw two lines to form an arrow.
+    
+    Change-Id: I986784e6abff65ea3e0d1437dfca7d06d44ede71
+
+[33mcommit a0ae3682aa67f882006c604196f7ee83eff88d84[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed Oct 27 11:28:43 2010 -0400
+
+    Fix half-pixel variance RTCD functions
+    
+    This patch fixes the system dependent entries for the half-pixel
+    variance functions in both the RTCD and non-RTCD cases:
+    
+      - The generic C versions of these functions are now correct.
+        Before all three cases called the hv code.
+    
+      - Wire up the ARM functions in RTCD mode
+    
+      - Created stubs for x86 to call the [1;31moptim[mized subpixel functions
+        with the correct parameters, rather than falling back to C
+        code.
+    
+    Change-Id: I1d937d074d929e0eb93aacb1232cc5e0ad1c6184
+
+[33mcommit 209d82ad722bd9eb0de2d2cd1e73aec281f00e00[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Oct 26 15:34:16 2010 -0400
+
+    Add half-pixel variance RTCD functions
+    
+    NEON has [1;31moptim[mized 16x16 half-pixel variance functions, but they
+    were not part of the RTCD framework. Add these functions to RTCD,
+    so that other platforms can make use of this [1;31moptim[mization in the
+    future and special-case ARM code can be removed.
+    
+    A number of functions were taking two variance functions as
+    parameters. These functions were changed to take a single
+    parameter, a pointer to a struct containing all the variance
+    functions for that block size. This provides additional flexibility
+    for calling additional variance functions (the half-pixel special
+    case, for example) and by initializing the table for all block sizes,
+    we don't have to construct this function pointer table for each
+    macroblock.
+    
+    Change-Id: I78289ff36b2715f9a7aa04d5f6fbe3d23acdc29c
+
+[33mcommit 2e53e9e53ff00113dc8a9952d596020c648f13db[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Thu Oct 14 18:58:34 2010 -0700
+
+    change to make use of more trellis quantization
+    
+    when a subsequent frame is encoded as an alt reference frame, it is
+    unlikely that any mb in current frame will be used as reference for
+    future frames, so we can enable quantization [1;31moptim[mization even when
+    the RD constant is slightly rate-biased. The change has an overall
+    benefit between 0.1% to 0.2% bit savings on the test sets based on
+    vpxssim scores.
+    
+    Change-Id: I9aa7bc5cd573ea84e3ee655d2834c18c4460ceea
+
+[33mcommit 136857475ecbbcc4ae6fd24f8a9a82b5a2610e4a[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed Oct 6 22:39:16 2010 -0700
+
+    Centralize mb skip state calculation
+    
+    This patch moves the scattered updates to the mb skip state
+    (mode_info_context->mbmi.mb_skip_coeff) to vp8_tokenize_mb. Recent
+    changes to the quantizer exposed a bug where if a macroblock
+    could be coded as a skip but isn't, the encoder would run the
+    loopfilter but the decoder wouldn't, causing a reference buffer
+    mismatch.
+    
+    The loopfilter is controlled by a flag called dc_diff. The decoder
+    looks at the number of decoded coefficients when setting this flag.
+    The encoder sets this flag based on the skip state, since any
+    skippable macroblock should be transmitted as a skip. The coefficient
+    [1;31moptim[mization pass (vp8_[1;31moptim[mize_b()) could change the coefficients
+    such that a block that was not a skip becomes one. The encoder was
+    not updating the skip state in this situation for intra coded blocks.
+    
+    The underlying issue predates it, but this bug was recently triggered
+    by enabling trellis quantization on the Y2 block in commit dcd29e3,
+    and by changing the quantizer range control in commit 305be4e.
+    
+    Change-Id: I5cce5da0dbc2d22f7d79ee48149f01e868a64802
+
+[33mcommit d338d14c6bcf1bd9f9d028cf7ee177503076da47[m
+Author: Yaowu Xu <yaowu@google.com>
+Date:   Wed Oct 6 13:28:36 2010 -0700
+
+    [1;31moptim[mize fast_quantizer c version
+    
+    As the zbin and rounding constants are normalized, rounding effectively
+    does the zbinning, therefore the zbin operation can be removed. In
+    addition, the memset on the two arrays are no longer necessary.
+    
+    Change-Id: If39c353c42d7e052296cb65322e5218810b5cc4c
+
+[33mcommit 7288cdf79dd179d5bbf927db6240e3b9a4da412b[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Sep 29 13:22:05 2010 +0100
+
+    Change to coefficient [1;31moptim[mization rules.
+    
+    Allow coefficient [1;31moptim[mization for good quality speed 0.
+    
+    Change-Id: Id0cb363df6823c6798671584fbba097916a7df2c
+
+[33mcommit 236906863a043f63e2e92c91b5f6d73939aaa6df[m
+Author: Guillermo Ballester Valor <gbvalor@gmail.com>
+Date:   Fri Jun 11 14:33:49 2010 -0400
+
+    Add high limit check for unsigned parameters
+    
+    The patch related with issue #55 (5a72620) fixed some warnings, but the
+    fix was not [1;31moptim[mal. It actually was a trick to confuse compiler rather
+    than a fix.
+    
+    This patch fixes it by creating a new macro used when needed just a high
+    limit check for an unsigned.
+    
+    Change-Id: I94b322e0f7fb07604b3b1df1f9321185f48cfcb5
+
+[33mcommit 3fb37162a8328eb6183406062e5cd92d23276fca[m
+Author: Fritz Koenig <frkoenig@google.com>
+Date:   Tue Sep 7 10:52:54 2010 -0700
+
+    Bilinear subpixel [1;31moptim[mizations for ssse3.
+    
+    Used pmaddubsw for multiply and add of two filter taps
+    at once for 16x16 and 8x8 blocks.
+    
+    Change-Id: Idccf2d6e094561624407b109fa7e80ba799355ea
+For keyword regression:
+[33mcommit edcbb1c199e086b45803829d00d09d5aa295b3e3[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Thu Sep 9 12:57:23 2010 -0400
+
+    Fix GF interval for non-lagged ARFs
+    
+    When ARFs are enabled in non-lagged compress modes, the GF interval
+    was being reset to zero. Non-lagged ARF updates were enabled in commit
+    63ccfbd, but this incorrect GF interval caused a quality [1;31mregression[m.
+    
+    Change-Id: I615c3b493f4ce2127044f4e68d0bcb07d6b730c3
+For keyword speed:
+[33mcommit d6da7b8ea1092d3c99591b2087811ad22d667d1b[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Oct 14 11:06:37 2010 -0400
+
+    Improve bounds checking in vp8_diamond_search_sadx4()
+    
+    In order to know if all 4/8 neighbor points are within the bounds,
+    4 bounds checking are enough instead of checking 4 bounds for
+    each points (16/32 checkings). This improvement reduces cost of
+    vp8_diamond_search_sadx4() by 30%, and gives encoder a 1.5%
+    performance gain (test options: 1 pass, good, [1;31mspeed[m=4).
+    
+    Change-Id: Ie8da29d18a6ecfc9829e74ac02f6fa70e042331a
+
+[33mcommit 788c0eb54ef741153557953c22fe3f14bceb13d3[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Sat Oct 2 17:31:46 2010 +0100
+
+    Tune effect of motion on KF/GF boost in two pass;
+    
+    This code adjust the impact of the amount and [1;31mspeed[m of motion
+    on GF and KF boost.
+    
+    Sections with lots of slow motion will tend to have a
+    somewhat bigger boost and sections with fast motion may
+    have less.
+    
+    There is a knock on effect to the selection of the active
+    quantizer range.
+    
+    This will likely require further tuning but helps with a couple
+    of particularly bad edge cases.
+    
+    Change-Id: Ic2449cda7305672b69acf42fc0a845b77ac98d40
+
+[33mcommit 7288cdf79dd179d5bbf927db6240e3b9a4da412b[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Sep 29 13:22:05 2010 +0100
+
+    Change to coefficient optimization rules.
+    
+    Allow coefficient optimization for good quality [1;31mspeed[m 0.
+    
+    Change-Id: Id0cb363df6823c6798671584fbba097916a7df2c
+For keyword pass:
+[33mcommit d6c67f02c9aae706701d3b94c20830b056c57ded[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Tue Oct 26 11:37:23 2010 -0400
+
+    make vp8_recon16x16mb{,y} RTCD functions
+    
+    ARM NEON has a platform specific version of vp8_recon16x16mb, though
+    it's just a stub to extract the various parameters from the
+    MACROBLOCKD struct and [1;31mpass[m them to vp8_recon16x16mb_neon(). Using
+    that function's prototype directly will be a better long term solution,
+    but it's quite an invasive change.
+    
+    Change-Id: I04273149e2ade34749e2d09e7edb0c396e1dd620
+
+[33mcommit 1ee3ebcd6629a3dab0ce7f5882d0b3254d79385f[m
+Merge: 4cefb4434 bb7dd5b1b
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Thu Oct 21 11:09:02 2010 -0700
+
+    Merge "Move first[1;31mpass[m motion map to stats packet"
+
+[33mcommit bb7dd5b1baed31b15c6d39fc0c8981b852518b71[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Thu Oct 14 16:40:12 2010 -0400
+
+    Move first[1;31mpass[m motion map to stats packet
+    
+    The first implementation of the first[1;31mpass[m motion map for motion
+    compensated temporal filtering created a file, fpmotionmap.stt,
+    in the current working directory. This was not safe for multiple
+    encoder instances. This patch merges this data into the first [1;31mpass[m
+    stats packet interface, so that it is handled like the other
+    (numerical) first[1;31mpass[m stats.
+    
+    The new stats packet is defined as follows:
+        Numerical Stats (16 doubles) -- 128 bytes
+        Motion Map                   -- 1 byte / Macroblock
+        Padding                      -- to align packet to 8 bytes
+    
+    The fpmotionmap.stt file can still be generated for debugging
+    purposes in the same way that the textual version of the stats
+    are available (defining OUTPUT_FPF in first[1;31mpass[m.c)
+    
+    Change-Id: I083ffbfd95e7d6a42bb4039ba0e81f678c8183ca
+
+[33mcommit ce1ce992ce30f01c723b4fcf67ea17266ba91712[m
+Author: Johann Koenig <johannkoenig@google.com>
+Date:   Mon Oct 18 13:23:39 2010 -0400
+
+    copy compiler warning fixes
+    
+    generic version got fixed, but not the arm version. fixes:
+    vp8/encoder/arm/mcomp_arm.c: In function 'vp8_full_search_sadx3':
+    vp8/encoder/arm/mcomp_arm.c:1208: warning: pointer targets in [1;31mpass[ming
+    argument 5 of 'fn_ptr->sdx3f' differ in signedness
+    vp8/encoder/arm/mcomp_arm.c:1208: note: expected 'unsigned int *' but
+    argument is of type 'int *'
+    
+    and another unsigned change to keep the files similar
+    
+    Change-Id: I1b6255dc3a03b90394a791ee0d15d8167d9454db
+
+[33mcommit d6da7b8ea1092d3c99591b2087811ad22d667d1b[m
+Author: Yunqing Wang <yunqingwang@google.com>
+Date:   Thu Oct 14 11:06:37 2010 -0400
+
+    Improve bounds checking in vp8_diamond_search_sadx4()
+    
+    In order to know if all 4/8 neighbor points are within the bounds,
+    4 bounds checking are enough instead of checking 4 bounds for
+    each points (16/32 checkings). This improvement reduces cost of
+    vp8_diamond_search_sadx4() by 30%, and gives encoder a 1.5%
+    performance gain (test options: 1 [1;31mpass[m, good, speed=4).
+    
+    Change-Id: Ie8da29d18a6ecfc9829e74ac02f6fa70e042331a
+
+[33mcommit 136857475ecbbcc4ae6fd24f8a9a82b5a2610e4a[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Wed Oct 6 22:39:16 2010 -0700
+
+    Centralize mb skip state calculation
+    
+    This patch moves the scattered updates to the mb skip state
+    (mode_info_context->mbmi.mb_skip_coeff) to vp8_tokenize_mb. Recent
+    changes to the quantizer exposed a bug where if a macroblock
+    could be coded as a skip but isn't, the encoder would run the
+    loopfilter but the decoder wouldn't, causing a reference buffer
+    mismatch.
+    
+    The loopfilter is controlled by a flag called dc_diff. The decoder
+    looks at the number of decoded coefficients when setting this flag.
+    The encoder sets this flag based on the skip state, since any
+    skippable macroblock should be transmitted as a skip. The coefficient
+    optimization [1;31mpass[m (vp8_optimize_b()) could change the coefficients
+    such that a block that was not a skip becomes one. The encoder was
+    not updating the skip state in this situation for intra coded blocks.
+    
+    The underlying issue predates it, but this bug was recently triggered
+    by enabling trellis quantization on the Y2 block in commit dcd29e3,
+    and by changing the quantizer range control in commit 305be4e.
+    
+    Change-Id: I5cce5da0dbc2d22f7d79ee48149f01e868a64802
+
+[33mcommit f4a8594492b7edd854ede663eb23be97efd56b6b[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Mon Oct 11 14:01:23 2010 -0700
+
+    Add const qualifiers to variance/SAD functions.
+    
+    These functions should never change their input, and there's no
+     reason not to declare that.
+    This allows them to be [1;31mpass[med static const data.
+    
+    Change-Id: Ia49fe4b01e80e9afcb24b4844817694d4da5995c
+
+[33mcommit 2931b05ac5659e50f46afd358dcaba1b604ef3c0[m
+Merge: 1fc294116 788c0eb54
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Tue Oct 5 06:58:24 2010 -0700
+
+    Merge "Tune effect of motion on KF/GF boost in two [1;31mpass[m;"
+
+[33mcommit 788c0eb54ef741153557953c22fe3f14bceb13d3[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Sat Oct 2 17:31:46 2010 +0100
+
+    Tune effect of motion on KF/GF boost in two [1;31mpass[m;
+    
+    This code adjust the impact of the amount and speed of motion
+    on GF and KF boost.
+    
+    Sections with lots of slow motion will tend to have a
+    somewhat bigger boost and sections with fast motion may
+    have less.
+    
+    There is a knock on effect to the selection of the active
+    quantizer range.
+    
+    This will likely require further tuning but helps with a couple
+    of particularly bad edge cases.
+    
+    Change-Id: Ic2449cda7305672b69acf42fc0a845b77ac98d40
+
+[33mcommit ff3068d6da5808c1ffba4c774ed6f307ef3998bd[m
+Author: Paul Wilkins <paulwilkins@google.com>
+Date:   Wed Sep 29 12:03:19 2010 +0100
+
+    Control of active min quantizer for two [1;31mpass[m.
+    
+    Create  look up tables for controlling the active quantizer range.
+    Some initial tuning to improve quality circa 0.5% on test set.
+    Clean up of some stats output code
+    
+    Change-Id: Ia698a8525f8b8129a503cadace3ee73fe888f543
+
+[33mcommit 47fc8f2683946c7ba29a300c4528e66349adf704[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Tue Sep 28 16:52:19 2010 +0100
+
+    Enabled AltRef motion map creation
+    
+    Enabled the first-[1;31mpass[m encode to output the
+    map of macroblock coding modes required by
+    the AltRef filter.
+
+[33mcommit 1b2f8308e48704b1c784484b070f243ffb575b88[m
+Author: Adrian Grange <agrange@google.com>
+Date:   Tue Sep 28 15:23:41 2010 +0100
+
+    Made AltRef filter adaptive & added motion compensation
+    
+    Modified AltRef temporal filter to adapt filter length based
+    on macroblock coding modes selected during first-[1;31mpass[m
+    encode.
+    
+    Also added sub-pixel motion compensation to the AltRef
+    filter.
+
+[33mcommit 18dc92fd664357db31d7ef43337e2dee3a0f5062[m
+Author: Timothy B. Terriberry <tterribe@xiph.org>
+Date:   Mon Sep 27 17:18:18 2010 -0700
+
+    Add 4-tap version of 2nd-[1;31mpass[m ARMv6 MC filter.
+    
+    The existing code applied a 6-tap filter with 0's on either end.
+    We're already paying the branch penalty to avoid computing the two
+     extra columns needed as input to this filter.
+    We might as well save time computing the filter as well.
+    This reduces the inner loop from 21 instructions to 16, the number
+     of loads per iteration from 4 to 1, and the number of multiplies
+     from 7 to 4.
+    The gain in overall decoding performance, however, is small (less
+     than 1%).
+    
+    This change also means we now valgrind clean on ARMv6, which is
+     its real purpose.
+    The errors reported here were valgrind's fault (it does not detect
+     that 0 times an uninitialized value is initialized), but Julian
+     Seward says it would slow down valgrind considerably to make such
+     checks.
+    Speeding up libvpx rather, even by a small amount, seems a much
+     better idea if only to enable proper valgrind checking of the
+     rest of the codec.
+    
+    Change-Id: Ifb376ea195e086b60f61daf1097d8910c4d8ff16
+For keyword bitrate:

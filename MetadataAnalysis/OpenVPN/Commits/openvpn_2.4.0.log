@@ -1,0 +1,3599 @@
+Searching between v2.3.9 and v2.4.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: sha,lzo
+Keywords: slow fast time perf optim regression sha lzo
+For keyword slow:
+commit 5d429efd9720109b9c9f1265f5d351a75a401942
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Tue Jul 5 11:32:50 2016 -0400
+
+    Exponentially back off on repeated connect retries
+    
+    - When the number of retries per remote exceeds a limit
+      (hard coded to 5), double the restart pause interval
+      for each additional retry per remote.
+    - Trigger a SIGHUP to reset the retry count when the pause
+      interval exceeds 1024 times the base value of restart pause.
+      (removed in v2 of the patch)
+    
+    The base value of restart pause is set using --connect-retry
+    (5 seconds by default).
+    
+    v2 changes (based on suggestions from Arne Schwabe <arne@rfc2549.org>)
+    
+    - Do not throw SIGHUP.
+    - Add an optional argument to "--connect-retry n [m]" where 'm'
+      specifies the max value of restart pause interval (default
+      300 sec).
+      E.g., "--connect-retry 5 1800" will cause the restart pause to
+      scale up starting at 5 until it exceeds 1800 seconds at which
+      point it gets capped at 1800.
+    - If n == m no slow down will occur.
+    - While at it, fix typos and clarify the description of connect-retry-max
+      in the man page and Changes.rst
+    
+    v3 changes (on further feedback from arne@rfc2549.org):
+    - Limiting the base value of retry wait interval to 16 bits moved
+      to options.c
+    - Apply backoff only in the udp and tcp-client modes. Backing off on
+      tcp-server could be exploited by a client in p2p-mode to maliciously
+      slow it down (thanks to Arne Schwabe for pointing this out.
+    - Fix typo in Changes.rst: "third argument" -> "second argument"
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1467732770-19110-1-git-send-email-selva.nair@gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/12050
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 4368147972d61b598bbcd5d2904d891130d5e517
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Wed Oct 23 17:54:05 2013 +0200
+
+    Fix slow memory drain on each client renegotiation.
+    
+    This reverts commit bee92b479414d12035b0422f81ac5fcfe14fa645 and parts
+    of commit dc7be6d078ba106f9b0de12f3e879c3561c3c537, as these introduced a
+    subtle memory drain on client renegotiations (es->gc got initialized,
+    which led to "unused" gc_entry records accumulating while a client is
+    connected).
+    
+    Setting es->gc=NULL causes env_set_add_nolock() / remove_env_item() to
+    free() allocated and no longer used strings in the es, while an active
+    gc would leave them for cleanup with gc_free() at client disconnect time.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    
+    Conflicts:
+            src/openvpn/buffer.c
+    Acked-by: David Sommerseth <dazo@users.sourceforge.net>
+    Message-Id: <20131023162618.GP161@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7939
+For keyword fast:
+commit b59fc7f42137a0474c069ab226c4d67c148e504f
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Nov 8 21:07:43 2016 +0100
+
+    Fix missing return value checks in multi_process_float()
+    
+    Fix the missing return value checks on hash_remove() and hash_add() by
+    replacing the calls with an single hash_add() call with the replace
+    parameters set to true so that is can't fail.  Then just ASSERT() that
+    this is indeed the case.
+    
+    This also replaces the other add/remove combinations with a single
+    add-replace, because that should be slightly faster (and this is in the
+    'hot path').
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Message-Id: <1478635663-5837-1-git-send-email-steffan@karger.me>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12968.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 3712322ee1219e55640f2f4e5f822799edacd7cc
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Sat Sep 17 14:18:05 2016 +0300
+
+    t_client.sh: Improve detection if the OpenVPN process did start during tests
+    
+    This will check the OpenVPN log file if the process initialized
+    successfully.
+    
+    It will check the log file for 30 seconds before aborting the test run.
+    This also has the advantage of starting the testing quicker if the
+    initialization goes faster than 10 seconds (which was the old sleep time).
+    
+    The umask is also set to a more permissive mode to ensure the test
+    script is capable of reading the OpenVPN PID file, as that will be
+    created by root.
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1474111085-10678-1-git-send-email-davids@openvpn.net>
+    URL: http://www.mail-archive.com/search?l=mid&q=1474111085-10678-1-git-send-email-davids@openvpn.net
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit bbde0a766c69f573746461415c6f5cd289272fff
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Mar 27 16:18:16 2016 +0200
+
+    Replace MSG_TEST() macro for static inline msg_test()
+    
+    Using a static inline function instead of a macro has the advantages that
+    (1) 'flags' is not evaluated twice and (2) coverity will stop complaining
+    that 'Macro compares unsigned to 0 (NO_EFFECT)' each time we use flags
+    with loglevel 0 (e.g. M_FATAL or M_WARN).
+    
+    This has a performance impact when compiler optimizations are fully
+    disabled ('-O0'), but should otherwise be as fast as using a macro.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1459088296-5046-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11368
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit fc91d4b0071178e298052078431fb86f03be84fc
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Jun 30 21:44:56 2015 +0200
+
+    Increase control channel packet size for faster handshakes
+    
+    Instead of limiting the control channel TCP/UDP packet payload size at
+    '100 bytes + real control channel overhead' (~140 bytes ethernet payload),
+    increase the max TCP/UDP payload size to '1250 bytes - calculated overhead'
+    (~1210 bytes ethernet payload).
+    
+    Note that this patch does *not* yield an optimal solution, but it is a
+    simple and rather safe change that will improve connection setup times
+    significantly.
+    
+    v2: use the mininum value of --link-mtu and 1250 to give the user a way to
+        reduce control packet size if really needed.
+    
+    trac #545
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1435693496-10931-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9841
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 40efb6359aff0e4805c0439acd6e899c687ef058
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Wed Jan 1 22:57:58 2014 +0100
+
+    Implement LZ4 compression.
+    
+    Implement LZ4 compression, similar to the existing snappy / push-peer-info
+    model: a LZ4 capable client will send IV_LZ4=1 to the server, and the
+    algorithm is selected by pushing "compress lz4" back.
+    
+    LZ4 does not compress as well as LZO or Snappy, but needs far less CPU
+    and is much faster, thus better suited for mobile devices.  See
+    https://code.google.com/p/lz4/ for more details.
+    
+    LZ4 include and library path can be specified by specifying LZ4_LIBS=...
+    and LZ4_CFLAGS=... on the configure command line.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1388613479-22377-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8153
+For keyword time:
+commit 2417d55c4945d491e528dd0e4cf24047da5ceae9
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Wed Dec 14 22:05:00 2016 +0100
+
+    dev-tools: Add reformat-all.sh for code style unification
+    
+    This script will run all files related to the currently checked out
+    git branch through uncrustify using a standardized style configuration.
+    
+    Due to a bug in uncrustify 0.64, it is needed to add a special treatment
+    to one of the files at the moment.  So this both pre- and post-patched
+    before/after uncrustify is run.  This is to simply to assure that all
+    file processing will happen consistently each time.
+    
+    Also added doc/doxygen/doc_key_generation.h to an ignore list, as
+    it carries some specific Doxygen formatting we should be careful with.
+    This file is anyhow not so critical and can be managed manually.
+    
+    The src/compat/compat-lz4.[ch] files are also not touched, as they
+    are based on upstream formatting.  This makes it easier to update
+    to a newer LZ4 version later on and even see what the differences
+    are.
+    
+    v2 - Include updated config from CodeStyle wiki page
+         Remove line lenght restriction for The Great Reformatting
+         Update the script with improvements by krzee
+    
+    v3 - Update with a fixed config from the CodeStyle wiki page
+         Corrected a typo in the commit message (0.63->0.64)
+         Minor changes to the reformat script (no pushd/popd,
+         some new lines moved around, bash->sh)
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Steffan Karger <steffan@karger.me>
+    Message-Id: <1481749500-8795-1-git-send-email-davids@openvpn.net>
+    URL: http://www.mail-archive.com/search?l=mid&q=1481749500-8795-1-git-send-email-davids@openvpn.net
+
+commit 65140a3acfa42e5d42cdfcf8108f00a62d5767ff
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Wed Dec 7 03:51:52 2016 +0100
+
+    systemd: Intermediate --chroot fix with the new sd_notify() implementation
+    
+    Commit c5931897ae8d663e7e introduced support for talking directly
+    to the systemd service manager about the situation for the OpenVPN
+    tunnel. This approach makes a lot of sense and is mostly the proper
+    way to do it.  But it was discovered that it breaks OpenVPN
+    configurations using --chroot.
+    
+    The reason sd_notify() calls fails when using chroot() is that
+    sd_notify() expects to have access to a file as declared in the
+    $NOTIFY_SOCKET environment variable.  It is the main systemd
+    instance which is responsible to provide both the environment variable
+    as well as the socket file sd_nodify() should use.  When --chroot
+    comes into play, the $NOTIFY_SOCKET file will not be available
+    for OpenVPN any more.
+    
+    As things are getting close to the 2.4_rc2 release we will not dare
+    to bring a too invasive fix.  As well we need some time to discuss
+    an approrpriate solution.  So this intermediate fix will only
+    provide a "successful start" message to the systemd service manager
+    right before chroot() happens.  This will at least resolve the issue
+    in a safe and non-intrusive way.
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Christian Hesse <mail@eworm.de>
+    Message-Id: <1481079112-22990-1-git-send-email-davids@openvpn.net>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13416.html
+
+commit e35a788339497ec5c179a5d0a23f63824989ec3e
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Dec 6 13:26:02 2016 +0100
+
+    Refactor setting close-on-exec for socket FDs
+    
+    The existing code can leak socket FDs to the "--up" script, which is
+    not desired.  Brought up by Alberto Gonzalez Iniesta, based on debian
+    bug 367716.
+    
+    Since different sockets get create at different times, just moving the
+    set_cloexec() to link_socket_init_phase1() is not good enough - so move
+    the call into create_socket_<family>(), so we will catch ALL socket
+    creations, no matter when or under which conditions they will be
+    created (SOCKS proxy socket, listening socket, ...).
+    
+    --inetd gets an extra fd_cloexec() call, as socket FD is inherited.
+    
+    URL: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=367716
+    
+    v2: remove set_cloexec() calls from manage.c
+    
+    v3: add set_cloexec() calls to accept()ed TCP/unix child sockets
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1481027162-12165-1-git-send-email-gert@greenie.muc.de>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13405.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 212ef1a409b375174dd81d52da34678ebab685ae
+Author: Lev Stipakov <lev.stipakov@f-secure.com>
+Date:   Wed Dec 7 11:56:57 2016 +0200
+
+    Add "async push" feature to Changes.rst
+    
+    [DS: slightly enhanced the --enable-async-push remark to make it
+         even more clear it is a build time configuration]
+    
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Message-Id: <1481104617-3675-1-git-send-email-lstipakov@gmail.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13420.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit ce91c187ee0dd73aa4dbe4468181db90403951ce
+Author: Antonio Quartulli <a@unstable.cc>
+Date:   Thu Dec 1 18:41:45 2016 +0800
+
+    reload CRL only if file was modified
+    
+    In order to prevent annoying delays upon client connection,
+    reload the CRL file only if it was modified since the last
+    reload operation.
+    If not, keep on using the already stored CRL.
+    
+    This change will boost client connection time in instances
+    where the CRL file is quite large (dropping from several
+    seconds to few milliseconds).
+    
+    Cc: Steffan Karger <steffan.karger@fox-it.com>
+    Signed-off-by: Antonio Quartulli <a@unstable.cc>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <20161201104145.23821-1-a@unstable.cc>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13345.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 009521ac8ae613084b23b9e3e5dc4ebeccd4c6c8
+Author: Steffan Karger <steffan@karger.me>
+Date:   Mon Nov 28 23:14:12 2016 +0100
+
+    Introduce and use secure_memzero() to erase secrets
+    
+    As described in trac #751, and shortly after reported by Zhaomo Yang, of
+    the University of California, San Diego, we use memset() (often through
+    the CLEAR() macro) to erase secrets after use.  In some cases however, the
+    compiler might optimize these calls away.
+    
+    This patch replaces these memset() calls on secrets by calls to a new
+    secure_memzero() function, that will not be optimized away.
+    
+    Since we use CLEAR() a LOT of times, I'm not changing that to use
+    secure_memzero() to prevent performance impact.  I did annotate the macro
+    to point people at secure_memzero().
+    
+    This patch also replaces some CLEAR() or memset() calls with a zero-
+    initialization using "= { 0 }" if that has the same effect, because that
+    better captures the intend of that code.
+    
+    Trac: #751
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1480371252-3880-1-git-send-email-steffan@karger.me>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13278.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit f25a0217e35f53c3110ebb226e1d1f3528152cb5
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Mon Nov 28 21:27:04 2016 -0500
+
+    Map restart signals from event loop to SIGTERM during exit-notification wait
+    
+    Commit 63b3e000c9.. fixed SIGTERM getting lost during exit notification
+    by ignoring any restart signals triggered during this interval. However,
+    as reported in Trac 777, this could result in repeated triggering of
+    restart signals when the event loop cannot continue without restart due
+    to IO errors or timeout.
+    
+    Avoid by converting soft SIGUSR1 and SIGHUP signals received during
+    exit-notify wait period to SIGTERM.
+    
+    Trac #777
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1480386424-30876-1-git-send-email-selva.nair@gmail.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13284.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 7f7d6b2eb0f69f0e8952028488d7aa02619ad76f
+Author: Christian Hesse <mail@eworm.de>
+Date:   Mon Nov 28 18:08:20 2016 +0100
+
+    update year in copyright message
+    
+    This line has not been touched in a long time... Let's update the
+    copyright message with recent year.
+    
+    Signed-off-by: Christian Hesse <mail@eworm.de>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <20161128170820.20371-1-list@eworm.de>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13270.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit f8a367f7c51af5482013fa3d783cade376b047ed
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Sat Sep 17 16:20:15 2016 +0300
+
+    Document the --auth-token option
+    
+    This isn't an option to be used directly in any configuration files,
+    but to be used via --client-connect scripts or --plugin making use of
+    OPENVPN_PLUGIN_CLIENT_CONNECT or OPENVPN_PLUGIN_CLIENT_CONNECT_V2.
+    
+     [v2 - Added lacking .B styling of options
+         - Clarified the token life time ]
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1474118415-14666-1-git-send-email-davids@openvpn.net>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12506.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 786e06ade9f5dfad8ac360499187fa8e536d15cb
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Mon Nov 21 22:12:12 2016 -0500
+
+    Handle --dhcp-option DNS6 on Windows using netsh
+    
+    v2: On closing tun delete the ipv6 dns addresses (if any were set).
+    Also use "validate=no" only in Windows 7 and higher where it is
+    supported. Its used to skip the time consuming automatic address
+    validation which is on by default on those platforms.
+    
+    Tested on Windows Server 2008 (i686), Win 7 (x64) and Win 10 (x64)
+    
+    TODO: set dns servers using the interactive service
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1479784332-21680-1-git-send-email-selva.nair@gmail.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13193.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit c6e24fa3e16c32f9b427e360fd07102f613aa5c6
+Author: Steffan Karger <steffan.karger@fox-it.com>
+Date:   Tue Nov 15 14:29:46 2016 +0100
+
+    Add control channel encryption (--tls-crypt)
+    
+    This adds a --tls-crypt option, which uses a pre-shared static key (like
+    the --tls-auth key) to encrypt control channel packets.
+    
+    Encrypting control channel packets has three main advantages:
+    
+    * It provides more privacy by hiding the certificate used for the TLS
+      connection.
+    * It is harder to identify OpenVPN traffic as such.
+    * It provides "poor-man's" post-quantum security, against attackers who
+      will never know the pre-shared key (i.e. no forward secrecy).
+    
+    Control channel packet encryption
+    ---------------------------------
+    
+    We propose to use the following encryption method, based on the SIV
+    construction [0], to achieve nonce misuse-resistant authenticated
+    encryption:
+    
+       msg      = control channel plaintext
+       header   = opcode (1 byte) || session_id (8 bytes) || packet_id (8
+    bytes)
+       Ka       = authentication key (256 bits)
+       Ke       = encryption key (256 bits)
+       (Ka and Ke are pre-shared keys, like with --tls-auth)
+    
+       auth_tag = HMAC-SHA256(Ka, header || msg)
+       IV       = 128 most-significant bits of auth_tag
+       ciph     = AES256-CTR(Ke, IV, msg)
+    
+       output   = Header || Tag || Ciph
+    
+    This boils down to the following on-the-wire packet format:
+    
+       -opcode- || -session_id- || -packet_id- || auth_tag || * payload *
+    
+       Where
+       - XXX - means authenticated, and
+       * XXX * means authenticated and encrypted.
+    
+    Which is very similar to the current tls-auth packet format, and has the
+    same overhead as "--tls-auth" with "--auth SHA256".
+    
+    The use of a nonce misuse-resistant authenticated encryption scheme
+    allows us to worry less about the risks of nonce collisions.  This is
+    important, because in contrast with the data channel in TLS mode, we
+    will not be able to rotate tls-crypt keys often or fully guarantee nonce
+    uniqueness.  For non misuse-resistant modes such as GCM [1], [2], the
+    data channel in TLS mode only has to ensure that the packet counter
+    never rolls over, while tls-crypt would have to provide nonce uniqueness
+    over all control channel packets sent by all clients, for the lifetime
+    of the tls-crypt key.
+    
+    Unlike with tls-auth, no --key-direction has to be specified for
+    tls-crypt.  TLS servers always use key direction 1, and TLS clients
+    always use key direction 2, which means that client->server traffic and
+    server->client traffic always use different keys, without requiring
+    configuration.
+    
+    Using fixed, secure, encryption and authentication algorithms makes both
+    implementation and configuration easier.  If we ever want to, we can
+    extend this to support other crypto primitives.  Since tls-crypt should
+    provide privacy as well as DoS protection, these should not be made
+    negotiable.
+    
+    Security considerations:
+    ------------------------
+    
+    tls-crypt is a best-effort mechanism that aims to provide as much
+    privacy and security as possible, while staying as simple as possible.
+    The following are some security considerations for this scheme.
+    
+    1. The same tls-crypt key is potentially shared by a lot of peers, so it
+       is quite likely to get compromised.  Once an attacker acquires the
+       tls-crypt key, this mechanism no longer provides any security against
+       the attacker.
+    
+    2. Since many peers potentially use the tls-crypt key for a long time, a
+       lot of data might be encrypted under the tls-crypt key.  This leads
+       to two potential problems:
+    
+       * The "opcode || session id || packet id" combination might collide.
+         This might happen in larger setups, because the session id contains
+         just 64 bits or random.  Using the uniqueness requirement from the
+         GCM spec [3] (a collision probability of less than 2^(-32)),
+         uniqueness is achieved when using the tls-crypt key for at most
+         2^16 (65536) connections per process start.  (The packet id
+         includes the daemon start time in the packet ID, which should be
+         different after stopping and (re)starting OpenPVN.)
+    
+         And if a collision happens, an attacker can *only* learn whether
+         colliding packets contain the same plaintext.  Attackers will not
+         be able to learn anything else about the plaintext (unless the
+         attacker knows the plaintext of one of these packets, of course).
+         Since the impact is limited, I consider this an acceptable
+         remaining risk.
+    
+       * The IVs used in encryption might collide.  When two IVs collide, an
+         attacker can learn the xor of the two plaintexts by xorring the
+         ciphertexts.  This is a serious loss of confidentiality.  The IVs
+         are 128-bit, so when HMAC-SHA256 is a secure PRF (an assumption
+         that must also hold for TLS), and we use the same uniqueness
+         requirement from [3], this limits the total amount of control
+         channel messages for all peers in the setup to 2^48.  Assuming a
+         large setup of 2^16 (65536) clients, and a (conservative) number of
+         2^16 control channel packets per connection on average, this means
+         that clients may set up 2^16 connections on average.  I think these
+         numbers are reasonable.
+    
+    (I have a follow-up proposal to use client-specific tls-auth/tls-crypt
+    keys to partially mitigate these issues, but let's tackle this patch
+    first.)
+    
+    References:
+    -----------
+    
+    [0] Rogaway & Shrimpton, A Provable-Security Treatment of the Key-Wrap
+        Problem, 2006
+        (https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf)
+    
+    [1] Ferguson, Authentication weaknesses in GCM, 2005
+    
+    (http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/comments/CWC-GCM/Ferg
+    uson2.pdf)
+    
+    [2] Joux, Authentication Failures in NIST version of GCM, 2006
+    
+    (http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/comments/800-38_Serie
+    s-Drafts/GCM/Joux_comments.pdf)
+    
+    [3] Dworking, Recommendation for Block Cipher Modes of Operation:
+        Galois/Counter Mode (GCM) and GMAC, 2007
+        (http://csrc.nist.gov/publications/nistpubs/800-38D/SP-800-38D.pdf)
+    
+    Patch history:
+    --------------
+    
+    v2 - processed Arne's review comments:
+    
+     * Error out early with a clear error message when AES-256-CTR or
+       HMAC-SHA-256 are not supported by the crypto library.
+     * Clarify that cipher_ctx_reset() sets the IV.
+    
+    v3 - actually add error messages promised in v2...
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1479216586-20078-1-git-send-email-steffan.karger@fox-it.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13069.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 160504a2955c4478cd2c0323452929e07016a336
+Author: Steffan Karger <steffan.karger@fox-it.com>
+Date:   Fri Oct 28 17:54:47 2016 +0200
+
+    Refactor CRL handling
+    
+    This patch refactors the CRL handling to rely more on the implementation
+    of the crypto library.  It will insert the CRL at the correct time to keep
+    it up to date, but all additional verification logic is removed from
+    ssl_verify_<backend>.c.  "Less code of our own, less bugs of our own."
+    
+    In practice, this means extra checks will be performed on the CRL, such as
+    checking it validBefore and validAfter fields.
+    
+    This patch was originally written by Ivo Manca, and then molded by Steffan
+    before sending to the list.  All bugs are Steffan's fault.
+    
+    Thanks also go to Antonio Quartulli for useful feedback.  He'll send
+    follow-up patches to improve CRL handling performance.
+    
+    Signed-off-by: Ivo Manca <ivo.manca@fox-it.com>
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1477670087-30063-1-git-send-email-steffan.karger@fox-it.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12809.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 8b42c197626430118ed126c1b8256ba5ae1f699a
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Mon Nov 14 12:20:08 2016 +0100
+
+    systemd: Improve the systemd unit files
+    
+    There are several changes which allows systemd to take care of several
+    aspects of hardening the execution of OpenVPN.
+    
+    - Let systemd take care of the process tracking directly, instead
+      of doing that via PID files
+    
+    - Make systemd prepare proper runtime directories for the OpenVPN
+      process.
+    
+    - Let systemd do the chdir() before starting OpenVPN.  This allows
+      us to avoid using the --cd option when executing openvpn.
+    
+    - CAP_DAC_OVERRIDE was needed when using --chroot.  Otherwise
+      the root user would not be allowed to access files/directories
+      not owned by root.  This will change in the future, when we
+      find better ways to avoid calling chroot() in OpenVPN and
+      rather let systemd prepare a more isolated namespace.
+    
+    - Client configurations are now started with --nobind and
+      the OpenVPN client process have lost the CAP_NET_BIND_SERVICE
+      capability which allows binding to port < 1024.
+    
+    - Documentation URL now points at the OpenVPN 2.4 man page URL
+    
+    The majority of these changes have been proposed by Elias Probst
+    (eliasp) in the GitHub PR #22.
+    
+    v3 - Add ExecPreStart= to check if OpenVPN configuration contains
+         'daemon'. That can break the process tracking as we now use
+         Type=simple (default)
+    
+    v2 - Change RuntimeDirectory= to a profile specific (client, server)
+         directory to avoid clashing with older distro unit files
+    
+    Commit note: As this is not a critical security change, we apply this
+                 without any formal ACKs.  It has been thoroghly tested by
+                 several users.  See mailing list for details.
+    
+    Contribution-by: Elias Probst <mail@eliasprobst.eu>
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Message-Id: <1479122408-6867-1-git-send-email-davids@openvpn.net>
+    URL: http://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13039.html
+
+commit 71e7c5f25174a3046a32720d3d6eb77f87458217
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Nov 8 09:39:23 2016 +0100
+
+    check c->c2.link_socket before calling do_init_route_ipv6_list()
+    
+    There was an asymmetry in checks before calling do_init_route*_list(),
+    checking c2.link_socket for IPv4 but not for IPv6 - mainly an oversight
+    from the time when do_init_route_ipv6_list() did not yet look at the
+    remote address to determine v6-over-v6 overlaps (2.3 code).
+    
+    c2.link_socket should never be NULL here, so remove the "silently not
+    call stuff" condition and replace with ASSERT(c2.link_socket) so we
+    will notice if the assumption is ever wrong.
+    
+    Tested in client UDP/TCP mode and server UDP/TCP/P2P and --inetd mode.
+    
+    Found by Coverity.
+    
+    While at it, remove "fatal" argument to do_init_route*_list(), which
+    was "false" in all cases (single invocation each), and remove the
+    error exit code related to it.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <1478594363-12752-1-git-send-email-gert@greenie.muc.de>
+    URL: http://www.mail-archive.com/search?l=mid&q=1478594363-12752-1-git-send-email-gert@greenie.muc.de
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit beaa6564a7ce3e48473a8bde7b4f9291df490d62
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Tue Nov 1 14:38:09 2016 +0100
+
+    man: Improve the --keepalive section
+    
+    Just minor clarifications and corrections of the --keepalive option.
+    
+      v2 - Changed from ps/pto to interval/timeout
+         - Rephrased the server-side timeout doubling parapgraph
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1478007489-17163-1-git-send-email-davids@openvpn.net>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12866.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 703c9784f4dcd4f77166201074c21c6ea4aeb033
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Fri Oct 28 21:48:44 2016 +0200
+
+    auth-gen-token: Authenticate generated auth-tokens when client re-authenticates
+    
+    On a server with --auth-gen-token enabled, the server will have created
+    a random token and pushed it to the client.  When the client needs to
+    renegotiate the connection or otherwise reconnect, it will at this point
+    use the auth-token as password.
+    
+    Here we check if we have a token generated and that it has been pushed
+    to the client, if so, then we check if the token matches the locally
+    stored token.  If everything matches, we're done and the connection
+    is still authenticated.
+    
+    If the auth-token authentication fails, we delete our local copy of
+    the token and changes the connection to not being authenticated.  From
+    this moment of, the client needs to do a full reconnect providing
+    the users password again.
+    
+    This token authentication also considers the token lifetime, if that
+    have been set via --auth-gen-token.  If the token have expired, the
+    client is rejected and needs to do a full reconnect with a new
+    authentication using the users password.
+    
+      v2 - Rename auth_generate_token to auth_token_generate
+         - Wrap lines exceeding 80 chars
+         - Improved several comments (rephrasing, grammar)
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Steffan Karger <steffan@karger.me>
+    Message-Id: <1477684124-26083-6-git-send-email-davids@openvpn.net>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12822.html
+
+commit 58066d04036bf29107f67ca38c6e964ec11f9dfd
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Fri Oct 28 21:48:40 2016 +0200
+
+    auth-gen-token: Add --auth-gen-token option
+    
+    This sets the flag if the OpenVPN server should create authentication
+    tokens on-the-fly on successful --auth-user-pass-verify or --plugin with
+    OPENVPN_PLUGIN_AUTH_USER_PASS_VERIFY processing.
+    
+    If an OpenVPN server is running without this option, it should behave
+    as before.  Next patches will implement the auth-token generation and
+    passing it on to the clients.
+    
+    The --auth-gen-token can be given an optional integer argument which
+    defines the lifetime of generated tokens.  The lifetime argument
+    must be given in number of seconds.
+    
+      v2 - Update Changes.rst
+         - Improve man page in regards to lifetime argument
+         - Rename struct member auth_generate_token to auth_token_generate
+           to have a consistent naming scheme
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Steffan Karger <steffan@karger.me>
+    Message-Id: <1477684124-26083-2-git-send-email-davids@openvpn.net>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12825.html
+
+commit b891e57e1fe794483c08296e32c15751f2676a2d
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Thu Oct 13 21:59:27 2016 +0200
+
+    Move memcmp_constant_time() to crypto.h
+    
+    This function is quite useful other places, so make it generally
+    accessible.
+    
+    [DS: changed function declaration to static inline during commit]
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Steffan Karger <steffan@karger.me>
+    Message-Id: <1476388771-16492-2-git-send-email-davids@openvpn.net>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12698.html
+
+commit 396d30c264e6cb6b9f57c3e566f3b71879999662
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Wed Oct 12 12:47:07 2016 +0200
+
+    Change the hold command to communicate the time that OpenVPN would wait to the UI.
+    
+    Before the connect-retry change to do exponential backup this was not
+    necessary since the time was fixed. With the exponential backoff the
+    UI needs either to implement its own exponential backoff mechanism
+    or needs a way of knowing the value of OpenVPN internal mechansim.
+    
+    Patch V2: Fixed typos noticed by Selva
+    
+    [DS: Fixed a couple of whitespace errors in management_hold() at commit time]
+    
+    Acked-by: Selva Nair <selva.nair@gmail.com>
+    Message-Id: <1476269227-13290-1-git-send-email-arne@rfc2549.org>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12675.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 8ba3e25897af5c7bd7b4f706961e9528d6988d83
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Thu Aug 11 16:33:55 2016 +0200
+
+    systemd: Do not mask usernames when querying for it via systemd-ask-password
+    
+    In systemd after version 216, systemd-ask-password will support --echo
+    which
+    will avoid masking the user input.  As OpenVPN uses this mechanism
+    collecting
+    usernames when systemd is available, this will avoid the input of
+    usernames to
+    be masked.
+    
+    This patch also adds the --icon argument, which is aimed at graphical
+    inputs.
+    For example when OpenVPN is started at system boot-time using a graphical
+    boot
+    interface such as Plymouth.
+    
+      [v2 - Avoid pkg.m4 hacks and use pkgconfig/autoconf methods to flag
+            if systemd is recent enough for --echo support]
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Selva Nair <selva.nair@gmail.com>
+    Message-Id: 1470926035-434-1-git-send-email-davids@openvpn.net
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12405.html
+
+commit 3712322ee1219e55640f2f4e5f822799edacd7cc
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Sat Sep 17 14:18:05 2016 +0300
+
+    t_client.sh: Improve detection if the OpenVPN process did start during tests
+    
+    This will check the OpenVPN log file if the process initialized
+    successfully.
+    
+    It will check the log file for 30 seconds before aborting the test run.
+    This also has the advantage of starting the testing quicker if the
+    initialization goes faster than 10 seconds (which was the old sleep time).
+    
+    The umask is also set to a more permissive mode to ensure the test
+    script is capable of reading the OpenVPN PID file, as that will be
+    created by root.
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1474111085-10678-1-git-send-email-davids@openvpn.net>
+    URL: http://www.mail-archive.com/search?l=mid&q=1474111085-10678-1-git-send-email-davids@openvpn.net
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit d7c15ff12a8790c2ad2e0adc0e191c32f081463f
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Fri Sep 16 21:45:11 2016 +0200
+
+    Show compile-time variant for --multihome in --version output.
+    
+    Instead of just [MH], show [MH/PKTINFO] or [MH/RECVDA], to see more
+    easily which compile-time variant was chosen by configure and syshead.h
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <20160916194511.46137-1-gert@greenie.muc.de>
+    URL: http://www.mail-archive.com/search?l=mid&q=20160916194511.46137-1-gert@greenie.muc.de
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 4db062901fba790ac35cbf0cdd360306d8f2b81f
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Thu Aug 25 22:42:03 2016 +0200
+
+    Fix client connection instant timeout
+    
+    Commit b3e975824ea9ebae8dbea5b451c8d02525c83ffe moved the finalizing of
+    TCP/UDP sockets before the UID/GID where dropped.  But this did not
+    factor that the timeout code had been revamped [1] in the mean time.
+    
+    This ensures the timout initialization is done before the the socket
+    finalizing has been completed.
+    
+    [1] commit f2134b7bea37df15756c599b94f16d4bffafbbd6
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: 1472162097-17855-1-git-send-email-davids@openvpn.net
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg00125.html
+
+commit d1bd37fd508ee0462daa21011e781198964be921
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Thu Aug 11 18:58:29 2016 -0400
+
+    Avoid format specifier %zu for Windows compatibility
+    
+    - Replace %zu by %u and cast the size_t variable to (unsigned int). The
+      cast should be safe as in all instances the number involved is small.
+    
+    Note: mingw64 targets msvcrt.dll runtime that doesn't support %zu and
+          print "zu" instead of the number. With -Wformat the compiler
+          does warn that z is an unknown conversion type.
+    
+    v2: Cast to (unsigned int) instead of (int).
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Message-Id: <1470956309-31268-1-git-send-email-selva.nair@gmail.com>
+    URL: https://sourceforge.net/p/openvpn/mailman/message/35274787/
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 5d429efd9720109b9c9f1265f5d351a75a401942
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Tue Jul 5 11:32:50 2016 -0400
+
+    Exponentially back off on repeated connect retries
+    
+    - When the number of retries per remote exceeds a limit
+      (hard coded to 5), double the restart pause interval
+      for each additional retry per remote.
+    - Trigger a SIGHUP to reset the retry count when the pause
+      interval exceeds 1024 times the base value of restart pause.
+      (removed in v2 of the patch)
+    
+    The base value of restart pause is set using --connect-retry
+    (5 seconds by default).
+    
+    v2 changes (based on suggestions from Arne Schwabe <arne@rfc2549.org>)
+    
+    - Do not throw SIGHUP.
+    - Add an optional argument to "--connect-retry n [m]" where 'm'
+      specifies the max value of restart pause interval (default
+      300 sec).
+      E.g., "--connect-retry 5 1800" will cause the restart pause to
+      scale up starting at 5 until it exceeds 1800 seconds at which
+      point it gets capped at 1800.
+    - If n == m no slow down will occur.
+    - While at it, fix typos and clarify the description of connect-retry-max
+      in the man page and Changes.rst
+    
+    v3 changes (on further feedback from arne@rfc2549.org):
+    - Limiting the base value of retry wait interval to 16 bits moved
+      to options.c
+    - Apply backoff only in the udp and tcp-client modes. Backing off on
+      tcp-server could be exploited by a client in p2p-mode to maliciously
+      slow it down (thanks to Arne Schwabe for pointing this out.
+    - Fix typo in Changes.rst: "third argument" -> "second argument"
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1467732770-19110-1-git-send-email-selva.nair@gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/12050
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit f2134b7bea37df15756c599b94f16d4bffafbbd6
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Sat Jun 11 16:43:15 2016 +0200
+
+    Remove http-proxy-timeout, socks timeout and set default of server-poll-timeout to 120s
+    
+    With this change all timeouts before the first packet from the OpenVPN
+    server are unified into the server-poll-timeout option.
+    
+    The default of 120s has been chosen to be a safe value is larger as it is
+    larger the sums of the old small timeouts.
+    
+    V3: fix some whitespace/typos problems
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1465656195-12722-1-git-send-email-arne@rfc2549.org>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11899
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 63b3e000c9141f4ca03a374354da26334257bc18
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Tue Jun 7 00:44:20 2016 -0400
+
+    Ignore SIGUSR1/SIGHUP during exit notification
+    
+    This allows exit notification to complete and finally trigger SIGTERM.
+    The current practice of allowing a restart in this state clears
+    the exit notification timer data and thus loses the SIGTERM.
+    
+    Trac #687
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1465274660-11009-2-git-send-email-selva.nair@gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11814
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 7f74c27e105a365d278181d00708c55a299398a0
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Sun Jun 5 17:41:23 2016 -0400
+
+    Add an option to filter options received from server
+    
+    v2 changes:
+     - Add the flag "ignore" and have "reject" trigger a restart.
+     - Unlimited number of filters: yes, going against the consensus,
+       but the code looks simpler and cleaner this way.
+     - New commit message to reflect the changes.
+    
+    Usage: --pull-filter accept|ignore|reject "option"
+    
+    Permit a client to selectively accept, ignore or reject options
+    pushed by the server. May be used multiple times. The filters
+    are applied in the order specified to each pushed option received.
+    The filtering stops as soon as a match is found. The action "ignore"
+    removes the option and continues processing the next option, while
+    "reject" flags an error and restarts the connection with SIGUSR1.
+    
+    Prefix matching is used so that all options starting with the
+    specified "option" string are filtered.
+    
+    Example:
+    
+      pull-filter accept "route 192.168."
+      pull-filter ignore "route "
+      pull-filter accept "ifconfig 10.9.0."
+      pull-filter reject "ifconfig "
+    
+    will ignore all pushed routes except those starting with "192.168."
+    and reject the assigned ip unless its in the "10.9.0.0/24"
+    range. A match of the reject filter will trigger a restart. SIGUSR1
+    restart is used instead of SIGHUP so as to try the next remote
+    for reconnection.
+    
+    Note the space at the end of "route " to not reject "route-gateway",
+    for example. All options not matched by any filter are accepted.
+    
+    Acknowledges shameless imitation of --push-remove.
+    Inspired by Trac #682.
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1465162884-32520-1-git-send-email-selva.nair@gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11808
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 970312f185012341cc5bcc9492ab3e1413c7b3c7
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Mon May 16 12:13:04 2016 +0200
+
+    Implement push-remove option to selectively remove pushed options.
+    
+    With this option, the server can remove individual options from the
+    set pushed to a client (call from --client-config-dir file, or from
+    --client-connect script or plugin).  Options are removed at parse
+    time, so it is possible to do stuff like:
+    
+      push-remove route-ipv6
+      push "route-ipv6 fd00::/8"
+    
+    to first remove all IPv6 route options set so far, then add something
+    specific (what "push-reset" does to all the options).
+    
+    Arguments to push-remove are strncmp()'ed to option string, so partial
+    matches like
+    
+      push-remove "route-ipv6 2001:"
+    
+    are possible ("remove all IPv6 routes starting with 2001:").
+    
+    Implementation of remove_iroutes_from_push_route_list() had to be changed
+    slightly to stop it from re-enabling all disabled options again.
+    
+    v2: documentation (Changes.rst, doc/openvpn.8)
+        remove surplus gc_arena
+        implement filtering of "ifconfig-ipv6"
+    
+    v3: correct quoting in commit message
+        only handle a single argument per push-remove statement - if multiple
+        options are to be removed, just use multiple push-remove statements
+    
+    Trac #29, #614
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1463393584-8318-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11665
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit f40f10ea9607934faeb2b8cd84aefff0e0790189
+Author: Jens Neuhalfen <jens@neuhalfen.name>
+Date:   Sun May 8 18:17:48 2016 +0200
+
+    Prevent integration test timeout bc. of sudo
+    
+    Integration tests run by t_client.sh use sudo to run openvpn as root.
+    
+    If the t_client.sh script is configured to use sudo then the user
+    must enter the password quickly because t_client assumes a startup
+    failure if openvpn does not start quick enough.
+    
+    If the user is not quick enough, then the tests fails.
+    
+    This change will refresh the sudo timestamp at the start of the script.
+    
+    Tested on MacOS X & Ubuntu Precise
+    
+    Signed-off-by: Jens Neuhalfen <jens@neuhalfen.name>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <280154CA-9468-429B-BCAC-DB632C0AFB32@neuhalfen.name>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11622
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit bbde0a766c69f573746461415c6f5cd289272fff
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Mar 27 16:18:16 2016 +0200
+
+    Replace MSG_TEST() macro for static inline msg_test()
+    
+    Using a static inline function instead of a macro has the advantages that
+    (1) 'flags' is not evaluated twice and (2) coverity will stop complaining
+    that 'Macro compares unsigned to 0 (NO_EFFECT)' each time we use flags
+    with loglevel 0 (e.g. M_FATAL or M_WARN).
+    
+    This has a performance impact when compiler optimizations are fully
+    disabled ('-O0'), but should otherwise be as fast as using a macro.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1459088296-5046-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11368
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 5f5229e41d134b659e502bb2597c711aedaf8096
+Author: Leonardo Basilio <leobasilio@gmail.com>
+Date:   Wed Feb 10 11:19:39 2016 +0100
+
+    Correctly report TCP connection timeout on windows.
+    
+    On nonblocking TCP connects, we set status = ETIMEOUT on failure.
+    On windows, depending on which header files are included, ETIMEOUT
+    is defined differently, and this leads to incomprehensible error
+    messages - so, always use WSAETIMEDOUT here.
+    
+    Trac #651
+    
+    Signed-off-by: Leonardo Basilio <leobasilio@gmail.com>
+    
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <CACqLfMnBXwSY=MXyc7B1oMKwYE2Z_49G3mpkEPxbSAuG61tgZA@mail.gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11085
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit d4d5d9259aeba152d5969fea048267fc97ca7530
+Author: Michael McConville <mmcco@mykolab.com>
+Date:   Tue Feb 2 14:11:22 2016 -0500
+
+    Fix undefined signed shift overflow
+    
+    Originally discussed here:
+    
+    https://github.com/OpenVPN/openvpn/pull/42
+    
+    Thanks for your time,
+    Michael
+    
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <20160202191122.GE1675@thinkpad.swarthmore.edu>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11050
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 3a39bf7dfe5a57fe8bc43c073b2a009bb6994e78
+Author: Steffan Karger <steffan.karger@fox-it.com>
+Date:   Thu Jan 7 10:15:16 2016 +0100
+
+    polarssl: optimize polar_ok() for non-errors
+    
+    Adding polar_ok() was a good plan for improving error reporting, but also
+    added two function calls (one to polar_log_func_line() and one to
+    polar_log_err()) for each function call wrapped with polar_ok().
+    Especially in the critical path, this is a waste of time.
+    
+    To avoid this overhead, add a simple static inline wrapper to reduce it to
+    a single branch.
+    
+    v2 - use a static inline wrapper to prevent evaluating 'errval' twice in
+         the macro.
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1452158116-17363-1-git-send-email-steffan.karger@fox-it.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10949
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 868d9d01802da9bbbb3a758981f3c7310a905813
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Jan 3 10:47:56 2016 +0100
+
+    Fix regression in setups without a client certificate
+    
+    This fixes a null-pointer dereference in tls_ctx_cert_time(), which will
+    occur on clients that do not use a client certificate (ie that only have
+    auth-user-pass in the config, but no key and cert).  This bug was
+    introduced by commit 091edd8e on the master branch, and commit dfd940bb
+    on the release/2.3 branch.
+    
+    This bug was found by chipitsine and reported in trac ticket #644.
+    
+    While touching this function, I also made this function conform to the
+    openvpn coding style.
+    
+    v2 - fix memory leak in builds using pre-1.0.2 openssl
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1451814476-32574-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10921
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 091edd8e2996867447eeb665af957547aa8b3107
+Author: Steffan Karger <steffan@karger.me>
+Date:   Mon Dec 14 21:09:18 2015 +0100
+
+    Warn user if their certificate has expired
+    
+    Previously, client certificate expiry warnings would only visible in the
+    server log, and server certificate expiry warnings in the client log.
+    Both after a (failed) connection attempt.  This patch adds a warning to
+    log when a users own certificate has expired (or is not yet valid) to ease
+    problem diagnosis / error reporting.
+    
+    Note that this is just a warning, since on some systems (notably embedded
+    devices) there might be no correct time available.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1450123758-31641-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10794
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 5a73356ae5d0bf94ec81a33c7dcda6a41651ca6c
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sat Nov 28 11:38:25 2015 +0100
+
+    Fix rand_bytes return value checking
+    
+    This patch is in response to an off-list report by Sebastian Krahmer of
+    the SuSE security team.  Sebastian noticed we do not check the return
+    value of rand_bytes() in prng_bytes(), which we really should.
+    
+    Failing to check the return value occurs if no prng is used (i.e. in
+    static key mode, or when explicitly disabled using --prng none).
+    prng_bytes() is used for generating IVs, session IDs and filenames.
+    
+    The impact of failing to check the return value seems very limited:
+    
+    Not generating random file names or session IDs could cause collisions in
+    (temporary) file names and/or session IDs.  These in turn could cause
+    availability issues, but would not result in a breach in confidentiality
+    and/or integrity.
+    
+    Our CBC mode protocol uses a packet id (timestamp + packet counter in
+    static key mode, or just the packet counter in TLS mode) at the start of
+    each packet (by default, but can be disabled using --no-iv and
+    --no-replay). Because the timestamp and packet counter are not
+    controllable by an attacker, it is not clear how predictable or even
+    repeating IVs could be used to mount an attack.  (Note that the fact that
+    *I* can't find or come up with an attack is not a very strong argument,
+    this remains somewhat worrisome.)
+    
+    CFB and OFB modes are not affected, because they do not rely on the prng
+    for IVS.
+    
+    Finally, RAND_bytes() actually failing is quite unlikely, as that would
+    result in all sorts of other problems we should have heard about.
+    
+    Of course, we still really should fix this, so this patch adds return
+    value checking of rand_bytes() inside prng_bytes().  The ASSERT() might be
+    a bit crude, so a follow-up patch that adds a return value to prng_bytes()
+    and proper return value checking probably makes sense.  But at least this
+    is a quick and simple fix for the issue at hand.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1448707105-10753-2-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10636
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 41e4b67a229e774ebc57a882c386e10d80e10e7e
+Author: Lev Stipakov <lstipakov@gmail.com>
+Date:   Wed Oct 21 10:13:26 2015 +0300
+
+    Replace variable length array with malloc
+    
+    Commit
+    https://github.com/OpenVPN/openvpn/commit/685e486e8b8f70c25f09590c24762ff73
+    4f94a51
+    introduced a variable length array. Although C99 supports that, MSVS 2013
+    still requires
+    size of array to be compiler time constant. As a fix, use malloc/free.
+    
+    v2:
+     Replace OPENSSL_malloc with gc_malloc
+    
+    Signed-off-by: Lev Stipakov <lstipakov@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1445411606-13369-1-git-send-email-lstipakov@gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10344
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 825b3272acb353e04b37f38299d4df7e63e87d9e
+Author: Lukasz Kutyla <movrax-dev@cryptolab.net>
+Date:   Sat Oct 17 21:15:15 2015 +0200
+
+    Fix privilege drop if first connection attempt fails
+    
+    OpenVPN does not drop privileges (UID/GID/chroot) as requested according
+    to the configuration file and/or passed arguments if the first connection
+    attempt is not established successfully, this also includes applying
+    SELinux context.
+    Signals and restarts are processed after "context.first_time" is set to
+    "false", which results in omitting entire privilege dropping block in
+    "do_uid_gid_chroot()" when successful connection is finally made
+    (everything is initialized correctly and said function is called), since
+    "context.first_time" is used as block entry condition.
+    
+    We modify "do_uid_gid_chroot()" in such a way that allows us to drop
+    privileges even when first connection attempt was unsuccessful.
+    
+    Signed-off-by: Lukasz Kutyla <movrax-dev@cryptolab.net>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <20151018103446.5fed9f97.movrax-dev@cryptolab.net>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10301
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <20151018103446.5fed9f97.movrax-dev@cryptolab.net
+    20151018103446.5fed9f97.movrax-dev@cryptolab.net>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10301
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 9403e3f4b510fbc4187044f31be8f7dccbde1cf1
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sat Oct 10 18:34:49 2015 +0200
+
+    Remove support for snappy compression.
+    
+    LZ4 is using less CPU at similar performance, and it is easier to
+    build and support for binary installs (as it does not require C++
+    and a C++ runtime).  Since it was never supported in any formally
+    released OpenVPN version, just drop it again.
+    
+    This leaves in the compression opcode for Snappy for documentation
+    purposes.
+    
+    trac #617
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1444494889-28925-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10251
+
+commit f7ef7522f5c7e6d4abfa5a0378c2e2ad265c65ec
+Author: Daniel Kubec <niel@rtfm.cz>
+Date:   Sun Apr 5 00:10:37 2015 +0200
+
+    sample-plugin: TLS Keying Material Exporter [RFC-5705] demonstration plug-in
+    
+    A simple plug-in with a corresponding HTTP server and client which can authenticate
+    an HTTP user based on the authentication already done via an established OpenVPN
+    connection
+    
+    [DS: Renamed the module at commit time from sso to keyingmaterialexporter to
+         avoid confusion with other Single-Sign-On solutions.  Updated documentation
+         and commits accordingly.  Added --pull to the client config]
+    
+    Signed-off-by: Daniel Kubec <niel@rtfm.cz>
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Acked-by: David Sommerseth <davids@redhat.com>
+
+commit afb93fac803fbab7406d3b2dff6d1f39365bca74
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Wed Jul 1 17:40:39 2015 +0200
+
+    Make client delay less before sending PUSH_REQUEST
+    
+    Speed up PUSH_REQUEST handling on the client side by reducing
+    the amount of dependent 1s-coarse-timers to "just one".
+    
+    After "TLS is up!", one timer needs to fire to wakeup
+    "check_connection_established_dowork()", and that one used to
+    setup another 1s timer before sending PUSH_REQUEST - which is
+    just dead time where we sit idly...  So, fire immediately.
+    
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <20150701154039.GG382@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9851
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 6a40276c7500c2d0a2fe44b1a450ffe9cb2f37cd
+Author: David Sommerseth <davids@redhat.com>
+Date:   Fri Jul 10 15:22:28 2015 +0200
+
+    Provide OpenVPN runtime version information to plug-ins
+    
+    Also updated the log_v3 sample-plugin to demonstrate how this
+    works.
+    
+      $ openvpn --plugin log_v3.so --dev tun
+      Fri Jul 10 15:17:28 2015 OpenVPN 2.3_git
+    [git:dev/plugin-version/f05d8623a29078bf+].....
+      ...more.openvpn.logging...
+      log_v3: OpenVPN 2.3_git  (Major: 2, Minor: 3, Patch:
+    git:dev/plugin-version/f05d8623a29078bf+)
+      ...more.openvpn.logging...
+      $
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1436534548-21507-3-git-send-email-openvpn.list@topphemmelig.net>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9904
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 9de35d4633ce3035b048957b2e20b81e31a40cd6
+Author: David Sommerseth <davids@redhat.com>
+Date:   Fri Jul 10 15:22:27 2015 +0200
+
+    Provide compile time OpenVPN version information to plug-ins
+    
+    This is to provide more fine grained information to plug-ins
+    about the OpenVPN environment when OpenVPN was built.
+    
+    Signed-off-by: David Sommerseth <davids@redhat.com>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <1436534548-21507-2-git-send-email-openvpn.list@topphemmelig.net>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9905
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit fc91d4b0071178e298052078431fb86f03be84fc
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Jun 30 21:44:56 2015 +0200
+
+    Increase control channel packet size for faster handshakes
+    
+    Instead of limiting the control channel TCP/UDP packet payload size at
+    '100 bytes + real control channel overhead' (~140 bytes ethernet payload),
+    increase the max TCP/UDP payload size to '1250 bytes - calculated overhead'
+    (~1210 bytes ethernet payload).
+    
+    Note that this patch does *not* yield an optimal solution, but it is a
+    simple and rather safe change that will improve connection setup times
+    significantly.
+    
+    v2: use the mininum value of --link-mtu and 1250 to give the user a way to
+        reduce control packet size if really needed.
+    
+    trac #545
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1435693496-10931-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9841
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 6478c1f359e6b0ea2046d9e2801830753e53c06a
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sun May 24 15:02:34 2015 +0200
+
+    Disallow usage of --server-poll-timeout in --secret key mode.
+    
+    The internal machinery wants TLS for this to work, so just add this
+    to the (long) list of options not allowed unless either --tls-client
+    or --tls-server is active.  For added sanity, add an ASSERT() call
+    to the place where this combination caused a NULL ptr reference, and
+    document the restriction.
+    
+    Fix trac #373
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <1432472554-24666-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9736
+
+commit 403dc434d245e5df5ae262935aa2e7364547e260
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Mon Apr 27 21:27:21 2015 +0200
+
+    assume res_init() is always there.
+    
+    Previously, the code tried to find res_init(), and on some systems
+    got it wrong in configure, silently not-using res_init(), leading
+    to unexpected failures to re-init the resolver.
+    
+    We know that all supported OSes (except Windows) have res_init(), so
+    change the call to "#ifndef WIN32", and adjust configure.ac to just
+    find the library to link (if any).  With that, failures to find
+    res_init() are no longer "hidden" but clearly visible at link time.
+    
+    AC_SEARCH_LIBS() bits inspired by CUPS' cups_network.m4 (GPLv2)
+    
+    Fix (part of) trac #523
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Lazy-ACK-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1430162841-5840-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9614
+
+commit 827de237860813d2859aaae3aca292d42a9c2a82
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun May 3 17:07:11 2015 +0200
+
+    cleanup: remove md5 helper functions
+    
+    The MD5 wrapper functions were used in just a few places, which imho is
+    not worth the extra code.  Instead of using these wrappers, just use
+    the generic md_ctx_*() functions directly.
+    
+    The md5sum() function was only used for logging information that was not
+    useful to a user; first the full options string would be printed, and
+    later just the hash.  That hash is less informative than the full
+    string, so why print it at all?
+    
+    Finally, also removed save_pulled_options_digest().  The two times it
+    was called, it executed either one of the possible branches in the
+    function, where one of these needed a comment to explain what passing
+    NULL as newdigest is supposed to do...
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1430665631-4022-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9642
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit d0f26fb524744a63615a1bf4e7ddcefcd102b328
+Author: Steffan Karger <steffan@karger.me>
+Date:   Mon May 4 21:06:38 2015 +0200
+
+    polarssl: disable 1/n-1 record splitting
+    
+    Disable record splitting (for now).  OpenVPN assumes records are sent
+    unfragmented, which is no longer a valid assumption when record splitting
+    is enabled (which polarssl/mbedtls did in 1.3.10, see trac #524).
+    Changing the code to deal with record splitting will require intrusive
+    changes that need thorough review and testing.  Since OpenVPN is not
+    susceptible to BEAST (the data transmitted over the control channel is
+    very hard to influence for a remote attacker), we can just disable record
+    splitting as a quick fix.  This gives us the time to develop a proper
+    solution in the mean time, and test that thoroughly.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1430766398-17209-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9646
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 857c04ef06cd13d59c5b45332f07996e71372576
+Author: Steffan Karger <steffan@karger.me>
+Date:   Thu Mar 26 01:01:29 2015 +0100
+
+    Remove unneeded parameter 'first_time' from possibly_become_daemon()
+    
+    The static helper function possibly_become_daemon() is called only once,
+    by do_init_first_time(), which checks 'first_time' to be true before
+    calling possibly_become_daemon().  This makes the parameter useless.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1427328089-886-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9555
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 5d5233778868ddd568140c394adfcfc8e3453245
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Feb 15 15:24:26 2015 +0100
+
+    Disable SSL compression
+    
+    As reported in trac #502, SSL compression can cause problems in some corner
+    cases.  OpenVPN does not need SSL compression, since the control channel is
+    low bandwidth.  This does not influence the data channel compressen (i.e.
+    --comp or --comp-lzo).
+    
+    Even though this has not yet been relevant for OpenVPN (since an attacker
+    can not easily control contents of control channel messages), SSL
+    compression has been used in the CRIME and BREACH attacks on TLS.  TLS 1.3
+    will probably even remove support for compression all together, for
+    exactly this reason.
+    
+    Since we don't need it, and SSL compression causes issues, let's just
+    disable it in OpenSSL builds.  PolarSSL has no run-time flag to disable
+    compression, but is by default compiled without compression.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1424010266-5910-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9453
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit bd9aa06feb41838689ed01f79845bc765f887ae3
+Author: Steffan Karger <steffan@karger.me>
+Date:   Thu Jan 1 20:46:09 2015 +0100
+
+    Add option to disable Diffie Hellman key exchange by setting '--dh none'
+    
+    As requested on the mailing list and in trac ticket #410, add an option to
+    disable 'traditional' Diffie Hellman key exchange. People want to be able
+    to create ecdh-only configurations.
+    
+    This patch also disables RSA key exchange by default for OpenSSL builds, to
+    prevent that people who set "--dh none" but have an OpenSSL version that
+    doesn't support ECDH end up with a less secure connection. Note that users
+    that specify their own --tls-cipher override these defaults and thus can
+    still use whatever OpenSSL supports (and might thus end up with less secure
+    connections).
+    
+    PolarSSL does not allow to easily disable RSA key exchange during runtime,
+    but its default compile options do not include RSA key exchange based
+    cipher suites.
+    
+    Finally update the manpage to reflect the new behaviour, and while touching
+    it change the text to motivate users towards a more secure configuration.
+    
+    v2 - disable RSA key exchange by default
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1420141569-11773-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9376
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit ec828db63f12eeb17f0f8c4de57f766e70161a13
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Nov 30 17:44:09 2014 +0100
+
+    Remove ENABLE_SSL define (and --disable-ssl configure option)
+    
+    Remove the --disable-ssl configure option and accompanying ENABLE_SSL
+    defines in the master/2.4 branch, to reduce the code and testing
+    complexity a bit.
+    
+    This does not remove to runtime option to run without SSL, just the compile
+    time option to not include any SSL-related code.
+    
+    During the community meeting in November 2014 there were no objections
+    amongst he developers present. Also, this has been announced on the -users
+    and -devel mailing lists two weeks ago, without any response whatsoever.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <54A4248A.1090501@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9371
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit c3e1809f540db16c23fc74f06d6e8c29a4a6941a
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sat Oct 25 20:49:26 2014 +0200
+
+    openssl: add more descriptive message for 'no shared cipher' error
+    
+    Overzealous users using the --tls-cipher option, or users with actual
+    incompatible crypto libaries often waste quite some time debugging the
+    'no shared cipher' error from openssl. See e.g. trac ticket #359:
+    https://community.openvpn.net/openvpn/ticket/359
+    
+    This change adds a more clear, verb 1 error message reporting the problem
+    directly to the user, instead of just printing the openssl error.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <544EB12E.40200@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9209
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 51390f4de4f02edf377d55a7ef108798d2d8dc88
+Author: Hubert Kario <hkario@redhat.com>
+Date:   Fri Sep 26 12:24:01 2014 +0200
+
+    ocsp_check - double check if ocsp didn't report any errors in execution
+    
+    in case the reposnses are too old, ocsp tool can return text like this:
+    
+    Response verify OK
+    ca/cert.pem: WARNING: Status times invalid.
+    139990703290240:error:2707307D:OCSP routines:OCSP_check_validity:status
+    expired:ocsp_cl.c:358:
+    good
+            This Update: Sep 21 12:12:48 2014 GMT
+            Next Update: Sep 22 12:12:48 2014 GMT
+    
+    light change in buffering can cause "verify OK" and "ca/cert.pem: good"
+    to be placed in a way that matching will be valid
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <1411727041-11884-2-git-send-email-hkario@redhat.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9055
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit c353af2f474f79bfd7b2b67ecc02e91152500209
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Jun 8 18:16:12 2014 +0200
+
+    Rename ALLOW_NON_CBC_CIPHERS to ENABLE_OFB_CFB_MODE, and add to configure.
+    
+    Makes OFB/CFB compile time configurable, and fixes output of --show-ciphers
+    to also show OFB/CFB ciphers along the way (becasue crypto.h was not
+    included from crypto_openssl.c).
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1402244175-31462-2-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8781
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit cab6305be749930eae9c4a1348fb90c4c515d8d7
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Jan 14 14:33:18 2014 +0100
+
+    Merge get_default_gateway() implementation for all 4+1 BSD variants.
+    
+    This was 3 times mostly the same code, with the 4 traditional BSDs
+    only differing in a single line, while MacOS X had more refined code
+    to do not only gateway determination, but also netmask, interface name
+    and MAC address.
+    
+    The MacOS X code works perfectly well on the other BSDs *if* one macro
+    is #ifdef'ed to use "(uint32_t)" on MacOS X and "(long)" on all other
+    BSDs, 32 and 64 bit variants.  API change by OSX when going to 64bit.
+    
+    Tested on FreeBSD 8.3/i386, FreeBSD 9.1/amd64, NetbSD 5.1/amd64,
+    OpenBSD 4.9/i386, OpenBSD 5.4/amd64 (= all affected platforms except
+    DragonFly BSD).
+    
+    See also trac#42 and trac#340.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Lazy-Ack-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1389706398-26922-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8233
+
+commit 1e3a1786a80e4afac37133ce5d6a1dcff779a4ce
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sun Apr 20 20:41:01 2014 +0200
+
+    Minor t_client.sh cleanups
+    
+    - remove built tests/t_client.sh script on "make clean"
+    - ignore Linux iproute2 "ssthresh <n>" output that sometimes shows up
+      in "ip -6 route show" and breaks before/after comparison
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1398019261-30180-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8557
+
+commit 1ba6f427d3ea361b9859cff9cbf4d1887240ed6f
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sun Mar 30 14:09:36 2014 +0200
+
+    Fix crash when using --inetd.
+    
+    Change "local" argument to socket_do_listen() to avoid calling
+    "local->ai_addr" in the caller for the "do_listen == FALSE" case,
+    in which case it could be NULL.
+    
+    Also, ensure "ai" is always initialized in socket_listen_accept() for
+    the "!remote_dynamic" case - otherwise it will sometimes(!) crash in
+    addrlist_match() later on.
+    
+    Get rid of spurious operator precedence warning concerning
+    GETADDR_CACHE_MASK.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1396181376-32022-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8412
+
+commit 813aa55754c27bdae5380dce415497a574b47e1b
+Author: Steffan Karger <steffan@karger.me>
+Date:   Wed Jan 1 21:10:24 2014 +0100
+
+    Remove OpenSSL tmp_rsa_callback. Removes support for ephemeral RSA in TLS.
+    
+    This code would not really generate ephemeral keys every time it is called,
+    but a single key that would be reused during process lifetime and returned
+    each time the function was called; probably not what users would expect.
+    
+    TLS allowes ephemeral keys to be used only when no other key exchange, such
+    as (ephemeral) Diffie-Hellman, is performed. The end result is that it was
+    only used by a number of (weak) export ciphers, which could give users a
+    false sense of security.
+    
+    So, instead of fixing a weak cipher mode, we'll just remove support for it
+    completely. Plenty of better alternatives are available in TLS.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1388607026-12297-5-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8152
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 8c19087034cb1076874075b9e2896ea3f7be59cf
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sun Nov 24 17:13:04 2013 +0100
+
+    t_client.sh: ignore fields from "ip -6 route show" output that distort results.
+    
+    "ip -6 route show" prints stuff like "rtt 38ms rttvar 38ms cwnd 10", which
+    sometimes changes while an OpenVPN test is running, resulting in spurious
+    failures in the "ifconfig/route must be restored identically after
+    OpenVPN ends" test in t_client.sh.  Not all fields are there all the time,
+    so use "sed" to get rid of whatever is printed this time.
+    
+    Only relevant for "make check" on linux builds with "--enable-iproute2".
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1385309584-23209-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8047
+
+commit 4368147972d61b598bbcd5d2904d891130d5e517
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Wed Oct 23 17:54:05 2013 +0200
+
+    Fix slow memory drain on each client renegotiation.
+    
+    This reverts commit bee92b479414d12035b0422f81ac5fcfe14fa645 and parts
+    of commit dc7be6d078ba106f9b0de12f3e879c3561c3c537, as these introduced a
+    subtle memory drain on client renegotiations (es->gc got initialized,
+    which led to "unused" gc_entry records accumulating while a client is
+    connected).
+    
+    Setting es->gc=NULL causes env_set_add_nolock() / remove_env_item() to
+    free() allocated and no longer used strings in the es, while an active
+    gc would leave them for cleanup with gc_free() at client disconnect time.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    
+    Conflicts:
+            src/openvpn/buffer.c
+    Acked-by: David Sommerseth <dazo@users.sourceforge.net>
+    Message-Id: <20131023162618.GP161@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7939
+
+commit 46e02127a44270c7199f458f43807bff2ddb11f3
+Author: James Yonan <james@openvpn.net>
+Date:   Sun Jul 28 16:05:35 2013 -0600
+
+    MSVC fixes
+    
+    Fixes to allow compilation with Microsoft Visual Studio 2008
+    
+    * Fixed several instances of declarations after statements.
+    
+    * In socket.c, fixed issue where uninitialized value (err)
+      is being passed to to gai_strerror.
+    
+    * ssl.c is trying to access multi_output_peer_info_env
+      function in multi.c, causing an undefined symbol warning
+      at compile time.  ssl.c is strictly a client of multi.c
+      (but not the other way around), therefore ssl.c does not
+      include multi.h and should not depend on multi.h API.  To
+      fix, moved validate_peer_info_line and multi_output_peer_info_env
+      from multi.c to misc.c.
+    
+    * MSVC doesn't support %z as a printf format specifier for size_t
+    
+    * MSVC doesn't support a const variable being used to dimension
+      an array.
+    
+    * Explicitly cast the third parameter to setsockopt to
+      const void *
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1375049135-21444-1-git-send-email-james@openvpn.net>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7777
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit fbc04bedbcce02fc625357b7475ddbc7164cabbf
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Fri Jun 21 12:48:28 2013 +0200
+
+    Add support of utun devices under Mac OS X
+    
+    Mac OS X 10.7+ natively supports tun devices (called utun). The "standard"
+    utun.ko driver is sometimes problematic (e.g. VmWare Fusion 5 and tun.ko
+    do not work together).
+    
+    When OpenVPN is compiled with utun support it will if no dev-node is given
+    first try to use utun and if that is not available will try the
+    traditional tun devices
+    
+    v2: Fixed tap support, get device name via ioctl, add manage
+    v3.1: Fix compiling without if/utun.h, fix manage errors
+    v4/v5: Don't try open to dynamically open utun0 -255 when early utun
+    initialization fails, fix fallback to tun, give fatal error message when
+    utun fails but no tun fallback should be done
+    v6: add commit message change log, replace strstr with strncmp, move
+    v7: Throw error if a user does the strange combination of --dev tun
+    --dev-type tap and --dev-node utun
+    
+    A lot good input on earlier patches by Jonathan K. Bullard
+    <jkbullard@gmail.com>
+    
+    Parts of the patches are inspired from Peter Sagerson's
+    <psagers@ignorare.net> utun patch
+    Signed-off-by: Arne Schwabe <arne@rfc2549.org>
+    Tested-by: Jonathan K. Bullard <jkbullard@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1371811708-8528-1-git-send-email-arne@rfc2549.org>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7739
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 8c431f960357d776cfd0961192214ad1b0942bfb
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Thu May 30 13:31:24 2013 +0200
+
+    Fix problem with UDP tunneling due to mishandled pktinfo structures.
+    
+    In link_socket_write_udp_posix_sendmsg(), pktinfo structures for ipv4 and
+    ipv6 are going out of scope before actually calling sendmsg(), so depending
+    on compiler optimization, garbage is passed to sendmsg() - fix by using
+    "union openvpn_pktinfo" and having that in scope all the time.
+    
+    Problem reported and patch provided by "danta" in trac#297
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    URL: https://community.openvpn.net/openvpn/ticket/297
+    Message-ID: <20130530184427.GP20843@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7629
+
+commit 11d21349a4e7e38a025849479b36ace7c2eec2ee
+Author: Steffan Karger <steffan.karger@fox-it.com>
+Date:   Tue Mar 19 13:01:50 2013 +0100
+
+    Use constant time memcmp when comparing HMACs in openvpn_decrypt.
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit d86d577031577dfd69e5ba104e0ce1cb5192c16a
+Author: Christian Hesse <list@eworm.de>
+Date:   Tue Jan 8 09:39:12 2013 +0100
+
+    fix build with automake 1.13(.1)
+    
+    AM_CONFIG_HEADER has been deprecated for some time, finally it is removed
+    on automake 1.13. The attached patch replaces it with AC_CONFIG_HEADERS and
+    fixes build process with latest automake.
+    
+    Acked-by: Matthias Andree <matthias.andree@gmx.de>
+    Message-Id: 20130108093912.7ae7c6f8@leda
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7222
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+For keyword perf:
+commit 81d882d5302b8b647202a6893b57dfdc61fd6df2
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Wed Dec 14 22:33:21 2016 +0100
+
+    The Great Reformatting - first phase
+    
+    This is the first commit of the big reformatting task.  This
+    is performed by running the ./dev-tools/reformat-all.sh script.
+    
+    This is based upon the v3 reformat-all.sh/uncrustify.conf version
+    which is now applied to git master.
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 009521ac8ae613084b23b9e3e5dc4ebeccd4c6c8
+Author: Steffan Karger <steffan@karger.me>
+Date:   Mon Nov 28 23:14:12 2016 +0100
+
+    Introduce and use secure_memzero() to erase secrets
+    
+    As described in trac #751, and shortly after reported by Zhaomo Yang, of
+    the University of California, San Diego, we use memset() (often through
+    the CLEAR() macro) to erase secrets after use.  In some cases however, the
+    compiler might optimize these calls away.
+    
+    This patch replaces these memset() calls on secrets by calls to a new
+    secure_memzero() function, that will not be optimized away.
+    
+    Since we use CLEAR() a LOT of times, I'm not changing that to use
+    secure_memzero() to prevent performance impact.  I did annotate the macro
+    to point people at secure_memzero().
+    
+    This patch also replaces some CLEAR() or memset() calls with a zero-
+    initialization using "= { 0 }" if that has the same effect, because that
+    better captures the intend of that code.
+    
+    Trac: #751
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1480371252-3880-1-git-send-email-steffan@karger.me>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13278.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 160504a2955c4478cd2c0323452929e07016a336
+Author: Steffan Karger <steffan.karger@fox-it.com>
+Date:   Fri Oct 28 17:54:47 2016 +0200
+
+    Refactor CRL handling
+    
+    This patch refactors the CRL handling to rely more on the implementation
+    of the crypto library.  It will insert the CRL at the correct time to keep
+    it up to date, but all additional verification logic is removed from
+    ssl_verify_<backend>.c.  "Less code of our own, less bugs of our own."
+    
+    In practice, this means extra checks will be performed on the CRL, such as
+    checking it validBefore and validAfter fields.
+    
+    This patch was originally written by Ivo Manca, and then molded by Steffan
+    before sending to the list.  All bugs are Steffan's fault.
+    
+    Thanks also go to Antonio Quartulli for useful feedback.  He'll send
+    follow-up patches to improve CRL handling performance.
+    
+    Signed-off-by: Ivo Manca <ivo.manca@fox-it.com>
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1477670087-30063-1-git-send-email-steffan.karger@fox-it.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12809.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 825e2ec1f358f2e81b623f2770fbbf76748b0739
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Nov 13 15:02:31 2016 +0100
+
+    Move private file access checks to options_postprocess_filechecks()
+    
+    This removes the dependency of crypto.c on misc.c, which makes testing
+    (stuff that needs) crypto.c functionality easier.
+    
+    Apart from that, testing file access really belongs in
+    options_postprocess_filechecks(), and moving it there enables us to
+    perform the same check for other private files too.
+    
+    v2: change indenting, remove remaining warn_if_group_others_accessible()
+        calls and move function to options.c.
+    
+    [ DS: This patch is a slightly modified version of the one sent to the
+         mailing list. It removes all references to --tls-crypt, so it
+         can be applied eariler to the tree as it contains a good clean-up
+         as well ]
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Message-Id: <1479045751-22297-1-git-send-email-steffan.karger@fox-it.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13019.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 698e268afb53014614f8e90ac8ff0667ce5e555d
+Author: Heiko Hund <heiko.hund@sophos.com>
+Date:   Fri Oct 28 18:42:37 2016 +0200
+
+    put argv_* functions into own file, add unit tests
+    
+    misc.c is too crowded with different things to perform any
+    sane unit testing due to its dependencies. So, in order to re-write
+    the #ifdef'ed tests for the argv_* family of functions into unit
+    tests I moved them into a dedicated file.
+    
+    Signed-off-by: Heiko Hund <heiko.hund@sophos.com>
+    Acked-by: David Sommerseth <davids@redhat.com>
+    Message-Id: <1477672963-5724-2-git-send-email-heiko.hund@sophos.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12811.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit bbde0a766c69f573746461415c6f5cd289272fff
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Mar 27 16:18:16 2016 +0200
+
+    Replace MSG_TEST() macro for static inline msg_test()
+    
+    Using a static inline function instead of a macro has the advantages that
+    (1) 'flags' is not evaluated twice and (2) coverity will stop complaining
+    that 'Macro compares unsigned to 0 (NO_EFFECT)' each time we use flags
+    with loglevel 0 (e.g. M_FATAL or M_WARN).
+    
+    This has a performance impact when compiler optimizations are fully
+    disabled ('-O0'), but should otherwise be as fast as using a macro.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1459088296-5046-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11368
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 70fbc5be209635739458267abde31b5cd4f770d0
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Feb 7 20:47:09 2016 +0100
+
+    Allow NULL argument in cipher_ctx_get_cipher_kt()
+    
+    Since otherwise we'll have to perform the check before each call.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1454874438-5081-2-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11079
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 9403e3f4b510fbc4187044f31be8f7dccbde1cf1
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sat Oct 10 18:34:49 2015 +0200
+
+    Remove support for snappy compression.
+    
+    LZ4 is using less CPU at similar performance, and it is easier to
+    build and support for binary installs (as it does not require C++
+    and a C++ runtime).  Since it was never supported in any formally
+    released OpenVPN version, just drop it again.
+    
+    This leaves in the compression opcode for Snappy for documentation
+    purposes.
+    
+    trac #617
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1444494889-28925-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10251
+
+commit ddc7692d245017c71adc40ad5cc195617e39fce0
+Author: Steffan Karger <steffan@karger.me>
+Date:   Mon Sep 21 20:48:33 2015 +0200
+
+    Replace strdup() calls for string_alloc() calls
+    
+    As reported by Bill Parker in trac #600, strdup() return values are not
+    always correctly checked for failed allocations.  This patch adds missing
+    checks by using string_alloc(), which performs the required checks.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <561130FC.8090008@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10176
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 0e3f894098f9286ec3e703ce16fe9bda0cd2c74e
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Apr 21 22:49:12 2015 +0200
+
+    Fix leftover 'if (false) ;' statements
+    
+    Commit a4b8f653ee5be9c2292c removed the #ifdefs for ENABLE_HTTP_PROXY and
+    ENABLE_SOCKS, thus making this "if (false) ; else if (...)" construct
+    superfluous.  Spotted by David Sommerseth.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1429649352-21034-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9603
+
+commit d384a9587951617d12e31e0a18050bd86402d5df
+Author: Lev Stipakov <lstipakov@gmail.com>
+Date:   Thu Mar 5 22:33:56 2015 +0200
+
+    Fix mssfix default value in connection_list context
+    
+    Due to this bug, mssfix hasn't been assigned to fragment value
+    and used default value (1450) instead. As a consequence, TCP packets
+    get fragmented, which causes performance penalty.
+    
+    Since dual stack patch (commit 23d61c56b9fd218c39ad151b01b7e2d6690e6093)
+    OpenVPN uses options->connection_list, even for single remote.
+    
+    This fix assigns mssfix value to fragment value for connection_entry
+    inside connection_list instead of connection_entry inside options struct
+    (which does not work for connection_list case).
+    
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1425587636-23338-1-git-send-email-lstipakov@gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9507
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit a4b27b6481c7496f2a8705c993edfe150a3541cb
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Jun 8 18:16:13 2014 +0200
+
+    Add proper check for crypto modes (CBC or OFB/CFB)
+    
+    OpenSSL has added AEAD-CBC mode ciphers like AES-128-CBC-HMAC-SHA1, which
+    have mode EVP_CIPH_CBC_MODE, but require a different API (the AEAD API).
+    So, add extra checks to filter out those AEAD-mode ciphers.
+    
+    Adding these made the crypto library agnostic function cfb_ofb_mode()
+    superfuous, so removed that on the go.
+    
+    Also update all cipher mode checks to use the new cipher_kt_mode_*()
+    functions for consistency.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1402244175-31462-3-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8779
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 4978dadaed4ecf1b9dd256f57c6a5c895691580b
+Author: David Sommerseth <dazo@eurephia.net>
+Date:   Fri May 2 02:28:24 2014 +0200
+
+    Improve error reporting on file access to --client-config-dir and --ccd-exclusive
+    
+    OpenVPN will do some simple sanity checking at startup to ensure
+    the expected files and directories is in place.  However, with
+    --client-config-dir and --ccd-exclusive, things are slightly different.
+    In both cases it is perfectly fine that files does not exists, and we
+    cannot know any file names beforehand due to these filenames being based
+    upon the certificate's CN field.
+    
+    The problem arises when OpenVPN cannot open files inside a directory
+    because the directory permissions are too restrictive, have wrong
+    ownership (triggered by the usage of --user/--group) or other security
+    mechanisms the OS uses.
+    
+    When a client connects, the test_file() function is used to check if a
+    client config file has been prepared.  And if not, it continues without
+    trying to read it.  So, if the privileges of the running OpenVPN process
+    is not allowed to open and read an existing file, OpenVPN will treat this
+    as a non-existing file without saying anything.  This is clearly wrong.
+    So this patch adds an warning message in the OpenVPN log if it could
+    not open the file due to lack of permissions.
+    
+    This will work fine on all *nix based OSes.  Windows however reports
+    'no such file or directory' (errno=2/-ENOENT) even on privilege access
+    errors when the directory this file resides is too restrictive.  But there
+    is no easy way to work around that.  However, I believe that the initial
+    sanity checking at startup will catch that one, as it will check if the
+    directories it needs exists.
+    
+    This patch has only gone through simple basic testing, with both too few
+    privileges and with proper privileges to the CCD directory.  With wrong
+    privileges, the following error can be found if CN=Test client
+    
+      Fri May  2 00:00:10 2014 us=281993 127.0.0.1:41017 Could not access file
+    '/etc/clients/Test client': Permission denied (errno=13)
+    
+    [v2 - use openvpn_errno() instead of errno, for better platform support]
+    
+    Trac: #277
+    Trac-URL: https://community.openvpn.net/openvpn/ticket/277
+    Signed-off-by: David Sommerseth <dazo@users.sourceforge.net>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <1398990504-4239-1-git-send-email-dazo@users.sourceforge.net>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8688
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit cab6305be749930eae9c4a1348fb90c4c515d8d7
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Jan 14 14:33:18 2014 +0100
+
+    Merge get_default_gateway() implementation for all 4+1 BSD variants.
+    
+    This was 3 times mostly the same code, with the 4 traditional BSDs
+    only differing in a single line, while MacOS X had more refined code
+    to do not only gateway determination, but also netmask, interface name
+    and MAC address.
+    
+    The MacOS X code works perfectly well on the other BSDs *if* one macro
+    is #ifdef'ed to use "(uint32_t)" on MacOS X and "(long)" on all other
+    BSDs, 32 and 64 bit variants.  API change by OSX when going to 64bit.
+    
+    Tested on FreeBSD 8.3/i386, FreeBSD 9.1/amd64, NetbSD 5.1/amd64,
+    OpenBSD 4.9/i386, OpenBSD 5.4/amd64 (= all affected platforms except
+    DragonFly BSD).
+    
+    See also trac#42 and trac#340.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Lazy-Ack-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1389706398-26922-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8233
+
+commit 813aa55754c27bdae5380dce415497a574b47e1b
+Author: Steffan Karger <steffan@karger.me>
+Date:   Wed Jan 1 21:10:24 2014 +0100
+
+    Remove OpenSSL tmp_rsa_callback. Removes support for ephemeral RSA in TLS.
+    
+    This code would not really generate ephemeral keys every time it is called,
+    but a single key that would be reused during process lifetime and returned
+    each time the function was called; probably not what users would expect.
+    
+    TLS allowes ephemeral keys to be used only when no other key exchange, such
+    as (ephemeral) Diffie-Hellman, is performed. The end result is that it was
+    only used by a number of (weak) export ciphers, which could give users a
+    false sense of security.
+    
+    So, instead of fixing a weak cipher mode, we'll just remove support for it
+    completely. Plenty of better alternatives are available in TLS.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1388607026-12297-5-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8152
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 38d96bd7975e626d490b3d9f9514d81e070a5495
+Author: James Yonan <james@openvpn.net>
+Date:   Tue Sep 18 08:33:34 2012 +0200
+
+    Added support for the Snappy compression algorithm
+    
+    Added support for the Snappy compression algorithm which has shown to
+    have considerably better compression speed than LZO at a comparable
+    compression ratio.
+    
+    To enable Snappy add:
+    
+      compress snappy
+    
+    to both client and server config files.
+    
+    Alternatively, enable compression framing on the client:
+    
+      compress
+    
+    and have the server selectively push "compress snappy" to the client.
+    
+    This change also extends the client capability handshake to include
+    IV_SNAPPY so the server can be aware that a connecting client supports
+    Snappy.
+    
+    Note that the Snappy implementation also includes an improved framing
+    approach where the first byte of the compressed payload is replaced by
+    the compression control byte (the first payload byte is moved to the end
+    of the packet).  This solves off-by-one alignment issues, which improves
+    performance on ARM.
+    
+    By default, the configure script will try to build with Snappy support.
+    To disable, use the --disable-snappy option.
+    
+    The --enable-lzo-stub configure directive is now --enable-comp-stub
+    (because it's not actually "lzo" but "compression-enabled packet framing")
+    
+    Add compression overhead to extra buffer unconditionally, as long
+    as USE_COMP is defined.
+    
+    OpenVPN SVN r8206 (2.1.21a) and r8212 (2.1.21b)
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1366393268-27392-3-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7531
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+For keyword optim:
+commit 009521ac8ae613084b23b9e3e5dc4ebeccd4c6c8
+Author: Steffan Karger <steffan@karger.me>
+Date:   Mon Nov 28 23:14:12 2016 +0100
+
+    Introduce and use secure_memzero() to erase secrets
+    
+    As described in trac #751, and shortly after reported by Zhaomo Yang, of
+    the University of California, San Diego, we use memset() (often through
+    the CLEAR() macro) to erase secrets after use.  In some cases however, the
+    compiler might optimize these calls away.
+    
+    This patch replaces these memset() calls on secrets by calls to a new
+    secure_memzero() function, that will not be optimized away.
+    
+    Since we use CLEAR() a LOT of times, I'm not changing that to use
+    secure_memzero() to prevent performance impact.  I did annotate the macro
+    to point people at secure_memzero().
+    
+    This patch also replaces some CLEAR() or memset() calls with a zero-
+    initialization using "= { 0 }" if that has the same effect, because that
+    better captures the intend of that code.
+    
+    Trac: #751
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1480371252-3880-1-git-send-email-steffan@karger.me>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13278.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit c5da6dbf3f532bcae5f8c20e3dcf0311b8718d5c
+Author: David Sommerseth <davids@openvpn.net>
+Date:   Thu Oct 27 16:37:39 2016 +0200
+
+    cleanup: Remove NOP code sections in ssl.c:tls_process()
+    
+    In tls_process() there is an if (true) {} block, which is completely
+    unneeded.  Even though compilers will optimize this away, it clutters
+    the code.
+    
+    Also removed two #if 0 blocks within the same scope which is truly
+    only used for really low-level debugging.  The last of these blocks
+    even includes some #ifdef nesting, making the code somewhat more
+    unstructured.  It is hard to see any argument why to presever these
+    blocks s the information they provide won't normally be that useful.
+    It is aimed at very special corner case debugging.
+    
+    This patch seems bigger than it really is, due to the needed
+    re-indenting when removing the if(true) scope.
+    
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <1477579059-9596-1-git-send-email-davids@openvpn.net>
+    URL: http://www.mail-archive.com/search?l=mid&q=1477579059-9596-1-git-send-email-davids@openvpn.net
+
+commit bbde0a766c69f573746461415c6f5cd289272fff
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Mar 27 16:18:16 2016 +0200
+
+    Replace MSG_TEST() macro for static inline msg_test()
+    
+    Using a static inline function instead of a macro has the advantages that
+    (1) 'flags' is not evaluated twice and (2) coverity will stop complaining
+    that 'Macro compares unsigned to 0 (NO_EFFECT)' each time we use flags
+    with loglevel 0 (e.g. M_FATAL or M_WARN).
+    
+    This has a performance impact when compiler optimizations are fully
+    disabled ('-O0'), but should otherwise be as fast as using a macro.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1459088296-5046-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11368
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 3a39bf7dfe5a57fe8bc43c073b2a009bb6994e78
+Author: Steffan Karger <steffan.karger@fox-it.com>
+Date:   Thu Jan 7 10:15:16 2016 +0100
+
+    polarssl: optimize polar_ok() for non-errors
+    
+    Adding polar_ok() was a good plan for improving error reporting, but also
+    added two function calls (one to polar_log_func_line() and one to
+    polar_log_err()) for each function call wrapped with polar_ok().
+    Especially in the critical path, this is a waste of time.
+    
+    To avoid this overhead, add a simple static inline wrapper to reduce it to
+    a single branch.
+    
+    v2 - use a static inline wrapper to prevent evaluating 'errval' twice in
+         the macro.
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1452158116-17363-1-git-send-email-steffan.karger@fox-it.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10949
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit a75bb2e40a431e053ea1ef328ec022aaf851ccc0
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Sun Jan 3 18:27:46 2016 +0100
+
+    Implement the compression V2 data format for stub and lz4.
+    
+    Patch V2: Fix minor issues found by Steffan
+    Patch V3: split wire codes and compression flags
+    Patch V4: Fix further issues reported by Gert
+    Patch V5: really fix the issues that should be fixed in v2
+    Patch V6: fix more minor things
+    
+    It has been tested against v3 server and again itself. From James Mail:
+    
+     Compression V2
+    
+       I have observed that compression in many cases, even when
+       enabled, often does not produce packet size reduction
+       because much of the packet data typically generated by web
+       sessions is already compressed.  Further, the single byte that
+       precedes the packet and indicates whether or not compression
+       occurred has the unfortunate side effect of misaligning the IP
+       packet in cases where compression did not occur.  To remedy this,
+       I propose a Compression V2 header that is optimized for the
+       case where compression does not occur.
+    
+       a. No compression occurred and first byte of IP/Ethernet packet
+          is NOT 0x50 (0 bytes of overhead and maintains alignment):
+    
+            [ uncompressed IP/Ethernet packet ]
+    
+       b. No compression occurred and first byte of IP/Ethernet packet
+          is 0x50 (2 bytes of overhead but unlikely since no known
+          IP packet can begin with 0x50):
+    
+            [ 0x50 ] [ 0x00 ] [ uncompressed IP/Ethernet packet ]
+    
+       c. Compression occurred (2 bytes of overhead):
+    
+            [ 0x50 ] [ compression Alg ID ] [ compressed IP/Ethernet packet ]
+    
+          Compression Alg ID is one-byte algorithm identifier
+          for LZ4 (0x1), LZO (0x2), or Snappy (0x3).
+    
+       This approach has several beneficial effects:
+    
+       1. In the common case where compression does not occur, no
+          compression op is required, therefore there is zero overhead.
+    
+       2. When compression does not occur, the IP/Ethernet packet
+          alignment is retained.
+    
+       3. This technique does not require any byte swapping with
+          the tail of the packet which can potentially incur an
+          expensive cache miss.
+    
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1451842066-13475-1-git-send-email-arne@rfc2549.org>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10925
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit fc91d4b0071178e298052078431fb86f03be84fc
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Jun 30 21:44:56 2015 +0200
+
+    Increase control channel packet size for faster handshakes
+    
+    Instead of limiting the control channel TCP/UDP packet payload size at
+    '100 bytes + real control channel overhead' (~140 bytes ethernet payload),
+    increase the max TCP/UDP payload size to '1250 bytes - calculated overhead'
+    (~1210 bytes ethernet payload).
+    
+    Note that this patch does *not* yield an optimal solution, but it is a
+    simple and rather safe change that will improve connection setup times
+    significantly.
+    
+    v2: use the mininum value of --link-mtu and 1250 to give the user a way to
+        reduce control packet size if really needed.
+    
+    trac #545
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1435693496-10931-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9841
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 98156e90e1e83133a6a6a020db8e7333ada6156b
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Dec 2 21:42:00 2014 +0100
+
+    Really fix '--cipher none' regression
+    
+    ... by not incorrectly hinting to the compiler the function argument of
+    cipher_kt_mode_{cbc,ofb_cfb}() is nonnull, since that no longer is the
+    case.
+    
+    Verified the fix on Debian Wheezy, one of the platforms the reporter in
+    trac #473 mentions with a compiler that would optimize out the required
+    checks.
+    
+    Also add a testcase for --cipher none to t_lpback, to prevent further
+    regressions.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1417552920-31770-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9300
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit c058cbffc182b6618182a3ff8b13c66d01ce937d
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Fri Mar 21 14:18:36 2014 +0100
+
+    Workaround broken Android 4.4 VpnService API for persist-tun mode
+    
+    In Android 4.4 it is not possible to open a new tun device and then close
+    the old tun device without breaking the whole VPNService stack until the
+    device is rebooted.
+    
+    Add new management method to ask the UI what method should be taken to
+    ensure the optimal solution for the situation.  Then do open-before-close
+    or close-before-open inside open_tun() as requested.
+    
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1395407925-25518-4-git-send-email-arne@rfc2549.org>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8373
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 8c431f960357d776cfd0961192214ad1b0942bfb
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Thu May 30 13:31:24 2013 +0200
+
+    Fix problem with UDP tunneling due to mishandled pktinfo structures.
+    
+    In link_socket_write_udp_posix_sendmsg(), pktinfo structures for ipv4 and
+    ipv6 are going out of scope before actually calling sendmsg(), so depending
+    on compiler optimization, garbage is passed to sendmsg() - fix by using
+    "union openvpn_pktinfo" and having that in scope all the time.
+    
+    Problem reported and patch provided by "danta" in trac#297
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    URL: https://community.openvpn.net/openvpn/ticket/297
+    Message-ID: <20130530184427.GP20843@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7629
+For keyword regression:
+commit 868d9d01802da9bbbb3a758981f3c7310a905813
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Jan 3 10:47:56 2016 +0100
+
+    Fix regression in setups without a client certificate
+    
+    This fixes a null-pointer dereference in tls_ctx_cert_time(), which will
+    occur on clients that do not use a client certificate (ie that only have
+    auth-user-pass in the config, but no key and cert).  This bug was
+    introduced by commit 091edd8e on the master branch, and commit dfd940bb
+    on the release/2.3 branch.
+    
+    This bug was found by chipitsine and reported in trac ticket #644.
+    
+    While touching this function, I also made this function conform to the
+    openvpn coding style.
+    
+    v2 - fix memory leak in builds using pre-1.0.2 openssl
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1451814476-32574-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10921
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 82acf2163412aae9259e2202dbe001a2ac797b99
+Author: Daniel Hahler <git@thequod.de>
+Date:   Sun Jul 19 21:55:22 2015 +0200
+
+    options: fix option check for "plugin"
+    
+    The "plugin" option has one required argument, and an optional one.
+    
+    This fixes a regression in 3d6a4cd
+    (https://community.openvpn.net/openvpn/ticket/557).
+    
+    Signed-off-by: Daniel Hahler <git@thequod.de>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <20150721100836.GV382@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9932
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 315f6fbc7f657a7f1127628bd714f468709d5185
+Author: Steffan Karger <steffan@karger.me>
+Date:   Thu Jul 9 23:35:59 2015 +0200
+
+    fix regression: query password before becoming daemon
+    
+    The init sequence was changed to daemonize before the crypto init to fix
+    issues on FreeBSD some commits ago.  This introduced a regression where
+    we would no longer query for passwords before daemonizing, as described
+    in trac #574 and #576.
+    
+    This commit restores the correct order, and adds a bit of const
+    correctness since we're touching this now code anyway.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1436477759-5884-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9901
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 98156e90e1e83133a6a6a020db8e7333ada6156b
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Dec 2 21:42:00 2014 +0100
+
+    Really fix '--cipher none' regression
+    
+    ... by not incorrectly hinting to the compiler the function argument of
+    cipher_kt_mode_{cbc,ofb_cfb}() is nonnull, since that no longer is the
+    case.
+    
+    Verified the fix on Debian Wheezy, one of the platforms the reporter in
+    trac #473 mentions with a compiler that would optimize out the required
+    checks.
+    
+    Also add a testcase for --cipher none to t_lpback, to prevent further
+    regressions.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1417552920-31770-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9300
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 65eedc353349d2967fc03c54da807727e416e1b0
+Author: Lev Stipakov <lstipakov@gmail.com>
+Date:   Sun Nov 23 17:17:11 2014 +0200
+
+    Peer-id patch v7
+    
+    Added new packet format P_DATA_V2, which includes peer-id. If server
+    supports, client sends all data packets in the new format. When data
+    packet arrives, server identifies peer by peer-id. If peer's ip/port has
+    changed, server assumes that client has floated, verifies HMAC and
+    updates ip/port in internal structs.
+    
+    Changes in v7:
+    A few nitpicks.
+    
+    Changes in v6:
+    Fixed: Make sure float won't happen if hmac check failed (regression).
+    Fixed: Access outside of bounds of array, which has caused memory
+    corruption and crash.
+    Various review fixes.
+    
+    Changes in v5:
+    Protection agains replay attack by commiting float changes only after
+    existing packet processing flow has completed.
+    
+    If peer floats to an address which is already taken by another active
+    session, drop float packet, otherwise disconnect existing session.
+    
+    Changes in v4:
+    Handles correctly float to an address which is used by another peer.
+    This also has fixed crash on assert in multi_client_disconnect.
+    
+    Changes in v3:
+    Bugfix: If float happens after TLS renegotiation and there are no
+    data packets between reneg and float, server will not recognize floated
+    client.
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1416755831-21250-1-git-send-email-lstipakov@gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9270
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 4b9eaa1ee40648f101deb4ebf07a04cd5b5400e9
+Author: Steffan Karger <steffan.karger@fox-it.com>
+Date:   Fri Sep 19 06:19:13 2014 +0200
+
+    Fix regression with password protected private keys (polarssl)
+    
+    Between versions 1.2 and 1.3, polarssl changed the errors
+    returned by the X509 parsing functions, which broke the OpenVPN
+    implementation for password protected private keys in polarssl
+    builds. This patch fixes that by checking for the new errors in
+    OpenVPN.
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <5432E951.6020405@fox-it.com>
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+For keyword sha:
+commit c6e24fa3e16c32f9b427e360fd07102f613aa5c6
+Author: Steffan Karger <steffan.karger@fox-it.com>
+Date:   Tue Nov 15 14:29:46 2016 +0100
+
+    Add control channel encryption (--tls-crypt)
+    
+    This adds a --tls-crypt option, which uses a pre-shared static key (like
+    the --tls-auth key) to encrypt control channel packets.
+    
+    Encrypting control channel packets has three main advantages:
+    
+    * It provides more privacy by hiding the certificate used for the TLS
+      connection.
+    * It is harder to identify OpenVPN traffic as such.
+    * It provides "poor-man's" post-quantum security, against attackers who
+      will never know the pre-shared key (i.e. no forward secrecy).
+    
+    Control channel packet encryption
+    ---------------------------------
+    
+    We propose to use the following encryption method, based on the SIV
+    construction [0], to achieve nonce misuse-resistant authenticated
+    encryption:
+    
+       msg      = control channel plaintext
+       header   = opcode (1 byte) || session_id (8 bytes) || packet_id (8
+    bytes)
+       Ka       = authentication key (256 bits)
+       Ke       = encryption key (256 bits)
+       (Ka and Ke are pre-shared keys, like with --tls-auth)
+    
+       auth_tag = HMAC-SHA256(Ka, header || msg)
+       IV       = 128 most-significant bits of auth_tag
+       ciph     = AES256-CTR(Ke, IV, msg)
+    
+       output   = Header || Tag || Ciph
+    
+    This boils down to the following on-the-wire packet format:
+    
+       -opcode- || -session_id- || -packet_id- || auth_tag || * payload *
+    
+       Where
+       - XXX - means authenticated, and
+       * XXX * means authenticated and encrypted.
+    
+    Which is very similar to the current tls-auth packet format, and has the
+    same overhead as "--tls-auth" with "--auth SHA256".
+    
+    The use of a nonce misuse-resistant authenticated encryption scheme
+    allows us to worry less about the risks of nonce collisions.  This is
+    important, because in contrast with the data channel in TLS mode, we
+    will not be able to rotate tls-crypt keys often or fully guarantee nonce
+    uniqueness.  For non misuse-resistant modes such as GCM [1], [2], the
+    data channel in TLS mode only has to ensure that the packet counter
+    never rolls over, while tls-crypt would have to provide nonce uniqueness
+    over all control channel packets sent by all clients, for the lifetime
+    of the tls-crypt key.
+    
+    Unlike with tls-auth, no --key-direction has to be specified for
+    tls-crypt.  TLS servers always use key direction 1, and TLS clients
+    always use key direction 2, which means that client->server traffic and
+    server->client traffic always use different keys, without requiring
+    configuration.
+    
+    Using fixed, secure, encryption and authentication algorithms makes both
+    implementation and configuration easier.  If we ever want to, we can
+    extend this to support other crypto primitives.  Since tls-crypt should
+    provide privacy as well as DoS protection, these should not be made
+    negotiable.
+    
+    Security considerations:
+    ------------------------
+    
+    tls-crypt is a best-effort mechanism that aims to provide as much
+    privacy and security as possible, while staying as simple as possible.
+    The following are some security considerations for this scheme.
+    
+    1. The same tls-crypt key is potentially shared by a lot of peers, so it
+       is quite likely to get compromised.  Once an attacker acquires the
+       tls-crypt key, this mechanism no longer provides any security against
+       the attacker.
+    
+    2. Since many peers potentially use the tls-crypt key for a long time, a
+       lot of data might be encrypted under the tls-crypt key.  This leads
+       to two potential problems:
+    
+       * The "opcode || session id || packet id" combination might collide.
+         This might happen in larger setups, because the session id contains
+         just 64 bits or random.  Using the uniqueness requirement from the
+         GCM spec [3] (a collision probability of less than 2^(-32)),
+         uniqueness is achieved when using the tls-crypt key for at most
+         2^16 (65536) connections per process start.  (The packet id
+         includes the daemon start time in the packet ID, which should be
+         different after stopping and (re)starting OpenPVN.)
+    
+         And if a collision happens, an attacker can *only* learn whether
+         colliding packets contain the same plaintext.  Attackers will not
+         be able to learn anything else about the plaintext (unless the
+         attacker knows the plaintext of one of these packets, of course).
+         Since the impact is limited, I consider this an acceptable
+         remaining risk.
+    
+       * The IVs used in encryption might collide.  When two IVs collide, an
+         attacker can learn the xor of the two plaintexts by xorring the
+         ciphertexts.  This is a serious loss of confidentiality.  The IVs
+         are 128-bit, so when HMAC-SHA256 is a secure PRF (an assumption
+         that must also hold for TLS), and we use the same uniqueness
+         requirement from [3], this limits the total amount of control
+         channel messages for all peers in the setup to 2^48.  Assuming a
+         large setup of 2^16 (65536) clients, and a (conservative) number of
+         2^16 control channel packets per connection on average, this means
+         that clients may set up 2^16 connections on average.  I think these
+         numbers are reasonable.
+    
+    (I have a follow-up proposal to use client-specific tls-auth/tls-crypt
+    keys to partially mitigate these issues, but let's tackle this patch
+    first.)
+    
+    References:
+    -----------
+    
+    [0] Rogaway & Shrimpton, A Provable-Security Treatment of the Key-Wrap
+        Problem, 2006
+        (https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf)
+    
+    [1] Ferguson, Authentication weaknesses in GCM, 2005
+    
+    (http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/comments/CWC-GCM/Ferg
+    uson2.pdf)
+    
+    [2] Joux, Authentication Failures in NIST version of GCM, 2006
+    
+    (http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/comments/800-38_Serie
+    s-Drafts/GCM/Joux_comments.pdf)
+    
+    [3] Dworking, Recommendation for Block Cipher Modes of Operation:
+        Galois/Counter Mode (GCM) and GMAC, 2007
+        (http://csrc.nist.gov/publications/nistpubs/800-38D/SP-800-38D.pdf)
+    
+    Patch history:
+    --------------
+    
+    v2 - processed Arne's review comments:
+    
+     * Error out early with a clear error message when AES-256-CTR or
+       HMAC-SHA-256 are not supported by the crypto library.
+     * Clarify that cipher_ctx_reset() sets the IV.
+    
+    v3 - actually add error messages promised in v2...
+    
+    Signed-off-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1479216586-20078-1-git-send-email-steffan.karger@fox-it.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg13069.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 129d2924bb4179b7df4a157a0443c45f2279e92d
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Nov 1 20:06:47 2016 +0100
+
+    Restore pre-NCP cipher options on SIGUSR1
+    
+    As reported by debbie10t on the openvpn-devel list (Message-ID:
+    <326b8ff7-39a6-1974-c0b0-82fd2abdc7b7@gmail.com>), an NCP client will
+    attempt to reconnect with the previously pushed cipher, instead of the
+    cipher from the config file, after a sigusr1 restart.  This can be a
+    problem when the server is reconfigured (as debbie10t explainted), or when
+    roaming to a differently-configured server.  Fix this by restoring the
+    cipher options from the config file after a sigusr1 restart.
+    
+    This makes the cipher options behaviour different from other pushable
+    options, because those are also cached until a sighup restart.  We might
+    want to change this behaviour in general, but for now let's just fix the
+    issue at hand.
+    
+    v2: also cache and restore keysize, as that parameter is relevant too.
+    v3: inherit cached cipher options from parent context.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1478027207-28651-1-git-send-email-steffan@karger.me>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12869.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit fc30dc5f20d455242ed8489fb1a99446287ba9cb
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Sat Sep 17 00:10:38 2016 -0400
+
+    Support --block-outside-dns on multiple tunnels
+    
+    v2: Simplify the "add sublayer" code.
+    
+    Currently each instance of openvpn adds WFP filters into an independent
+    sublayer. As a block in one sublayer can over-ride a permit in another,
+    this causes all DNS traffic to block when --block-outside-dns is used
+    in multiple tunnels.
+    
+    Fix using a common sublayer for adding firewall rules (filters) from all
+    instances of openvpn and interactive service.
+    - The sublayer is added in a persistent session so that it could be
+      accessed from multiple sessions.
+    - The sublayer is identified by a fixed UUID defined in block_dns.c
+      shared between openvpn.exe and openvpnserv.exe.
+    - Permit filters for tun/tap interfaces are added with higher priority
+      than filters that block all DNS traffic. This is not strictly
+      necessary as WFP assigns higher priority to specific filters over generic
+      ones, but it may be safer not to rely on that feature.
+    - All filters are added in dynamic sessions as before. They get
+      automatically removed when the process exits. The sublayer will,
+      however, persist until reboot.
+    
+    Resolves Trac 718
+    Tested on Windows 7, 10 with/without interactive service
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1474085439-28766-1-git-send-email-selva.nair@gmail.com>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12465.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 9c3a9335ee77d8447bf47e464f4ab15964fb6f1b
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Nov 8 10:44:02 2016 +0100
+
+    Fix potential division by zero in shaper_reset()
+    
+    shaper_reset() is only ever called with "bytes_per_second" set to
+    a non-zero value - so the whole check "is it zero? if not, use
+    constrain_int() to make sure it is within bounds" is not needed ->
+    reduce check to just constrain_int() so even if somebody would
+    call shaper_reset(..., 0) it would not lead to a div-by-zero.
+    
+    Found by Coverity.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <1478598242-23514-1-git-send-email-gert@greenie.muc.de>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12942.html
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit ffe508e1082000531c9dc3a60abb9b6ba448f519
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Fri Oct 21 16:42:37 2016 +0200
+
+    Make Changes.rst nicer for 2.4 release
+    
+    - Add `` to all options
+    - Sort and group new features
+    - Group changes a bit better
+    - Fix some formatting/formulation
+    
+    Patch V2:
+    - add missing quote, noticed by Samuli
+    - add new windows services
+    - add ECDH
+    - add pushable compression
+    - add Android and AIX platform support
+    
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Message-Id: <1477060957-6423-1-git-send-email-arne@rfc2549.org>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12766.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 86e2fa5597fd1ad8e0102f134c63d6bc8cb7c291
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Thu Oct 13 18:54:16 2016 +0200
+
+    Remove tun-ipv6 Option. Instead assume that IPv6 is always supported.
+    
+    This option was useful when IPv6 tun support was non standard and was an
+    internal/user specified flag that tracked the Ipv6 capability of the tun
+    device.
+    
+    All supported OS support IPv6. Also tun-ipv6 is pushable by the remote so
+    not putting tun-ipv6 does not forbid ipv6 addresses.
+    
+    This commit also clean up a bit of the ipv6 related tun.c. Changes for
+    most platforms are minimal.
+    
+    For linux a bit more cleanup is done:
+    - Remove compatibility defines that were added 2008
+    - Always use IFF_NO_PI for the linux tun and not only for IPv4 only tun
+      setups (Android also always IFF_NO_PI works fine with Ipv6).
+    
+    This commit also remove a non ipv6 fallback for tap driver from OpenVPN
+    2.2-beta or earlier and only warns.
+    
+    Patch V2: Integrate Gert's comments
+    Patch V3: Remove tun_ipv4 option. It only used for MTU discovery and there
+              it was wrong since it should on the transport protocol if at all
+    Patch V4: Completely remove support for NetBSD <= 4.0 and remove
+              NETBSD_MULTI_AF defines
+    Patch V5: Assume generic OS in tun.c is also IPv6 capable. Add changes to
+              man page. Fix typos/change message as suggest by David.
+    
+    Signed-off-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1476377656-3150-1-git-send-email-arne@rfc2549.org>
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12695.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit af1e4d26ab65bd71de168ea621ca55d0e40a0bc1
+Author: Steffan Karger <steffan@karger.me>
+Date:   Thu May 5 22:14:07 2016 +0200
+
+    Add SHA256 fingerprint support
+    
+    Add SHA256 fingerprint support for both the normal exported fingerprints
+    (tls_digest_n -> tls_digest_sha256_n), as well as for --x509-track.
+    
+    Also switch to using the SHA256 fingerprint instead of the SHA1 fingerprint
+    internally, in cert_hash_remember() / cert_hash_compare().  And instead of
+    updating an #if 0'd code block that has been disabled since 2009, just
+    remove that.
+    
+    This should take care of trac #675.
+    
+    v2: update openvpn.8 accordingly
+    
+    [ DS: This commit squashes in the clean-up cert_hash_remember scoping patch,
+          as it is highly related and tied to this primary patch ]
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: David Sommerseth <davids@openvpn.net>
+    Message-Id: 1462479247-21854-1-git-send-email-steffan@karger.me
+    Message-Id: 1474055635-7427-1-git-send-email-steffan@karger.me
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg11859.html
+    URL: https://www.mail-archive.com/openvpn-devel@lists.sourceforge.net/msg12464.html
+    Signed-off-by: David Sommerseth <davids@openvpn.net>
+
+commit 97894360fa537945e07fd6a85d0659e094b693a5
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Jun 28 23:33:55 2016 +0200
+
+    Add client-side support for cipher negotiation
+    
+    Based on the 'IV_NCP=2' mechanism described in
+    http://permalink.gmane.org/gmane.network.openvpn.devel/9385.
+    
+    This is the first patch of a set that adds support for cipher negotiation.
+    Follow-up patches will add ways to restrict or disable the mechanism, and
+    add server-side support.
+    
+    v2:
+     * Account for crypto overhead through struct frame.  This is less
+       transparant, but the code has been built to work this way.  The
+       previous approach didn't work with TCP mode (or --port-share).
+     * Calculate the link-mtu sent in the options string based on the crypto
+       parameters specified in the config file (prevents link-mtu warnings in
+       older peers when connecting).
+    
+    v3:
+     * Use existing max_int() function, instead of new MAX() macro.
+     * Fix typo in comment.
+     * Do not regenerate keys if the server sends a second push msg
+     * Only push IV_NCP if we're pull-client (and thus can do NCP)
+    
+    v4:
+     * Fix rebase errors (OPT_P_NCP sneaked in, but is not introduced till 4/5,
+       and tls_peer_info_ncp_ver() is not needed until 5/5).
+     * Don't remove comment about key_id increment behaviour in init.c (but
+       still add the extra comments in the .h files).
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1467149635-9726-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/12007
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 7f74c27e105a365d278181d00708c55a299398a0
+Author: Selva Nair <selva.nair@gmail.com>
+Date:   Sun Jun 5 17:41:23 2016 -0400
+
+    Add an option to filter options received from server
+    
+    v2 changes:
+     - Add the flag "ignore" and have "reject" trigger a restart.
+     - Unlimited number of filters: yes, going against the consensus,
+       but the code looks simpler and cleaner this way.
+     - New commit message to reflect the changes.
+    
+    Usage: --pull-filter accept|ignore|reject "option"
+    
+    Permit a client to selectively accept, ignore or reject options
+    pushed by the server. May be used multiple times. The filters
+    are applied in the order specified to each pushed option received.
+    The filtering stops as soon as a match is found. The action "ignore"
+    removes the option and continues processing the next option, while
+    "reject" flags an error and restarts the connection with SIGUSR1.
+    
+    Prefix matching is used so that all options starting with the
+    specified "option" string are filtered.
+    
+    Example:
+    
+      pull-filter accept "route 192.168."
+      pull-filter ignore "route "
+      pull-filter accept "ifconfig 10.9.0."
+      pull-filter reject "ifconfig "
+    
+    will ignore all pushed routes except those starting with "192.168."
+    and reject the assigned ip unless its in the "10.9.0.0/24"
+    range. A match of the reject filter will trigger a restart. SIGUSR1
+    restart is used instead of SIGHUP so as to try the next remote
+    for reconnection.
+    
+    Note the space at the end of "route " to not reject "route-gateway",
+    for example. All options not matched by any filter are accepted.
+    
+    Acknowledges shameless imitation of --push-remove.
+    Inspired by Trac #682.
+    
+    Signed-off-by: Selva Nair <selva.nair@gmail.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1465162884-32520-1-git-send-email-selva.nair@gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11808
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 007738e9d6030c8989713543e4f7308ff57be30f
+Author: James Yonan <james@openvpn.net>
+Date:   Thu Mar 3 00:48:12 2016 -0700
+
+    Fixed port-share bug with DoS potential
+    
+    Fixed port-share bug that can cause segfault when the number
+    of concurrent connections is large.
+    
+    The issue is that the port-share code calls openvpn_connect()
+    which in turn calls select().  When there are a high number
+    of concurrent port-share connections, the fd passed to select
+    can potentially exceed FD_SETSIZE, causing undefined behavior.
+    
+    The fix is to use poll() (if available) instead of select().
+    
+    Signed-off-by: James Yonan <james@openvpn.net>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <CAA1Abx+2E2FZN-y6P=mkKpSuZ7bOV5m6rUMTx3V7UP2qPMjZPg@mail.gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11626
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 86d8cd6860dfc74cb1a040ff8fe03140ebe7f930
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Apr 17 20:35:42 2016 +0200
+
+    Migrate to mbed TLS 2.x
+    
+    PolarSSL / mbed TLS 1.3 is going end-of-life by 2016-12-31, so let's move
+    the master branch on to the 2.x series.
+    
+    This patch purges all references to polarssl, except for file names and
+    some comments referring to 1.2 and earlier, which were never released as
+    'mbed TLS'.  A separate patch for the file names follows, so the real
+    changes are easier to spot without git-fu.
+    
+    This patch intends to not change any behaviour.
+    
+    The vast majority of this patch is just renaming functions and structs.
+    There are some small changes in the implementation:
+     * In ssl_polarssl.c: the debug callback prototype changed, so our
+       implementation changed a bit too.
+     * in ssl_polarssl.c: the old polarssl ssl_context is now split into a
+       mbedtls_ssl_config and mbedtls_ssl_context.  The intention is that
+       mbedtls_ssl_config is shared among connections, and mbedtls_ssl_context
+       contains the per-connection state.  That doesn't work for us, because
+       we use per-connection verify callback data, while the verify callback
+       is registered on mbed_tls_config.  Therefore we still need to init a
+       mbed_tls_config struct for each connection.
+     * in ssl_polarssl.c: the mbed bio handling changed, so our
+       implementation changed a bit too.
+     * in ssl_polarssl.c and ssl_verify_polarssl.c: the mbedtls x509 parse
+       functions now fail if we don't provide a NUL-terminated string, so use
+       strlen()+1 as the length argument to include the terminating NUL.
+    
+    I tested this patch to work with:
+     * 'make check' (with 2.0.0 and 2.2.1, other tests just with 2.2.1)
+     * static key mode
+     * TLS mode with PEM key file
+     * TLS mode with password protected PEM key file
+     * TLS mode with management-external-key
+     * TLS mode with PKCS#11
+     * TLS mode with inline ca/key/cert/dh
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1460918143-408-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11458
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit dd2fbc26eb7b32325793ae3f7d215f46e881e68c
+Author: Steffan Karger <steffan@karger.me>
+Date:   Mon Apr 4 21:59:38 2016 +0200
+
+    PolarSSL x509_get_sha1_hash now returns correct SHA1 fingerprint.
+    
+    509_get_sha1_hash() is supposed to return the certificate fingerprint,
+    which is the hash of the entire certificate - including the signature -
+    and not just the 'to be signed' data (cert->tbs in polarssl).
+    
+    This changes externally visible behavior for polarssl builds: it will
+    change the value of the tls_digest_N values exported to the environment
+    for scripts.
+    
+    v2 Steffan Karger: added commit message and Changes.rst entry.
+                       Code unchanged from v1 by James.
+    
+    Signed-off-by: James Yonan <james@openvpn.net>
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <CAA1AbxL=QYUy6N+jKgxVVuftmF=75mSEz3rYUbisT245UfB5Dg@mail.gmail.com>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/11396
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit b33e1355765bbf83f4c8b744c442c7d98df808fa
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Tue Nov 10 22:17:03 2015 +0100
+
+    Fix FreeBSD-specific mishandling of gc arena pointer in create_arbitrary_remote()
+    
+    ... and while at it, fix warning about losing "const" qualifier on
+    return.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Steffan Karger <steffan.karger@fox-it.com>
+    Message-Id: <1447190223-8065-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/10478
+
+commit fc91d4b0071178e298052078431fb86f03be84fc
+Author: Steffan Karger <steffan@karger.me>
+Date:   Tue Jun 30 21:44:56 2015 +0200
+
+    Increase control channel packet size for faster handshakes
+    
+    Instead of limiting the control channel TCP/UDP packet payload size at
+    '100 bytes + real control channel overhead' (~140 bytes ethernet payload),
+    increase the max TCP/UDP payload size to '1250 bytes - calculated overhead'
+    (~1210 bytes ethernet payload).
+    
+    Note that this patch does *not* yield an optimal solution, but it is a
+    simple and rather safe change that will improve connection setup times
+    significantly.
+    
+    v2: use the mininum value of --link-mtu and 1250 to give the user a way to
+        reduce control packet size if really needed.
+    
+    trac #545
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1435693496-10931-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9841
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit c3e1809f540db16c23fc74f06d6e8c29a4a6941a
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sat Oct 25 20:49:26 2014 +0200
+
+    openssl: add more descriptive message for 'no shared cipher' error
+    
+    Overzealous users using the --tls-cipher option, or users with actual
+    incompatible crypto libaries often waste quite some time debugging the
+    'no shared cipher' error from openssl. See e.g. trac ticket #359:
+    https://community.openvpn.net/openvpn/ticket/359
+    
+    This change adds a more clear, verb 1 error message reporting the problem
+    directly to the user, instead of just printing the openssl error.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <544EB12E.40200@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9209
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 245831b9bb096c9139b28612f13609606f105cd5
+Author: Samuli Seppänen <samuli@openvpn.net>
+Date:   Fri Nov 21 12:09:45 2014 +0200
+
+    Fix to --shaper documentation on the man-page
+    
+    Trac: #413
+    Trac-URL: https://community.openvpn.net/openvpn/ticket/413
+    Signed-off-by: Samuli Seppänen <samuli@openvpn.net>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1416564585-14546-1-git-send-email-samuli@openvpn.net>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9254
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit d4309c21d9cde43c777985e373242afa78afefa1
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Apr 27 09:55:48 2014 +0200
+
+    Change signedness of hash in x509_get_sha1_hash(), fixes compiler warning.
+    
+    hash was cast from char * to unsigned char * at the return of the function.
+    This patch removes the implicit cast by declaring hash as unsigned char * .
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1398585348-7969-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8647
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit f1da227574c6b2e3a75a38ac6f9a196be0ad3071
+Author: Arne Schwabe <arne@rfc2549.org>
+Date:   Fri Mar 21 14:18:44 2014 +0100
+
+    Fix assert when using port-share
+    
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1395407925-25518-12-git-send-email-arne@rfc2549.org>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8369
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 860d4d06cd66ed1fcbaea41c239962ab9316832d
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Jan 12 20:39:32 2014 +0100
+
+    Fix compiler warnings in ssl_polarssl.c
+    
+    * Made some type casts explicit.
+    * Changed type of sha256_hash to unsigned char[], because polar expects
+    that.
+    * Added missing error.h include.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1389555572-6210-4-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/8225
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 8c431f960357d776cfd0961192214ad1b0942bfb
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Thu May 30 13:31:24 2013 +0200
+
+    Fix problem with UDP tunneling due to mishandled pktinfo structures.
+    
+    In link_socket_write_udp_posix_sendmsg(), pktinfo structures for ipv4 and
+    ipv6 are going out of scope before actually calling sendmsg(), so depending
+    on compiler optimization, garbage is passed to sendmsg() - fix by using
+    "union openvpn_pktinfo" and having that in scope all the time.
+    
+    Problem reported and patch provided by "danta" in trac#297
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    URL: https://community.openvpn.net/openvpn/ticket/297
+    Message-ID: <20130530184427.GP20843@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7629
+
+commit a8be73799be163909a3b212656dedf03494f0792
+Author: Gert Doering <gert@greenie.muc.de>
+Date:   Sun May 5 14:36:13 2013 +0200
+
+    Make push-peer-info visible in "normal" per-instance environment.
+    
+    Without this patch, peer-info pushed by clients in the TLS handshake
+    is only visible on the management interface, and only if
+    --management-client-auth is enabled.
+    
+    With this patch, received records are sanitized and put into the normal
+    "multi instance" environment, where it can be evaluated by --client-connect
+    or --auth-user-pass-verify scripts and plugins, etc.  Only records matching
+    a fairly strict "name=value" format are accepted, and only names starting
+    with IV_ or UV_ are exported, to avoid clients sending funny stuff and
+    playing havoc with script/plugin environments on the server.  In the
+    "value" part, spaces, non-printable characters and shell metacharacters
+    are replaced by '_'.
+    
+    The change is somewhat invasive as reception of the peer_info string was
+    only done when username+password are expected from the client, but the
+    data is always there (if the client sends no username/password, it will
+    send 0-length strings, so always extracting 3 strings is safe).  Also,
+    the sanitation function validate_peer_info_line() and the opts->peer_info
+    field were only compiled in #ifdef MANGEMENT_DEF_AUTH...
+    
+    Patch v3: do not call the old man_output_peer_info_env() anymore, unless
+    a management env-filter has been set (= ensure IV_ and UV_ stuff is sent
+    at most *once*, and exactly the way OpenVPN AS expects it).  Add
+    substituting of "bad" characters in the environment values.
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1367757373-31637-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7582
+
+commit 598e03f0e7bce434e501a9895819f2af0714d5f6
+Author: James Yonan <james@openvpn.net>
+Date:   Mon May 20 12:13:21 2013 +0200
+
+    Always push basic set of peer info values to server.
+    
+    On the client, allow certain peer info fields to be pushed even if
+    push-peer-info isn't specified in the config.
+    
+    This is needed to allow the compression handshake to work correctly
+    (i.e. where the client indicates its support for LZO and/or Snappy).
+    
+    Fields that have privacy implications such as Mac Address and UV_*
+    environment variables will not be pushed to the server as before unless
+    push-peer-info is specified by client config.
+    
+    v1: equivalent to OpenVPN SVN r8225 (2.1.21c)
+    
+    v2: distinguish 3 levels of peer-info detail
+    
+      --push-peer-info specified --> send all we have
+      --pull           specified --> send basic set, as per r8225
+      default                    --> send nothing (do not leak from server)
+    
+    v3: undo extra whitespace changes in v1 and v2
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1369044801-7594-1-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7604
+
+commit 38d96bd7975e626d490b3d9f9514d81e070a5495
+Author: James Yonan <james@openvpn.net>
+Date:   Tue Sep 18 08:33:34 2012 +0200
+
+    Added support for the Snappy compression algorithm
+    
+    Added support for the Snappy compression algorithm which has shown to
+    have considerably better compression speed than LZO at a comparable
+    compression ratio.
+    
+    To enable Snappy add:
+    
+      compress snappy
+    
+    to both client and server config files.
+    
+    Alternatively, enable compression framing on the client:
+    
+      compress
+    
+    and have the server selectively push "compress snappy" to the client.
+    
+    This change also extends the client capability handshake to include
+    IV_SNAPPY so the server can be aware that a connecting client supports
+    Snappy.
+    
+    Note that the Snappy implementation also includes an improved framing
+    approach where the first byte of the compressed payload is replaced by
+    the compression control byte (the first payload byte is moved to the end
+    of the packet).  This solves off-by-one alignment issues, which improves
+    performance on ARM.
+    
+    By default, the configure script will try to build with Snappy support.
+    To disable, use the --disable-snappy option.
+    
+    The --enable-lzo-stub configure directive is now --enable-comp-stub
+    (because it's not actually "lzo" but "compression-enabled packet framing")
+    
+    Add compression overhead to extra buffer unconditionally, as long
+    as USE_COMP is defined.
+    
+    OpenVPN SVN r8206 (2.1.21a) and r8212 (2.1.21b)
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1366393268-27392-3-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7531
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+For keyword lzo:
+commit 5d5233778868ddd568140c394adfcfc8e3453245
+Author: Steffan Karger <steffan@karger.me>
+Date:   Sun Feb 15 15:24:26 2015 +0100
+
+    Disable SSL compression
+    
+    As reported in trac #502, SSL compression can cause problems in some corner
+    cases.  OpenVPN does not need SSL compression, since the control channel is
+    low bandwidth.  This does not influence the data channel compressen (i.e.
+    --comp or --comp-lzo).
+    
+    Even though this has not yet been relevant for OpenVPN (since an attacker
+    can not easily control contents of control channel messages), SSL
+    compression has been used in the CRIME and BREACH attacks on TLS.  TLS 1.3
+    will probably even remove support for compression all together, for
+    exactly this reason.
+    
+    Since we don't need it, and SSL compression causes issues, let's just
+    disable it in OpenSSL builds.  PolarSSL has no run-time flag to disable
+    compression, but is by default compiled without compression.
+    
+    Signed-off-by: Steffan Karger <steffan@karger.me>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Acked-by: Gert Doering <gert@greenie.muc.de>
+    Message-Id: <1424010266-5910-1-git-send-email-steffan@karger.me>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/9453
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+
+commit 38d96bd7975e626d490b3d9f9514d81e070a5495
+Author: James Yonan <james@openvpn.net>
+Date:   Tue Sep 18 08:33:34 2012 +0200
+
+    Added support for the Snappy compression algorithm
+    
+    Added support for the Snappy compression algorithm which has shown to
+    have considerably better compression speed than LZO at a comparable
+    compression ratio.
+    
+    To enable Snappy add:
+    
+      compress snappy
+    
+    to both client and server config files.
+    
+    Alternatively, enable compression framing on the client:
+    
+      compress
+    
+    and have the server selectively push "compress snappy" to the client.
+    
+    This change also extends the client capability handshake to include
+    IV_SNAPPY so the server can be aware that a connecting client supports
+    Snappy.
+    
+    Note that the Snappy implementation also includes an improved framing
+    approach where the first byte of the compressed payload is replaced by
+    the compression control byte (the first payload byte is moved to the end
+    of the packet).  This solves off-by-one alignment issues, which improves
+    performance on ARM.
+    
+    By default, the configure script will try to build with Snappy support.
+    To disable, use the --disable-snappy option.
+    
+    The --enable-lzo-stub configure directive is now --enable-comp-stub
+    (because it's not actually "lzo" but "compression-enabled packet framing")
+    
+    Add compression overhead to extra buffer unconditionally, as long
+    as USE_COMP is defined.
+    
+    OpenVPN SVN r8206 (2.1.21a) and r8212 (2.1.21b)
+    
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>
+    Acked-by: Arne Schwabe <arne@rfc2549.org>
+    Message-Id: <1366393268-27392-3-git-send-email-gert@greenie.muc.de>
+    URL: http://article.gmane.org/gmane.network.openvpn.devel/7531
+    Signed-off-by: Gert Doering <gert@greenie.muc.de>

@@ -1,0 +1,2674 @@
+Searching between z3-4.8.8 and z3-4.8.9
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: LRA,proof,UFLRA,model_validate
+Keywords: slow fast time perf optim regression speed LRA proof UFLRA model_validate
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit 363b416473519fc5c7b51e9492c6b1ebe8b912a8[m
+Merge: 9729db16a 1233cb462
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Aug 14 04:12:52 2020 -0700
+
+    pp support for regex expressions in more-or-less standard syntax (#4638)
+    
+    * pp support for regex expressions is more-or-less standard syntax
+    
+    * Regex solver updates (#4636)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a [1;31mtime[m
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * typo noticed by Nikolaj
+    
+    * move state graph to util/state_graph
+    
+    * re-add accidentally removed line
+    
+    * clean up seq_regex code removing obsolete functions and comments
+    
+    * a few more cleanup items
+    
+    * oops, missed merge change to fix compilation
+    
+    * disabled change to lift unions to the top level and treat them seperately in seq_regex solver
+    
+    * added get_overapprox_regex to over-approximate regex membership constraints
+    
+    * replace calls to is_epsilon with a centrally available method in seq_decl_plugin
+    
+    * simplifications and modifications in get_overapprox_regex and related
+    
+    * added approximation support for sequence expressions that use ite
+    
+    * removed is_app check that was redundant
+    
+    * tweak differences with upstream
+    
+    * rewrite derivative leaves
+    
+    * enable Antimorov-style derivatives via lifting unions in the solver
+    
+    * TODO placeholders for outputting state graph
+    
+    * change order in seq_regex propagate_in_re
+    
+    * implement a more restricted form of Antimorov derivatives via a special op code to indicate lifting unions
+    
+    * minor
+    
+    * new Antimorov optimizations based on BDD compatibility checking
+    
+    * seq regex tracing for # of derivatives
+    
+    * fix get_cofactors (currently this fix is buggy)
+    
+    * partially revert get_cofactors buggy change
+    
+    * re-implement get_cofactors to more efficiently explore nodes in the derivative expression
+    
+    * dgml generation for state graph
+    
+    * fix release build
+    
+    * improved dgml output
+    
+    * bug fixes in dgml generation
+    
+    * dot output support for state_graph and moved dgml and dot output under CASSERT
+    
+    * updated tracing of what regex corresponds to what state id with /tr:state_graph
+    
+    * clean up & document Antimorov derivative support
+    
+    * remove op cache tracing
+    
+    * remove re_rank experimental idea
+    
+    * small fix
+    
+    * fix Antimorov derivative (important change for the good performance)
+    
+    * remove unused and unnecessary code
+    
+    * implemented simpler efficient get_cofactors alternative mk_deriv_accept
+    
+    * simplifications in propagate_accept, and trace unusual cases
+    
+    * document the various seq_regex tracing & debugging command-line options
+    
+    * fix debug build (broken tracing)
+    
+    * guard eager Antimorov lifting for possible disabling
+    
+    * fix bug in propagate_accept Rule 1
+    
+    * disable eager version of Antimorov lifting for performance reasons
+    
+    * remove some remaining obsolete comments
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Margus Veanes <margus@microsoft.com>
+    
+    * typo
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * took care of comments for related PR
+    
+    * #4637
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * build
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * further PR comment fixes
+    
+    * updated detection of when parenthesis can be omitted to cover empty and epsilon
+    
+    * always reduce macro expansions in model evaluation #4588
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fixed bug in seq_unit
+    
+    * pp support for regex expressions is more-or-less standard syntax
+    
+    * took care of comments for related PR
+    
+    * further PR comment fixes
+    
+    * updated detection of when parenthesis can be omitted to cover empty and epsilon
+    
+    * fixed bug in seq_unit
+    
+    Co-authored-by: Caleb Stanford <caleb.pirsquared@gmail.com>
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2c02264a94d2377ebf5f64162813b7e379446619[m
+Author: Caleb Stanford <caleb.pirsquared@gmail.com>
+Date:   Thu Aug 13 15:47:36 2020 -0400
+
+    Regex solver updates (#4636)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a [1;31mtime[m
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * typo noticed by Nikolaj
+    
+    * move state graph to util/state_graph
+    
+    * re-add accidentally removed line
+    
+    * clean up seq_regex code removing obsolete functions and comments
+    
+    * a few more cleanup items
+    
+    * oops, missed merge change to fix compilation
+    
+    * disabled change to lift unions to the top level and treat them seperately in seq_regex solver
+    
+    * added get_overapprox_regex to over-approximate regex membership constraints
+    
+    * replace calls to is_epsilon with a centrally available method in seq_decl_plugin
+    
+    * simplifications and modifications in get_overapprox_regex and related
+    
+    * added approximation support for sequence expressions that use ite
+    
+    * removed is_app check that was redundant
+    
+    * tweak differences with upstream
+    
+    * rewrite derivative leaves
+    
+    * enable Antimorov-style derivatives via lifting unions in the solver
+    
+    * TODO placeholders for outputting state graph
+    
+    * change order in seq_regex propagate_in_re
+    
+    * implement a more restricted form of Antimorov derivatives via a special op code to indicate lifting unions
+    
+    * minor
+    
+    * new Antimorov optimizations based on BDD compatibility checking
+    
+    * seq regex tracing for # of derivatives
+    
+    * fix get_cofactors (currently this fix is buggy)
+    
+    * partially revert get_cofactors buggy change
+    
+    * re-implement get_cofactors to more efficiently explore nodes in the derivative expression
+    
+    * dgml generation for state graph
+    
+    * fix release build
+    
+    * improved dgml output
+    
+    * bug fixes in dgml generation
+    
+    * dot output support for state_graph and moved dgml and dot output under CASSERT
+    
+    * updated tracing of what regex corresponds to what state id with /tr:state_graph
+    
+    * clean up & document Antimorov derivative support
+    
+    * remove op cache tracing
+    
+    * remove re_rank experimental idea
+    
+    * small fix
+    
+    * fix Antimorov derivative (important change for the good performance)
+    
+    * remove unused and unnecessary code
+    
+    * implemented simpler efficient get_cofactors alternative mk_deriv_accept
+    
+    * simplifications in propagate_accept, and trace unusual cases
+    
+    * document the various seq_regex tracing & debugging command-line options
+    
+    * fix debug build (broken tracing)
+    
+    * guard eager Antimorov lifting for possible disabling
+    
+    * fix bug in propagate_accept Rule 1
+    
+    * disable eager version of Antimorov lifting for performance reasons
+    
+    * remove some remaining obsolete comments
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Margus Veanes <margus@microsoft.com>
+
+[33mcommit 976e4c91b0f151483e3cf047e294fb5e58ef7580[m
+Author: Caleb Stanford <caleb.pirsquared@gmail.com>
+Date:   Thu Jul 30 16:54:49 2020 -0400
+
+    Integrate new regex solver (#4602)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a [1;31mtime[m
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * typo noticed by Nikolaj
+    
+    * move state graph to util/state_graph
+    
+    * re-add accidentally removed line
+    
+    * clean up seq_regex code removing obsolete functions and comments
+    
+    * a few more cleanup items
+    
+    * remove experimental functionality for integration
+    
+    * fix compilation
+    
+    * remove some tracing and TODOs
+    
+    * remove old comment
+    
+    * update copyright dates to 2020
+    
+    * feedback from Nikolaj
+    
+    * use [] for map access
+    
+    * make state_graph methods constant
+    
+    * avoid recursion in mark_dead_recursive and mark_live_recursive
+    
+    * a possible bug fix in propagate_nonempty
+    
+    * write down list of invariants in state_graph
+    
+    * implement partial invariant check and insert CASSERT statements
+    
+    * expand on invariant check and tracing
+    
+    * finish state graph invariant check
+    
+    * minor tweaks
+    
+    * regex propagation: convert first two axioms to propagations
+    
+    * remove obsolete regex solver functionality
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+
+[33mcommit 5664b570a33785f8b3b87d7646a06f274d4c319e[m
+Author: Caleb Stanford <caleb.pirsquared@gmail.com>
+Date:   Mon Jul 27 22:08:45 2020 -0400
+
+    Seq rewriter integration (#4599)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a [1;31mtime[m
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * remove cache hit/miss counts tracing
+    
+    * remove changes not in the rewriter
+    
+    * remove cache hit/miss count tracing
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+
+[33mcommit e90f01006c176b981f9c77f8cb00f9f278e895d1[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jul 27 18:08:51 2020 -0700
+
+    Seq rewriter integration (#4597)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a [1;31mtime[m
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * remove cache hit/miss counts tracing
+    
+    * remove changes not in the rewriter
+    
+    * remove cache hit/miss count tracing
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Caleb Stanford <caleb.pirsquared@gmail.com>
+
+[33mcommit b1824fea1042e37f701bf9f778ce060ff9019234[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Jul 21 12:53:46 2020 -0700
+
+    fix life[1;31mtime[ms for crashes in #4525
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 55cd1e996cee2271b0ff7deed8059de7764d7e88[m
+Author: Jack Yao <995204576@qq.com>
+Date:   Sat Jun 13 07:45:50 2020 +0800
+
+    add sat option for doing a global simplification before the bounded search and the main CDCL search loop. The option is also used for the sat-preprocess tacitc (#4514)
+    
+    Co-authored-by: rainof[1;31mtime[m <rainof[1;31mtime[m@gmail.com>
+
+[33mcommit 24a9ca3226b46d2739da1c668ca04d7399319ec2[m
+Author: Ivan Gotovchits <ivg@ieee.org>
+Date:   Wed May 27 12:21:14 2020 -0400
+
+    fixes numerous issues in OCaml bindings building process (#4468)
+    
+    It now works both in dynamic and static mode and the compiled
+    libraries can be used by all linkers in the OCaml system, without
+    any specificy instructions other than specifying the dependency on
+    the z3 library.
+    
+    Using the libraries
+    ===================
+    
+    Compiling binaries
+    ------------------
+    
+    The libraries can be linked statically with both ocamlc and ocamlopt
+    compilers, e.g.,
+    
+    ```
+    ocamlfind ocamlc -thread -package z3 -linkpkg run.ml -o run
+    ```
+    or
+    ```
+    ocamlfind ocamlopt -thread -package z3 -linkpkg run.ml -o run
+    ```
+    
+    When bindings compiled with the `--staticlib` the produced binary will
+    not have any dependencies on z3
+    ```
+    $ ldd ./run
+            linux-vdso.so.1 (0x00007fff9c9ed000)
+            libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fb56f09c000)
+            libgmp.so.10 => /usr/lib/x86_64-linux-gnu/libgmp.so.10 (0x00007fb56ee1b000)
+            libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fb56ebfc000)
+            libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fb56e85e000)
+            libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fb56e65a000)
+            libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fb56e442000)
+            libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fb56e051000)
+            /lib64/ld-linux-x86-64.so.2 (0x00007fb570de9000)
+    ```
+    
+    The bytecode version will have a depedency on z3 and other external
+    libraries (packed as dlls and usually installed in opam switch):
+    ```
+    $ ocamlobjinfo run | grep 'Used DLL' -A5
+    Used DLLs:
+            dllz3ml
+            dllzarith
+            dllthreads
+            dllunix
+    ```
+    
+    But it is possible to compile a portable self-contained version of the
+    bytecode executable using the `-custom` switch:
+    
+    ```
+    ocamlfind ocamlc -custom -thread -package z3 -linkpkg run.ml -o run
+    ```
+    
+    The build binary is now quite large but doesn't have any external
+    dependencies (modulo the system dependencies):
+    ```
+    $ du -h run
+    27M     run
+    $ ocamlobjinfo run | grep 'Used DLL' | wc -l
+    0
+    $ ldd run
+            linux-vdso.so.1 (0x00007ffee42c2000)
+            libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fdbdc415000)
+            libgmp.so.10 => /usr/lib/x86_64-linux-gnu/libgmp.so.10 (0x00007fdbdc194000)
+            libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fdbdbf75000)
+            libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fdbdbbd7000)
+            libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fdbdb9d3000)
+            libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fdbdb7bb000)
+            libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fdbdb3ca000)
+            /lib64/ld-linux-x86-64.so.2 (0x00007fdbde026000)
+    ```
+    
+    Loading in toplevel
+    -------------------
+    
+    It is also possible to use the built libraries in toplevel and use
+    them in ocaml scripts, e.g.,
+    ```
+    $ ocaml
+            OCaml version 4.09.0
+    
+     # #use "topfind";;
+     - : unit = ()
+     Findlib has been successfully loaded. Additional directives:
+      #require "package";;      to load a package
+      #list;;                   to list the available packages
+      #camlp4o;;                to load camlp4 (standard syntax)
+      #camlp4r;;                to load camlp4 (revised syntax)
+      #predicates "p,q,...";;   to set these predicates
+      Topfind.reset();;         to force that packages will be reloaded
+      #thread;;                 to enable threads
+    
+    - : unit = ()
+     # #require "z3";;
+     /home/ivg/.opam/4.09.0/lib/zarith: added to search path
+     /home/ivg/.opam/4.09.0/lib/zarith/zarith.cma: loaded
+     /home/ivg/.opam/4.09.0/lib/z3: added to search path
+     /home/ivg/.opam/4.09.0/lib/z3/z3ml.cma: loaded
+     #
+    ```
+    
+    To use z3 in a script mode add the following preamble to a file with
+    OCaml code:
+    ```
+      #!/usr/bin/env ocaml
+      #use "topfind";;
+      #require "z3";;
+    
+      (* your OCaml code *)
+    ```
+    
+    Then it is possible to run it as `./script` (provided that the code is
+    in a file named `script` and permissions are set with `chmod a+x
+    script`).
+    
+    Of course, such scripts will depend on ocaml installation that shall
+    have z3 dependencies installed.
+    
+    Using Dynlink
+    -------------
+    
+    The built z3ml.cmxs file is a self-contained shared library that
+    doesn't have any depndencies on z3 (the z3 code is included in it) and
+    could be loaded with `Dynlink.loadfile` in run[1;31mtime[m.
+    
+    Installation
+    ============
+    
+    I did not touch the installation part in this PR, as I was using opam
+    and installed artifacts as simple as:
+    ```
+    ocamlfind install z3 build/api/ml/* build/libz3-static.a
+    ```
+    
+    assuming that the following configuration and building process
+    ```
+    python2.7 scripts/mk_make.py --ml --staticlib
+    make -C build
+    ```
+    
+    Though the default installation script in the make file shall work.
+    
+    Dynamic Library mode
+    ====================
+    
+    The dynamic library mode is also supported provided that libz3.so is
+    installed in a search path of the dynamic loader (or the location is
+    added via the LD_LIBRARY_PATH) or stored in rpaths of the built
+    binary.
+    
+    Build Artifacts
+    ===============
+    
+    In the static mode (--staticlib), the following files are built and
+    installed:
+    
+    - `{z3,z3enums,z3native}.{cmi,cmo,cmx,o,mli}`: the three compilation
+    units (modules) that comprise Z3 bindings. The `*.mli` files are not
+    necessary but are installed for the user convenience and documentation
+    purposes. The *.cmi files enables access to the unit
+    definitions. Finally, `*.cmo` contain the bytecode and `*.cmx, *.o`
+    contain the native code. Files with the code are necessary for cross-module
+    optimization but are not strictly needed as the code is also
+    duplicated in the libraries.
+    
+    - libz3-static.a (OR libz3.so if built not in the staticlib mode)
+    contains the machine code of the Z3 library;
+    
+    - z3ml.{a,cma,cmxa,cmxs} - the OCaml code for the bindings. File
+    z3ml.a and z3ml.cmxa are static libraries with OCaml native code,
+    which will be included in the final binary when ocamlopt is used. The
+    z3 library code itself is not included in those three artifacts, but
+    the instructions where to find it are. The same is truce for `z3ml.a`
+    which includes the bytecode of the bindings as well as instructions
+    how to link the final product. Finally, `z3ml.cmxs` is a standalone
+    shared library that could be loaded in run[1;31mtime[m use
+    `Dynlink.loadfile` (which used dlopen on posix machines underneath the
+    hood).
+    
+    - libz3ml.a is the archived machine code for `z3native_stubs.c`, which
+    is made by ocamlmklib: `ar rcs api/ml/libz3ml.a
+    api/ml/z3native_stubs.o` it is needed to build statically linked
+    binaries and libraries that use z3 bindings.
+    
+    - dllz3ml.so is the shared object that contains `z3native_stubs.o` as
+    well as correct ldd entries for C++ and Z3 libraries to enable proper
+    static and dynamic linking. The file is built with ocamlmklib on posix
+    systems as
+    ```
+    gcc -shared -o api/ml/dllz3ml.so api/ml/z3native_stubs.o -L. -lz3-static -lstdc++
+    ```
+    
+    It is used by `ocaml`, `ocamlrun`, and `ocamlc` to link z3 and c++
+    code into the OCaml run[1;31mtime[m and enables usage of z3 bindings in
+    non-custom run[1;31mtime[ms (default run[1;31mtime[ms).
+    
+    The `dllz3ml.so` is usually installed in the stubs library in opam
+    installation (`$(opam config var lib)/stublibs`), it is done
+    automatically by `ocamlfind` so no special treatment is needed.
+    
+    Technical Details
+    =================
+    
+    The patch itself is rather small. First of all, we have to use
+    `-l<lib>` instead of `-cclib -l<lib>` in ocamlmklib since the latter
+    will pass the options only to the ocaml{c,opt} linker and will not
+    use the passed libraries when shared and non-shared versions of the
+    bindings are built (libz3ml.a and dllz3ml.so). They were both missing
+    either z3 code itself and ldd entries for stdc++ (and z3 if built not
+    in --staticlib mode).
+    
+    Having stdc++ entry streamlines the compilation process and makes
+    dynamic loading more resistant to the inclusion order.
+    
+    Finally, we had to add `-L.` to make sure that the built artifacts are
+    correctly found by gcc.
+    
+    I specifically left the cygwin part of the code intact as I have no
+    idea what the original author meant by this, neither do I use or
+    tested this patch in the cygwin or mingw environemt. I think that this
+    code is rather outdated and shouldn't really work. E.g., in the
+    --staticlib mode adding z3linkdep (which is libz3-static.a) as an
+    argument to `ocamlmklib` will yield the following broken archive
+    ```
+    ar rcs api/ml/libz3ml.a libz3-static.a api/ml/z3native_stubs.o
+    ```
+    and it is not allowed (or supported) to have .a in archives (though it
+    doesn't really hurt as most of the systems will just ignore it).
+    
+    But otherwise, cygwin, mingw shall behave as they did (the only change
+    that affects them is `-L.` which I believe should be benign).
+
+[33mcommit 94ffd63b517c6852ddd23b20b3a46262d52ccbfd[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue May 26 21:25:53 2020 -0700
+
+    change to iterative unfolding left build broken for some [1;31mtime[m
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8b4929ccda8627cde702dd5973bd199a33babd39[m
+Merge: ccda9d56d 51beeec92
+Author: Murphy Berzish <mtrberzi@users.noreply.github.com>
+Date:   Fri May 15 20:41:51 2020 -0500
+
+    Merge pull request #4313 from mtrberzi/issue2111
+    
+    Z3str3: address crashes and [1;31mtime[mouts related to int.to.str
+For keyword perf:
+[33mcommit 363b416473519fc5c7b51e9492c6b1ebe8b912a8[m
+Merge: 9729db16a 1233cb462
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Aug 14 04:12:52 2020 -0700
+
+    pp support for regex expressions in more-or-less standard syntax (#4638)
+    
+    * pp support for regex expressions is more-or-less standard syntax
+    
+    * Regex solver updates (#4636)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a time
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * typo noticed by Nikolaj
+    
+    * move state graph to util/state_graph
+    
+    * re-add accidentally removed line
+    
+    * clean up seq_regex code removing obsolete functions and comments
+    
+    * a few more cleanup items
+    
+    * oops, missed merge change to fix compilation
+    
+    * disabled change to lift unions to the top level and treat them seperately in seq_regex solver
+    
+    * added get_overapprox_regex to over-approximate regex membership constraints
+    
+    * replace calls to is_epsilon with a centrally available method in seq_decl_plugin
+    
+    * simplifications and modifications in get_overapprox_regex and related
+    
+    * added approximation support for sequence expressions that use ite
+    
+    * removed is_app check that was redundant
+    
+    * tweak differences with upstream
+    
+    * rewrite derivative leaves
+    
+    * enable Antimorov-style derivatives via lifting unions in the solver
+    
+    * TODO placeholders for outputting state graph
+    
+    * change order in seq_regex propagate_in_re
+    
+    * implement a more restricted form of Antimorov derivatives via a special op code to indicate lifting unions
+    
+    * minor
+    
+    * new Antimorov optimizations based on BDD compatibility checking
+    
+    * seq regex tracing for # of derivatives
+    
+    * fix get_cofactors (currently this fix is buggy)
+    
+    * partially revert get_cofactors buggy change
+    
+    * re-implement get_cofactors to more efficiently explore nodes in the derivative expression
+    
+    * dgml generation for state graph
+    
+    * fix release build
+    
+    * improved dgml output
+    
+    * bug fixes in dgml generation
+    
+    * dot output support for state_graph and moved dgml and dot output under CASSERT
+    
+    * updated tracing of what regex corresponds to what state id with /tr:state_graph
+    
+    * clean up & document Antimorov derivative support
+    
+    * remove op cache tracing
+    
+    * remove re_rank experimental idea
+    
+    * small fix
+    
+    * fix Antimorov derivative (important change for the good [1;31mperf[mormance)
+    
+    * remove unused and unnecessary code
+    
+    * implemented simpler efficient get_cofactors alternative mk_deriv_accept
+    
+    * simplifications in propagate_accept, and trace unusual cases
+    
+    * document the various seq_regex tracing & debugging command-line options
+    
+    * fix debug build (broken tracing)
+    
+    * guard eager Antimorov lifting for possible disabling
+    
+    * fix bug in propagate_accept Rule 1
+    
+    * disable eager version of Antimorov lifting for [1;31mperf[mormance reasons
+    
+    * remove some remaining obsolete comments
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Margus Veanes <margus@microsoft.com>
+    
+    * typo
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * took care of comments for related PR
+    
+    * #4637
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * build
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * further PR comment fixes
+    
+    * updated detection of when parenthesis can be omitted to cover empty and epsilon
+    
+    * always reduce macro expansions in model evaluation #4588
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fixed bug in seq_unit
+    
+    * pp support for regex expressions is more-or-less standard syntax
+    
+    * took care of comments for related PR
+    
+    * further PR comment fixes
+    
+    * updated detection of when parenthesis can be omitted to cover empty and epsilon
+    
+    * fixed bug in seq_unit
+    
+    Co-authored-by: Caleb Stanford <caleb.pirsquared@gmail.com>
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2c02264a94d2377ebf5f64162813b7e379446619[m
+Author: Caleb Stanford <caleb.pirsquared@gmail.com>
+Date:   Thu Aug 13 15:47:36 2020 -0400
+
+    Regex solver updates (#4636)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a time
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * typo noticed by Nikolaj
+    
+    * move state graph to util/state_graph
+    
+    * re-add accidentally removed line
+    
+    * clean up seq_regex code removing obsolete functions and comments
+    
+    * a few more cleanup items
+    
+    * oops, missed merge change to fix compilation
+    
+    * disabled change to lift unions to the top level and treat them seperately in seq_regex solver
+    
+    * added get_overapprox_regex to over-approximate regex membership constraints
+    
+    * replace calls to is_epsilon with a centrally available method in seq_decl_plugin
+    
+    * simplifications and modifications in get_overapprox_regex and related
+    
+    * added approximation support for sequence expressions that use ite
+    
+    * removed is_app check that was redundant
+    
+    * tweak differences with upstream
+    
+    * rewrite derivative leaves
+    
+    * enable Antimorov-style derivatives via lifting unions in the solver
+    
+    * TODO placeholders for outputting state graph
+    
+    * change order in seq_regex propagate_in_re
+    
+    * implement a more restricted form of Antimorov derivatives via a special op code to indicate lifting unions
+    
+    * minor
+    
+    * new Antimorov optimizations based on BDD compatibility checking
+    
+    * seq regex tracing for # of derivatives
+    
+    * fix get_cofactors (currently this fix is buggy)
+    
+    * partially revert get_cofactors buggy change
+    
+    * re-implement get_cofactors to more efficiently explore nodes in the derivative expression
+    
+    * dgml generation for state graph
+    
+    * fix release build
+    
+    * improved dgml output
+    
+    * bug fixes in dgml generation
+    
+    * dot output support for state_graph and moved dgml and dot output under CASSERT
+    
+    * updated tracing of what regex corresponds to what state id with /tr:state_graph
+    
+    * clean up & document Antimorov derivative support
+    
+    * remove op cache tracing
+    
+    * remove re_rank experimental idea
+    
+    * small fix
+    
+    * fix Antimorov derivative (important change for the good [1;31mperf[mormance)
+    
+    * remove unused and unnecessary code
+    
+    * implemented simpler efficient get_cofactors alternative mk_deriv_accept
+    
+    * simplifications in propagate_accept, and trace unusual cases
+    
+    * document the various seq_regex tracing & debugging command-line options
+    
+    * fix debug build (broken tracing)
+    
+    * guard eager Antimorov lifting for possible disabling
+    
+    * fix bug in propagate_accept Rule 1
+    
+    * disable eager version of Antimorov lifting for [1;31mperf[mormance reasons
+    
+    * remove some remaining obsolete comments
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Margus Veanes <margus@microsoft.com>
+
+[33mcommit a51e40a6cd4f2f2897dbbbbac96ceda7fa07f0c1[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Aug 6 14:26:51 2020 -0700
+
+    gc [1;31mperf[m fix
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 8758baf24e07641e051a277ba5092c3ae2dd7455[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 22 14:51:58 2020 -0700
+
+    [1;31mperf[m and div/mod axioms #4532
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa[m
+Author: calebstanford-msr <65260146+calebstanford-msr@users.noreply.github.com>
+Date:   Tue Jun 9 14:36:31 2020 -0400
+
+    fix bug in seq rewriter op_cache::find (#4509)
+    
+    * remove unneeded reverse case in derivative; placeholder for generalized lifted derivative
+    
+    * experimental tweaks to RE rewriter to improve [1;31mperf[mormance
+    
+    * if-then-else lifting
+    (broken code -- preserving this commit in case this idea is useful later)
+    
+    * if-then-else derivative optimizations: new approach templates
+    
+    * implement if-then-else BDD normal form for derivatives
+    (code compiles but is still buggy)
+    
+    * remove std::cout debugging for PR
+    
+    * Revert "remove std::cout debugging for PR"
+    
+    This reverts commit c7bdc44d319ea02735c7d8f1076c01acb29ddc91.
+    
+    * debugging
+    
+    * fix derivative interaction with reverse; add flags for left/right derivative and lifting over union/intersection
+    
+    * remove debugging statements for PR
+    
+    * Revert "remove debugging statements for PR"
+    
+    This reverts commit 38e85a72881d46153bd8561e454599bdf851689f.
+    
+    * revert some purely cosmetic changes from upstream; fix a bug
+    
+    * revert unnecessary changes
+    
+    * remove some redundant rewrites and add a new one for str.in_re(s, comp(r))
+    
+    * add disabled rewrite for complement
+    
+    * fix bug in op cache find (result was not saved)
+    
+    * remove debugging std::cout for PR
+For keyword optim:
+[33mcommit 363b416473519fc5c7b51e9492c6b1ebe8b912a8[m
+Merge: 9729db16a 1233cb462
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Fri Aug 14 04:12:52 2020 -0700
+
+    pp support for regex expressions in more-or-less standard syntax (#4638)
+    
+    * pp support for regex expressions is more-or-less standard syntax
+    
+    * Regex solver updates (#4636)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a time
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * typo noticed by Nikolaj
+    
+    * move state graph to util/state_graph
+    
+    * re-add accidentally removed line
+    
+    * clean up seq_regex code removing obsolete functions and comments
+    
+    * a few more cleanup items
+    
+    * oops, missed merge change to fix compilation
+    
+    * disabled change to lift unions to the top level and treat them seperately in seq_regex solver
+    
+    * added get_overapprox_regex to over-approximate regex membership constraints
+    
+    * replace calls to is_epsilon with a centrally available method in seq_decl_plugin
+    
+    * simplifications and modifications in get_overapprox_regex and related
+    
+    * added approximation support for sequence expressions that use ite
+    
+    * removed is_app check that was redundant
+    
+    * tweak differences with upstream
+    
+    * rewrite derivative leaves
+    
+    * enable Antimorov-style derivatives via lifting unions in the solver
+    
+    * TODO placeholders for outputting state graph
+    
+    * change order in seq_regex propagate_in_re
+    
+    * implement a more restricted form of Antimorov derivatives via a special op code to indicate lifting unions
+    
+    * minor
+    
+    * new Antimorov [1;31moptim[mizations based on BDD compatibility checking
+    
+    * seq regex tracing for # of derivatives
+    
+    * fix get_cofactors (currently this fix is buggy)
+    
+    * partially revert get_cofactors buggy change
+    
+    * re-implement get_cofactors to more efficiently explore nodes in the derivative expression
+    
+    * dgml generation for state graph
+    
+    * fix release build
+    
+    * improved dgml output
+    
+    * bug fixes in dgml generation
+    
+    * dot output support for state_graph and moved dgml and dot output under CASSERT
+    
+    * updated tracing of what regex corresponds to what state id with /tr:state_graph
+    
+    * clean up & document Antimorov derivative support
+    
+    * remove op cache tracing
+    
+    * remove re_rank experimental idea
+    
+    * small fix
+    
+    * fix Antimorov derivative (important change for the good performance)
+    
+    * remove unused and unnecessary code
+    
+    * implemented simpler efficient get_cofactors alternative mk_deriv_accept
+    
+    * simplifications in propagate_accept, and trace unusual cases
+    
+    * document the various seq_regex tracing & debugging command-line options
+    
+    * fix debug build (broken tracing)
+    
+    * guard eager Antimorov lifting for possible disabling
+    
+    * fix bug in propagate_accept Rule 1
+    
+    * disable eager version of Antimorov lifting for performance reasons
+    
+    * remove some remaining obsolete comments
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Margus Veanes <margus@microsoft.com>
+    
+    * typo
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * took care of comments for related PR
+    
+    * #4637
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * build
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * further PR comment fixes
+    
+    * updated detection of when parenthesis can be omitted to cover empty and epsilon
+    
+    * always reduce macro expansions in model evaluation #4588
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fixed bug in seq_unit
+    
+    * pp support for regex expressions is more-or-less standard syntax
+    
+    * took care of comments for related PR
+    
+    * further PR comment fixes
+    
+    * updated detection of when parenthesis can be omitted to cover empty and epsilon
+    
+    * fixed bug in seq_unit
+    
+    Co-authored-by: Caleb Stanford <caleb.pirsquared@gmail.com>
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 2c02264a94d2377ebf5f64162813b7e379446619[m
+Author: Caleb Stanford <caleb.pirsquared@gmail.com>
+Date:   Thu Aug 13 15:47:36 2020 -0400
+
+    Regex solver updates (#4636)
+    
+    * std::cout debugging statements
+    
+    * comment out std::cout debugging as this is now a shared fork
+    
+    * convert std::cout to TRACE statements for seq_rewriter and seq_regex
+    
+    * add cases to min_length and max_length for regexes
+    
+    * bug fix
+    
+    * update min_length and max_length functions for REs
+    
+    * initial pass on simplifying derivative normal forms by eliminating redundant predicates locally
+    
+    * add seq_regex_brief trace statements
+    
+    * working on debugging ref count issue
+    
+    * fix ref count bug and convert trace statements to seq_regex_brief
+    
+    * add compact tracing for cache hits/misses
+    
+    * seq_regex fix cache hit/miss tracing and wrapper around is_nullable
+    
+    * minor
+    
+    * label and disable more experimental changes for testing
+    
+    * minor documentation / tracing
+    
+    * a few more @EXP annotations
+    
+    * dead state elimination skeleton code
+    
+    * progress on dead state elimination
+    
+    * more progress on dead state elimination
+    
+    * refactor dead state class to separate self-contained state_graph class
+    
+    * finish factoring state_graph to only work with unsigned values, and implement separate functionality for expr* logic
+    
+    * implement get_all_derivatives, add debug tracing
+    
+    * trace statements for debugging is_nullable loop bug
+    
+    * fix is_nullable loop bug
+    
+    * comment out local nullable change and mark experimental
+    
+    * pretty printing for state_graph
+    
+    * rewrite state graph to remove the fragile assumption that all edges from a state are added at a time
+    
+    * start of general cycle detection check + fix some comments
+    
+    * implement full cycle detection procedure
+    
+    * normalize derivative conditions to form 'ele <= a'
+    
+    * order derivative conditions by character code
+    
+    * fix confusing names m_to and m_from
+    
+    * assign increasing state IDs from 1 instead of using get_id on AST node
+    
+    * remove elim_condition call in get_dall_derivatives
+    
+    * use u_map instead of uint_map to avoid memory leak
+    
+    * remove unnecessary call to is_ground
+    
+    * debugging
+    
+    * small improvements to seq_regex_brief tracing
+    
+    * fix bug on evil2 example
+    
+    * save work
+    
+    * new propagate code
+    
+    * work in progress on using same seq sort for deriv calls
+    
+    * avoid re-computing derivatives: use same head var for every derivative call
+    
+    * use min_length on regexes to prune search
+    
+    * simple implementation of can_be_in_cycle using rank function idea
+    
+    * add a disabled experimental change
+    
+    * minor cleanup comments, etc.
+    
+    * seq_rewriter cleanup for PR
+    
+    * typo noticed by Nikolaj
+    
+    * move state graph to util/state_graph
+    
+    * re-add accidentally removed line
+    
+    * clean up seq_regex code removing obsolete functions and comments
+    
+    * a few more cleanup items
+    
+    * oops, missed merge change to fix compilation
+    
+    * disabled change to lift unions to the top level and treat them seperately in seq_regex solver
+    
+    * added get_overapprox_regex to over-approximate regex membership constraints
+    
+    * replace calls to is_epsilon with a centrally available method in seq_decl_plugin
+    
+    * simplifications and modifications in get_overapprox_regex and related
+    
+    * added approximation support for sequence expressions that use ite
+    
+    * removed is_app check that was redundant
+    
+    * tweak differences with upstream
+    
+    * rewrite derivative leaves
+    
+    * enable Antimorov-style derivatives via lifting unions in the solver
+    
+    * TODO placeholders for outputting state graph
+    
+    * change order in seq_regex propagate_in_re
+    
+    * implement a more restricted form of Antimorov derivatives via a special op code to indicate lifting unions
+    
+    * minor
+    
+    * new Antimorov [1;31moptim[mizations based on BDD compatibility checking
+    
+    * seq regex tracing for # of derivatives
+    
+    * fix get_cofactors (currently this fix is buggy)
+    
+    * partially revert get_cofactors buggy change
+    
+    * re-implement get_cofactors to more efficiently explore nodes in the derivative expression
+    
+    * dgml generation for state graph
+    
+    * fix release build
+    
+    * improved dgml output
+    
+    * bug fixes in dgml generation
+    
+    * dot output support for state_graph and moved dgml and dot output under CASSERT
+    
+    * updated tracing of what regex corresponds to what state id with /tr:state_graph
+    
+    * clean up & document Antimorov derivative support
+    
+    * remove op cache tracing
+    
+    * remove re_rank experimental idea
+    
+    * small fix
+    
+    * fix Antimorov derivative (important change for the good performance)
+    
+    * remove unused and unnecessary code
+    
+    * implemented simpler efficient get_cofactors alternative mk_deriv_accept
+    
+    * simplifications in propagate_accept, and trace unusual cases
+    
+    * document the various seq_regex tracing & debugging command-line options
+    
+    * fix debug build (broken tracing)
+    
+    * guard eager Antimorov lifting for possible disabling
+    
+    * fix bug in propagate_accept Rule 1
+    
+    * disable eager version of Antimorov lifting for performance reasons
+    
+    * remove some remaining obsolete comments
+    
+    Co-authored-by: calebstanford-msr <t-casta@microsoft.com>
+    Co-authored-by: Margus Veanes <margus@microsoft.com>
+
+[33mcommit 1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa[m
+Author: calebstanford-msr <65260146+calebstanford-msr@users.noreply.github.com>
+Date:   Tue Jun 9 14:36:31 2020 -0400
+
+    fix bug in seq rewriter op_cache::find (#4509)
+    
+    * remove unneeded reverse case in derivative; placeholder for generalized lifted derivative
+    
+    * experimental tweaks to RE rewriter to improve performance
+    
+    * if-then-else lifting
+    (broken code -- preserving this commit in case this idea is useful later)
+    
+    * if-then-else derivative [1;31moptim[mizations: new approach templates
+    
+    * implement if-then-else BDD normal form for derivatives
+    (code compiles but is still buggy)
+    
+    * remove std::cout debugging for PR
+    
+    * Revert "remove std::cout debugging for PR"
+    
+    This reverts commit c7bdc44d319ea02735c7d8f1076c01acb29ddc91.
+    
+    * debugging
+    
+    * fix derivative interaction with reverse; add flags for left/right derivative and lifting over union/intersection
+    
+    * remove debugging statements for PR
+    
+    * Revert "remove debugging statements for PR"
+    
+    This reverts commit 38e85a72881d46153bd8561e454599bdf851689f.
+    
+    * revert some purely cosmetic changes from upstream; fix a bug
+    
+    * revert unnecessary changes
+    
+    * remove some redundant rewrites and add a new one for str.in_re(s, comp(r))
+    
+    * add disabled rewrite for complement
+    
+    * fix bug in op cache find (result was not saved)
+    
+    * remove debugging std::cout for PR
+
+[33mcommit 24a9ca3226b46d2739da1c668ca04d7399319ec2[m
+Author: Ivan Gotovchits <ivg@ieee.org>
+Date:   Wed May 27 12:21:14 2020 -0400
+
+    fixes numerous issues in OCaml bindings building process (#4468)
+    
+    It now works both in dynamic and static mode and the compiled
+    libraries can be used by all linkers in the OCaml system, without
+    any specificy instructions other than specifying the dependency on
+    the z3 library.
+    
+    Using the libraries
+    ===================
+    
+    Compiling binaries
+    ------------------
+    
+    The libraries can be linked statically with both ocamlc and ocamlopt
+    compilers, e.g.,
+    
+    ```
+    ocamlfind ocamlc -thread -package z3 -linkpkg run.ml -o run
+    ```
+    or
+    ```
+    ocamlfind ocamlopt -thread -package z3 -linkpkg run.ml -o run
+    ```
+    
+    When bindings compiled with the `--staticlib` the produced binary will
+    not have any dependencies on z3
+    ```
+    $ ldd ./run
+            linux-vdso.so.1 (0x00007fff9c9ed000)
+            libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fb56f09c000)
+            libgmp.so.10 => /usr/lib/x86_64-linux-gnu/libgmp.so.10 (0x00007fb56ee1b000)
+            libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fb56ebfc000)
+            libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fb56e85e000)
+            libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fb56e65a000)
+            libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fb56e442000)
+            libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fb56e051000)
+            /lib64/ld-linux-x86-64.so.2 (0x00007fb570de9000)
+    ```
+    
+    The bytecode version will have a depedency on z3 and other external
+    libraries (packed as dlls and usually installed in opam switch):
+    ```
+    $ ocamlobjinfo run | grep 'Used DLL' -A5
+    Used DLLs:
+            dllz3ml
+            dllzarith
+            dllthreads
+            dllunix
+    ```
+    
+    But it is possible to compile a portable self-contained version of the
+    bytecode executable using the `-custom` switch:
+    
+    ```
+    ocamlfind ocamlc -custom -thread -package z3 -linkpkg run.ml -o run
+    ```
+    
+    The build binary is now quite large but doesn't have any external
+    dependencies (modulo the system dependencies):
+    ```
+    $ du -h run
+    27M     run
+    $ ocamlobjinfo run | grep 'Used DLL' | wc -l
+    0
+    $ ldd run
+            linux-vdso.so.1 (0x00007ffee42c2000)
+            libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fdbdc415000)
+            libgmp.so.10 => /usr/lib/x86_64-linux-gnu/libgmp.so.10 (0x00007fdbdc194000)
+            libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fdbdbf75000)
+            libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fdbdbbd7000)
+            libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fdbdb9d3000)
+            libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fdbdb7bb000)
+            libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fdbdb3ca000)
+            /lib64/ld-linux-x86-64.so.2 (0x00007fdbde026000)
+    ```
+    
+    Loading in toplevel
+    -------------------
+    
+    It is also possible to use the built libraries in toplevel and use
+    them in ocaml scripts, e.g.,
+    ```
+    $ ocaml
+            OCaml version 4.09.0
+    
+     # #use "topfind";;
+     - : unit = ()
+     Findlib has been successfully loaded. Additional directives:
+      #require "package";;      to load a package
+      #list;;                   to list the available packages
+      #camlp4o;;                to load camlp4 (standard syntax)
+      #camlp4r;;                to load camlp4 (revised syntax)
+      #predicates "p,q,...";;   to set these predicates
+      Topfind.reset();;         to force that packages will be reloaded
+      #thread;;                 to enable threads
+    
+    - : unit = ()
+     # #require "z3";;
+     /home/ivg/.opam/4.09.0/lib/zarith: added to search path
+     /home/ivg/.opam/4.09.0/lib/zarith/zarith.cma: loaded
+     /home/ivg/.opam/4.09.0/lib/z3: added to search path
+     /home/ivg/.opam/4.09.0/lib/z3/z3ml.cma: loaded
+     #
+    ```
+    
+    To use z3 in a script mode add the following preamble to a file with
+    OCaml code:
+    ```
+      #!/usr/bin/env ocaml
+      #use "topfind";;
+      #require "z3";;
+    
+      (* your OCaml code *)
+    ```
+    
+    Then it is possible to run it as `./script` (provided that the code is
+    in a file named `script` and permissions are set with `chmod a+x
+    script`).
+    
+    Of course, such scripts will depend on ocaml installation that shall
+    have z3 dependencies installed.
+    
+    Using Dynlink
+    -------------
+    
+    The built z3ml.cmxs file is a self-contained shared library that
+    doesn't have any depndencies on z3 (the z3 code is included in it) and
+    could be loaded with `Dynlink.loadfile` in runtime.
+    
+    Installation
+    ============
+    
+    I did not touch the installation part in this PR, as I was using opam
+    and installed artifacts as simple as:
+    ```
+    ocamlfind install z3 build/api/ml/* build/libz3-static.a
+    ```
+    
+    assuming that the following configuration and building process
+    ```
+    python2.7 scripts/mk_make.py --ml --staticlib
+    make -C build
+    ```
+    
+    Though the default installation script in the make file shall work.
+    
+    Dynamic Library mode
+    ====================
+    
+    The dynamic library mode is also supported provided that libz3.so is
+    installed in a search path of the dynamic loader (or the location is
+    added via the LD_LIBRARY_PATH) or stored in rpaths of the built
+    binary.
+    
+    Build Artifacts
+    ===============
+    
+    In the static mode (--staticlib), the following files are built and
+    installed:
+    
+    - `{z3,z3enums,z3native}.{cmi,cmo,cmx,o,mli}`: the three compilation
+    units (modules) that comprise Z3 bindings. The `*.mli` files are not
+    necessary but are installed for the user convenience and documentation
+    purposes. The *.cmi files enables access to the unit
+    definitions. Finally, `*.cmo` contain the bytecode and `*.cmx, *.o`
+    contain the native code. Files with the code are necessary for cross-module
+    [1;31moptim[mization but are not strictly needed as the code is also
+    duplicated in the libraries.
+    
+    - libz3-static.a (OR libz3.so if built not in the staticlib mode)
+    contains the machine code of the Z3 library;
+    
+    - z3ml.{a,cma,cmxa,cmxs} - the OCaml code for the bindings. File
+    z3ml.a and z3ml.cmxa are static libraries with OCaml native code,
+    which will be included in the final binary when ocamlopt is used. The
+    z3 library code itself is not included in those three artifacts, but
+    the instructions where to find it are. The same is truce for `z3ml.a`
+    which includes the bytecode of the bindings as well as instructions
+    how to link the final product. Finally, `z3ml.cmxs` is a standalone
+    shared library that could be loaded in runtime use
+    `Dynlink.loadfile` (which used dlopen on posix machines underneath the
+    hood).
+    
+    - libz3ml.a is the archived machine code for `z3native_stubs.c`, which
+    is made by ocamlmklib: `ar rcs api/ml/libz3ml.a
+    api/ml/z3native_stubs.o` it is needed to build statically linked
+    binaries and libraries that use z3 bindings.
+    
+    - dllz3ml.so is the shared object that contains `z3native_stubs.o` as
+    well as correct ldd entries for C++ and Z3 libraries to enable proper
+    static and dynamic linking. The file is built with ocamlmklib on posix
+    systems as
+    ```
+    gcc -shared -o api/ml/dllz3ml.so api/ml/z3native_stubs.o -L. -lz3-static -lstdc++
+    ```
+    
+    It is used by `ocaml`, `ocamlrun`, and `ocamlc` to link z3 and c++
+    code into the OCaml runtime and enables usage of z3 bindings in
+    non-custom runtimes (default runtimes).
+    
+    The `dllz3ml.so` is usually installed in the stubs library in opam
+    installation (`$(opam config var lib)/stublibs`), it is done
+    automatically by `ocamlfind` so no special treatment is needed.
+    
+    Technical Details
+    =================
+    
+    The patch itself is rather small. First of all, we have to use
+    `-l<lib>` instead of `-cclib -l<lib>` in ocamlmklib since the latter
+    will pass the options only to the ocaml{c,opt} linker and will not
+    use the passed libraries when shared and non-shared versions of the
+    bindings are built (libz3ml.a and dllz3ml.so). They were both missing
+    either z3 code itself and ldd entries for stdc++ (and z3 if built not
+    in --staticlib mode).
+    
+    Having stdc++ entry streamlines the compilation process and makes
+    dynamic loading more resistant to the inclusion order.
+    
+    Finally, we had to add `-L.` to make sure that the built artifacts are
+    correctly found by gcc.
+    
+    I specifically left the cygwin part of the code intact as I have no
+    idea what the original author meant by this, neither do I use or
+    tested this patch in the cygwin or mingw environemt. I think that this
+    code is rather outdated and shouldn't really work. E.g., in the
+    --staticlib mode adding z3linkdep (which is libz3-static.a) as an
+    argument to `ocamlmklib` will yield the following broken archive
+    ```
+    ar rcs api/ml/libz3ml.a libz3-static.a api/ml/z3native_stubs.o
+    ```
+    and it is not allowed (or supported) to have .a in archives (though it
+    doesn't really hurt as most of the systems will just ignore it).
+    
+    But otherwise, cygwin, mingw shall behave as they did (the only change
+    that affects them is `-L.` which I believe should be benign).
+For keyword regression:
+[33mcommit 629e981e01ad9a6269f4816928a7cd2fdd7f50fd[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue Sep 8 12:43:18 2020 -0700
+
+    fix [1;31mregression[m in get-consequence on QF_FD
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit af54a79acc9aba4a09fedcfce0488b1bdb2f3e3f[m
+Author: Margus Veanes <veanes@users.noreply.github.com>
+Date:   Tue Sep 8 04:13:18 2020 -0700
+
+    fixing issue #4651 (#4666)
+    
+    * fixing issue #4651
+    
+    * [1;31mregression[m fix
+    
+    * fix #4662
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * reenabled lift_ites_throttled with an additional filter, without the filter finding the model in report #4651 goes from .02s to 20s, also updated pretty printing of regexes to be more accurate
+    
+    * removing temp testing variable
+    
+    * Allow to skip System.loadLibrary() calls from Java Native class (#4667)
+    
+    * using intended utility methods for sort detection
+    
+    * adding ack/model
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * add smt params dependency
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * missing file
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * deps
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * order
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * persist fields
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * dbg build
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * reset caches
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * sr
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix cmake build
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * shuffle dependencies
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * warnings /errors
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * update include
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * missing cmakelists
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * update cmake
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * add depend
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * add depend
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * virtual method
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * path
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * move parameters from ast/rewriter to params
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * move fpa
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix warnings
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * remove pragma
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * dbg
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * updated sat_smt
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix #4651
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * encoding options #4665
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * expose name inclusion as optional
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix misc issues around #4661 introduced when adding lazy push/pop to selected theories
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * remove lazy push from theory_lra
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * fix dotnet build
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * release nodes
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * free memory in egraph
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * avoid duplicate class names frame in sat_scc and sat_smt
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * adding euf
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * elaborate on smt/drat format outline, expose euf mode as config
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * mk-var during copy
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * move theory_var_list into id_var_list and utilities from smt-enode into it, prepare for theory variables in egraph
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * with bounded
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * Remove duplicate binary condition. Fixes #4668.
+    
+    * butterfly effect on fp?
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * prepare for theory plugins
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * file
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * build fix
+    
+    * remove SMTFD
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * na
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    
+    * SMTFD is back (#4676)
+    
+    * fixing issue #4651
+    
+    * [1;31mregression[m fix
+    
+    * reenabled lift_ites_throttled with an additional filter, without the filter finding the model in report #4651 goes from .02s to 20s, also updated pretty printing of regexes to be more accurate
+    
+    * removing temp testing variable
+    
+    * using intended utility methods for sort detection
+    
+    * misc edits related to nonground regexes
+    
+    * bug fix of state id off by 1 calculation error and improved pretty printing with regex tooltip generated in dgml state graph
+    
+    * removed unused method declaration
+    
+    * improved id to regex value map info in generated dgml
+    
+    * reorgd callback function for state pretty printer
+    
+    * updated some comments
+    
+    Co-authored-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+    Co-authored-by: Sergey Vladimirov <vlsergey@gmail.com>
+    Co-authored-by: Christoph M. Wintersteiger <cwinter@microsoft.com>
+    Co-authored-by: Arie Gurfinkel <arie.gurfinkel@gmail.com>
+
+[33mcommit c722962124946eb197f9ddab0cf718f85c2a4712[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Aug 24 10:55:43 2020 -0700
+
+    fix [1;31mregression[ms in python API for user-propagator
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 48a9defb0dd68aabb00ef22e268b3615e28c58c3[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jul 9 15:09:25 2020 -0700
+
+    fix #1484 '[1;31mregression[m'
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 65e6b73873b5ee44209b0e1ed5d36507e647b024[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Wed Jul 8 14:46:40 2020 -0700
+
+    fix #4538 - [1;31mregression[m when renaming family from special_relations to specrels
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 1809ee510775e5cbc9db7495b329af1882450982[m
+Author: Nuno Lopes <nlopes@microsoft.com>
+Date:   Sun Jun 7 15:50:53 2020 +0100
+
+    fix [1;31mregression[m in FPA internalization
+
+[33mcommit 209f6a9e2e8b200fa88f2b9de38e59e6b0389132[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue May 19 16:21:19 2020 -0700
+
+    [1;31mregression[m free behavior
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 5fe0eeda6334b53b2f281065849135fc9912aec7[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Tue May 19 09:36:42 2020 -0700
+
+    disable [1;31mregression[ms in ST mode
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 78a4717c06d0eb6ce4466fc3135da5166130f80a[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon May 18 12:41:42 2020 -0700
+
+    fix #4359 and [1;31mregression[m to #3270
+
+[33mcommit 2822922d367600280a78a920e94fdb4ff56ac771[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat May 16 11:17:13 2020 -0700
+
+    fix [1;31mregression[m with mainintaing signs for monotonicity lemmas
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit d352c61e01e5d624cfb213472bead667bc4d73f0[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Sat May 16 11:16:39 2020 -0700
+
+    fix [1;31mregression[m with mainintaing signs for monotonicity lemmas
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword speed:
+For keyword LRA:
+For keyword proof:
+[33mcommit 07a1aea689f9c2dff0f74a1b61940d04155cba39[m
+Author: Arie Gurfinkel <arie.gurfinkel@uwaterloo.ca>
+Date:   Thu Jun 18 21:17:45 2020 -0400
+
+    fix(spacer): bug in assign_bounds to Farkas conversion
+    
+    The fix is to remove a hack that used a theory rewriter to simplify
+    the conversion. Now the conversion happens less often than possible.
+    Will need more thinking to fix properly.
+    
+    The unsoundness at this point would cause SPACER to generate lemmas
+    that do not block a [1;31mproof[m obligation and then get stuck in an infinite loop
+    blocking and generating the same lemma.
+
+[33mcommit d09e6eccf0bcdb987e54d414fb9b05a23726ec4d[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Mon Jun 15 12:03:15 2020 -0700
+
+    re-enable [1;31mproof[ms for qe-lite #3153
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+
+[33mcommit 59e388ece17e7c363a38710b3d0a6d2c1eafe29b[m
+Author: Nikolaj Bjorner <nbjorner@microsoft.com>
+Date:   Thu Jun 4 11:59:59 2020 -0700
+
+    handle bind [1;31mproof[m constructor and print lambda
+    
+    Signed-off-by: Nikolaj Bjorner <nbjorner@microsoft.com>
+For keyword UFLRA:
+For keyword model_validate:

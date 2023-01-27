@@ -1,0 +1,309 @@
+<vm name="mysql-mariadb">
+  <binaryOptions>
+    <configurationOption>
+      <name>root</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>
+      </parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>delayedInnodbLogFlush</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>delayedInnodbLogWrite</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>delayedInnodbLogFlush</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbFlushMethod</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>fsyncFlush</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbFlushMethod</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>dsyncFlush</options>
+        <options>directFlush</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>dsyncFlush</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbFlushMethod</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>fsyncFlush</options>
+        <options>directFlush</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>directFlush</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbFlushMethod</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>fsyncFlush</options>
+        <options>dsyncFlush</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>binaryLog</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbDoubleWrite</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>True</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>tempTableSize</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>tempTableSize_256</name>
+      <outputString>256</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>tempTableSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>tempTableSize_4096</options>
+        <options>tempTableSize_65536</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>tempTableSize_4096</name>
+      <outputString>4096</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>tempTableSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>tempTableSize_256</options>
+        <options>tempTableSize_65536</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>tempTableSize_65536</name>
+      <outputString>65536</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>tempTableSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>tempTableSize_256</options>
+        <options>tempTableSize_4096</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbBufferPoolSize</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbBufferPoolSize_8</name>
+      <outputString>8</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbBufferPoolSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>innodbBufferPoolSize_64</options>
+        <options>innodbBufferPoolSize_512</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbBufferPoolSize_64</name>
+      <outputString>64</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbBufferPoolSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>innodbBufferPoolSize_8</options>
+        <options>innodbBufferPoolSize_512</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbBufferPoolSize_512</name>
+      <outputString>512</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbBufferPoolSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>innodbBufferPoolSize_8</options>
+        <options>innodbBufferPoolSize_64</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbLogBufferSize</name>
+      <outputString>
+      </outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>root</parent>
+      <impliedOptions />
+      <excludedOptions />
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbLogBufferSize_1</name>
+      <outputString>1</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbLogBufferSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>innodbLogBufferSize_8</options>
+        <options>innodbLogBufferSize_64</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbLogBufferSize_8</name>
+      <outputString>8</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbLogBufferSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>innodbLogBufferSize_1</options>
+        <options>innodbLogBufferSize_64</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+    <configurationOption>
+      <name>innodbLogBufferSize_64</name>
+      <outputString>64</outputString>
+      <prefix>
+      </prefix>
+      <postfix>
+      </postfix>
+      <parent>innodbLogBufferSize</parent>
+      <impliedOptions />
+      <excludedOptions>
+        <options>innodbLogBufferSize_1</options>
+        <options>innodbLogBufferSize_8</options>
+      </excludedOptions>
+      <optional>False</optional>
+    </configurationOption>
+  </binaryOptions>
+  <numericOptions />
+  <booleanConstraints />
+  <nonBooleanConstraints />
+  <mixedConstraints />
+</vm>

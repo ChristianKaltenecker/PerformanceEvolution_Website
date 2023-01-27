@@ -1,0 +1,755 @@
+Searching between REL9_0_0 and REL9_0_4
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: fsync
+Keywords: slow fast time perf optim regression fsync
+For keyword slow:
+commit fed8dcdb84d255088d22efa3156a193f3399e792
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Jan 12 20:47:09 2011 -0500
+
+    Fix PlanRowMark/ExecRowMark structures to handle inheritance correctly.
+    
+    In an inherited UPDATE/DELETE, each target table has its own subplan,
+    because it might have a column set different from other targets.  This
+    means that the resjunk columns we add to support EvalPlanQual might be
+    at different physical column numbers in each subplan.  The EvalPlanQual
+    rewrite I did for 9.0 failed to account for this, resulting in possible
+    misbehavior or even crashes during concurrent updates to the same row,
+    as seen in a recent report from Gordon Shannon.  Revise the data structure
+    so that we track resjunk column numbers separately for each subplan.
+    
+    I also chose to move responsibility for identifying the physical column
+    numbers back to executor startup, instead of assuming that numbers derived
+    during preprocess_targetlist would stay valid throughout subsequent
+    massaging of the plan.  That's a bit slower, so we might want to consider
+    undoing it someday; but it would complicate the patch considerably and
+    didn't seem justifiable in a bug fix that has to be back-patched to 9.0.
+
+commit 14a58a1c954103c376754d485e26455dec466c9b
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Fri Dec 10 11:33:38 2010 -0500
+
+    Fix efficiency problems in tuplestore_trim().
+    
+    The original coding in tuplestore_trim() was only meant to work efficiently
+    in cases where each trim call deleted most of the tuples in the store.
+    Which, in fact, was the pattern of the original usage with a Material node
+    supporting mark/restore operations underneath a MergeJoin.  However,
+    WindowAgg now uses tuplestores and it has considerably less friendly
+    trimming behavior.  In particular it can attempt to trim one tuple at a
+    time off a large tuplestore.  tuplestore_trim() had O(N^2) runtime in this
+    situation because of repeatedly shifting its tuple pointer array.  Fix by
+    avoiding shifting the array until a reasonably large number of tuples have
+    been deleted.  This can waste some pointer space, but we do still reclaim
+    the tuples themselves, so the percentage wastage should be pretty small.
+    
+    Per Jie Li's report of slow percent_rank() evaluation.  cume_dist() and
+    ntile() would certainly be affected as well, along with any other window
+    function that has a moving frame start and requires reading substantially
+    ahead of the current row.
+    
+    Back-patch to 8.4, where window functions were introduced.  There's no
+    need to tweak it before that.
+
+commit 2ffcb0cb6a5bf97de22f0ce58f55537ce1c87653
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Thu Dec 9 13:03:11 2010 -0500
+
+    Eliminate O(N^2) behavior in parallel restore with many blobs.
+    
+    With hundreds of thousands of TOC entries, the repeated searches in
+    reduce_dependencies() become the dominant cost.  Get rid of that searching
+    by constructing reverse-dependency lists, which we can do in O(N) time
+    during the fix_dependencies() preprocessing.  I chose to store the reverse
+    dependencies as DumpId arrays for consistency with the forward-dependency
+    representation, and keep the previously-transient tocsByDumpId[] array
+    around to locate actual TOC entry structs quickly from dump IDs.
+    
+    While this fixes the slow case reported by Vlad Arkhipov, there is still
+    a potential for O(N^2) behavior with sufficiently many tables:
+    fix_dependencies itself, as well as mark_create_done and
+    inhibit_data_for_failed_table, are doing repeated searches to deal with
+    table-to-table-data dependencies.  Possibly this work could be extended
+    to deal with that, although the latter two functions are also used in
+    non-parallel restore where we currently don't run fix_dependencies.
+    
+    Another TODO is that we fail to parallelize restore of multiple blobs
+    at all.  This appears to require changes in the archive format to fix.
+    
+    Back-patch to 9.0 where the problem was reported.  8.4 has potential issues
+    as well; but since it doesn't create a separate TOC entry for each blob,
+    it's at much less risk of having enough TOC entries to cause real problems.
+
+commit a65b29794a394afdea78a3ee367ca8fd373788e3
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Mon Dec 6 22:55:51 2010 -0500
+
+    Add a stack overflow check to copyObject().
+    
+    There are some code paths, such as SPI_execute(), where we invoke
+    copyObject() on raw parse trees before doing parse analysis on them.  Since
+    the bison grammar is capable of building heavily nested parsetrees while
+    itself using only minimal stack depth, this means that copyObject() can be
+    the front-line function that hits stack overflow before anything else does.
+    Accordingly, it had better have a check_stack_depth() call.  I did a bit of
+    performance testing and found that this slows down copyObject() by only a
+    few percent, so the hit ought to be negligible in the context of complete
+    processing of a query.
+    
+    Per off-list report from Toshihide Katayama.  Back-patch to all supported
+    branches.
+
+commit b5efc094042638154d74fdb1e8344ae0ba977617
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Fri Nov 19 22:28:25 2010 -0500
+
+    Fix leakage of cost_limit when multiple autovacuum workers are active.
+    
+    When using default autovacuum_vac_cost_limit, autovac_balance_cost relied
+    on VacuumCostLimit to contain the correct global value ... but after the
+    first time through in a particular worker process, it didn't, because we'd
+    trashed it in previous iterations.  Depending on the state of other autovac
+    workers, this could result in a steady reduction of the effective
+    cost_limit setting as a particular worker processed more and more tables,
+    causing it to go slower and slower.  Spotted by Simon Poole (bug #5759).
+    Fix by saving and restoring the GUC variables in the loop in do_autovacuum.
+    
+    In passing, improve a few comments.
+    
+    Back-patch to 8.3 ... the cost rebalancing code has been buggy since it was
+    put in.
+For keyword fast:
+commit ba007262a7661234588b1ebe297e3a95924ba587
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Sat Nov 6 22:59:09 2010 -0400
+
+    Add support for detecting register-stack overrun on IA64.
+    
+    Per recent investigation, the register stack can grow faster than the
+    regular stack depending on compiler and choice of options.  To avoid
+    crashes we must check both stacks in check_stack_depth().
+    
+    Back-patch to all supported versions.
+For keyword time:
+commit 078a930bbdd605517d5894710f67e734bda2b02c
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Apr 13 18:03:23 2011 -0400
+
+    Update time zone data files to tzdata release 2011f.
+    
+    DST law changes in Chile, Cuba, Falkland Islands, Morocco, Samoa, Turkey.
+    Historical corrections for South Australia, Alaska, Hawaii.
+
+commit 2ea865de5660f75f44f6b1ba78090e41e070cb4c
+Author: Andrew Dunstan <andrew@dunslane.net>
+Date:   Sat Apr 9 17:59:27 2011 -0400
+
+    Backport changes to allow building with MinGW 64 bit compiler.
+    
+    These changes have been in HEAD for some time with no ill effect. They
+    are only being backported to 9.0, as the required WINNT version was not
+    high enough before that.
+
+commit ce3b0ab0c327b2e3efa44342ad8de3256806cf84
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Mon Mar 28 15:45:02 2011 -0400
+
+    Prevent a rowtype from being included in itself.
+    
+    Eventually we might be able to allow that, but it's not clear how many
+    places need to be fixed to prevent infinite recursion when there's a direct
+    or indirect inclusion of a rowtype in itself.  One such place is
+    CheckAttributeType(), which will recurse to stack overflow in cases such as
+    those exhibited in bug #5950 from Alex Perepelica.  If we were sure it was
+    the only such place, we could easily modify the code added by this patch to
+    stop the recursion without a complaint ... but it probably isn't the only
+    such place.  Hence, throw error until such time as someone is excited
+    enough about this type of usage to put work into making it safe.
+    
+    Back-patch as far as 8.3.  8.2 doesn't have the recursive call in
+    CheckAttributeType in the first place, so I see no need to add code there
+    in the absence of clear evidence of a problem elsewhere.
+
+commit a48fb0b59811e8b41e727b54b39bef28d6f253ea
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Mar 2 11:17:07 2011 -0500
+
+    Correct mistaken claims about EXPLAIN ANALYZE's handling of triggers.
+    
+    Time spent executing AFTER triggers is not included in the runtime of the
+    associated ModifyTable node; in my patch of yesterday I confused queuing of
+    these triggers with their actual execution.  Spotted by Marko Tiikkaja.
+
+commit 7422e0081d04ee4373a822392c729eb892a9d25e
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Feb 16 19:24:50 2011 -0500
+
+    Fix bogus test for hypothetical indexes in get_actual_variable_range().
+    
+    That function was supposing that indexoid == 0 for a hypothetical index,
+    but that is not likely to be true in any non-toy implementation of an index
+    adviser, since assigning a fake OID is the only way to know at EXPLAIN time
+    which hypothetical index got selected.  Fix by adding a flag to
+    IndexOptInfo to mark hypothetical indexes.  Back-patch to 9.0 where
+    get_actual_variable_range() was added.
+    
+    Gurjeet Singh
+
+commit 8e4b1473126cc72fa9bcc5b079055c71bc267656
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Tue Feb 15 15:49:59 2011 -0500
+
+    Add CheckTableNotInUse calls in DROP TABLE and DROP INDEX.
+    
+    Recent releases had a check on rel->rd_refcnt in heap_drop_with_catalog,
+    but failed to cover the possibility of pending trigger events at DROP time.
+    (Before 8.4 we didn't even check the refcnt.)  When the trigger events were
+    eventually fired, you'd get "could not open relation with OID nnn" errors,
+    as in recent report from strk.  Better to throw a suitable error when the
+    DROP is attempted.
+    
+    Also add a similar check in DROP INDEX.
+    
+    Back-patch to all supported branches.
+
+commit 1c4c264aa5c58777a18df5a268cc7702cdf5c940
+Author: Magnus Hagander <magnus@hagander.net>
+Date:   Tue Feb 1 13:19:18 2011 +0100
+
+    Undefine setlocale() macro on Win32
+    
+    New versions of libintl redefine setlocale() to a macro
+    which causes problems when the backend and libintl are
+    linked against different versions of the runtime, which
+    is often the case in msvc builds.
+    
+    Hiroshi Inoue, slightly updated comment by me
+
+commit 0fdf735d977de99551dd4d7910bdc4d75a08608d
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Tue Dec 28 22:49:57 2010 -0500
+
+    Avoid unexpected conversion overflow in planner for distant date values.
+    
+    The "date" type supports a wider range of dates than int64 timestamps do.
+    However, there is pre-int64-timestamp code in the planner that assumes that
+    all date values can be converted to timestamp with impunity.  Fortunately,
+    what we really need out of the conversion is always a double (float8)
+    value; so even when the date is out of timestamp's range it's possible to
+    produce a sane answer.  All we need is a code path that doesn't try to
+    force the result into int64.  Per trouble report from David Rericha.
+    
+    Back-patch to all supported versions.  Although this is surely a corner
+    case, there's not much point in advertising a date range wider than
+    timestamp's if we will choke on such values in unexpected places.
+
+commit 554b00cdaba5aac12e53f41214dad4d8a95fc6d4
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Sun Dec 19 15:30:44 2010 -0500
+
+    Fix up handling of simple-form CASE with constant test expression.
+    
+    eval_const_expressions() can replace CaseTestExprs with constants when
+    the surrounding CASE's test expression is a constant.  This confuses
+    ruleutils.c's heuristic for deparsing simple-form CASEs, leading to
+    Assert failures or "unexpected CASE WHEN clause" errors.  I had put in
+    a hack solution for that years ago (see commit
+    514ce7a331c5bea8e55b106d624e55732a002295 of 2006-10-01), but bug #5794
+    from Peter Speck shows that that solution failed to cover all cases.
+    
+    Fortunately, there's a much better way, which came to me upon reflecting
+    that Peter's "CASE TRUE WHEN" seemed pretty redundant: we can "simplify"
+    the simple-form CASE to the general form of CASE, by simply omitting the
+    constant test expression from the rebuilt CASE construct.  This is
+    intuitively valid because there is no need for the executor to evaluate
+    the test expression at runtime; it will never be referenced, because any
+    CaseTestExprs that would have referenced it are now replaced by constants.
+    This won't save a whole lot of cycles, since evaluating a Const is pretty
+    cheap, but a cycle saved is a cycle earned.  In any case it beats kluging
+    ruleutils.c still further.  So this patch improves const-simplification
+    and reverts the previous change in ruleutils.c.
+    
+    Back-patch to all supported branches.  The bug exists in 8.1 too, but it's
+    out of warranty.
+
+commit dc124a541079b34a92d16649883ec929f4a5dec9
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Mon Dec 13 12:41:57 2010 -0500
+
+    Update time zone data files to tzdata release 2010o: DST law changes in
+    Fiji and Samoa.  Historical corrections for Hong Kong.
+
+commit 14a58a1c954103c376754d485e26455dec466c9b
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Fri Dec 10 11:33:38 2010 -0500
+
+    Fix efficiency problems in tuplestore_trim().
+    
+    The original coding in tuplestore_trim() was only meant to work efficiently
+    in cases where each trim call deleted most of the tuples in the store.
+    Which, in fact, was the pattern of the original usage with a Material node
+    supporting mark/restore operations underneath a MergeJoin.  However,
+    WindowAgg now uses tuplestores and it has considerably less friendly
+    trimming behavior.  In particular it can attempt to trim one tuple at a
+    time off a large tuplestore.  tuplestore_trim() had O(N^2) runtime in this
+    situation because of repeatedly shifting its tuple pointer array.  Fix by
+    avoiding shifting the array until a reasonably large number of tuples have
+    been deleted.  This can waste some pointer space, but we do still reclaim
+    the tuples themselves, so the percentage wastage should be pretty small.
+    
+    Per Jie Li's report of slow percent_rank() evaluation.  cume_dist() and
+    ntile() would certainly be affected as well, along with any other window
+    function that has a moving frame start and requires reading substantially
+    ahead of the current row.
+    
+    Back-patch to 8.4, where window functions were introduced.  There's no
+    need to tweak it before that.
+
+commit 2ffcb0cb6a5bf97de22f0ce58f55537ce1c87653
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Thu Dec 9 13:03:11 2010 -0500
+
+    Eliminate O(N^2) behavior in parallel restore with many blobs.
+    
+    With hundreds of thousands of TOC entries, the repeated searches in
+    reduce_dependencies() become the dominant cost.  Get rid of that searching
+    by constructing reverse-dependency lists, which we can do in O(N) time
+    during the fix_dependencies() preprocessing.  I chose to store the reverse
+    dependencies as DumpId arrays for consistency with the forward-dependency
+    representation, and keep the previously-transient tocsByDumpId[] array
+    around to locate actual TOC entry structs quickly from dump IDs.
+    
+    While this fixes the slow case reported by Vlad Arkhipov, there is still
+    a potential for O(N^2) behavior with sufficiently many tables:
+    fix_dependencies itself, as well as mark_create_done and
+    inhibit_data_for_failed_table, are doing repeated searches to deal with
+    table-to-table-data dependencies.  Possibly this work could be extended
+    to deal with that, although the latter two functions are also used in
+    non-parallel restore where we currently don't run fix_dependencies.
+    
+    Another TODO is that we fail to parallelize restore of multiple blobs
+    at all.  This appears to require changes in the archive format to fix.
+    
+    Back-patch to 9.0 where the problem was reported.  8.4 has potential issues
+    as well; but since it doesn't create a separate TOC entry for each blob,
+    it's at much less risk of having enough TOC entries to cause real problems.
+
+commit 0a85bb237e63c0e0634ed029cbc4916b0eceeea4
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Dec 1 00:53:23 2010 -0500
+
+    Prevent inlining a SQL function with multiple OUT parameters.
+    
+    There were corner cases in which the planner would attempt to inline such
+    a function, which would result in a failure at runtime due to loss of
+    information about exactly what the result record type is.  Fix by disabling
+    inlining when the function's recorded result type is RECORD.  There might
+    be some sub-cases where inlining could still be allowed, but this is a
+    simple and backpatchable fix, so leave refinements for another day.
+    Per bug #5777 from Nate Carson.
+    
+    Back-patch to all supported branches.  8.1 happens to avoid a core-dump
+    here, but it still does the wrong thing.
+
+commit b5efc094042638154d74fdb1e8344ae0ba977617
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Fri Nov 19 22:28:25 2010 -0500
+
+    Fix leakage of cost_limit when multiple autovacuum workers are active.
+    
+    When using default autovacuum_vac_cost_limit, autovac_balance_cost relied
+    on VacuumCostLimit to contain the correct global value ... but after the
+    first time through in a particular worker process, it didn't, because we'd
+    trashed it in previous iterations.  Depending on the state of other autovac
+    workers, this could result in a steady reduction of the effective
+    cost_limit setting as a particular worker processed more and more tables,
+    causing it to go slower and slower.  Spotted by Simon Poole (bug #5759).
+    Fix by saving and restoring the GUC variables in the loop in do_autovacuum.
+    
+    In passing, improve a few comments.
+    
+    Back-patch to 8.3 ... the cost rebalancing code has been buggy since it was
+    put in.
+
+commit 9743783d5a036ba837d1879b575756ad05cda935
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Tue Nov 9 11:28:18 2010 -0500
+
+    Repair memory leakage while ANALYZE-ing complex index expressions.
+    
+    The general design of memory management in Postgres is that intermediate
+    results computed by an expression are not freed until the end of the tuple
+    cycle.  For expression indexes, ANALYZE has to re-evaluate each expression
+    for each of its sample rows, and it wasn't bothering to free intermediate
+    results until the end of processing of that index.  This could lead to very
+    substantial leakage if the intermediate results were large, as in a recent
+    example from Jakub Ouhrabka.  Fix by doing ResetExprContext for each sample
+    row.  This necessitates adding a datumCopy step to ensure that the final
+    expression value isn't recycled too.  Some quick testing suggests that this
+    change adds at worst about 10% to the time needed to analyze a table with
+    an expression index; which is annoying, but seems a tolerable price to pay
+    to avoid unexpected out-of-memory problems.
+    
+    Back-patch to all supported branches.
+
+commit e84bf651216a80c1d0c0d14901dea244c6a333ab
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Tue Nov 2 17:15:13 2010 -0400
+
+    Ensure an index that uses a whole-row Var still depends on its table.
+    
+    We failed to record any dependency on the underlying table for an index
+    declared like "create index i on t (foo(t.*))".  This would create trouble
+    if the table were dropped without previously dropping the index.  To fix,
+    simplify some overly-cute code in index_create(), accepting the possibility
+    that sometimes the whole-table dependency will be redundant.  Also document
+    this hazard in dependency.c.  Per report from Kevin Grittner.
+    
+    In passing, prevent a core dump in pg_get_indexdef() if the index's table
+    can't be found.  I came across this while experimenting with Kevin's
+    example.  Not sure it's a real issue when the catalogs aren't corrupt, but
+    might as well be cautious.
+    
+    Back-patch to all supported versions.
+
+commit 381d6a05aecbade0bf536325ace36f1507da042b
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Thu Oct 28 13:01:01 2010 -0400
+
+    Fix plpgsql's handling of "simple" expression evaluation.
+    
+    In general, expression execution state trees aren't re-entrantly usable,
+    since functions can store private state information in them.
+    For efficiency reasons, plpgsql tries to cache and reuse state trees for
+    "simple" expressions.  It can get away with that most of the time, but it
+    can fail if the state tree is dirty from a previous failed execution (as
+    in an example from Alvaro) or is being used recursively (as noted by me).
+    
+    Fix by tracking whether a state tree is in use, and falling back to the
+    "non-simple" code path if so.  This results in a pretty considerable speed
+    hit when the non-simple path is taken, but the available alternatives seem
+    even more unpleasant because they add overhead in the simple path.  Per
+    idea from Heikki.
+    
+    Back-patch to all supported branches.
+
+commit c98cd9bdb618794643b670c8240c0aad213340c7
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Oct 20 12:48:57 2010 -0400
+
+    Don't try to fetch database name when SetTransactionIdLimit() is executed
+    outside a transaction.
+    
+    This repairs brain fade in my patch of 2009-08-30: the reason we had been
+    storing oldest-database name, not OID, in ShmemVariableCache was of course
+    to avoid having to do a catalog lookup at times when it might be unsafe.
+    
+    This error explains why Aleksandr Dushein is having trouble getting out of
+    an XID wraparound state in bug #5718, though not how he got into that state
+    in the first place.  I suspect pg_upgrade is at fault there.
+
+commit 24d446b56959f4449b5c78520a954ea0bbb517b8
+Author: Magnus Hagander <magnus@hagander.net>
+Date:   Fri Oct 15 16:59:12 2010 +0200
+
+    Fix low-risk potential denial of service against RADIUS login.
+    
+    Corrupt RADIUS responses were treated as errors and not ignored
+    (which the RFC2865 states they should be). This meant that a
+    user with unfiltered access to the network of the PostgreSQL
+    or RADIUS server could send a spoofed RADIUS response
+    to the PostgreSQL server causing it to reject a valid login,
+    provided the attacker could also guess (or brute-force) the
+    correct port number.
+    
+    Fix is to simply retry the receive in a loop until the timeout
+    has expired or a valid (signed by the correct RADIUS server)
+    packet arrives.
+    
+    Reported by Alan DeKok in bug #5687.
+
+commit 392e01a03a36bee3665fc1d9317f904cc8d2cda1
+Author: Simon Riggs <simon@2ndQuadrant.com>
+Date:   Thu Oct 14 19:13:09 2010 +0100
+
+    Fix bug in comment of timeline history file.
+    
+    Fujii Masao
+For keyword perf:
+commit bb3051e4c2d7b42516d55925edefb4934b902374
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Thu Apr 7 15:14:44 2011 -0400
+
+    Modernize dlopen interface code for FreeBSD and OpenBSD.
+    
+    Remove the hard-wired assumption that __mips__ (and only __mips__) lacks
+    dlopen in FreeBSD and OpenBSD.  This assumption is outdated at least for
+    OpenBSD, as per report from an anonymous 9.1 tester.  We can perfectly well
+    use HAVE_DLOPEN instead to decide which code to use.
+    
+    Some other cosmetic adjustments to make freebsd.c, netbsd.c, and openbsd.c
+    exactly alike.
+
+commit eff933531e7f7d98ba02402c7821b0b7ea8f1d97
+Author: Heikki Linnakangas <heikki.linnakangas@iki.fi>
+Date:   Wed Mar 30 10:36:58 2011 +0300
+
+    Check that we've reached end-of-backup also when we're not performing
+    archive recovery.
+    
+    It's possible to restore an online backup without recovery.conf, by simply
+    copying all the necessary WAL files to pg_xlog. "pg_basebackup -x" does that
+    too. That's the use case where this cross-check is useful.
+    
+    Backpatch to 9.0. We used to do this in earlier versins, but in 9.0 the code
+    was inadvertently changed so that the check is only performed after archive
+    recovery.
+    
+    Fujii Masao.
+
+commit 3cb2f2ae4cc481dc22682d364e7a93ba6f7f4baf
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Tue Mar 22 13:01:04 2011 -0400
+
+    Avoid potential deadlock in InitCatCachePhase2().
+    
+    Opening a catcache's index could require reading from that cache's own
+    catalog, which of course would acquire AccessShareLock on the catalog.
+    So the original coding here risks locking index before heap, which could
+    deadlock against another backend trying to get exclusive locks in the
+    normal order.  Because InitCatCachePhase2 is only called when a backend
+    has to start up without a relcache init file, the deadlock was seldom seen
+    in the field.  (And by the same token, there's no need to worry about any
+    performance disadvantage; so not much point in trying to distinguish
+    exactly which catalogs have the risk.)
+    
+    Bug report, diagnosis, and patch by Nikhil Sontakke.  Additional commentary
+    by me.  Back-patch to all supported branches.
+
+commit 1df57f63f3f60c684aa8918910ac410e9c780713
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Sun Jan 30 17:04:31 2011 -0500
+
+    Make reduce_outer_joins() smarter about semijoins.
+    
+    reduce_outer_joins() mistakenly treated a semijoin like a left join for
+    purposes of deciding whether not-null constraints created by the join's
+    quals could be passed down into the join's left-hand side (possibly
+    resulting in outer-join simplification there).  Actually, semijoin works
+    like inner join for this purpose, ie, we do not need to see any rows that
+    can't possibly satisfy the quals.  Hence, two-line fix to treat semi and
+    inner joins alike.  Per observation by Andres Freund about a performance
+    gripe from Yazan Suleiman.
+    
+    Back-patch to 8.4, since this oversight has been there since the current
+    handling of semijoins was implemented.
+
+commit a08363d70cb51f361c9525384e9f46a252fcd92e
+Author: Heikki Linnakangas <heikki.linnakangas@iki.fi>
+Date:   Thu Jan 13 17:51:28 2011 +0200
+
+    Fix the logic in libpqrcv_receive() to determine if there's any incoming data
+    that can be read without blocking. It used to conclude that there isn't, even
+    though there was data in the socket receive buffer. That lead walreceiver to
+    flush the WAL after every received chunk, potentially causing big performance
+    issues.
+    
+    Backpatch to 9.0, because the performance impact can be very significant.
+
+commit 87eadd7e3d6f5581d5b4cb8083212a323050e388
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Dec 8 20:01:14 2010 -0500
+
+    Force default wal_sync_method to be fdatasync on Linux.
+    
+    Recent versions of the Linux system header files cause xlogdefs.h to
+    believe that open_datasync should be the default sync method, whereas
+    formerly fdatasync was the default on Linux.  open_datasync is a bad
+    choice, first because it doesn't actually outperform fdatasync (in fact
+    the reverse), and second because we try to use O_DIRECT with it, causing
+    failures on certain filesystems (e.g., ext4 with data=journal option).
+    This part of the patch is largely per a proposal from Marti Raudsepp.
+    More extensive changes are likely to follow in HEAD, but this is as much
+    change as we want to back-patch.
+    
+    Also clean up confusing code and incorrect documentation surrounding the
+    fsync_writethrough option.  Those changes shouldn't result in any actual
+    behavioral change, but I chose to back-patch them anyway to keep the
+    branches looking similar in this area.
+    
+    In 9.0 and HEAD, also do some copy-editing on the WAL Reliability
+    documentation section.
+    
+    Back-patch to all supported branches, since any of them might get used
+    on modern Linux versions.
+
+commit a65b29794a394afdea78a3ee367ca8fd373788e3
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Mon Dec 6 22:55:51 2010 -0500
+
+    Add a stack overflow check to copyObject().
+    
+    There are some code paths, such as SPI_execute(), where we invoke
+    copyObject() on raw parse trees before doing parse analysis on them.  Since
+    the bison grammar is capable of building heavily nested parsetrees while
+    itself using only minimal stack depth, this means that copyObject() can be
+    the front-line function that hits stack overflow before anything else does.
+    Accordingly, it had better have a check_stack_depth() call.  I did a bit of
+    performance testing and found that this slows down copyObject() by only a
+    few percent, so the hit ought to be negligible in the context of complete
+    processing of a query.
+    
+    Per off-list report from Toshihide Katayama.  Back-patch to all supported
+    branches.
+
+commit c1db5296429a8f26929c1afe5c9d217ba65a3b53
+Author: Robert Haas <rhaas@postgresql.org>
+Date:   Thu Oct 7 12:19:03 2010 -0400
+
+    Improve WAL reliability documentation, and add more cross-references to it.
+    
+    In particular, we are now more explicit about the fact that you may need
+    wal_sync_method=fsync_writethrough for crash-safety on some platforms,
+    including MaxOS X.  There's also now an explicit caution against assuming
+    that the default setting of wal_sync_method is either crash-safe or best
+    for performance.
+For keyword optim:
+commit 03aab8262ae7b32f8fc6cd8933dce9604d7fc07e
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Fri Mar 11 18:18:59 2011 -0500
+
+    Put in some more safeguards against executing a division-by-zero.
+    
+    Add dummy returns before every potential division-by-zero in int8.c,
+    because apparently further "improvements" in gcc's optimizer have
+    enabled it to break functions that weren't broken before.
+    
+    Aurelien Jarno, via Martin Pitt
+For keyword regression:
+commit 0e754ab366e9a200ef7342dc6ada42ae014a6739
+Author: Andrew Dunstan <andrew@dunslane.net>
+Date:   Sun Apr 10 17:03:44 2011 -0400
+
+    Adjust regression tests on cube and ECPG for MinGW 64 bit compiler.
+    
+    Backport to 9.0, we're not supporting this compiler on earlier releases.
+
+commit 66b133d2b8a09fb468d59c174f9eae689bfc77a5
+Author: Andrew Dunstan <andrew@dunslane.net>
+Date:   Fri Dec 24 13:31:48 2010 -0500
+
+    Allow vpath builds and regression tests to succeed on Mingw. Backpatch to release 8.4 - earlier releases would require more changes and it's not worth the trouble.
+
+commit 9f65a874ebf86291ca1f7920f74f6c9d6d20a213
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Sat Nov 13 00:34:50 2010 -0500
+
+    Add missing outfuncs.c support for struct InhRelation.
+    
+    This is needed to support debug_print_parse, per report from Jon Nelson.
+    Cursory testing via the regression tests suggests we aren't missing
+    anything else.
+
+commit 9e4b2139db4ce101c2d655325a4835d8e12f1c03
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Fri Nov 12 15:14:51 2010 -0500
+
+    Fix old oversight in const-simplification of COALESCE() expressions.
+    
+    Once we have found a non-null constant argument, there is no need to
+    examine additional arguments of the COALESCE.  The previous coding got it
+    right only if the constant was in the first argument position; otherwise
+    it tried to simplify following arguments too, leading to unexpected
+    behavior like this:
+    
+    regression=# select coalesce(f1, 42, 1/0) from int4_tbl;
+    ERROR:  division by zero
+    
+    It's a minor corner case, but a bug is a bug, so back-patch all the way.
+
+commit fb9042f77232bf30e3743e87fbcd1f1e2b29bde5
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Nov 3 13:41:53 2010 -0400
+
+    Reduce recursion depth in recently-added regression test.
+    
+    Some buildfarm members fail the test with the original depth of 10 levels,
+    apparently because they are running at the minimum max_stack_depth setting
+    of 100kB and using ~ 10k per recursion level.  While it might be
+    interesting to try to figure out why they're eating so much stack, it isn't
+    likely that any fix for that would be back-patchable.  So just change the
+    test to recurse only 5 levels.  The extra levels don't prove anything
+    correctness-wise anyway.
+
+commit 8d0b5d8971d66f331737dab401c19a7e8ddae71c
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Sep 22 17:21:58 2010 -0400
+
+    Some more gitignore cleanups: cover contrib and PL regression test outputs.
+    
+    Also do some further work in the back branches, where quite a bit wasn't
+    covered by Magnus' original back-patch.
+
+commit f23bc1e8a42cab50c204bbab837f95cbc2353311
+Author: Magnus Hagander <magnus@hagander.net>
+Date:   Wed Sep 22 21:49:07 2010 +0200
+
+    Add gitignore files for ecpg regression tests.
+    
+    Backpatch to 8.2 as that's how far the structure looks the same.
+For keyword fsync:
+commit 1435a8554cd514d668a46c4f6b1e4a1e3bd30fd5
+Author: Heikki Linnakangas <heikki.linnakangas@iki.fi>
+Date:   Mon Jan 17 12:22:24 2011 +0200
+
+    Before exiting walreceiver, fsync() all the WAL received.
+    
+    Otherwise WAL recovery will replay the un-flushed WAL after walreceiver has
+    exited, which can lead to a non-recoverable standby if the system crashes hard
+    at that point.
+
+commit 87eadd7e3d6f5581d5b4cb8083212a323050e388
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Wed Dec 8 20:01:14 2010 -0500
+
+    Force default wal_sync_method to be fdatasync on Linux.
+    
+    Recent versions of the Linux system header files cause xlogdefs.h to
+    believe that open_datasync should be the default sync method, whereas
+    formerly fdatasync was the default on Linux.  open_datasync is a bad
+    choice, first because it doesn't actually outperform fdatasync (in fact
+    the reverse), and second because we try to use O_DIRECT with it, causing
+    failures on certain filesystems (e.g., ext4 with data=journal option).
+    This part of the patch is largely per a proposal from Marti Raudsepp.
+    More extensive changes are likely to follow in HEAD, but this is as much
+    change as we want to back-patch.
+    
+    Also clean up confusing code and incorrect documentation surrounding the
+    fsync_writethrough option.  Those changes shouldn't result in any actual
+    behavioral change, but I chose to back-patch them anyway to keep the
+    branches looking similar in this area.
+    
+    In 9.0 and HEAD, also do some copy-editing on the WAL Reliability
+    documentation section.
+    
+    Back-patch to all supported branches, since any of them might get used
+    on modern Linux versions.
+
+commit 6f609199df2c8d38ed0391180a2ff467333ae57c
+Author: Bruce Momjian <bruce@momjian.us>
+Date:   Tue Oct 19 14:58:03 2010 +0000
+
+    Add mention of using tools/fsync to test fsync methods. Restructure
+    recent wal_sync_method doc paragraph to be clearer.
+
+commit c1db5296429a8f26929c1afe5c9d217ba65a3b53
+Author: Robert Haas <rhaas@postgresql.org>
+Date:   Thu Oct 7 12:19:03 2010 -0400
+
+    Improve WAL reliability documentation, and add more cross-references to it.
+    
+    In particular, we are now more explicit about the fact that you may need
+    wal_sync_method=fsync_writethrough for crash-safety on some platforms,
+    including MaxOS X.  There's also now an explicit caution against assuming
+    that the default setting of wal_sync_method is either crash-safe or best
+    for performance.

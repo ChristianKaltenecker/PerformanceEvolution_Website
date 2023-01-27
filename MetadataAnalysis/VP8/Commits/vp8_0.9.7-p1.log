@@ -1,0 +1,26 @@
+Searching between v0.9.7 and v0.9.7-p1
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Keywords: slow fast time perf optim regression speed
+For keyword slow:
+For keyword fast:
+For keyword time:
+[33mcommit e96131705a3ce05fa271388434d1aaef7e3942c3[m
+Author: John Koleszar <jkoleszar@google.com>
+Date:   Fri Aug 12 14:51:36 2011 -0400
+
+    Revert "Improved 1-pass CBR rate control"
+    
+    This reverts commit b5ea2fbc2c1554769848774c836aad262af95072. Further
+    testing showed noticable keyframe popping in some cases, reverting this
+    for now to give [1;31mtime[m for a proper fix.
+    
+    Conflicts:
+    
+            vp8/encoder/onyx_if.c
+            vp8/encoder/ratectrl.c
+    
+    Change-Id: I159f53d1bf0e24c035754ab3ded8ccfd58fd04af
+For keyword perf:
+For keyword optim:
+For keyword regression:
+For keyword speed:

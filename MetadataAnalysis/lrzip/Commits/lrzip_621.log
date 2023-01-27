@@ -1,0 +1,40 @@
+Searching between v0.620 and v0.621
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: lzo,lzma,gzip,bzip,compression,processor,multi,level,thread
+Keywords: slow fast time perf optim regression speed lzo lzma gzip bzip compression processor multi level thread
+For keyword slow:
+For keyword fast:
+commit 9a17a54c4993703351c1df23c485cf7dcb7b4ad0
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Tue Mar 10 21:10:24 2015 +1100
+
+    Making the high buffer only one page size is faster for sliding mmap mode
+For keyword time:
+For keyword perf:
+For keyword optim:
+commit aa753fee53a91cb0c03e34aecc646b075a1d591a
+Author: Con Kolivas <kernel@kolivas.org>
+Date:   Mon Mar 9 21:24:50 2015 +1100
+
+    Microoptimisation
+For keyword regression:
+For keyword speed:
+commit f378595dcec9bd7fdba88ecfb9818112a2b0887e
+Author: ckolivas <kernel@kolivas.org>
+Date:   Sun Mar 8 01:21:53 2015 +1100
+
+    Make match_len a function completely removing all indirect calls to get_sb, significantly speeding up the single_get_sb case
+For keyword lzo:
+For keyword lzma:
+For keyword gzip:
+For keyword bzip:
+For keyword compression:
+For keyword processor:
+For keyword multi:
+For keyword level:
+For keyword thread:
+commit f690750340f89126ea62e5c2fdea68df453040df
+Author: ckolivas <kernel@kolivas.org>
+Date:   Sun Mar 8 10:10:38 2015 +1100
+
+    Fix remaining use of mutexes lock/unlocking in different threads with cksems, corecting cksem usage on osx

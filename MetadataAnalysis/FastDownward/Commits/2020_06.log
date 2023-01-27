@@ -1,0 +1,72 @@
+Searching between release-19.12.0 and release-20.06.0
+Keywords: slow, fast, time, perf(ormance), optim(ize), regression
+Additional keywords: shrink_fh,lm_hm,disjunctive_landmarks,landmark
+Keywords: slow fast time perf optim regression speed shrink_fh lm_hm disjunctive_landmarks landmark
+For keyword slow:
+For keyword fast:
+[33mcommit df42b6ba0392320421d2c83402fd7f6e540b9102[m
+Author: Malte Helmert <malte.helmert@unibas.ch>
+Date:   Sun Jul 26 23:31:42 2020 +0200
+
+    [main] CHANGES.md: replace hg.[1;31mfast[m-downward.org with github link
+For keyword time:
+[33mcommit 59060d0f98d82cffca0650aca151aae6471f93af[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue May 12 13:15:16 2020 +0200
+
+    [issue781] Store StubbornSets::[1;31mtime[mr directly in object.
+
+[33mcommit 2c11a1f833a25c080f0c99f6cb94700a8745e72a[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Tue May 12 09:18:19 2020 +0200
+
+    [issue965] Create CEGAR [1;31mtime[mrs in stopped state.
+
+[33mcommit b240b8f8c0e340a60f7492476bbbf89165540b5b[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri May 8 13:09:32 2020 +0200
+
+    [issue963] no longer use g_[1;31mtime[m in planner
+
+[33mcommit 0937c8bd9e21e880aa6d68cbeb9766dfe5a3fa00[m
+Author: Silvan Sievers <silvan.sievers@unibas.ch>
+Date:   Fri May 8 13:07:23 2020 +0200
+
+    [issue963] no longer use g_[1;31mtime[mr in search engine
+
+[33mcommit 7c37a25d48337f6073d702df8fa2fd8475634694[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Sun Apr 29 09:19:05 2018 +0200
+
+    [issue781] Stubborn sets: fix measuring pruning [1;31mtime[m.
+
+[33mcommit 8f32fc722dd416966db1c64a2ab660cc99f6c5d8[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Thu Apr 26 22:36:42 2018 +0200
+
+    [issue781] Include [1;31mtime[m_for_pruning_operators in report.
+
+[33mcommit 1b650e62fc19695e2a9da27a4699ae6e8d83e879[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Thu Apr 26 22:17:48 2018 +0200
+
+    [issue781] Print [1;31mtime[m for pruning operators in simple and EC stubborn sets versions.
+
+[33mcommit c28e337fc7d73c06d908c55333eba065a6e15b51[m
+Author: Jendrik Seipp <jendrik.seipp@unibas.ch>
+Date:   Thu Apr 26 22:13:12 2018 +0200
+
+    [issue781] Print [1;31mtime[m for pruning operators in "queue" stubborn sets version.
+For keyword perf:
+For keyword optim:
+For keyword regression:
+[33mcommit 0e22675b1ee06a027bf33f906b0d913c58a70ac1[m
+Author: Florian Pommerening <florian.pommerening@unibas.ch>
+Date:   Wed Jul 8 13:14:27 2020 +0200
+
+    [issue952] use git for [1;31mregression[m tests
+For keyword speed:
+For keyword shrink_fh:
+For keyword lm_hm:
+For keyword disjunctive_landmarks:
+For keyword landmark:
