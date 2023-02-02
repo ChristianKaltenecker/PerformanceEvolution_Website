@@ -24,8 +24,8 @@ From 5 performance changes, 4 are from $\textsf{root}$ (8.3.5 -> 8.4.0; 9.0.4 ->
 ### Commit messages
 
 9.0.0 -> 9.0.4 [REL9_0_0 -> REL9_0_4]:
-87eadd7e3d6f: Force default wal_sync_method to be fdatasync on Linux
-1435a8554: Flush the WAL received before exiting
+* 87eadd7e3d6f: Force default wal_sync_method to be fdatasync on Linux
+* 1435a8554: Flush the WAL received before exiting
 
 ## z3
 
@@ -53,170 +53,164 @@ The error rate is also very high in the first release, because of a few configur
     * 4.8.1 -> 4.8.3
     * 4.8.3 -> 4.8.4
 
-Performed keyword search between 4.5.0 -> 4.6.0 (1 year, 1 month -- 1941 commits) [slow, perf[ormance], fast, (!)speed, regression, optimiz(ation), time, proof]
-fbaee08: fix performance regression introduced with theory_str; theory_str slows down things
-72c9134: fixing regressions introduced when reducing astm proof dependencies
-
 ### Commit messages and changelog
 
 Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.3.2 - 4.4.0:
-Configuration options/Interactions: QF_LRA (Unquantified linear real arithmetic -- speedup), QF_LRA * proof (speedup)
-Changelog: Reports changes on QF_FP; No speedup mentioned
-Commits: 
-1e30fd2c65d
-89c43676d5719
-44e647e72b
-2aa91eee705
-Configuration options not mentioned
+* Configuration options/Interactions: QF_LRA (Unquantified linear real arithmetic -- speedup), QF_LRA * proof (speedup)
+* Changelog: Reports changes on QF_FP; No speedup mentioned
+* Commits: 
+  * 1e30fd2c65d
+  * 89c43676d5719
+  * 44e647e72b
+  * 2aa91eee705
+* Configuration options not mentioned
 
 
 4.4.0 - 4.4.1:
-Configuration options/Interactions: QF_FP * proof (speedup)
-Changelog: No speedup mentioned
-Commits:
-eeef4d29d8285
-759d80dfe371
-73a8f9960f2641
-a44044fb156cd2c13
-e180cfe256ecd
-478b3160ace
-54c959783d0e83
-e1e27f2c26474
-b9287343487f
-5fdc104f8247d60e
-Configuration option proof mentioned multiple times
+* Configuration options/Interactions: QF_FP * proof (speedup)
+* Changelog: No speedup mentioned
+* Commits:
+  * eeef4d29d8285
+  * 759d80dfe371
+  * 73a8f9960f2641
+  * a44044fb156cd2c13
+  * e180cfe256ecd
+  * 478b3160ace
+  * 54c959783d0e83
+  * e1e27f2c26474
+  * b9287343487f
+  * 5fdc104f8247d60e
+* Configuration option proof mentioned multiple times
 
 4.4.1 - 4.5.0:
-Configuration options/Interactions: QF_FP * proof (slowdown), QF_FP (slowdown)
-Changelog: Reports changes on LRA (new solver); no speedup reported
-Commits:
-cc6769c8664
-c1aa33339d2e95c
-c693c990df9e2babb
-43202572ee73b
-ac902dad1a1022
-
-Configuration option proof mentioned multiple times
+* Configuration options/Interactions: QF_FP * proof (slowdown), QF_FP (slowdown)
+* Changelog: Reports changes on LRA (new solver); no speedup reported
+* Commits:
+  * cc6769c8664
+  * c1aa33339d2e95c
+  * c693c990df9e2babb
+  * 43202572ee73b
+  * ac902dad1a1022
+* Configuration option proof mentioned multiple times
 
 4.5.0 - 4.6.0:
-Configuration options/Interactions: QF_FP (speedup), QF_FP * proof (speedup), QF_LRA * proof (slowdown), QF_UFLRA (slowdown), QF_UFLRA * proof (slowdown)
-Changelog: Mentions changes of a new linear arithmetic solver; no speedups reported
-Commits:
-72c9134424c973
-d67f3c14668b8f
-Configuration option proof mentioned regarding speedup
+* Configuration options/Interactions: QF_FP (speedup), QF_FP * proof (speedup), QF_LRA * proof (slowdown), QF_UFLRA (slowdown), QF_UFLRA * proof (slowdown)
+* Changelog: Mentions changes of a new linear arithmetic solver; no speedups reported
+* Commits:
+  * fbaee08: fix performance regression introduced with theory_str; theory_str slows down things
+  * 72c9134424c973: fixing regressions introduced when reducing astm proof dependencies
+  * d67f3c14668b8f
+* Configuration option proof mentioned regarding speedup
 
 4.6.0 - 4.7.1:
-Configuration options/Interactions: QF_UFLRA * proof (speedup), QF_LRA (speedup), QF_UFLRA (speedup)
-Changelog: Reports breaking changes but no speedups
-Commits: Nothing directly related to runtime performance
-9e8192e44811bcfad99866932480619d8e8512af (Speed-up)
-B5d531f079d6b678dc8accf6fd165185361c18d6 (Speed-up)
-a1d870f19f6638432eb5f15f0f1a59319a9927ab (Workload mentioned)
-fc835ba01e5285ceb4c15ec8fa6eb1eb90d6e5ba (Configuration option mentioned)
-Configuration options mentioned
+* Configuration options/Interactions: QF_UFLRA * proof (speedup), QF_LRA (speedup), QF_UFLRA (speedup)
+* Changelog: Reports breaking changes but no speedups
+* Commits: Nothing directly related to runtime performance
+  * 9e8192e44811bcfad99866932480619d8e8512af (Speed-up)
+  * B5d531f079d6b678dc8accf6fd165185361c18d6 (Speed-up)
+  * a1d870f19f6638432eb5f15f0f1a59319a9927ab (Workload mentioned)
+  * fc835ba01e5285ceb4c15ec8fa6eb1eb90d6e5ba (Configuration option mentioned)
+* Configuration options mentioned
 
 
 4.7.1 - 4.8.1:
-Configuration options/Interactions: QF_LRA * proof (speedup), QF_LRA (slowdown)
-Changelog: No speedup reported
-Commits:
-49e94809282eee4d
-16d4e2f5d1b2de3
-e0d69a0033bcc
-4695ca16c84aa0
-Configuration option proof mentioned regarding speedup
+* Configuration options/Interactions: QF_LRA * proof (speedup), QF_LRA (slowdown)
+* Changelog: No speedup reported
+* Commits:
+  * 49e94809282eee4d
+  * 16d4e2f5d1b2de3
+  * e0d69a0033bcc
+  * 4695ca16c84aa0
+* Configuration option proof mentioned regarding speedup
 
 4.8.3 - 4.8.4:
-Configuration options/Interactions: QF_UFLRA * proof (slowdown)
-Changelog: Speedups reported but not in relation to configuration option
-Commits: 
-9e5aaf074e248084
-bfcea7a8198ef
-Configuration options not mentioned
+* Configuration options/Interactions: QF_UFLRA * proof (slowdown)
+* Changelog: Speedups reported but not in relation to configuration option
+* Commits: 
+  * 9e5aaf074e248084
+  * bfcea7a8198ef
+* Configuration options not mentioned
 
 4.8.4 - 4.8.5:
-Configuration options/Interactions: QF_FP * proof (speedup), QF_LRA (speedup)
-Changelog: Nothing relevant mentioned
-Commits:
-73f6806371e494c (speed-up mentioned)
-893e60459369e1b781c3d99015c03d2089dd8c5e (found configuration option proof)
-Configuration option mentioned
+* Configuration options/Interactions: QF_FP * proof (speedup), QF_LRA (speedup)
+* Changelog: Nothing relevant mentioned
+* Commits:
+  * 73f6806371e494c (speed-up mentioned)
+  * 893e60459369e1b781c3d99015c03d2089dd8c5e (found configuration option proof)
+* Configuration option mentioned
 
 4.8.5 - 4.8.6:
-Configuration options/Interactions: QF_UFLRA (slowdown), QF_UFLRA * proof (slowdown)
-Changelog: Nothing relevant mentioned
-Commits: 
-43a19cadf6c
-Configuration option mentioned
+* Configuration options/Interactions: QF_UFLRA (slowdown), QF_UFLRA * proof (slowdown)
+* Changelog: Nothing relevant mentioned
+* Commits: 
+  * 43a19cadf6c
+* Configuration option mentioned
 
 4.8.6 - 4.8.7:
-Configuration options/Interactions: Nothing
-Changelog: Nothing relevant mentioned
-Commits:
-18fe28c0f0db547e
-Configuration option not mentioned
+* Configuration options/Interactions: Nothing
+* Changelog: Nothing relevant mentioned
+* Commits:
+  * 18fe28c0f0db547e
+* Configuration option not mentioned
 
 4.8.7 - 4.8.8:
-Configuration options/Interactions: QF_LRA * proof (speedup), QF_UFLRA * proof (speedup), QF_UFLRA * model_validate (slowdown), QF_UFLRA (slowdown)
-Changelog: (PROBABLE REGRESSION REPORTED!) Only regression reported; no speedup
-Commits:
-0f2c8c21ff955713a4 (speed-up reported)
-
-
-140926e7c0ea0e52 (perf regression reported)
-20d72e5d9771e4d2efca568ccba767d982af6cbc (Configuration option proof mentioned)
-Configuration options not mentioned in relation to performance, but mentioned
+* Configuration options/Interactions: QF_LRA * proof (speedup), QF_UFLRA * proof (speedup), QF_UFLRA * model_validate (slowdown), QF_UFLRA (slowdown)
+* Changelog: (PROBABLE REGRESSION REPORTED!) Only regression reported; no speedup
+* Commits:
+  * 0f2c8c21ff955713a4 (speed-up reported)
+  * 140926e7c0ea0e52 (perf regression reported)
+  * 20d72e5d9771e4d2efca568ccba767d982af6cbc (Configuration option proof mentioned)
+* Configuration options not mentioned directly in relation to performance, but mentioned
 
 
 4.8.8 - 4.8.9:
-Configuration options/Interactions: QF_UFLRA * model_validate * proof (speedup), QF_LRA * proof (speedup), QF_UFLRA * proof (slowdown), QF_UFLRA * model_validate (slowdown), QF_LRA (slowdown), QF_UFLRA (speedup)
-Changelog: Another potential regression reported through a new arithmetic theory
-Commits:
-1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa (Speed-up reported)
-07a1aea689f9c2dff0f74a1b61940d04155cba39 (Configuration option proof mentioned)
-Configuration options mentioned
+* Configuration options/Interactions: QF_UFLRA * model_validate * proof (speedup), QF_LRA * proof (speedup), QF_UFLRA * proof (slowdown), QF_UFLRA * model_validate (slowdown), QF_LRA (slowdown), QF_UFLRA (speedup)
+* Changelog: Another potential regression reported through a new arithmetic theory
+* Commits:
+  * 1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa (Speed-up reported)
+  * 07a1aea689f9c2dff0f74a1b61940d04155cba39 (Configuration option proof mentioned)
+* Configuration options mentioned
 
 4.8.9 - 4.8.10:
-Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA (slowdown)
-Changelog: default solver replaced, but nothing regarding performance reported
-Commits:
-a95c35dadbfdcc86
-Configuration option mentioned
+* Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA (slowdown)
+* Changelog: default solver replaced, but nothing regarding performance reported
+* Commits:
+  * a95c35dadbfdcc86
+* Configuration option mentioned
 
 
 4.8.10 - 4.8.11:
-Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA * proof (speedup), QF_UFLRA * model_validate (speedup), QF_UFLRA (slowdown)
-Changelog: Nothing directly related to performance is mentioned
-Commits:
-52e67b0d3edb3f
-4a8ba8b1609044
-cc001ad6825074743
-998cf4c726258fa (regression mentioned!)
-7869cdbbc88a70d018218729654
-6aa766a5448db9
-8c66691e6d411d9aa0e092843339d7f80983d39a (Configuration option proof mentioned)
-Configuration options not mentioned in relation to performance, but mentioned
+* Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA * proof (speedup), QF_UFLRA * model_validate (speedup), QF_UFLRA (slowdown)
+* Changelog: Nothing directly related to performance is mentioned
+* Commits:
+  * 52e67b0d3edb3f
+  * 4a8ba8b1609044
+  * cc001ad6825074743
+  * 998cf4c726258fa (regression mentioned!)
+  * 7869cdbbc88a70d018218729654
+  * 6aa766a5448db9
+  * 8c66691e6d411d9aa0e092843339d7f80983d39a (Configuration option proof mentioned)
+* Configuration options not mentioned in relation to performance, but mentioned
 
 
 4.8.11 - 4.8.12:
-Configuration options/Interactions: QF_LRA (speedup)
-Changelog: Nothing directly related to performance is mentioned
-Commits: 
-Nothing
-Configuration options not mentioned in relation to performance, but mentioned
+* Configuration options/Interactions: QF_LRA (speedup)
+* Changelog: Nothing directly related to performance is mentioned
+* Commits: 
+ * Nothing
+* Configuration options not mentioned
 
 4.8.12 - 4.8.13:
-Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA (speedup)
-Changelog: Nothing directly related to performance is mentioned
-Commits:
-ed27ce5526bb4b42
-3e6ff768a58f072
-4dad41416136ab
-63ac2ee0d1377
-Configuration options not reported
+* Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA (speedup)
+* Changelog: Nothing directly related to performance is mentioned
+* Commits:
+  * ed27ce5526bb4b42
+  * 3e6ff768a58f072
+  * 4dad41416136ab
+  * 63ac2ee0d1377
+* Configuration options not reported
 
 ## brotli
 
@@ -235,105 +229,104 @@ Some performance bugs (according to the changelog) also happen when uncompressin
 
 ## Commit messages
 0.3.0 - 0.4.0 (low quality compression also mentioned in the changelog):
-Changelog: made low quality compression faster; added quality level 0; 
-Commits:
-1f01d61bcf: Add two more fast modes (quality 0, 1); quality 1,2 were renamed to quality 2 and 3 and the old quality 3 is removed.
-f453b1bf36 [only memory]: Reduce memory usage
-27688e605c: Faster entropy coding phase for quality 1
-4dd9114c97: Partial Hasher initialization for small input data (does not apply; our data is bigger than only 1KB)
-Configuration option mentioned regarding performance change
+* Changelog: made low quality compression faster; added quality level 0; 
+* Commits:
+  * 1f01d61bcf: Add two more fast modes (quality 0, 1); quality 1,2 were renamed to quality 2 and 3 and the old quality 3 is removed.
+  * f453b1bf36 [only memory]: Reduce memory usage
+  * 27688e605c: Faster entropy coding phase for quality 1
+  * 4dd9114c97: Partial Hasher initialization for small input data (does not apply; our data is bigger than only 1KB)
+* Configuration option mentioned regarding performance change
 
 0.4.0 - 0.5.2:
-Changelog: Nothing
-Commits:
-2048189048: new hasher; improved speed and reduced memory usage for q:5-9 w 10-16
-Configuration option mentioned
+* Changelog: Nothing
+* Commits:
+  * 2048189048: new hasher; improved speed and reduced memory usage for q:5-9 w 10-16
+* Configuration option mentioned
 
 0.5.2 - 0.6.0 (better compression on 1MB+ files, faster compression on mid-low quality levels; fix encoder q10-11 slowdown):
-Commits:
-5db62dcc: Fix slow-down after a long copy (q10-11)
-0a63f99db: Limit for window size for q0-1 and use fix shifts for the hashes
-8a06e0293: Improve the compression
-Configuration option mentioned
+* Changelog: Nothing
+* Commits:
+  * 5db62dcc: Fix slow-down after a long copy (q10-11)
+  * 0a63f99db: Limit for window size for q0-1 and use fix shifts for the hashes
+  * 8a06e0293: Improve the compression
+* Configuration option mentioned
 
 0.6.0 - 1.0.0:
-Changelog: Nothing
-Commits:
-a629289e: speedup compression for RLEish (Run Length Encoding) data
-Configuration option not mentioned
+* Changelog: Nothing
+* Commits:
+  * a629289e: speedup compression for RLEish (Run Length Encoding) data
+* Configuration option not mentioned
 
 1.0.0 - 1.0.1 (only one day in between): 
-Changelog: Nothing
-Commits:
-Nope
-Configuration option not mentioned
+* Changelog: Nothing
+* Commits:
+  * Nothing
+* Configuration option not mentioned
 
 1.0.1 - 1.0.2 (changes of the terms are higher than 5% and therefore, this release was chosen):
-Changelog: Nothing
-Commits:
-39ef4bbdc: add new (fast) dictionary generator "Sieve"
-Configuration option not mentioned
+* Changelog: Nothing
+* Commits:
+  * 39ef4bbdc: add new (fast) dictionary generator "Sieve"
+* Configuration option not mentioned
 
 1.0.2 - 1.0.3:
-Changelog: Improved compression ratio; Nothing related to performance
-Commits:
-35e69fc7c: New dictionary generator with the speed of "Sieve" and the quality of "DM" -> does not necessarily imply that the speed of the new dictionary generator is better than before.
-da254cffdb: Fix q=10 1-byte input compression
-Configuration option mentioned
+* Changelog: Improved compression ratio; Nothing related to performance
+* Commits:
+  * 35e69fc7c: New dictionary generator with the speed of "Sieve" and the quality of "DM" -> does not necessarily imply that the speed of the new dictionary generator is better than before.
+  * da254cffdb: Fix q=10 1-byte input compression
+* Configuration option mentioned
 
 1.0.3 - 1.0.4 (1 month 1 week in between):
-Changelog: better compression; Nothing related to performance
-Commits:
-0f3c84e7e: better compression (similar to changelog)
-Configuration option not mentioned
+* Changelog: better compression; Nothing related to performance
+* Commits:
+  * 0f3c84e7e: better compression (similar to changelog)
+* Configuration option not mentioned
 
 1.0.4 - 1.0.5:
-Changelog: q=1 compression on small files improved
-Commits:
-68db5c027: improve q=1 compression on small files
-Configuration option mentioned
+* Changelog: q=1 compression on small files improved
+* Commits:
+  * 68db5c027: improve q=1 compression on small files
+* Configuration option mentioned
 
 1.0.6 - 1.0.7:
-Changelog: focuses on ARM architecture; Nothing regarding x86 architecture
-Some speedup detected in configuration options: CompressionLevel_9 * WindowSize_24; CompressionLevel 9 * WindowSize_23; CompressionLEvel_9 * WindowSize_22; CompressionLEvel_10 * WindowSize_19
-Commits:
-Nothing relevant when reading through
-Configuration option not mentioned
+* Changelog: focuses on ARM architecture; Nothing regarding x86 architecture
+* Some speedup detected in configuration options: CompressionLevel_9 * WindowSize_24; CompressionLevel 9 * WindowSize_23; CompressionLEvel_9 * WindowSize_22; CompressionLEvel_10 * WindowSize_19
+* Commits:
+ * Nothing
+* Configuration option not mentioned
 
 ## OpenVPN
 
 This case study (along with PostgreSQL) has a release (2.2.1 -- 2.2.2) where no configurations have changed. Generally, the performance of OpenVPN is very stable with 2 exceptions:
-2.2.2 - 2.3.0
-2.3.9 - 2.4.0
+* 2.2.2 - 2.3.0
+* 2.3.9 - 2.4.0
 
 ### Commit messages
 2.2.2 - 2.3.0
-Models: root slowed down; lzo and sha512 sped up
-Changelog:Fix reconnection issues when push and UDP (we use tcp in our setup).
-They also fixed some regressions happening in configuration options we do not use (e.g., --http-proxy).
-Modified create_socket_tcp.
+* Configuration Options/Interaction: lzo (speed up); sha512 (speed up)
+* Changelog:
+  * Fix reconnection issues when push and UDP (we use tcp in our setup).
+  * They also fixed some regressions happening in configuration options we do not use (e.g., --http-proxy).
+  * Modified create_socket_tcp.
 
-Commits:
-Multiple commits with bug fixes that address issues *when* server is slow.
-They also fix regressions when using other compilers.
-74bbc7: build: proper lzo detection and usage (?)
-Configuration option mentioned
+* Commits:
+  * 74bbc7: build: proper lzo detection and usage (?)
+* Configuration option mentioned
 
 2.3.9 - 2.4.0:
-Models: Same as 2.3.0 + SHA1; SHA512 * LZO is slowed down
-Changelog: 
-In 2.3.10: Fix regression in setups without a client certificate
-
-Commits:
-b59fc7f: Fix missing return value checks; should become faster
-fc91d4b: Increase control channel packet size for faster handshakes
-160504a29: Refactor CRL (certificate revocation list) handling
-985156e: Fix --cipher=none regression
-65eedc35: Make sure float won't happen if hmac check failed (regression)
-af1e4d26: switch to SHA256 instead of SHA1
-dd2fbc26: sha1 returns correct SHA1 fingerprint
-5d523377: Disable SSL compression
-Configuration option mentioned
+* Configuration Options/Interaction: base (slow down); lzo and sha512 (speed up); SHA1 (slow down); SHA512 * LZO (slow down)
+* Changelog: 
+  * In 2.3.10: Fix regression in setups without a client certificate
+* Commits:
+  * b59fc7f: Fix missing return value checks; should become faster
+  * fc91d4b: Increase control channel packet size for faster handshakes
+  * 160504a29: Refactor CRL (certificate revocation list) handling
+  * 985156e: Fix --cipher=none regression
+  * 65eedc35: Make sure float won't happen if hmac check failed (regression)
+  * af1e4d26: switch to SHA256 instead of SHA1
+  * dd2fbc26: sha1 returns correct SHA1 fingerprint
+  * 5d523377: Disable SSL compression
+* Configuration option mentioned
 
 
 ## Opus
@@ -344,108 +337,122 @@ Just stable... no performance changes here.
 With 220 different configuration options and interactions thereof, it is hard to tell which configuration option or interaction caused the influence and whether it was positive/negative.
 This turns out to be a drawback since it makes tracking difficult.
 
-Changelog: https://github.com/ckolivas/lrzip/blob/master/ChangeLog
+* Changelog: https://github.com/ckolivas/lrzip/blob/master/ChangeLog
 
 ### Releases
 530 - 543 (configurations stay the same or have a massive slow down):
-Configuration Options/Interactions: compression(Lzo,Gzip,Lzma) * processorCount(2,4,8), level 3-9; processorCount_4 slow down
-Changelog: 540-543: fixes and speedup;
-692949287: Sliding mmap was causing a slowdown of death
-2b08c6e280: Fix the output of zpaq compress and decompress
-Configuration option is mentioned
+* Configuration Options/Interactions: compression(Lzo,Gzip,Lzma) * processorCount(2,4,8), level 3-9; processorCount_4 slow down
+* Changelog: 540-543: fixes and speedup;
+* Commits:
+  * 692949287: Sliding mmap was causing a slowdown of death
+  * 2b08c6e280: Fix the output of zpaq compress and decompress
+* Configuration option is mentioned
 
 
 543 - 544 (some configurations have a speed up, some a slow down -- major change):
-Configuration Options/Interaction: same as 530. processorCount_4 slowed down when using different compressions; reverts some changes from 543; some are even worse (compressionLZMA * processorCount_8); hard to tell
-Changelog: speed ups are mentioned
-688aa55c7930: Spawn threads in regular intervals; speeds up compression
-Configuration option is mentioned regarding speed-up
+* Configuration Options/Interaction: same as 530. processorCount_4 slowed down when using different compressions; reverts some changes from 543; some are even worse (compressionLZMA * processorCount_8); hard to tell
+* Changelog: speed ups are mentioned
+* Commits:
+  * 688aa55c7930: Spawn threads in regular intervals; speeds up compression
+* Configuration option is mentioned regarding speed-up
 
 
 544 - 550 (configurations stay the same or are speeded up -- major change):
-Changelog: speed up mentioned
-8dd9b00: Reverted 688aa55c7 because it was not only resuling in a speed up but also in a slow down
-50437a84: Improves threading by bringing it higher up in the code.
-e0265b33: Rescales the lzma levels and brings a speed up to lzma
-Configuration option lzma and threading mentioned regarding speed-up
+* Changelog: speed up mentioned
+* Commits:
+  * 8dd9b00: Reverted 688aa55c7 because it was not only resuling in a speed up but also in a slow down
+  * 50437a84: Improves threading by bringing it higher up in the code.
+  * e0265b33: Rescales the lzma levels and brings a speed up to lzma
+* Configuration option lzma and threading mentioned regarding speed-up
 
 551 - 552:
-Changelog: no performance changes are reported
+* Changelog: no performance changes are reported.
 Focus on decompression.
-8d110e3366d: Check that thread really exited before moving on
-Configuration option mentioned
+* Commits:
+  * 8d110e3366d: Check that thread really exited before moving on
+* Configuration option mentioned
 
 552 - 560 (major change):
-Changelog: speed ups reported
-7287ab8a6: md5 process bytes saving time
-4036125f947: Make the buffer sized, speedup
-Configuration option not mentioned
+* Changelog: speed ups reported
+* Commits:
+  * 7287ab8a6: md5 process bytes saving time
+  * 4036125f947: Make the buffer sized, speedup
+* Configuration option not mentioned
 
 560 - 571 (speed up -- major change):
-Changelog: 0.570: Multithreading speedup; 
-f9f880908c: Small slow down by removing fragile exponential growth buffer size
-bb33f7571cc: Speeding up multi-threading
-Configuration option mentioned regarding speed-up
+* Changelog: 0.570: Multithreading speedup; 
+* Commits:
+  * f9f880908c: Small slow down by removing fragile exponential growth buffer size
+  * bb33f7571cc: Speeding up multi-threading
+* Configuration option mentioned regarding speed-up
 
 571 - 601 (slow down -- major change):
-Changelog: no speed up/slow down reported
-643054ae: Fix threading error (?)
-Configuration option mentioned
+* Changelog: no speed up/slow down reported
+* Commits:
+  * 643054ae: Fix threading error (?)
+* Configuration option mentioned
 
 601 - 602:
-Changelog: nothing relevant reported
-Nothing
-Configuration option not mentioned
+* Changelog: nothing relevant reported
+* Commits:
+  * Nothing
+* Configuration option not mentioned
 
 602 - 604:
-Changelog: Nothing relevant reported
-7ed977b1c1: Detach threads from the compression side
-Configuration option mentioned
+* Changelog: Nothing relevant reported
+* Commits:
+  * 7ed977b1c1: Detach threads from the compression side
+* Configuration option mentioned
 
 604 - 606:
-Changelog: Nothing relevant supported
-d033743e6f: Reverts 
-Configuration option not mentioned
-
+* Changelog: Nothing relevant supported
+* Commits:
+  * d033743e6f: Reverts 
+* Configuration option not mentioned
 
 606 - 607 (speed up):
-Changelog: Nothing relevant reported (except for the update to lzma 920)
-71bb72f5da: Update to lzma 920 library
+* Changelog: Nothing relevant reported (except for the update to lzma 920)
+* Commits:
+  * 71bb72f5da: Update to lzma 920 library
+* Configuration option mentioned
 
 607 - 608 (speed up):
-Changelog: Speed up reported 2x
-f496e0705: Speed up
+* Changelog: Speed up reported 2x
+* Commits:
+  * f496e0705: Speed up
+* Configuration option not mentioned
 
 608 - 611 (slow down and some speed up):
-Changelog: Speed up reported
-Micro-optimizations:
-f4165ec26
-2fada9fb
-c136424
-0e593f768
-92c09a758
-5edf8471d1
-
-slow down (?):
-dbc71eceb
-Configuration option mentioned
+* Changelog: Speed up reported
+* Commits:
+  * f4165ec26
+  * 2fada9fb
+  * c136424
+  * 0e593f768
+  * 92c09a758
+  * 5edf8471d1
+  * dbc71eceb (slow down)
+* Configuration option mentioned
 
 612 - 614:
-Changelog: Nothing relevant reported
-081265f: No back end compression for blocks smaller than 64 bytes
-Configuration option mentioned
+* Changelog: Nothing relevant reported
+* Commits:
+  * 081265f: No back end compression for blocks smaller than 64 bytes
+* Configuration option mentioned
 
 614 - 615:
-Changelog: Multiple micro-optimizations and several fixes but no clear relation to performance
-6f0410d28f
-87fe625829
-Configuration option not mentioned
+* Changelog: Multiple micro-optimizations and several fixes but no clear relation to performance
+* Commits:
+  * 6f0410d28f
+  * 87fe625829
+* Configuration option not mentioned
 
 620 - 621:
-Changelog: Microoptiomisation is reported; but no clear speed up /slow down
-9a17a54c: make high buffer only one page size faster
-aa753fee: microoptimisation
-f378595dc
+* Changelog: Microoptiomisation is reported; but no clear speed up /slow down
+* Commits:
+  * 9a17a54c: make high buffer only one page size faster
+  * aa753fee: microoptimisation
+  * f378595dc
 
 ## HSQLDB
 
@@ -453,44 +460,62 @@ Changelog: http://hsqldb.org/doc/2.0/changelist_2_0.txt
 
 ### Commit messages and changelog
 2.1.0 - 2.2.0 (slow down):
-Configuration Options/Interactions: logSize (slow-down)
-Changelog: Only speed up reported (fixed regression)
+* Configuration Options/Interactions: logSize (slow-down)
+* Changelog: Only speed up reported (fixed regression)
+* Commits:
+  * Nothing
+* Configuration option not mentioned
 
 
 2.2.1 - 2.2.2 (speed up of some configurations):
-Configuration Options/Interactions: blowfish, logSize * blowFish * defragLimit
-Changelog: improved query speed
-796fa0ccedc: improved query speed
+* Configuration Options/Interactions: blowfish, logSize * blowFish * defragLimit
+* Changelog: improved query speed
+* Commits:
+  * 796fa0ccedc: improved query speed
+* Configuration option not mentioned
 
 2.2.5 - 2.2.6 (slow down):
-Configuration Options/Interactions: mvcc
-Changelog: Fix of MVCC is mentioned (but no slow down)
-04db897bbc6: optimization (only speed up?)
+* Configuration Options/Interactions: mvcc
+* Changelog: Fix of MVCC is mentioned (but no slow down)
+* Commits:
+  * 04db897bbc6: optimization (only speed up?)
+* Configuration option mentioned
 
 2.2.6 - 2.2.7:
-Configuration options: None
-Changelog: 
-Commits:
-22f6fd2d8
+* Configuration options: None
+* Changelog: Nothing
+* Commits:
+  * 22f6fd2d8
+* Configuration option not mentioned
 
 2.2.9 - 2.3.0 (slow down and a few configurations sped up):
-Configuration Options/Interactions: blowFish * logSize_5 * defragLimit_50 (speed up); blowfish * defragLimit_100 * logSize 5 (slowdown) blowfish * cacheSize_10000 (slow down); blowfish * logSize_5 (speed up); blowfish (speed up)
-Changelog: Speed up reported; few regressions fixed; no slow down reported
-Commits:
-None
+* Configuration Options/Interactions: blowFish * logSize_5 * defragLimit_50 (speed up); blowfish * defragLimit_100 * logSize 5 (slowdown) blowfish * cacheSize_10000 (slow down); blowfish * logSize_5 (speed up); blowfish (speed up)
+* Changelog: Speed up reported; few regressions fixed; no slow down reported
+* Commits:
+  * Nothing
+* Configuration option not mentioned
 
 
 2.3.0 - 2.3.1 (some slow down, some speed up -- no changes in performance-influence model visible):
-Configuration Options/Interactions: None
-Changelog: Nothing mentioned
+* Configuration Options/Interactions: None
+* Changelog: Nothing mentioned
+* Commits:
+  * Nothing
+* Configuration option not mentioned
 
 2.3.1 - 2.3.2 (same configurations -- seems as changes are reverted -- no changes in performance-influence model visible):
-Configuration Options/Interactions: None
-Changelog: Nothing mentioned
+* Configuration Options/Interactions: None
+* Changelog: Nothing mentioned
+* Commits:
+  * Nothing
+* Configuration option not mentioned
 
 2.3.2 - 2.3.3 (slow down of specific configurations):
-Configuration Options/Interactions: defragLimit_50 * logSize_5 * blowfish
-Changelog: only regressions reported
+* Configuration Options/Interactions: defragLimit_50 * logSize_5 * blowfish
+* Changelog: only regressions reported
+* Commits:
+  * Nothing
+* Configuration option not mentioned
 
 ## MariaDB
 
