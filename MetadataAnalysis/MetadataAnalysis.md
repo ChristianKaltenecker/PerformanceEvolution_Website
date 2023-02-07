@@ -598,7 +598,7 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: twoPass (speed up), bestQuality (speed up), goodQuality(speed up), constantBitrate * twoPass (speed up), bestQuality * noAltRef (speed up), constantBitrage * threads * twoPass (slow down)...
 * Changelog: Mentions a fix of two-pass for y4m input, mentions speed improvements
 * Commits:
-  * e105e245e: Fix framrate for Y4M input; configuration option mentioned
+  * [e105e245e](https://github.com/webmproject/libvpx/commit/e105e245e): Fix framrate for Y4M input; configuration option mentioned
 * Configuration option mentioned
 
 
@@ -606,45 +606,45 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: constantBitrate * twoPass (speed up), twoPass (minor slow down)
 * Changelog: only minor speed improvements for encoder mentioned, but more in relation to bestQuality; mentions changes for two pass.
 * Commits:
-  * ff3068d6d: Change on two pass.
-  * 788c0eb5: Tune effect of motion in two pass
+  * [ff3068d6d](https://github.com/webmproject/libvpx/commit/ff3068d6d): Change on two pass.
+  * [788c0eb5](https://github.com/webmproject/libvpx/commit/788c0eb5): Tune effect of motion in two pass
 * Configuration option mentioned
 
 0.9.5 - 0.9.6:
 * Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up), twoPass (speed up), constantBitrate * goodQuality (speed up), bestQuality * constantBitrage (slow down)
 * Changelog: Mentions the speed improvement on bestQuality and goodQuality on x86 architecture
 * Commits:
-  * b095d9df3c: Adjustment to boost calculation in two pass
-  * 3c18a2bb2e: Performance improvement in first pass
-  * ff4a71f4c: boost for good quality mode
-  * cec6a596b: A change should also help in speeding up the quality modes
-  * 13db80c2823: Improved performance of good quality
-  * 19054ab6da: Redefined good quality settings
-  * 431dac08d: Disabled some features for first pass
+  * [b095d9df3c](https://github.com/webmproject/libvpx/commit/b095d9df3c): Adjustment to boost calculation in two pass
+  * [3c18a2bb2e](https://github.com/webmproject/libvpx/commit/3c18a2bb2e): Performance improvement in first pass
+  * [ff4a71f4c](https://github.com/webmproject/libvpx/commit/ff4a71f4c): boost for good quality mode
+  * [cec6a596b](https://github.com/webmproject/libvpx/commit/cec6a596b): A change should also help in speeding up the quality modes
+  * [13db80c2823](https://github.com/webmproject/libvpx/commit/13db80c2823): Improved performance of good quality
+  * [19054ab6da](https://github.com/webmproject/libvpx/commit/19054ab6da): Redefined good quality settings
+  * [431dac08d](https://github.com/webmproject/libvpx/commit/431dac08d): Disabled some features for first pass
 * Configuration option mentioned
 
 0.9.6 - 0.9.7:
 * Configuration options/Interactions: goodQuality (speed up), twoPass (speed up), bestQuality (speed up), constantBitrate * goodQuality (slow down), bestQuality * constantBitrage (slow down), quality * threads (speed up), constantBitrate * threads * twoPass (speed up)
 * Changelog: Mentions speed up for bestQuality, goodQuality and for one-pass.
 * Commits:
-  * b5ea2fbc2: Improved 1-pass CBR rate control
-  * 6c565fada0820
-  * 61f0c090dff65135c1828a7c407f51fe21405926: speed-up mentioned
-  * 0e9a6ed72a06dd367049d33ec656f7e3bf2211a2: Speed-up mentioned
+  * [b5ea2fbc2](https://github.com/webmproject/libvpx/commit/b5ea2fbc2): Improved 1-pass CBR rate control
+  * [6c565fada0820](https://github.com/webmproject/libvpx/commit/6c565fada0820)
+  * [61f0c090dff65135c1828a7c407f51fe21405926](https://github.com/webmproject/libvpx/commit/61f0c090dff65135c1828a7c407f51fe21405926): speed-up mentioned
+  * [0e9a6ed72a06dd367049d33ec656f7e3bf2211a2](https://github.com/webmproject/libvpx/commit/0e9a6ed72a06dd367049d33ec656f7e3bf2211a2): Speed-up mentioned
 * Configuration option mentioned
 
 0.9.7 - 0.9.7-p1:
 * Configuration options/Interactions: constantBitrate * goodQuality (speed up), bestQuality * constantBitrate (speed up)
 * Changelog: Doesn't mention speedups, only a few fixes.
 * Commits:
-  * e96131705: Revers b5ea2fb because of loss of quality
+  * [e96131705](https://github.com/webmproject/libvpx/commit/e96131705): Revers b5ea2fb because of loss of quality
 * Configuration option mentioned
 
 0.9.7-p1 - 1.0.0:
 * Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up)
 * Changelog: Reports performance improvements in different qualities
 * Commits:
-  * b9f19f8917: speedup on quality
+  * [b9f19f8917](https://github.com/webmproject/libvpx/commit/b9f19f8917): speedup on quality
 * Configuration option mentioned
 
 
@@ -652,15 +652,15 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: bestQuality (slow down), goodQuality (slow down), twoPass (speed up)
 * Changelog: A denoiser is added to the encoder; no slow down reported for "most material". twoPass speed up is reported
 * Commits:
-  * 019384f2d36: two pass optimization
+  * [019384f2d36](https://github.com/webmproject/libvpx/commit/019384f2d36): two pass optimization
 * Nothing found regarding goodQuality or bestQuality
 
 1.1.0 - 1.2.0:
 * Configuration options/Interactions: very minor changes; constantBitrate * twoPass (slow down)
 * Changelog: Does not clearly mention speed up or slow down
 * Commits:
-  * 64075c9b0129e: Encoder denoiser performance improvement (nothing to slow down)
-  * 7b0b6a2c414a7e8947d37c817d5b312a7ec844f7: Configuration option mentioned
+  * [64075c9b0129e](https://github.com/webmproject/libvpx/commit/64075c9b0129e): Encoder denoiser performance improvement (nothing to slow down)
+  * [7b0b6a2c414a7e8947d37c817d5b312a7ec844f7](https://github.com/webmproject/libvpx/commit/7b0b6a2c414a7e8947d37c817d5b312a7ec844f7): Configuration option mentioned
 * Configuration option mentioned in the commits
 
 
@@ -668,28 +668,28 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: bestQuality (slow down), goodQuality (slow down), twoPass (slow down)
 * Changelog: Introduces VP9. Mentions speed optimizations but no slow downs.
 * Commits:
-  * ee2051f6500: two pass rate control code changes
-  * e237fd7c: Two pass refactoring
-  * 9255ad107f2e1: Impact on quality (higher runtime)
-  * 374a17366: Force lossless coding at very high quality
-  * 11abab356e: mentions slower encoding on speed 2
+  * [ee2051f6500](https://github.com/webmproject/libvpx/commit/ee2051f6500): two pass rate control code changes
+  * [e237fd7c](https://github.com/webmproject/libvpx/commit/e237fd7c): Two pass refactoring
+  * [9255ad107f2e1](https://github.com/webmproject/libvpx/commit/9255ad107f2e1): Impact on quality (higher runtime)
+  * [374a17366](https://github.com/webmproject/libvpx/commit/374a17366): Force lossless coding at very high quality
+  * [11abab356e](https://github.com/webmproject/libvpx/commit/11abab356e): mentions slower encoding on speed 2
 * Configuration option mentioned
 
 1.3.0 - 1.4.0:
 * Configuration options/Interactions: twoPass (massive speed up), threads2/threads3/threads4 * twoPass (slow down), quality * constantBitrate * threads (speed up)
 * Changelog: Focuses on VP9; Vp8 is not mentioned at all
 * Commits:
-  * 0639b5cff: speed up in quality
-  * 096ab11012: Removing pass number check (the output file has been opened twice during two-pass encoding)
-  * c30a9cd97: Speed up in 2 pass
-  * 2e05341ab4990: Speed up in 2 pass
+  * [0639b5cff](https://github.com/webmproject/libvpx/commit/0639b5cff): speed up in quality
+  * [096ab11012](https://github.com/webmproject/libvpx/commit/096ab11012): Removing pass number check (the output file has been opened twice during two-pass encoding)
+  * [c30a9cd97](https://github.com/webmproject/libvpx/commit/c30a9cd97): Speed up in 2 pass
+  * [2e05341ab4990](https://github.com/webmproject/libvpx/commit/2e05341ab4990): Speed up in 2 pass
 * Configuration option mentioned
 
 1.4.0 - 1.5.0:
 * Configuration options/Interactions: minor changes, bestQuality (speed up), goodQuality (speed up)
 * Changelog: Mentions VP9; combines some functions with VP9
 * Commits:
-  * 8dd466edc84: impact on quality of animated test sequence
+  * [8dd466edc84](https://github.com/webmproject/libvpx/commit/8dd466edc84): impact on quality of animated test sequence
 * Configuration option mentioned
 
 
@@ -697,24 +697,24 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: constantBitrate * goodQuality (speed up), bestQuality * constantBitrate (speed up), quality * twoPass (slow down), quality * threads * twoPass (speed up)
 * Changelog: Mentions VP9 speed up (but only high-level)
 * Commits:
-  * 1cd987d9222a27f0f2dfb3b71bc2325313865b90: Speed-up mentioned
-  * 8ba98516: Improve best quality settings speed
-  * 6fbb4c3061e: Speed up VP8 on Linux
+  * [1cd987d9222a27f0f2dfb3b71bc2325313865b90](https://github.com/webmproject/libvpx/commit/1cd987d9222a27f0f2dfb3b71bc2325313865b90): Speed-up mentioned
+  * [8ba98516](https://github.com/webmproject/libvpx/commit/8ba98516): Improve best quality settings speed
+  * [6fbb4c3061e](https://github.com/webmproject/libvpx/commit/6fbb4c3061e): Speed up VP8 on Linux
 * Configuration option mentioned
 
 1.6.1 - 1.7.0:
 * Configuration options/Interactions: None
 * Changelog: Nothing regarding VP8
 * Commits:
-  * c8678fb7f38024345462cfab3b34d649548ff445: Speed-up mentioned
+  * [c8678fb7f38024345462cfab3b34d649548ff445](https://github.com/webmproject/libvpx/commit/c8678fb7f38024345462cfab3b34d649548ff445): Speed-up mentioned
 * No configuration option found
 
 1.7.0 - 1.8.0:
 * Configuration options: None
 * Changelog: Focuses on VP9
 * Commits:
-  * c176e6490:  ~10% improvement on 64 bit
-  * ad0ed535a: mentions it is faster
+  * [c176e6490](https://github.com/webmproject/libvpx/commit/c176e6490):  ~10% improvement on 64 bit
+  * [ad0ed535a](https://github.com/webmproject/libvpx/commit/ad0ed535a): mentions it is faster
 * No configuration option found
 
 ## VP9
@@ -724,17 +724,17 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: columnTiling (massive slow down), bestQuality (massive slow down), goodQuality (slow down), quality * noAltRef (speed up), arnMaxFrames * quality (slow down), columnTiling * constantBitrate (speed up), bestQuality * columnTiling (high slow down)
 * Changelog:  Mentions only speed ups, no slow downs; 
 * Commits:
-  * ea8aaf15b55: 20% slower
-  * eba9c762a: tile-based multi-threaded encoder
-  * 54eda13f8df587fe0a5a202f232f66863aff445a: Slow down mentioned
+  * [ea8aaf15b55](https://github.com/webmproject/libvpx/commit/ea8aaf15b55): 20% slower
+  * [eba9c762a](https://github.com/webmproject/libvpx/commit/eba9c762a): tile-based multi-threaded encoder
+  * [54eda13f8df587fe0a5a202f232f66863aff445a](https://github.com/webmproject/libvpx/commit/54eda13f8df587fe0a5a202f232f66863aff445a): Slow down mentioned
 * Configuration option is mentioned
 
 1.4.0 - 1.5.0:
 * Configuration options/Interactions: goodQuality (massive speed up) but slow down when it comes to threading and column tiling
 * Changelog: Only mentions speed ups, no slow downs
 * Commits:
-  * 9fd8abc54: speed up compression for speed 5-8
-  * 9cfba09ac0e5: Optimize vpx_quantize assembler
+  * [9fd8abc54](https://github.com/webmproject/libvpx/commit/9fd8abc54): speed up compression for speed 5-8
+  * [9cfba09ac0e5](https://github.com/webmproject/libvpx/commit/9cfba09ac0e5): Optimize vpx_quantize assembler
 * Configuration option is mentioned
 
 
@@ -742,15 +742,15 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: bestQuality (massive speed up -- probably fix of 1.4.0 slow down?), columnTiling * goodquality * threads (slow down)
 * Changelog: Instructions have been reordered for Intel processors. 
 * Commits:
-  * af7fb17c09: Time savings on Xeon desktop
-  * 74a679de: Port optimizations to vp9
+  * [af7fb17c09](https://github.com/webmproject/libvpx/commit/af7fb17c09): Time savings on Xeon desktop
+  * [74a679de](https://github.com/webmproject/libvpx/commit/74a679de): Port optimizations to vp9
 * Configuration option not mentioned
 
 1.6.0 - 1.6.1:
 * Configuration options/Interactions: bestQuality (slow down), goodQuality (speed up), goodQuality * columnTiling * threads (slow down)
 * Changelog:  Mentions only speed up
 * Commits:
-  * 5d881770e59: Change default recode rule for good speed and best; mentioned speed-up
+  * [5d881770e59](https://github.com/webmproject/libvpx/commit/5d881770e59): Change default recode rule for good speed and best; mentioned speed-up
 * Configuration option mentioned
 
 
@@ -758,9 +758,9 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up), constantBitrate (speed up)
 * Changelog: VP9 high-bit performance reported
 * Commits:
-  * 9c2552a1c149cbc: speed up 
-  * 6557baf3363e: speed up
-  * 1a5482d4d: Denoiser speed-up
+  * [9c2552a1c149cbc](https://github.com/webmproject/libvpx/commit/9c2552a1c149cbc): speed up 
+  * [6557baf3363e](https://github.com/webmproject/libvpx/commit/6557baf3363e): speed up
+  * [1a5482d4d](https://github.com/webmproject/libvpx/commit/1a5482d4d): Denoiser speed-up
 * Configuration option mentioned
 
 
@@ -768,10 +768,10 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: bestQuality (slow down), constantBitrate (speed up), columnTiling * noAltRef (speed up), arnMaxFrames * quality (slow down)
 * Changelog: Mentions 2pass improvements in combination with auto-alt-ref; aso mentions improvements on real-time encoding.
 * Commits:
-  * 067457339bc: Improvement of bitrate mentioned
-  * 25d6542251a: Encoding speed a bit faster for lower quality settings
-  * 55db4f033: Increase convergence speed of noise estimation
-  * 2eac6df788dbc: speed feature controls tx size search depth
+  * [067457339bc](https://github.com/webmproject/libvpx/commit/067457339bc): Improvement of bitrate mentioned
+  * [25d6542251a](https://github.com/webmproject/libvpx/commit/25d6542251a): Encoding speed a bit faster for lower quality settings
+  * [55db4f033](https://github.com/webmproject/libvpx/commit/55db4f033): Increase convergence speed of noise estimation
+  * [2eac6df788dbc](https://github.com/webmproject/libvpx/commit/2eac6df788dbc): speed feature controls tx size search depth
 * Configuration option mentioned
 
 
