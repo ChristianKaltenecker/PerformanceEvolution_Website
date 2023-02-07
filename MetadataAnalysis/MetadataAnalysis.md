@@ -12,8 +12,8 @@ Is the case study that is abnormal in comparison to the other case studies since
 * Configuration options/Interactions: fsync
 * Change log: No change log
 * Commits:
-  * 87eadd7e3d6f: Force default wal_sync_method to be fdatasync on Linux
-  * 1435a8554: Flush the WAL received before exiting
+  * [87eadd7e3d6f](https://github.com/postgres/postgres/commit/87eadd7e3d6f): Force default wal_sync_method to be fdatasync on Linux
+  * [1435a8554](https://github.com/postgres/postgres/commit/1435a8554): Flush the WAL received before exiting
 * Configuration option mentioned
 
 ## z3
@@ -29,10 +29,10 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 * Configuration options/Interactions: QF_LRA (Unquantified linear real arithmetic -- speedup), QF_LRA * proof (speedup)
 * Changelog: Reports changes on QF_FP; No speedup mentioned
 * Commits: 
-  * 1e30fd2c65d
-  * 89c43676d5719
-  * 44e647e72b
-  * 2aa91eee705
+  * [1e30fd2c65d](https://github.com/Z3Prover/z3/commit/1e30fd2c65d)
+  * [89c43676d5719](https://github.com/Z3Prover/z3/commit/89c43676d5719)
+  * [44e647e72b](https://github.com/Z3Prover/z3/commit/44e647e72b)
+  * [2aa91eee705](https://github.com/Z3Prover/z3/commit/2aa91eee705)
 * Configuration options not mentioned
 
 
@@ -40,46 +40,46 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 * Configuration options/Interactions: QF_FP * proof (speedup)
 * Changelog: No speedup mentioned
 * Commits:
-  * eeef4d29d8285
-  * 759d80dfe371
-  * 73a8f9960f2641
-  * a44044fb156cd2c13
-  * e180cfe256ecd
-  * 478b3160ace
-  * 54c959783d0e83
-  * e1e27f2c26474
-  * b9287343487f
-  * 5fdc104f8247d60e
+  * [eeef4d29d8285](https://github.com/Z3Prover/z3/commit/eeef4d29d8285)
+  * [759d80dfe371](https://github.com/Z3Prover/z3/commit/759d80dfe371)
+  * [73a8f9960f2641](https://github.com/Z3Prover/z3/commit/73a8f9960f2641)
+  * [a44044fb156cd2c13](https://github.com/Z3Prover/z3/commit/a44044fb156cd2c13)
+  * [e180cfe256ecd](https://github.com/Z3Prover/z3/commit/e180cfe256ecd)
+  * [478b3160ace](https://github.com/Z3Prover/z3/commit/478b3160ace)
+  * [54c959783d0e83](https://github.com/Z3Prover/z3/commit/54c959783d0e83)
+  * [e1e27f2c26474](https://github.com/Z3Prover/z3/commit/e1e27f2c26474)
+  * [b9287343487f](https://github.com/Z3Prover/z3/commit/b9287343487f)
+  * [5fdc104f8247d60e](https://github.com/Z3Prover/z3/commit/5fdc104f8247d60e)
 * Configuration option proof mentioned multiple times
 
 4.4.1 - 4.5.0:
 * Configuration options/Interactions: QF_FP * proof (slowdown), QF_FP (slowdown)
 * Changelog: Reports changes on LRA (new solver); no speedup reported
 * Commits:
-  * cc6769c8664
-  * c1aa33339d2e95c
-  * c693c990df9e2babb
-  * 43202572ee73b
-  * ac902dad1a1022
+  * [cc6769c8664](https://github.com/Z3Prover/z3/commit/cc6769c8664)
+  * [c1aa33339d2e95c](https://github.com/Z3Prover/z3/commit/c1aa33339d2e95c)
+  * [c693c990df9e2babb](https://github.com/Z3Prover/z3/commit/c693c990df9e2babb)
+  * [43202572ee73b](https://github.com/Z3Prover/z3/commit/43202572ee73b)
+  * [ac902dad1a1022](https://github.com/Z3Prover/z3/commit/ac902dad1a1022)
 * Configuration option proof mentioned multiple times
 
 4.5.0 - 4.6.0:
 * Configuration options/Interactions: QF_FP (speedup), QF_FP * proof (speedup), QF_LRA * proof (slowdown), QF_UFLRA (slowdown), QF_UFLRA * proof (slowdown)
 * Changelog: Mentions changes of a new linear arithmetic solver; no speedups reported
 * Commits:
-  * fbaee08: fix performance regression introduced with theory_str; theory_str slows down things
-  * 72c9134424c973: fixing regressions introduced when reducing astm proof dependencies
-  * d67f3c14668b8f
+  * [fbaee08](https://github.com/Z3Prover/z3/commit/fbaee08): fix performance regression introduced with theory_str; theory_str slows down things
+  * [72c9134424c973](https://github.com/Z3Prover/z3/commit/72c9134424c973): fixing regressions introduced when reducing astm proof dependencies
+  * [d67f3c14668b8f](https://github.com/Z3Prover/z3/commit/d67f3c14668b8f)
 * Configuration option proof mentioned regarding speedup
 
 4.6.0 - 4.7.1:
 * Configuration options/Interactions: QF_UFLRA * proof (speedup), QF_LRA (speedup), QF_UFLRA (speedup)
 * Changelog: Reports breaking changes but no speedups
 * Commits: Nothing directly related to runtime performance
-  * 9e8192e44811bcfad99866932480619d8e8512af (Speed-up)
-  * B5d531f079d6b678dc8accf6fd165185361c18d6 (Speed-up)
-  * a1d870f19f6638432eb5f15f0f1a59319a9927ab (Workload mentioned)
-  * fc835ba01e5285ceb4c15ec8fa6eb1eb90d6e5ba (Configuration option mentioned)
+  * [9e8192e44811bcfad99866932480619d8e8512af](https://github.com/Z3Prover/z3/commit/9e8192e44811bcfad99866932480619d8e8512af) (Speed-up)
+  * [b5d531f079d6b678dc8accf6fd165185361c18d6](https://github.com/Z3Prover/z3/commit/b5d531f079d6b678dc8accf6fd165185361c18d6) (Speed-up)
+  * [a1d870f19f6638432eb5f15f0f1a59319a9927ab](https://github.com/Z3Prover/z3/commit/a1d870f19f6638432eb5f15f0f1a59319a9927ab) (Workload mentioned)
+  * [fc835ba01e5285ceb4c15ec8fa6eb1eb90d6e5ba](https://github.com/Z3Prover/z3/commit/fc835ba01e5285ceb4c15ec8fa6eb1eb90d6e5ba) (Configuration option mentioned)
 * Configuration options mentioned
 
 
@@ -87,49 +87,49 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 * Configuration options/Interactions: QF_LRA * proof (speedup), QF_LRA (slowdown)
 * Changelog: No speedup reported
 * Commits:
-  * 49e94809282eee4d
-  * 16d4e2f5d1b2de3
-  * e0d69a0033bcc
-  * 4695ca16c84aa0
+  * [49e94809282eee4d](https://github.com/Z3Prover/z3/commit/49e94809282eee4d)
+  * [16d4e2f5d1b2de3](https://github.com/Z3Prover/z3/commit/16d4e2f5d1b2de3)
+  * [e0d69a0033bcc](https://github.com/Z3Prover/z3/commit/e0d69a0033bcc)
+  * [4695ca16c84aa0](https://github.com/Z3Prover/z3/commit/4695ca16c84aa0)
 * Configuration option proof mentioned regarding speedup
 
 4.8.3 - 4.8.4:
 * Configuration options/Interactions: QF_UFLRA * proof (slowdown)
 * Changelog: Speedups reported but not in relation to configuration option
 * Commits: 
-  * 9e5aaf074e248084
-  * bfcea7a8198ef
+  * [9e5aaf074e248084](https://github.com/Z3Prover/z3/commit/9e5aaf074e248084)
+  * [bfcea7a8198ef](https://github.com/Z3Prover/z3/commit/bfcea7a8198ef)
 * Configuration options not mentioned
 
 4.8.4 - 4.8.5:
 * Configuration options/Interactions: QF_FP * proof (speedup), QF_LRA (speedup)
 * Changelog: Nothing relevant mentioned
 * Commits:
-  * 73f6806371e494c (speed-up mentioned)
-  * 893e60459369e1b781c3d99015c03d2089dd8c5e (found configuration option proof)
+  * [73f6806371e494c](https://github.com/Z3Prover/z3/commit/73f6806371e494c) (speed-up mentioned)
+  * [893e60459369e1b781c3d99015c03d2089dd8c5e](https://github.com/Z3Prover/z3/commit/893e60459369e1b781c3d99015c03d2089dd8c5e) (found configuration option proof)
 * Configuration option mentioned
 
 4.8.5 - 4.8.6:
 * Configuration options/Interactions: QF_UFLRA (slowdown), QF_UFLRA * proof (slowdown)
 * Changelog: Nothing relevant mentioned
 * Commits: 
-  * 43a19cadf6c
+  * [43a19cadf6c](https://github.com/Z3Prover/z3/commit/43a19cadf6c)
 * Configuration option mentioned
 
 4.8.6 - 4.8.7:
 * Configuration options/Interactions: Nothing
 * Changelog: Nothing relevant mentioned
 * Commits:
-  * 18fe28c0f0db547e
+  * [18fe28c0f0db547e](https://github.com/Z3Prover/z3/commit/18fe28c0f0db547e)
 * Configuration option not mentioned
 
 4.8.7 - 4.8.8:
 * Configuration options/Interactions: QF_LRA * proof (speedup), QF_UFLRA * proof (speedup), QF_UFLRA * model_validate (slowdown), QF_UFLRA (slowdown)
 * Changelog: (PROBABLE REGRESSION REPORTED!) Only regression reported; no speedup
 * Commits:
-  * 0f2c8c21ff955713a4 (speed-up reported)
-  * 140926e7c0ea0e52 (perf regression reported)
-  * 20d72e5d9771e4d2efca568ccba767d982af6cbc (Configuration option proof mentioned)
+  * [0f2c8c21ff955713a4](https://github.com/Z3Prover/z3/commit/0f2c8c21ff955713a4) (speed-up reported)
+  * [140926e7c0ea0e52](https://github.com/Z3Prover/z3/commit/140926e7c0ea0e52) (perf regression reported)
+  * [20d72e5d9771e4d2efca568ccba767d982af6cbc](https://github.com/Z3Prover/z3/commit/20d72e5d9771e4d2efca568ccba767d982af6cbc) (Configuration option proof mentioned)
 * Configuration options not mentioned directly in relation to performance, but mentioned
 
 
@@ -137,15 +137,15 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 * Configuration options/Interactions: QF_UFLRA * model_validate * proof (speedup), QF_LRA * proof (speedup), QF_UFLRA * proof (slowdown), QF_UFLRA * model_validate (slowdown), QF_LRA (slowdown), QF_UFLRA (speedup)
 * Changelog: Another potential regression reported through a new arithmetic theory
 * Commits:
-  * 1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa (Speed-up reported)
-  * 07a1aea689f9c2dff0f74a1b61940d04155cba39 (Configuration option proof mentioned)
+  * [1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa](https://github.com/Z3Prover/z3/commit/1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa) (Speed-up reported)
+  * [07a1aea689f9c2dff0f74a1b61940d04155cba39](https://github.com/Z3Prover/z3/commit/07a1aea689f9c2dff0f74a1b61940d04155cba39) (Configuration option proof mentioned)
 * Configuration options mentioned
 
 4.8.9 - 4.8.10:
 * Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA (slowdown)
 * Changelog: default solver replaced, but nothing regarding performance reported
 * Commits:
-  * a95c35dadbfdcc86
+  * [a95c35dadbfdcc86](https://github.com/Z3Prover/z3/commit/a95c35dadbfdcc86)
 * Configuration option mentioned
 
 
@@ -153,13 +153,13 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 * Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA * proof (speedup), QF_UFLRA * model_validate (speedup), QF_UFLRA (slowdown)
 * Changelog: Nothing directly related to performance is mentioned
 * Commits:
-  * 52e67b0d3edb3f
-  * 4a8ba8b1609044
-  * cc001ad6825074743
-  * 998cf4c726258fa (regression mentioned!)
-  * 7869cdbbc88a70d018218729654
-  * 6aa766a5448db9
-  * 8c66691e6d411d9aa0e092843339d7f80983d39a (Configuration option proof mentioned)
+  * [52e67b0d3edb3f](https://github.com/Z3Prover/z3/commit/52e67b0d3edb3f)
+  * [4a8ba8b1609044](https://github.com/Z3Prover/z3/commit/4a8ba8b1609044)
+  * [cc001ad6825074743](https://github.com/Z3Prover/z3/commit/cc001ad6825074743)
+  * [998cf4c726258fa](https://github.com/Z3Prover/z3/commit/998cf4c726258fa) (regression mentioned!)
+  * [7869cdbbc88a70d018218729654](https://github.com/Z3Prover/z3/commit/7869cdbbc88a70d018218729654)
+  * [6aa766a5448db9](https://github.com/Z3Prover/z3/commit/6aa766a5448db9)
+  * [8c66691e6d411d9aa0e092843339d7f80983d39a](https://github.com/Z3Prover/z3/commit/8c66691e6d411d9aa0e092843339d7f80983d39a) (Configuration option proof mentioned)
 * Configuration options not mentioned in relation to performance, but mentioned
 
 
@@ -174,10 +174,10 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 * Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA (speedup)
 * Changelog: Nothing directly related to performance is mentioned
 * Commits:
-  * ed27ce5526bb4b42
-  * 3e6ff768a58f072
-  * 4dad41416136ab
-  * 63ac2ee0d1377
+  * [ed27ce5526bb4b42](https://github.com/Z3Prover/z3/commit/ed27ce5526bb4b42)
+  * [3e6ff768a58f072](https://github.com/Z3Prover/z3/commit/3e6ff768a58f072)
+  * [4dad41416136ab](https://github.com/Z3Prover/z3/commit/4dad41416136ab)
+  * [63ac2ee0d1377](https://github.com/Z3Prover/z3/commit/63ac2ee0d1377)
 * Configuration options not reported
 
 ## brotli
