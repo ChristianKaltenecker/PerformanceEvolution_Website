@@ -287,7 +287,7 @@ This case study (along with PostgreSQL) has a release (2.2.1 -- 2.2.2) where no 
   * They also fixed some regressions happening in configuration options we do not use (e.g., --http-proxy).
   * Modified create_socket_tcp.
 * Commits:
-  * 74bbc7: build: proper lzo detection and usage (?)
+  * [74bbc7](https://github.com/OpenVPN/openvpn/commit/74bbc7): build: proper lzo detection and usage (?)
 * Configuration option mentioned
 
 2.3.9 - 2.4.0:
@@ -295,14 +295,14 @@ This case study (along with PostgreSQL) has a release (2.2.1 -- 2.2.2) where no 
 * Changelog: 
   * In 2.3.10: Fix regression in setups without a client certificate
 * Commits:
-  * b59fc7f: Fix missing return value checks; should become faster
-  * fc91d4b: Increase control channel packet size for faster handshakes
-  * 160504a29: Refactor CRL (certificate revocation list) handling
-  * 985156e: Fix --cipher=none regression
-  * 65eedc35: Make sure float won't happen if hmac check failed (regression)
-  * af1e4d26: switch to SHA256 instead of SHA1
-  * dd2fbc26: sha1 returns correct SHA1 fingerprint
-  * 5d523377: Disable SSL compression
+  * [b59fc7f](https://github.com/OpenVPN/openvpn/commit/b59fc7f): Fix missing return value checks; should become faster
+  * [fc91d4b](https://github.com/OpenVPN/openvpn/commit/fc91d4b): Increase control channel packet size for faster handshakes
+  * [160504a29](https://github.com/OpenVPN/openvpn/commit/160504a29): Refactor CRL (certificate revocation list) handling
+  * [985156e](https://github.com/OpenVPN/openvpn/commit/985156e): Fix --cipher=none regression
+  * [65eedc35](https://github.com/OpenVPN/openvpn/commit/65eedc35): Make sure float won't happen if hmac check failed (regression)
+  * [af1e4d26](https://github.com/OpenVPN/openvpn/commit/af1e4d26): switch to SHA256 instead of SHA1
+  * [dd2fbc26](https://github.com/OpenVPN/openvpn/commit/dd2fbc26): sha1 returns correct SHA1 fingerprint
+  * [5d523377](https://github.com/OpenVPN/openvpn/commit/5d523377): Disable SSL compression
 * Configuration option mentioned
 
 
@@ -321,8 +321,8 @@ This turns out to be a drawback since it makes tracking difficult.
 * Configuration options/Interactions: compression(Lzo,Gzip,Lzma) * processorCount(2,4,8), level 3-9; processorCount_4 slow down
 * Changelog: 540-543: fixes and speedup;
 * Commits:
-  * 692949287: Sliding mmap was causing a slowdown of death
-  * 2b08c6e280: Fix the output of zpaq compress and decompress
+  * [692949287](https://github.com/ckolivas/lrzip/commit/692949287): Sliding mmap was causing a slowdown of death
+  * [2b08c6e280](https://github.com/ckolivas/lrzip/commit/2b08c6e280): Fix the output of zpaq compress and decompress
 * Configuration option is mentioned
 
 
@@ -330,43 +330,43 @@ This turns out to be a drawback since it makes tracking difficult.
 * Configuration options/Interaction: same as 530. processorCount_4 slowed down when using different compressions; reverts some changes from 543; some are even worse (compressionLZMA * processorCount_8); hard to tell
 * Changelog: speed ups are mentioned
 * Commits:
-  * 688aa55c7930: Spawn threads in regular intervals; speeds up compression
+  * [688aa55c7930](https://github.com/ckolivas/lrzip/commit/688aa55c7930): Spawn threads in regular intervals; speeds up compression
 * Configuration option is mentioned regarding speed-up
 
 
 544 - 550 (configurations stay the same or are speeded up -- major change):
 * Changelog: speed up mentioned
 * Commits:
-  * 8dd9b00: Reverted 688aa55c7 because it was not only resuling in a speed up but also in a slow down
-  * 50437a84: Improves threading by bringing it higher up in the code.
-  * e0265b33: Rescales the lzma levels and brings a speed up to lzma
+  * [8dd9b00](https://github.com/ckolivas/lrzip/commit/8dd9b00): Reverted 688aa55c7 because it was not only resuling in a speed up but also in a slow down
+  * [50437a84](https://github.com/ckolivas/lrzip/commit/50437a84): Improves threading by bringing it higher up in the code.
+  * [e0265b33](https://github.com/ckolivas/lrzip/commit/e0265b33): Rescales the lzma levels and brings a speed up to lzma
 * Configuration option lzma and threading mentioned regarding speed-up
 
 551 - 552:
 * Changelog: no performance changes are reported.
 Focus on decompression.
 * Commits:
-  * 8d110e3366d: Check that thread really exited before moving on
+  * [8d110e3366d](https://github.com/ckolivas/lrzip/commit/8d110e3366d): Check that thread really exited before moving on
 * Configuration option mentioned
 
 552 - 560 (major change):
 * Changelog: speed ups reported
 * Commits:
-  * 7287ab8a6: md5 process bytes saving time
-  * 4036125f947: Make the buffer sized, speedup
+  * [7287ab8a6](https://github.com/ckolivas/lrzip/commit/7287ab8a6): md5 process bytes saving time
+  * [4036125f947](https://github.com/ckolivas/lrzip/commit/4036125f947): Make the buffer sized, speedup
 * Configuration option not mentioned
 
 560 - 571 (speed up -- major change):
 * Changelog: 0.570: Multithreading speedup; 
 * Commits:
-  * f9f880908c: Small slow down by removing fragile exponential growth buffer size
-  * bb33f7571cc: Speeding up multi-threading
+  * [f9f880908c](https://github.com/ckolivas/lrzip/commit/f9f880908c): Small slow down by removing fragile exponential growth buffer size
+  * [bb33f7571cc](https://github.com/ckolivas/lrzip/commit/bb33f7571cc): Speeding up multi-threading
 * Configuration option mentioned regarding speed-up
 
 571 - 601 (slow down -- major change):
 * Changelog: no speed up/slow down reported
 * Commits:
-  * 643054ae: Fix threading error (?)
+  * [643054ae](https://github.com/ckolivas/lrzip/commit/643054ae): Fix threading error (?)
 * Configuration option mentioned
 
 601 - 602:
@@ -378,58 +378,58 @@ Focus on decompression.
 602 - 604:
 * Changelog: Nothing relevant reported
 * Commits:
-  * 7ed977b1c1: Detach threads from the compression side
+  * [7ed977b1c1](https://github.com/ckolivas/lrzip/commit/7ed977b1c1): Detach threads from the compression side
 * Configuration option mentioned
 
 604 - 606:
 * Changelog: Nothing relevant supported
 * Commits:
-  * d033743e6f: Reverts 
+  * [d033743e6f](https://github.com/ckolivas/lrzip/commit/d033743e6f): Reverts 
 * Configuration option not mentioned
 
 606 - 607 (speed up):
 * Changelog: Nothing relevant reported (except for the update to lzma 920)
 * Commits:
-  * 71bb72f5da: Update to lzma 920 library
+  * [71bb72f5da](https://github.com/ckolivas/lrzip/commit/71bb72f5da): Update to lzma 920 library
 * Configuration option mentioned
 
 607 - 608 (speed up):
 * Changelog: Speed up reported 2x
 * Commits:
-  * f496e0705: Speed up
+  * [f496e0705](https://github.com/ckolivas/lrzip/commit/f496e0705): Speed up
 * Configuration option not mentioned
 
 608 - 611 (slow down and some speed up):
 * Changelog: Speed up reported
 * Commits:
-  * f4165ec26
-  * 2fada9fb
-  * c136424
-  * 0e593f768
-  * 92c09a758
-  * 5edf8471d1
-  * dbc71eceb (slow down)
+  * [f4165ec26](https://github.com/ckolivas/lrzip/commit/)
+  * [2fada9fb](https://github.com/ckolivas/lrzip/commit/)
+  * [c136424](https://github.com/ckolivas/lrzip/commit/)
+  * [0e593f768](https://github.com/ckolivas/lrzip/commit/)
+  * [92c09a758](https://github.com/ckolivas/lrzip/commit/)
+  * [5edf8471d1](https://github.com/ckolivas/lrzip/commit/)
+  * [dbc71eceb](https://github.com/ckolivas/lrzip/commit/) (slow down)
 * Configuration option mentioned
 
 612 - 614:
 * Changelog: Nothing relevant reported
 * Commits:
-  * 081265f: No back end compression for blocks smaller than 64 bytes
+  * [081265f](https://github.com/ckolivas/lrzip/commit/): No back end compression for blocks smaller than 64 bytes
 * Configuration option mentioned
 
 614 - 615:
 * Changelog: Multiple micro-optimizations and several fixes but no clear relation to performance
 * Commits:
-  * 6f0410d28f
-  * 87fe625829
+  * [6f0410d28f](https://github.com/ckolivas/lrzip/commit/)
+  * [87fe625829](https://github.com/ckolivas/lrzip/commit/)
 * Configuration option not mentioned
 
 620 - 621:
 * Changelog: Microoptiomisation is reported; but no clear speed up /slow down
 * Commits:
-  * 9a17a54c: make high buffer only one page size faster
-  * aa753fee: microoptimisation
-  * f378595dc
+  * [9a17a54c](https://github.com/ckolivas/lrzip/commit/9a17a54c): make high buffer only one page size faster
+  * [aa753fee](https://github.com/ckolivas/lrzip/commit/aa753fee): microoptimisation
+  * [f378595dc](https://github.com/ckolivas/lrzip/commit/f378595dc)
 
 ## HSQLDB
 
