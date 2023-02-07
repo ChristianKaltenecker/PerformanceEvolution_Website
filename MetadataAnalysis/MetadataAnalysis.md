@@ -595,184 +595,184 @@ Shares the same repository with VP9.
 
 ### Commit messages and changelogs
 0.9.1 - 0.9.2:
-Configuration options: twoPass (speed up), bestQuality (speed up), goodQuality(speed up), constantBitrate * twoPass (speed up), bestQuality * noAltRef (speed up), constantBitrage * threads * twoPass (slow down)...
-Changelog: Mentions a fix of two-pass for y4m input, mentions speed improvements
-Commits:
-e105e245e: Fix framrate for Y4M input; configuration option mentioned
-Configuration option mentioned
+* Configuration options/Interactions: twoPass (speed up), bestQuality (speed up), goodQuality(speed up), constantBitrate * twoPass (speed up), bestQuality * noAltRef (speed up), constantBitrage * threads * twoPass (slow down)...
+* Changelog: Mentions a fix of two-pass for y4m input, mentions speed improvements
+* Commits:
+  * e105e245e: Fix framrate for Y4M input; configuration option mentioned
+* Configuration option mentioned
 
 
 0.9.2 - 0.9.5:
-Configuration options: constantBitrate * twoPass (speed up), twoPass (minor slow down)
-Changelog: only minor speed improvements for encoder mentioned, but more in relation to bestQuality; mentions changes for two pass.
-Commits:
-ff3068d6d: Change on two pass.
-788c0eb5: Tune effect of motion in two pass
-Configuration option mentioned
+* Configuration options/Interactions: constantBitrate * twoPass (speed up), twoPass (minor slow down)
+* Changelog: only minor speed improvements for encoder mentioned, but more in relation to bestQuality; mentions changes for two pass.
+* Commits:
+  * ff3068d6d: Change on two pass.
+  * 788c0eb5: Tune effect of motion in two pass
+* Configuration option mentioned
 
 0.9.5 - 0.9.6:
-Configuration options: bestQuality (speed up), goodQuality (speed up), twoPass (speed up), constantBitrate * goodQuality (speed up), bestQuality * constantBitrage (slow down)
-Changelog: Mentions the speed improvement on bestQuality and goodQuality on x86 architecture
-Commits:
-b095d9df3c: Adjustment to boost calculation in two pass
-3c18a2bb2e: Performance improvement in first pass
-ff4a71f4c: boost for good quality mode
-cec6a596b: A change should also help in speeding up the quality modes
-13db80c2823: Improved performance of good quality
-19054ab6da: Redefined good quality settings
-431dac08d: Disabled some features for first pass
-Configuration option mentioned
+* Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up), twoPass (speed up), constantBitrate * goodQuality (speed up), bestQuality * constantBitrage (slow down)
+* Changelog: Mentions the speed improvement on bestQuality and goodQuality on x86 architecture
+* Commits:
+  * b095d9df3c: Adjustment to boost calculation in two pass
+  * 3c18a2bb2e: Performance improvement in first pass
+  * ff4a71f4c: boost for good quality mode
+  * cec6a596b: A change should also help in speeding up the quality modes
+  * 13db80c2823: Improved performance of good quality
+  * 19054ab6da: Redefined good quality settings
+  * 431dac08d: Disabled some features for first pass
+* Configuration option mentioned
 
 0.9.6 - 0.9.7:
-Configuration options: goodQuality (speed up), twoPass (speed up), bestQuality (speed up), constantBitrate * goodQuality (slow down), bestQuality * constantBitrage (slow down), quality * threads (speed up), constantBitrate * threads * twoPass (speed up)
-Changelog: Mentions speed up for bestQuality, goodQuality and for one-pass.
-Commits:
-b5ea2fbc2: Improved 1-pass CBR rate control
-6c565fada0820
-61f0c090dff65135c1828a7c407f51fe21405926: speed-up mentioned
-0e9a6ed72a06dd367049d33ec656f7e3bf2211a2: Speed-up mentioned
-Configuration option mentioned
+* Configuration options/Interactions: goodQuality (speed up), twoPass (speed up), bestQuality (speed up), constantBitrate * goodQuality (slow down), bestQuality * constantBitrage (slow down), quality * threads (speed up), constantBitrate * threads * twoPass (speed up)
+* Changelog: Mentions speed up for bestQuality, goodQuality and for one-pass.
+* Commits:
+  * b5ea2fbc2: Improved 1-pass CBR rate control
+  * 6c565fada0820
+  * 61f0c090dff65135c1828a7c407f51fe21405926: speed-up mentioned
+  * 0e9a6ed72a06dd367049d33ec656f7e3bf2211a2: Speed-up mentioned
+* Configuration option mentioned
 
 0.9.7 - 0.9.7-p1:
-Configuration options: constantBitrate * goodQuality (speed up), bestQuality * constantBitrate (speed up)
-Changelog: Doesn't mention speedups, only a few fixes.
-Commits:
-e96131705: Revers b5ea2fb because of loss of quality
-Configuration option mentioned
+* Configuration options/Interactions: constantBitrate * goodQuality (speed up), bestQuality * constantBitrate (speed up)
+* Changelog: Doesn't mention speedups, only a few fixes.
+* Commits:
+  * e96131705: Revers b5ea2fb because of loss of quality
+* Configuration option mentioned
 
 0.9.7-p1 - 1.0.0:
-Configuration options: bestQuality (speed up), goodQuality (speed up)
-Changelog: Reports performance improvements in different qualities
-Commits:
-b9f19f8917: speedup on quality
-Configuration option mentioned
+* Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up)
+* Changelog: Reports performance improvements in different qualities
+* Commits:
+  * b9f19f8917: speedup on quality
+* Configuration option mentioned
 
 
 1.0.0 - 1.1.0:
-Configuration options: bestQuality (slow down), goodQuality (slow down), twoPass (speed up)
-Changelog: A denoiser is added to the encoder; no slow down reported for "most material". twoPass speed up is reported
-Commits:
-019384f2d36: two pass optimization
-Nothing found regarding goodQuality or bestQuality
+* Configuration options/Interactions: bestQuality (slow down), goodQuality (slow down), twoPass (speed up)
+* Changelog: A denoiser is added to the encoder; no slow down reported for "most material". twoPass speed up is reported
+* Commits:
+  * 019384f2d36: two pass optimization
+* Nothing found regarding goodQuality or bestQuality
 
 1.1.0 - 1.2.0:
-Configuration options: very minor changes; constantBitrate * twoPass (slow down)
-Changelog: Does not clearly mention speed up or slow down
-Commits:
-64075c9b0129e: Encoder denoiser performance improvement (nothing to slow down)
-7b0b6a2c414a7e8947d37c817d5b312a7ec844f7: Configuration option mentioned
-Configuration option mentioned in the commits
+* Configuration options/Interactions: very minor changes; constantBitrate * twoPass (slow down)
+* Changelog: Does not clearly mention speed up or slow down
+* Commits:
+  * 64075c9b0129e: Encoder denoiser performance improvement (nothing to slow down)
+  * 7b0b6a2c414a7e8947d37c817d5b312a7ec844f7: Configuration option mentioned
+* Configuration option mentioned in the commits
 
 
 1.2.0 - 1.3.0:
-Configuration option: bestQuality (slow down), goodQuality (slow down), twoPass (slow down)
-Changelog: Introduces VP9. Mentions speed optimizations but no slow downs.
-Commits:
-ee2051f6500: two pass rate control code changes
-e237fd7c: Two pass refactoring
-9255ad107f2e1: Impact on quality (higher runtime)
-374a17366: Force lossless coding at very high quality
-11abab356e: mentions slower encoding on speed 2
-Configuration option mentioned
+* Configuration options/Interactions: bestQuality (slow down), goodQuality (slow down), twoPass (slow down)
+* Changelog: Introduces VP9. Mentions speed optimizations but no slow downs.
+* Commits:
+  * ee2051f6500: two pass rate control code changes
+  * e237fd7c: Two pass refactoring
+  * 9255ad107f2e1: Impact on quality (higher runtime)
+  * 374a17366: Force lossless coding at very high quality
+  * 11abab356e: mentions slower encoding on speed 2
+* Configuration option mentioned
 
 1.3.0 - 1.4.0:
-Configuration options: twoPass (massive speed up), threads2/threads3/threads4 * twoPass (slow down), quality * constantBitrate * threads (speed up)
-Changelog: Focuses on VP9; Vp8 is not mentioned at all
-Commits:
-0639b5cff: speed up in quality
-096ab11012: Removing pass number check (the output file has been opened twice during two-pass encoding)
-c30a9cd97: Speed up in 2 pass
-2e05341ab4990: Speed up in 2 pass
-Configuration option mentioned
+* Configuration options/Interactions: twoPass (massive speed up), threads2/threads3/threads4 * twoPass (slow down), quality * constantBitrate * threads (speed up)
+* Changelog: Focuses on VP9; Vp8 is not mentioned at all
+* Commits:
+  * 0639b5cff: speed up in quality
+  * 096ab11012: Removing pass number check (the output file has been opened twice during two-pass encoding)
+  * c30a9cd97: Speed up in 2 pass
+  * 2e05341ab4990: Speed up in 2 pass
+* Configuration option mentioned
 
 1.4.0 - 1.5.0:
-Configuration options: minor changes, bestQuality (speed up), goodQuality (speed up)
-Changelog: Mentions VP9; combines some functions with VP9
-Commits:
-8dd466edc84: impact on quality of animated test sequence
-Configuration option mentioned
+* Configuration options/Interactions: minor changes, bestQuality (speed up), goodQuality (speed up)
+* Changelog: Mentions VP9; combines some functions with VP9
+* Commits:
+  * 8dd466edc84: impact on quality of animated test sequence
+* Configuration option mentioned
 
 
 1.5.0 - 1.6.1:
-Configuration options: constantBitrate * goodQuality (speed up), bestQuality * constantBitrate (speed up), quality * twoPass (slow down), quality * threads * twoPass (speed up)
-Changelog: Mentions VP9 speed up (but only high-level)
-Commits:
-1cd987d9222a27f0f2dfb3b71bc2325313865b90: Speed-up mentioned
-8ba98516: Improve best quality settings speed
-6fbb4c3061e: Speed up VP8 on Linux
-configuration option mentioned
+* Configuration options/Interactions: constantBitrate * goodQuality (speed up), bestQuality * constantBitrate (speed up), quality * twoPass (slow down), quality * threads * twoPass (speed up)
+* Changelog: Mentions VP9 speed up (but only high-level)
+* Commits:
+  * 1cd987d9222a27f0f2dfb3b71bc2325313865b90: Speed-up mentioned
+  * 8ba98516: Improve best quality settings speed
+  * 6fbb4c3061e: Speed up VP8 on Linux
+* Configuration option mentioned
 
 1.6.1 - 1.7.0:
-Configuration options: None
-Changelog: Nothing regarding VP8
-Commits:
-c8678fb7f38024345462cfab3b34d649548ff445: Speed-up mentioned
-Configuration option does not make sense
+* Configuration options/Interactions: None
+* Changelog: Nothing regarding VP8
+* Commits:
+  * c8678fb7f38024345462cfab3b34d649548ff445: Speed-up mentioned
+* No configuration option found
 
 1.7.0 - 1.8.0:
-Configuration options: None
-Changelog: Focuses on VP9
-Commits:
-c176e6490:  ~10% improvement on 64 bit
-ad0ed535a: mentions it is faster
-Configuration options: Not mentioned
+* Configuration options: None
+* Changelog: Focuses on VP9
+* Commits:
+  * c176e6490:  ~10% improvement on 64 bit
+  * ad0ed535a: mentions it is faster
+* No configuration option found
 
 ## VP9
 
 ### Commit messages and changelogs
 1.3.0 - 1.4.0:
-Configuration options: columnTiling (massive slow down), bestQuality (massive slow down), goodQuality (slow down), quality * noAltRef (speed up), arnMaxFrames * quality (slow down), columnTiling * constantBitrate (speed up), bestQuality * columnTiling (high slow down)
-Changelog:  Mentions only speed ups, no slow downs; 
-Commits:
-ea8aaf15b55: 20% slower
-eba9c762a: tile-based multi-threaded encoder
-54eda13f8df587fe0a5a202f232f66863aff445a: Slow down mentioned
-Configuration option is mentioned
+* Configuration options/Interactions: columnTiling (massive slow down), bestQuality (massive slow down), goodQuality (slow down), quality * noAltRef (speed up), arnMaxFrames * quality (slow down), columnTiling * constantBitrate (speed up), bestQuality * columnTiling (high slow down)
+* Changelog:  Mentions only speed ups, no slow downs; 
+* Commits:
+  * ea8aaf15b55: 20% slower
+  * eba9c762a: tile-based multi-threaded encoder
+  * 54eda13f8df587fe0a5a202f232f66863aff445a: Slow down mentioned
+* Configuration option is mentioned
 
 1.4.0 - 1.5.0:
-Configuration options: goodQuality (massive speed up) but slow down when it comes to threading and column tiling
-Changelog: Only mentions speed ups, no slow downs
-Commits:
-9fd8abc54: speed up compression for speed 5-8
-9cfba09ac0e5: Optimize vpx_quantize assembler
-Configuration option is mentioned
+* Configuration options/Interactions: goodQuality (massive speed up) but slow down when it comes to threading and column tiling
+* Changelog: Only mentions speed ups, no slow downs
+* Commits:
+  * 9fd8abc54: speed up compression for speed 5-8
+  * 9cfba09ac0e5: Optimize vpx_quantize assembler
+* Configuration option is mentioned
 
 
 1.5.0 - 1.6.0:
-Configuration options: bestQuality (massive speed up -- probably fix of 1.4.0 slow down?), columnTiling * goodquality * threads (slow down)
-Changelog: Instructions have been reordered for Intel processors. 
-Commits:
-af7fb17c09: Time savings on Xeon desktop
-74a679de: Port optimizations to vp9
-Configuration option not mentioned
+* Configuration options/Interactions: bestQuality (massive speed up -- probably fix of 1.4.0 slow down?), columnTiling * goodquality * threads (slow down)
+* Changelog: Instructions have been reordered for Intel processors. 
+* Commits:
+  * af7fb17c09: Time savings on Xeon desktop
+  * 74a679de: Port optimizations to vp9
+* Configuration option not mentioned
 
 1.6.0 - 1.6.1:
-Configuration options: bestQuality (slow down), goodQuality (speed up), goodQuality * columnTiling * threads (slow down)
-Changelog:  Mentions only speed up
-Commits:
-5d881770e59: Change default recode rule for good speed and best; mentioned speed-up
-Configuration option mentioned
+* Configuration options/Interactions: bestQuality (slow down), goodQuality (speed up), goodQuality * columnTiling * threads (slow down)
+* Changelog:  Mentions only speed up
+* Commits:
+  * 5d881770e59: Change default recode rule for good speed and best; mentioned speed-up
+* Configuration option mentioned
 
 
 1.6.1 - 1.7.0:
-Configuration options: bestQuality (speed up), goodQuality (speed up), constantBitrate (speed up)
-Changelog: VP9 high-bit performance reported
-Commits:
-9c2552a1c149cbc: speed up 
-6557baf3363e: speed up
-1a5482d4d: Denoiser speed-up
-Configuration option mentioned
+* Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up), constantBitrate (speed up)
+* Changelog: VP9 high-bit performance reported
+* Commits:
+  * 9c2552a1c149cbc: speed up 
+  * 6557baf3363e: speed up
+  * 1a5482d4d: Denoiser speed-up
+* Configuration option mentioned
 
 
 1.7.0 - 1.8.0:
-Configuration options: bestQuality (slow down), constantBitrate (speed up), columnTiling * noAltRef (speed up), arnMaxFrames * quality (slow down)
-Changelog: Mentions 2pass improvements in combination with auto-alt-ref; aso mentions improvements on real-time encoding.
-Commits:
-067457339bc: Improvement of bitrate mentioned
-25d6542251a: Encoding speed a bit faster for lower quality settings
-55db4f033: Increase convergence speed of noise estimation
-2eac6df788dbc: speed feature controls tx size search depth
-Configuration option mentioned
+* Configuration options/Interactions: bestQuality (slow down), constantBitrate (speed up), columnTiling * noAltRef (speed up), arnMaxFrames * quality (slow down)
+* Changelog: Mentions 2pass improvements in combination with auto-alt-ref; aso mentions improvements on real-time encoding.
+* Commits:
+  * 067457339bc: Improvement of bitrate mentioned
+  * 25d6542251a: Encoding speed a bit faster for lower quality settings
+  * 55db4f033: Increase convergence speed of noise estimation
+  * 2eac6df788dbc: speed feature controls tx size search depth
+* Configuration option mentioned
 
 
 ## FastDownward
@@ -780,77 +780,79 @@ Configuration option mentioned
 ### Commit messages and change logs
 
 2016_06 - 2017_01: 
-Configuration options: collection_max_size * num_samples (slow-down), PDB (slow-down), shrink_fh (slow-down), lm_rhw (speed-up), landmark (speed-up)
-Changelog: There was no changelog for this revision
-Commits:
-dfdccf815129f6d51d48cd502e5bdf77d4d0df97: fixed performance issue (speed-up)
-97944b49607d1e9967554cd8e3718a7326e7e185: configuration option 'landmark' mentioned
-de17135aefbe19ea740f5ee251c259d9f14e06b9: configuration option 'landmark' mentioned
-da3d61530239f380e259dc10f0f35c9a0792139b: configuration option 'landmark' mentioned
-41f14f51ca0e3b71979581eea12150d3f30d966e: configuration option 'landmark' mentioned
-46838c2b47126c4b8ad4a8129d76341cf9a27261: configuration option 'landmark' mentioned
-7a9203b73c778a3983c115eae49aa153f05aec27: configuration option 'landmark' mentioned
-Configuration option mentioned
+* Configuration options/Interactions: collection_max_size * num_samples (slow-down), PDB (slow-down), shrink_fh (slow-down), lm_rhw (speed-up), landmark (speed-up)
+* Changelog: There was no changelog for this revision
+* Commits:
+  * dfdccf815129f6d51d48cd502e5bdf77d4d0df97: fixed performance issue (speed-up)
+  * 97944b49607d1e9967554cd8e3718a7326e7e185: configuration option 'landmark' mentioned
+  * de17135aefbe19ea740f5ee251c259d9f14e06b9: configuration option 'landmark' mentioned
+  * da3d61530239f380e259dc10f0f35c9a0792139b: configuration option 'landmark' mentioned
+  * 41f14f51ca0e3b71979581eea12150d3f30d966e: configuration option 'landmark' mentioned
+  * 46838c2b47126c4b8ad4a8129d76341cf9a27261: configuration option 'landmark' mentioned
+  * 7a9203b73c778a3983c115eae49aa153f05aec27: configuration option 'landmark' mentioned
+* Configuration option mentioned
 
 
 2017_01 - 2017_07: 
-Configuration options: collection_max_size * num_samples (slow-down), PDB (slow-down), shrink_fh (slow-down), lm_rhw (speed-up), blind (speed-up), hmax (slow-down)
-Changelog: There was no changelog for this revision
-Commits:
-f3fec8be30b4d7cebac842995df971550d2e06fc: Configuration option 'landmark' mentioned
-Configuration option mentioned
+* Configuration options/Interactions: collection_max_size * num_samples (slow-down), PDB (slow-down), shrink_fh (slow-down), lm_rhw (speed-up), blind (speed-up), hmax (slow-down)
+* Changelog: There was no changelog for this revision
+* Commits:
+  * f3fec8be30b4d7cebac842995df971550d2e06fc: Configuration option 'landmark' mentioned
+* Configuration option mentioned
 
 2017_07 - 2018_01:
-Configuration options: collection_max_size * num_samples (speed-up), shrink_fh (speed-up), blind (speed-up), hmax (slow-down), cpdbs (speed-up), lmcut (slow-down)
-Changelog: There was no changelog for this revision
-Commits:
-fb322500801caa48ae464b4d869aeac8d6dbace0: Configuration option 'shrink_fh' mentioned
-153d579a697230741779dee1ad5bd5646f8e0141: Configuration optoin 'shrink_fh' mentioned
-ecdd704bc9f004764ccb08292b135022aa3e21d6: Configuration option 'PDB' mentioned
-b731637b1eb6beb52e142e89f4c89a48aaa1fbb8: Configuration option 'Canonical PDB' mentioned
-Configuration option mentioned
+* Configuration options/Interactions: collection_max_size * num_samples (speed-up), shrink_fh (speed-up), blind (speed-up), hmax (slow-down), cpdbs (speed-up), lmcut (slow-down)
+* Changelog: There was no changelog for this revision
+* Commits:
+  * fb322500801caa48ae464b4d869aeac8d6dbace0: Configuration option 'shrink_fh' mentioned
+  * 153d579a697230741779dee1ad5bd5646f8e0141: Configuration optoin 'shrink_fh' mentioned
+  * ecdd704bc9f004764ccb08292b135022aa3e21d6: Configuration option 'PDB' mentioned
+  * b731637b1eb6beb52e142e89f4c89a48aaa1fbb8: Configuration option 'Canonical PDB' mentioned
+* Configuration option mentioned
 
 2018_01 - 2018_07: 
-Configuration options: collection_max_size * min_improvement * num_samples (slow-down), collection_max_size * num_samples (speed-up), shrink_fh (speed-up), lm_hm (slow-down), blind (speed-up), hmax (slow-down), iPDB (slow-down), lm_rhw (slow-down)
-Changelog: There was no changelog for this revision
-Commits:
-Nothing
-Configuration option not mentioned
+* Configuration options/Interactions: collection_max_size * min_improvement * num_samples (slow-down), collection_max_size * num_samples (speed-up), shrink_fh (speed-up), lm_hm (slow-down), blind (speed-up), hmax (slow-down), iPDB (slow-down), lm_rhw (slow-down)
+* Changelog: There was no changelog for this revision
+* Commits:
+  * Nothing
+* Configuration option not mentioned
 
 2018_07 - 2019_01:
-Configuration options: lm_rhw * no_orders (speed-up), shrink_fh (speed-up), lm_hm (speed-up)
-Changelog: There was no changelog for this revision
-Commits:
-e4970b079d6a7fdbc04accf9ad7acd17907e6b87: Mentions performance tuning
-951e98f730f84c95771b72efe0b49fbdf05e9d7d: 'landmark' mentioned
-4bef566981dd2a8dc5f93d9131fe2243cd6b15da: 'landmark' mentioned
-Configuration option mentioned
+* Configuration options/Interactions: lm_rhw * no_orders (speed-up), shrink_fh (speed-up), lm_hm (speed-up)
+* Changelog: There was no changelog for this revision
+* Commits:
+  * e4970b079d6a7fdbc04accf9ad7acd17907e6b87: Mentions performance tuning
+  * 951e98f730f84c95771b72efe0b49fbdf05e9d7d: 'landmark' mentioned
+  * 4bef566981dd2a8dc5f93d9131fe2243cd6b15da: 'landmark' mentioned
+* Configuration option mentioned
 
 2019_01 - 2019_06:
-Configuration options: collection_max_size * min_improvement * num_samples (slow-down), collection_max_size * num_samples (speed-up), shrink_fh (slow-down), lm_hm (slow-down), lm_rhw (slow-down), iPDB (speed-up), min_improvement (slow-down)
-Changelog: There was no changelog for this revision
-Commits:
-212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661: Slow-down reported (It is possible that the new code now uniquifies certain conditions
+* Configuration options/Interactions: collection_max_size * min_improvement * num_samples (slow-down), collection_max_size * num_samples (speed-up), shrink_fh (slow-down), lm_hm (slow-down), lm_rhw (slow-down), iPDB (speed-up), min_improvement (slow-down)
+* Changelog: There was no changelog for this revision
+* Commits:
+  * 212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661: Slow-down reported (It is possible that the new code now uniquifies certain conditions
     multiple times, but there is no harm in that other than a slight
     performance cost.)
-5c59dd0a982bc6ca70735617133aa402d526cfe0: Configuration option 'PDB' mentioned
-52f1d51b69de3857b895d8a0e7e90fd7c46bf4dc: Configuration option 'PDB' mentioned
-15d29405f5bb9d3c1659d78b6635ce21937ac05e: Configuration option 'PDB' mentioned
-e1e3178509cc83fe2c0e0e38e2eed7f50e9f06a3: Configuration option 'landmark' mentioned
-a3926cf575510d7d65fdc5e4f21d2d14c50d5829: Configuration option 'landmark' mentioned
-1b8685eea3c0bd9898e3901a5c1e707e6d8a0931: Configuration option 'landmark' mentioned
-Configuration option mentioned
+  * 5c59dd0a982bc6ca70735617133aa402d526cfe0: Configuration option 'PDB' mentioned
+  * 52f1d51b69de3857b895d8a0e7e90fd7c46bf4dc: Configuration option 'PDB' mentioned
+  * 15d29405f5bb9d3c1659d78b6635ce21937ac05e: Configuration option 'PDB' mentioned
+  * e1e3178509cc83fe2c0e0e38e2eed7f50e9f06a3: Configuration option 'landmark' mentioned
+  * a3926cf575510d7d65fdc5e4f21d2d14c50d5829: Configuration option 'landmark' mentioned
+  * 1b8685eea3c0bd9898e3901a5c1e707e6d8a0931: Configuration option 'landmark' mentioned
+* Configuration option mentioned
 
 
 
 2019_06 - 2019_12:
-Configuration options: None
-Changelog: Nothing relevant mentioned
-Commits:
-No configuration options mentioned
+* Configuration options/Interactions: None
+* Changelog: Nothing relevant mentioned
+* Commits:
+  * Nothing
+* No configuration options found
 
 2019_12 - 2020_06: 
-Configuration options: shrink_fh (speed-up), lm_hm (slow-down)
-Changelog:Nothing relevant reported
-Commits:
-No configuration option mentioned
+* Configuration options/Interactions: shrink_fh (speed-up), lm_hm (slow-down)
+* Changelog: Nothing relevant reported
+* Commits:
+  * Nothiung
+* No configuration option mentioned
