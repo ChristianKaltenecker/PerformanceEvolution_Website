@@ -448,21 +448,21 @@ Changelog: http://hsqldb.org/doc/2.0/changelist_2_0.txt
 * Configuration options/Interactions: blowfish, logSize * blowFish * defragLimit
 * Changelog: improved query speed
 * Commits:
-  * 796fa0ccedc: improved query speed
+  * [796fa0ccedc](https://github.com/ryenus/hsqldb/commit/796fa0ccedc): improved query speed
 * Configuration option not mentioned
 
 2.2.5 - 2.2.6 (slow down):
 * Configuration options/Interactions: mvcc
 * Changelog: Fix of MVCC is mentioned (but no slow down)
 * Commits:
-  * 04db897bbc6: optimization (only speed up?)
+  * [04db897bbc6](https://github.com/ryenus/hsqldb/commit/04db897bbc6): optimization (only speed up?)
 * Configuration option mentioned
 
 2.2.6 - 2.2.7:
 * Configuration options/Interactions: None
 * Changelog: Nothing
 * Commits:
-  * 22f6fd2d8
+  * [22f6fd2d8](https://github.com/ryenus/hsqldb/commit/22f6fd2d8)
 * Configuration option not mentioned
 
 2.2.9 - 2.3.0 (slow down and a few configurations sped up):
@@ -507,48 +507,48 @@ Changelogs:
 * Configuration options/Interactions: delayedInnodbFlush (slowdown), dsyncFlush (slowdown), delayedInnodbFlush * dsyncFlush (speedup)
 * Changelog: They mention 2 fixes regarding flush in 5.5.24; Mentions a problem on ext3/ext4 on Linux so that fdatasync does not correctly sync all data in 5.5.27
 * Commits:
-  * 63f6c4e8fcd: change from fsync to fdatasync on Linux
-  * 598bb174677207475e34eb3c0632cab91f6dea9a: speed-up mentioned
-  * ce7a3b43c80f8e6452713b799d5cae98af95bb7f: speed-up mentioned
+  * [63f6c4e8fcd](https://github.com/MariaDB/server/commit/63f6c4e8fcd): change from fsync to fdatasync on Linux
+  * [598bb174677207475e34eb3c0632cab91f6dea9a](https://github.com/MariaDB/server/commit/598bb174677207475e34eb3c0632cab91f6dea9a): speed-up mentioned
+  * [ce7a3b43c80f8e6452713b799d5cae98af95bb7f](https://github.com/MariaDB/server/commit/ce7a3b43c80f8e6452713b799d5cae98af95bb7f): speed-up mentioned
 * Configuratiopn option mentioned+
 
 5.5.35 - 5.5.38:
 * Configuration options/Interactions: dsyncFlush (slowdown), directFlush (speedup), delayedInnodbLogWrite * dsyncFlush (slowdown)
 * Changelog: Nothing relevant mentioned
 * Commits:
-  * f01f49916b7a0: speed up mentioned; innodb storage mentioned
-  * 6db663d614: speed up mentioned
-  * e1a30696034b70e3bf78036aa75a6e8389ebb2c4: mentions speed up
+  * [f01f49916b7a0](https://github.com/MariaDB/server/commit/f01f49916b7a0): speed up mentioned; innodb storage mentioned
+  * [6db663d614](https://github.com/MariaDB/server/commit/6db663d614): speed up mentioned
+  * [e1a30696034b70e3bf78036aa75a6e8389ebb2c4](https://github.com/MariaDB/server/commit/e1a30696034b70e3bf78036aa75a6e8389ebb2c4): mentions speed up
 * Configuration option is mentioned
 
 5.5.40 (9.10.2014) - 10.0.17 (27.02.2015):
 * Configuration options/Interactions: delayedInnodbLogWrite * dsyncFlush (speed up), delayedInnodbLogFlush * dsyncFlush (slow down), delayedInnodbLogFlush (speed up), dsyncFlush (speed up)
 * Changelog: Hard to compare two major versions when they are developed in parallel; it seems that the changes from 5.5.23 - 5.5.27 are reversed (maybe the patch is missing?)
 * Commits: 11MB logs...
-  * 476a8660e: New version of InnoDB
-  * 87f5261039: Remove the innodb_flush_method fdatasync
-  * cdf6d3ec047d30: flush mentioned
-  * d8986fd6c3b69d2970e66684e1d00dd603fc9ab7: Speed up mentioned
-  * 53d44ad18b83dd59481ddaa71dcf8dc9e3446b83: Speed up mentioned
-  * 84fbabace0ad32c71c9317ff07b944adece92121: Speed up mentioned
+  * [476a8660e](https://github.com/MariaDB/server/commit/476a8660e): New version of InnoDB
+  * [87f5261039](https://github.com/MariaDB/server/commit/87f5261039): Remove the innodb_flush_method fdatasync
+  * [cdf6d3ec047d30](https://github.com/MariaDB/server/commit/cdf6d3ec047d30): flush mentioned
+  * [d8986fd6c3b69d2970e66684e1d00dd603fc9ab7](https://github.com/MariaDB/server/commit/d8986fd6c3b69d2970e66684e1d00dd603fc9ab7): Speed up mentioned
+  * [53d44ad18b83dd59481ddaa71dcf8dc9e3446b83](https://github.com/MariaDB/server/commit/53d44ad18b83dd59481ddaa71dcf8dc9e3446b83): Speed up mentioned
+  * [84fbabace0ad32c71c9317ff07b944adece92121](https://github.com/MariaDB/server/commit/84fbabace0ad32c71c9317ff07b944adece92121): Speed up mentioned
 * Configuration option mentioned
 
 10.1.16 (18.07.2016) - 10.2.6 (23.05.2017):
 * Configuration options/Interactions: delayedInnodbLogFlush (speed up)
 * Changelog: 10.2.4 mentions innodb and logging; for page compressed and encrypted tables log sequence number is not stored; this lead to a missmatch and some output in syslog
 * Commits: 
-  * 2d656793: Fix an issue where the json writer produced extra members in output; Configuration option mentioned; no speed up mentioned
-  * fec844aca88: Newer version of InnoDB
-  * 850ed6e4cc9c4608844e5188b4be226fa63e2736: speed up mentioned
+  * [2d656793](https://github.com/MariaDB/server/commit/2d656793): Fix an issue where the json writer produced extra members in output; Configuration option mentioned; no speed up mentioned
+  * [fec844aca88](https://github.com/MariaDB/server/commit/fec844aca88): Newer version of InnoDB
+  * [850ed6e4cc9c4608844e5188b4be226fa63e2736](https://github.com/MariaDB/server/commit/850ed6e4cc9c4608844e5188b4be226fa63e2736): speed up mentioned
 * Configuration option mentioned
 
 10.2.7 (12.07.2017) - 10.2.11 (28.11.2017):
 * Configuration options/Interactions: delayedInnodbLogFlush (slow down)
 * Changelog: 10.2.8: Revert an InnoDB Memcached from MySQL 5.6.37; Flushes redo log too often; there are many changes to Innodb, but it is unclear which one leads to a regression
 * Commits:
-  * cb9648a6b5: Revert an InnoDB Memcached plugin fix; innodb mentioned; no speed up mentioned
-  * 3f24cf2dbdc3885f47a3ea84fc6383d3007cc996: speed up mentioned
-  * A6c801438717b815288acb72513f5e42fe736b7b: speed up mentioned
+  * [cb9648a6b5](https://github.com/MariaDB/server/commit/cb9648a6b5): Revert an InnoDB Memcached plugin fix; innodb mentioned; no speed up mentioned
+  * [3f24cf2dbdc3885f47a3ea84fc6383d3007cc996](https://github.com/MariaDB/server/commit/3f24cf2dbdc3885f47a3ea84fc6383d3007cc996): speed up mentioned
+  * [A6c801438717b815288acb72513f5e42fe736b7b](https://github.com/MariaDB/server/commit/A6c801438717b815288acb72513f5e42fe736b7b): speed up mentioned
 * Configuration option mentioned
 
 ## MySQL
@@ -563,31 +563,31 @@ Changelog for 8.0: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
 * Configuration options/Interactions: binaryLog (slow down), binaryLog * delayedInnodbLogFlush (slow down)   -- they have a data dependency
 * Changelog: Multiple changes and fixes are mentioned regarding the binary log; also work on delayedInnodbLogFlush is mentioned but not related to binarylog
 * Commits:
-  * 5ece4a68df: Logging code was refactored in logging and binlogging
-  * 33ef855d4aaee: mentions flush and binary log together;
-  * f00337956cd21: same
-  * 87c69291df1d422f9041645d9d27d2bccf6ff8a2: speed up mentioned
-  * 0b56f8cb6084e443421488902bc57b102683cd5b: speed up mentioned
+  * [5ece4a68df](https://github.com/mysql/mysql-server/commit/5ece4a68df): Logging code was refactored in logging and binlogging
+  * [33ef855d4aaee](https://github.com/mysql/mysql-server/commit/33ef855d4aaee): mentions flush and binary log together;
+  * [f00337956cd21](https://github.com/mysql/mysql-server/commit/f00337956cd21): same
+  * [87c69291df1d422f9041645d9d27d2bccf6ff8a2](https://github.com/mysql/mysql-server/commit/87c69291df1d422f9041645d9d27d2bccf6ff8a2): speed up mentioned
+  * [0b56f8cb6084e443421488902bc57b102683cd5b](https://github.com/mysql/mysql-server/commit/0b56f8cb6084e443421488902bc57b102683cd5b): speed up mentioned
 * Configuration option is mentioned
 
 
 5.7.22 (19.04.2018) - 8.0.12 (27.07.2018):
 * Configuration options/Interactions: delayedInnodbFlush (speed up), delayedInnodbFlush * dsyncFlush (slow down), Flush * Write * dsyncFlush (speed up), dsyncFlush (slow down), directFlush (slow down), binaryLog (speed up), innodbBufferPoolSize (speed up), directFlush * innodbBufferPoolSize (speed up)
 * Changelog: Mentions buffer size optimizations and speed ups in larger sorts
-  * 215f4439e1da855: InnoDB startup refactoring; includes buffer_size
-  * 2bd59f6e54cb152d539c46aa52a3b6507fb10bca: Speed-up mentioned
-  * c5768818b32fdc65aec9118b1fe7e63205eefd45: Speed-up mentioned
-  * 71b0c585173257ff7a27f0cebe562f69ada2720a: Speed-up mentioned
-  * 200bf464776319dd2619cd7dc398d53c5e2e958b: Speed-up mentioned
-  * 79f49360dca75e6495cd104fc651a7db4212e6be: Speed-up mentioned
+  * [215f4439e1da855](https://github.com/mysql/mysql-server/commit/215f4439e1da855): InnoDB startup refactoring; includes buffer_size
+  * [2bd59f6e54cb152d539c46aa52a3b6507fb10bca](https://github.com/mysql/mysql-server/commit/2bd59f6e54cb152d539c46aa52a3b6507fb10bca): Speed-up mentioned
+  * [c5768818b32fdc65aec9118b1fe7e63205eefd45](https://github.com/mysql/mysql-server/commit/c5768818b32fdc65aec9118b1fe7e63205eefd45): Speed-up mentioned
+  * [71b0c585173257ff7a27f0cebe562f69ada2720a](https://github.com/mysql/mysql-server/commit/71b0c585173257ff7a27f0cebe562f69ada2720a): Speed-up mentioned
+  * [200bf464776319dd2619cd7dc398d53c5e2e958b](https://github.com/mysql/mysql-server/commit/200bf464776319dd2619cd7dc398d53c5e2e958b): Speed-up mentioned
+  * [79f49360dca75e6495cd104fc651a7db4212e6be](https://github.com/mysql/mysql-server/commit/79f49360dca75e6495cd104fc651a7db4212e6be): Speed-up mentioned
 * Configuration option is mentioned
 
 8.0.13 - 8.0.15:
 * Configuration options/Interactions: delayedInnodbLogFlush (speedup), delayedInnodbLogFlush * dsyncFlush (slowdown), delayedInnodbLogFlush * directFlush (speedup)
 * Changelog: Mentiones speedup
 * Commits: 
-  * 2809dd8df525: Speed-up mentioned
-  * b0955c74d4d027f2838ae6c48cd3dfbed639cbaf: Speed-up mentioned
+  * [2809dd8df525](https://github.com/mysql/mysql-server/commit/2809dd8df525): Speed-up mentioned
+  * [b0955c74d4d027f2838ae6c48cd3dfbed639cbaf](https://github.com/mysql/mysql-server/commit/b0955c74d4d027f2838ae6c48cd3dfbed639cbaf): Speed-up mentioned
 * Configuration option is mentioned
 
 ## VP8
