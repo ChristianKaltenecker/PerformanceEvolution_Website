@@ -783,13 +783,13 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: collection_max_size * num_samples (slow-down), PDB (slow-down), shrink_fh (slow-down), lm_rhw (speed-up), landmark (speed-up)
 * Changelog: There was no changelog for this revision
 * Commits:
-  * dfdccf815129f6d51d48cd502e5bdf77d4d0df97: fixed performance issue (speed-up)
-  * 97944b49607d1e9967554cd8e3718a7326e7e185: configuration option 'landmark' mentioned
-  * de17135aefbe19ea740f5ee251c259d9f14e06b9: configuration option 'landmark' mentioned
-  * da3d61530239f380e259dc10f0f35c9a0792139b: configuration option 'landmark' mentioned
-  * 41f14f51ca0e3b71979581eea12150d3f30d966e: configuration option 'landmark' mentioned
-  * 46838c2b47126c4b8ad4a8129d76341cf9a27261: configuration option 'landmark' mentioned
-  * 7a9203b73c778a3983c115eae49aa153f05aec27: configuration option 'landmark' mentioned
+  * [dfdccf815129f6d51d48cd502e5bdf77d4d0df97](https://github.com/aibasel/downward/commit/dfdccf815129f6d51d48cd502e5bdf77d4d0df97): fixed performance issue (speed-up)
+  * [97944b49607d1e9967554cd8e3718a7326e7e185](https://github.com/aibasel/downward/commit/97944b49607d1e9967554cd8e3718a7326e7e185): configuration option 'landmark' mentioned
+  * [de17135aefbe19ea740f5ee251c259d9f14e06b9](https://github.com/aibasel/downward/commit/de17135aefbe19ea740f5ee251c259d9f14e06b9): configuration option 'landmark' mentioned
+  * [da3d61530239f380e259dc10f0f35c9a0792139b](https://github.com/aibasel/downward/commit/da3d61530239f380e259dc10f0f35c9a0792139b): configuration option 'landmark' mentioned
+  * [41f14f51ca0e3b71979581eea12150d3f30d966e](https://github.com/aibasel/downward/commit/41f14f51ca0e3b71979581eea12150d3f30d966e): configuration option 'landmark' mentioned
+  * [46838c2b47126c4b8ad4a8129d76341cf9a27261](https://github.com/aibasel/downward/commit/46838c2b47126c4b8ad4a8129d76341cf9a27261): configuration option 'landmark' mentioned
+  * [7a9203b73c778a3983c115eae49aa153f05aec27](https://github.com/aibasel/downward/commit/7a9203b73c778a3983c115eae49aa153f05aec27): configuration option 'landmark' mentioned
 * Configuration option mentioned
 
 
@@ -797,17 +797,17 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: collection_max_size * num_samples (slow-down), PDB (slow-down), shrink_fh (slow-down), lm_rhw (speed-up), blind (speed-up), hmax (slow-down)
 * Changelog: There was no changelog for this revision
 * Commits:
-  * f3fec8be30b4d7cebac842995df971550d2e06fc: Configuration option 'landmark' mentioned
+  *  [f3fec8be30b4d7cebac842995df971550d2e06fc](https://github.com/aibasel/downward/commit/f3fec8be30b4d7cebac842995df971550d2e06fc): Configuration option 'landmark' mentioned
 * Configuration option mentioned
 
 2017_07 - 2018_01:
 * Configuration options/Interactions: collection_max_size * num_samples (speed-up), shrink_fh (speed-up), blind (speed-up), hmax (slow-down), cpdbs (speed-up), lmcut (slow-down)
 * Changelog: There was no changelog for this revision
 * Commits:
-  * fb322500801caa48ae464b4d869aeac8d6dbace0: Configuration option 'shrink_fh' mentioned
-  * 153d579a697230741779dee1ad5bd5646f8e0141: Configuration optoin 'shrink_fh' mentioned
-  * ecdd704bc9f004764ccb08292b135022aa3e21d6: Configuration option 'PDB' mentioned
-  * b731637b1eb6beb52e142e89f4c89a48aaa1fbb8: Configuration option 'Canonical PDB' mentioned
+  * [fb322500801caa48ae464b4d869aeac8d6dbace0](https://github.com/aibasel/downward/commit/fb322500801caa48ae464b4d869aeac8d6dbace0): Configuration option 'shrink_fh' mentioned
+  * [153d579a697230741779dee1ad5bd5646f8e0141](https://github.com/aibasel/downward/commit/153d579a697230741779dee1ad5bd5646f8e0141): Configuration optoin 'shrink_fh' mentioned
+  * [ecdd704bc9f004764ccb08292b135022aa3e21d6](https://github.com/aibasel/downward/commit/ecdd704bc9f004764ccb08292b135022aa3e21d6): Configuration option 'PDB' mentioned
+  * [b731637b1eb6beb52e142e89f4c89a48aaa1fbb8](https://github.com/aibasel/downward/commit/b731637b1eb6beb52e142e89f4c89a48aaa1fbb8): Configuration option 'Canonical PDB' mentioned
 * Configuration option mentioned
 
 2018_01 - 2018_07: 
@@ -821,24 +821,24 @@ Shares the same repository with VP9.
 * Configuration options/Interactions: lm_rhw * no_orders (speed-up), shrink_fh (speed-up), lm_hm (speed-up)
 * Changelog: There was no changelog for this revision
 * Commits:
-  * e4970b079d6a7fdbc04accf9ad7acd17907e6b87: Mentions performance tuning
-  * 951e98f730f84c95771b72efe0b49fbdf05e9d7d: 'landmark' mentioned
-  * 4bef566981dd2a8dc5f93d9131fe2243cd6b15da: 'landmark' mentioned
+  * [e4970b079d6a7fdbc04accf9ad7acd17907e6b87](https://github.com/aibasel/downward/commit/e4970b079d6a7fdbc04accf9ad7acd17907e6b87): Mentions performance tuning
+  * [951e98f730f84c95771b72efe0b49fbdf05e9d7d](https://github.com/aibasel/downward/commit/951e98f730f84c95771b72efe0b49fbdf05e9d7d): 'landmark' mentioned
+  * [4bef566981dd2a8dc5f93d9131fe2243cd6b15da](https://github.com/aibasel/downward/commit/4bef566981dd2a8dc5f93d9131fe2243cd6b15da): 'landmark' mentioned
 * Configuration option mentioned
 
 2019_01 - 2019_06:
 * Configuration options/Interactions: collection_max_size * min_improvement * num_samples (slow-down), collection_max_size * num_samples (speed-up), shrink_fh (slow-down), lm_hm (slow-down), lm_rhw (slow-down), iPDB (speed-up), min_improvement (slow-down)
 * Changelog: There was no changelog for this revision
 * Commits:
-  * 212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661: Slow-down reported (It is possible that the new code now uniquifies certain conditions
+  * [212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661](https://github.com/aibasel/downward/commit/212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661): Slow-down reported (It is possible that the new code now uniquifies certain conditions
     multiple times, but there is no harm in that other than a slight
     performance cost.)
-  * 5c59dd0a982bc6ca70735617133aa402d526cfe0: Configuration option 'PDB' mentioned
-  * 52f1d51b69de3857b895d8a0e7e90fd7c46bf4dc: Configuration option 'PDB' mentioned
-  * 15d29405f5bb9d3c1659d78b6635ce21937ac05e: Configuration option 'PDB' mentioned
-  * e1e3178509cc83fe2c0e0e38e2eed7f50e9f06a3: Configuration option 'landmark' mentioned
-  * a3926cf575510d7d65fdc5e4f21d2d14c50d5829: Configuration option 'landmark' mentioned
-  * 1b8685eea3c0bd9898e3901a5c1e707e6d8a0931: Configuration option 'landmark' mentioned
+  * [5c59dd0a982bc6ca70735617133aa402d526cfe0](https://github.com/aibasel/downward/commit/5c59dd0a982bc6ca70735617133aa402d526cfe0): Configuration option 'PDB' mentioned
+  * [52f1d51b69de3857b895d8a0e7e90fd7c46bf4dc](https://github.com/aibasel/downward/commit/52f1d51b69de3857b895d8a0e7e90fd7c46bf4dc): Configuration option 'PDB' mentioned
+  * [15d29405f5bb9d3c1659d78b6635ce21937ac05e](https://github.com/aibasel/downward/commit/15d29405f5bb9d3c1659d78b6635ce21937ac05e): Configuration option 'PDB' mentioned
+  * [e1e3178509cc83fe2c0e0e38e2eed7f50e9f06a3](https://github.com/aibasel/downward/commit/e1e3178509cc83fe2c0e0e38e2eed7f50e9f06a3): Configuration option 'landmark' mentioned
+  * [a3926cf575510d7d65fdc5e4f21d2d14c50d5829](https://github.com/aibasel/downward/commit/a3926cf575510d7d65fdc5e4f21d2d14c50d5829): Configuration option 'landmark' mentioned
+  * [1b8685eea3c0bd9898e3901a5c1e707e6d8a0931](https://github.com/aibasel/downward/commit/1b8685eea3c0bd9898e3901a5c1e707e6d8a0931): Configuration option 'landmark' mentioned
 * Configuration option mentioned
 
 
