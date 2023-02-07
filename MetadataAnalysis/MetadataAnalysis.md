@@ -4,54 +4,22 @@ We focus on configuration options that were enabled/disabled in our measurements
 
 ## PostgreSQL
 
-Is the case study that is abnormal in comparison to the other case studies since it has only three configuration options with an influence on the performance, namely $\textsf{root}$, $\textsf{fsync}$, and $\textsf{trackActivities}$.
-From 5 performance changes, 4 are from $\textsf{root}$ (8.3.5 -> 8.4.0; 9.0.4 -> 9.1.0; 9.1.3 -> 9.2.0; 9.2.4 -> 9.3.0) and 1 is from the configuration option $\textsf{fsync}$ (9.0.0 -> 9.0.4).
-
-### Interesting Insights in the Paper
-* outlier case study because of only 3 terms that have an influence (Figure 4)
-
-### Configuration Options with a Change
-* root
-    * 8.3.5 -> 8.4.0 (speed up)
-    * 9.0.4 -> 9.1.0 (slow down)
-    * 9.1.3 -> 9.2.0 (speed up)
-    * 9.2.4 -> 9.3.0 (slow down)
-* fsync
-    * Forces synchronization of updates to disk. Having fsync disabled could lead to an unrecoverable data corruption in case of a power failure or system crash. 
-    * 9.0.0 -> 9.0.4 (massive slow down)
-    In version 9.0.2, the wal_sync_method was forced to fdatasync since kernel changes lead PostgreSQL to choose open_datasync instead. In our case, our kernel version lead to choose to open_datasync, which is considered unsafe (i.e., data may not be necessarily written on disk) in Linux. Beginning from version 9.0.2, PostgreSQL forces fdatasync. This turns out to be much slower since it doesn't use a write buffer but blocks until the data is written on the disk. 
+Is the case study that is abnormal in comparison to the other case studies since it has only three configuration options with an influence on the performance, namely root, fsync, and trackActivities.
 
 ### Commit messages
 
-9.0.0 -> 9.0.4 [REL9_0_0 -> REL9_0_4]:
-* 87eadd7e3d6f: Force default wal_sync_method to be fdatasync on Linux
-* 1435a8554: Flush the WAL received before exiting
+9.0.0 - 9.0.4:
+* Configuration options/Interactions: fsync
+* Change log: No change log
+* Commits:
+  * 87eadd7e3d6f: Force default wal_sync_method to be fdatasync on Linux
+  * 1435a8554: Flush the WAL received before exiting
+* Configuration option mentioned
 
 ## z3
 
-This case study is also interesting, because from version 4.5.0 to 4.6.0, all configurations change. A reason for this performance change could be that the behavior of optimization commands for the SMT2 command-line interface has changed in version 4.6.0. In the same version, a new linear real arithmetic solver was introduced. Interestingly, not only the overall performance changes, but also the performance of the configuration option $\textsf{proof}$ is degraded by roughly 200%. 
-$\textsf{proof}$ generates an object that provides more information about why a certain formula is valid or not (https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/nbjorner-iwil08.pdf).
-
-In version 4.8.1, a single configuration was executed in 20 seconds on zeus (Passau); unfortunately, I can not reproduce that although I use the same configuration and workload. Software version, kernel version, hardware?
-QF_FP, proof, model_validate, unsat_core, smtlib2_compliant, partial, euclidean_solver
-
-The error rate is also very high in the first release, because of a few configurations which couldn't be predicted well (estimate: 0.6 seconds; actual: 56 seconds). This anomaly appears only in this release.
-
-### Configuration Options with a Change
-* root
-    * 4.5.0 -> 4.6.0 (slow down by 50%)
-* proof 
-    * 4.5.0 -> 4.6.0 (massive slow down) 
-    * proof utilities code was moved between these versions
-    * some regressions were fixed regarding proof dependencies
-* (model_validate/euclidean_solver/"") * proof * smtlib2_compliant * unsat_core * well_sorted check
-    * Appear in different versions -- usually each term has an influence of ~ 1%
-    * 4.3.2 -> 4.4.0
-    * 4.5.0 -> 4.6.0
-    * 4.6.0 -> 4.7.1
-    * 4.7.1 -> 4.8.1
-    * 4.8.1 -> 4.8.3
-    * 4.8.3 -> 4.8.4
+This case study is also interesting, because from version 4.5.0 to 4.6.0, all configurations change. A reason for this performance change could be that the behavior of optimization commands for the SMT2 command-line interface has changed in version 4.6.0. In the same version, a new linear real arithmetic solver was introduced. Interestingly, not only the overall performance changes, but also the performance of the configuration option proof is degraded by roughly 200%. 
+proof generates an object that provides more information about why a certain formula is valid or not (https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/nbjorner-iwil08.pdf).
 
 ### Commit messages and changelog
 
@@ -225,10 +193,11 @@ However, in compression levels 0 and 1, the window sizes of 10 and 11 resulted i
 Between release 0.4.0 and 0.5.2, the execution time of the compression levels 1 and 5 to 10 was even further reduced.
 This behavior is also visible in the performance-influence models.
 
-Some performance bugs (according to the changelog) also happen when uncompressing a file. We, however, have measured only the time for compression.
+Some performance bugs (according to the change log) also happen when uncompressing a file. We, however, have measured only the time for compression.
 
 ## Commit messages
 0.3.0 - 0.4.0 (low quality compression also mentioned in the changelog):
+* Configuration options/Interactions: compression levels 0,1,2,3,10,11
 * Changelog: made low quality compression faster; added quality level 0; 
 * Commits:
   * 1f01d61bcf: Add two more fast modes (quality 0, 1); quality 1,2 were renamed to quality 2 and 3 and the old quality 3 is removed.
@@ -238,12 +207,14 @@ Some performance bugs (according to the changelog) also happen when uncompressin
 * Configuration option mentioned regarding performance change
 
 0.4.0 - 0.5.2:
+* Configuration options/Interactions: compression levels 5-9, window sizes 10-11
 * Changelog: Nothing
 * Commits:
   * 2048189048: new hasher; improved speed and reduced memory usage for q:5-9 w 10-16
 * Configuration option mentioned
 
-0.5.2 - 0.6.0 (better compression on 1MB+ files, faster compression on mid-low quality levels; fix encoder q10-11 slowdown):
+0.5.2 - 0.6.0:
+* Configuration options/Interactions: compression level 10-11
 * Changelog: Nothing
 * Commits:
   * 5db62dcc: Fix slow-down after a long copy (q10-11)
@@ -252,24 +223,28 @@ Some performance bugs (according to the changelog) also happen when uncompressin
 * Configuration option mentioned
 
 0.6.0 - 1.0.0:
+* Configuration options/Interactions: compression level, window size
 * Changelog: Nothing
 * Commits:
   * a629289e: speedup compression for RLEish (Run Length Encoding) data
 * Configuration option not mentioned
 
 1.0.0 - 1.0.1 (only one day in between): 
+* Configuration options/Interactions: compression level, window size
 * Changelog: Nothing
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 1.0.1 - 1.0.2 (changes of the terms are higher than 5% and therefore, this release was chosen):
+* Configuration options/Interactions: compression level, window size
 * Changelog: Nothing
 * Commits:
   * 39ef4bbdc: add new (fast) dictionary generator "Sieve"
 * Configuration option not mentioned
 
 1.0.2 - 1.0.3:
+* Configuration options/Interactions: compression level, window size
 * Changelog: Improved compression ratio; Nothing related to performance
 * Commits:
   * 35e69fc7c: New dictionary generator with the speed of "Sieve" and the quality of "DM" -> does not necessarily imply that the speed of the new dictionary generator is better than before.
@@ -277,18 +252,21 @@ Some performance bugs (according to the changelog) also happen when uncompressin
 * Configuration option mentioned
 
 1.0.3 - 1.0.4 (1 month 1 week in between):
+* Configuration options/Interactions: compression level, window size
 * Changelog: better compression; Nothing related to performance
 * Commits:
   * 0f3c84e7e: better compression (similar to changelog)
 * Configuration option not mentioned
 
 1.0.4 - 1.0.5:
+* Configuration options/Interactions: compression level, window size
 * Changelog: q=1 compression on small files improved
 * Commits:
   * 68db5c027: improve q=1 compression on small files
 * Configuration option mentioned
 
 1.0.6 - 1.0.7:
+* Configuration options/Interactions: compression level, window size
 * Changelog: focuses on ARM architecture; Nothing regarding x86 architecture
 * Some speedup detected in configuration options: CompressionLevel_9 * WindowSize_24; CompressionLevel 9 * WindowSize_23; CompressionLEvel_9 * WindowSize_22; CompressionLEvel_10 * WindowSize_19
 * Commits:
@@ -303,18 +281,17 @@ This case study (along with PostgreSQL) has a release (2.2.1 -- 2.2.2) where no 
 
 ### Commit messages
 2.2.2 - 2.3.0
-* Configuration Options/Interaction: lzo (speed up); sha512 (speed up)
+* Configuration options/Interaction: lzo (speed up); sha512 (speed up)
 * Changelog:
   * Fix reconnection issues when push and UDP (we use tcp in our setup).
   * They also fixed some regressions happening in configuration options we do not use (e.g., --http-proxy).
   * Modified create_socket_tcp.
-
 * Commits:
   * 74bbc7: build: proper lzo detection and usage (?)
 * Configuration option mentioned
 
 2.3.9 - 2.4.0:
-* Configuration Options/Interaction: base (slow down); lzo and sha512 (speed up); SHA1 (slow down); SHA512 * LZO (slow down)
+* Configuration options/Interaction: base (slow down); lzo and sha512 (speed up); SHA1 (slow down); SHA512 * LZO (slow down)
 * Changelog: 
   * In 2.3.10: Fix regression in setups without a client certificate
 * Commits:
@@ -341,7 +318,7 @@ This turns out to be a drawback since it makes tracking difficult.
 
 ### Releases
 530 - 543 (configurations stay the same or have a massive slow down):
-* Configuration Options/Interactions: compression(Lzo,Gzip,Lzma) * processorCount(2,4,8), level 3-9; processorCount_4 slow down
+* Configuration options/Interactions: compression(Lzo,Gzip,Lzma) * processorCount(2,4,8), level 3-9; processorCount_4 slow down
 * Changelog: 540-543: fixes and speedup;
 * Commits:
   * 692949287: Sliding mmap was causing a slowdown of death
@@ -350,7 +327,7 @@ This turns out to be a drawback since it makes tracking difficult.
 
 
 543 - 544 (some configurations have a speed up, some a slow down -- major change):
-* Configuration Options/Interaction: same as 530. processorCount_4 slowed down when using different compressions; reverts some changes from 543; some are even worse (compressionLZMA * processorCount_8); hard to tell
+* Configuration options/Interaction: same as 530. processorCount_4 slowed down when using different compressions; reverts some changes from 543; some are even worse (compressionLZMA * processorCount_8); hard to tell
 * Changelog: speed ups are mentioned
 * Commits:
   * 688aa55c7930: Spawn threads in regular intervals; speeds up compression
@@ -460,7 +437,7 @@ Changelog: http://hsqldb.org/doc/2.0/changelist_2_0.txt
 
 ### Commit messages and changelog
 2.1.0 - 2.2.0 (slow down):
-* Configuration Options/Interactions: logSize (slow-down)
+* Configuration options/Interactions: logSize (slow-down)
 * Changelog: Only speed up reported (fixed regression)
 * Commits:
   * Nothing
@@ -468,28 +445,28 @@ Changelog: http://hsqldb.org/doc/2.0/changelist_2_0.txt
 
 
 2.2.1 - 2.2.2 (speed up of some configurations):
-* Configuration Options/Interactions: blowfish, logSize * blowFish * defragLimit
+* Configuration options/Interactions: blowfish, logSize * blowFish * defragLimit
 * Changelog: improved query speed
 * Commits:
   * 796fa0ccedc: improved query speed
 * Configuration option not mentioned
 
 2.2.5 - 2.2.6 (slow down):
-* Configuration Options/Interactions: mvcc
+* Configuration options/Interactions: mvcc
 * Changelog: Fix of MVCC is mentioned (but no slow down)
 * Commits:
   * 04db897bbc6: optimization (only speed up?)
 * Configuration option mentioned
 
 2.2.6 - 2.2.7:
-* Configuration options: None
+* Configuration options/Interactions: None
 * Changelog: Nothing
 * Commits:
   * 22f6fd2d8
 * Configuration option not mentioned
 
 2.2.9 - 2.3.0 (slow down and a few configurations sped up):
-* Configuration Options/Interactions: blowFish * logSize_5 * defragLimit_50 (speed up); blowfish * defragLimit_100 * logSize 5 (slowdown) blowfish * cacheSize_10000 (slow down); blowfish * logSize_5 (speed up); blowfish (speed up)
+* Configuration options/Interactions: blowFish * logSize_5 * defragLimit_50 (speed up); blowfish * defragLimit_100 * logSize 5 (slowdown) blowfish * cacheSize_10000 (slow down); blowfish * logSize_5 (speed up); blowfish (speed up)
 * Changelog: Speed up reported; few regressions fixed; no slow down reported
 * Commits:
   * Nothing
@@ -497,21 +474,21 @@ Changelog: http://hsqldb.org/doc/2.0/changelist_2_0.txt
 
 
 2.3.0 - 2.3.1 (some slow down, some speed up -- no changes in performance-influence model visible):
-* Configuration Options/Interactions: None
+* Configuration options/Interactions: None
 * Changelog: Nothing mentioned
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 2.3.1 - 2.3.2 (same configurations -- seems as changes are reverted -- no changes in performance-influence model visible):
-* Configuration Options/Interactions: None
+* Configuration options/Interactions: None
 * Changelog: Nothing mentioned
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 2.3.2 - 2.3.3 (slow down of specific configurations):
-* Configuration Options/Interactions: defragLimit_50 * logSize_5 * blowfish
+* Configuration options/Interactions: defragLimit_50 * logSize_5 * blowfish
 * Changelog: only regressions reported
 * Commits:
   * Nothing
@@ -527,52 +504,52 @@ Changelogs:
 
 ### Commit messages and changelog
 5.5.23 - 5.5.27:
-Configuration Options: delayedInnodbFlush (slowdown), dsyncFlush (slowdown), delayedInnodbFlush * dsyncFlush (speedup)
-Changelog: They mention 2 fixes regarding flush in 5.5.24; Mentions a problem on ext3/ext4 on Linux so that fdatasync does not correctly sync all data in 5.5.27
-Commits:
-63f6c4e8fcd: change from fsync to fdatasync on Linux
-598bb174677207475e34eb3c0632cab91f6dea9a: speed-up mentioned
-ce7a3b43c80f8e6452713b799d5cae98af95bb7f: speed-up mentioned
-Configuratiopn option mentioned+
+* Configuration options/Interactions: delayedInnodbFlush (slowdown), dsyncFlush (slowdown), delayedInnodbFlush * dsyncFlush (speedup)
+* Changelog: They mention 2 fixes regarding flush in 5.5.24; Mentions a problem on ext3/ext4 on Linux so that fdatasync does not correctly sync all data in 5.5.27
+* Commits:
+  * 63f6c4e8fcd: change from fsync to fdatasync on Linux
+  * 598bb174677207475e34eb3c0632cab91f6dea9a: speed-up mentioned
+  * ce7a3b43c80f8e6452713b799d5cae98af95bb7f: speed-up mentioned
+* Configuratiopn option mentioned+
 
 5.5.35 - 5.5.38:
-Configuration Options: dsyncFlush (slowdown), directFlush (speedup), delayedInnodbLogWrite * dsyncFlush (slowdown)
-Changelog: Nothing relevant mentioned
-Commits:
-f01f49916b7a0: speed up mentioned; innodb storage mentioned
-6db663d614: speed up mentioned
-e1a30696034b70e3bf78036aa75a6e8389ebb2c4: mentions speed up
-Configuration option is mentioned
+* Configuration options/Interactions: dsyncFlush (slowdown), directFlush (speedup), delayedInnodbLogWrite * dsyncFlush (slowdown)
+* Changelog: Nothing relevant mentioned
+* Commits:
+  * f01f49916b7a0: speed up mentioned; innodb storage mentioned
+  * 6db663d614: speed up mentioned
+  * e1a30696034b70e3bf78036aa75a6e8389ebb2c4: mentions speed up
+* Configuration option is mentioned
 
 5.5.40 (9.10.2014) - 10.0.17 (27.02.2015):
-Configuration Options: delayedInnodbLogWrite * dsyncFlush (speed up), delayedInnodbLogFlush * dsyncFlush (slow down), delayedInnodbLogFlush (speed up), dsyncFlush (speed up)
-Changelog: Hard to compare two major versions when they are developed in parallel; it seems that the changes from 5.5.23 - 5.5.27 are reversed (maybe the patch is missing?)
-Commits: 11MB logs...
-476a8660e: New version of InnoDB
-87f5261039: Remove the innodb_flush_method fdatasync
-cdf6d3ec047d30: flush mentioned
-d8986fd6c3b69d2970e66684e1d00dd603fc9ab7: Speed up mentioned
-53d44ad18b83dd59481ddaa71dcf8dc9e3446b83: Speed up mentioned
-84fbabace0ad32c71c9317ff07b944adece92121: Speed up mentioned
-Configuration option mentioned
+* Configuration options/Interactions: delayedInnodbLogWrite * dsyncFlush (speed up), delayedInnodbLogFlush * dsyncFlush (slow down), delayedInnodbLogFlush (speed up), dsyncFlush (speed up)
+* Changelog: Hard to compare two major versions when they are developed in parallel; it seems that the changes from 5.5.23 - 5.5.27 are reversed (maybe the patch is missing?)
+* Commits: 11MB logs...
+  * 476a8660e: New version of InnoDB
+  * 87f5261039: Remove the innodb_flush_method fdatasync
+  * cdf6d3ec047d30: flush mentioned
+  * d8986fd6c3b69d2970e66684e1d00dd603fc9ab7: Speed up mentioned
+  * 53d44ad18b83dd59481ddaa71dcf8dc9e3446b83: Speed up mentioned
+  * 84fbabace0ad32c71c9317ff07b944adece92121: Speed up mentioned
+* Configuration option mentioned
 
 10.1.16 (18.07.2016) - 10.2.6 (23.05.2017):
-Configuration Options: delayedInnodbLogFlush (speed up)
-Changelog: 10.2.4 mentions innodb and logging; for page compressed and encrypted tables log sequence number is not stored; this lead to a missmatch and some output in syslog
-Commits: 
-2d656793: Fix an issue where the json writer produced extra members in output; Configuration option mentioned; no speed up mentioned
-fec844aca88: Newer version of InnoDB
-850ed6e4cc9c4608844e5188b4be226fa63e2736: speed up mentioned
-Configuration option mentioned
+* Configuration options/Interactions: delayedInnodbLogFlush (speed up)
+* Changelog: 10.2.4 mentions innodb and logging; for page compressed and encrypted tables log sequence number is not stored; this lead to a missmatch and some output in syslog
+* Commits: 
+  * 2d656793: Fix an issue where the json writer produced extra members in output; Configuration option mentioned; no speed up mentioned
+  * fec844aca88: Newer version of InnoDB
+  * 850ed6e4cc9c4608844e5188b4be226fa63e2736: speed up mentioned
+* Configuration option mentioned
 
 10.2.7 (12.07.2017) - 10.2.11 (28.11.2017):
-Configuration Options: delayedInnodbLogFlush (slow down)
-Changelog: 10.2.8: Revert an InnoDB Memcached from MySQL 5.6.37; Flushes redo log too often; there are many changes to Innodb, but it is unclear which one leads to a regression
-Commits:
-cb9648a6b5: Revert an InnoDB Memcached plugin fix; innodb mentioned; no speed up mentioned
-3f24cf2dbdc3885f47a3ea84fc6383d3007cc996: speed up mentioned
-A6c801438717b815288acb72513f5e42fe736b7b: speed up mentioned
-Configuration option mentioned
+* Configuration options/Interactions: delayedInnodbLogFlush (slow down)
+* Changelog: 10.2.8: Revert an InnoDB Memcached from MySQL 5.6.37; Flushes redo log too often; there are many changes to Innodb, but it is unclear which one leads to a regression
+* Commits:
+  * cb9648a6b5: Revert an InnoDB Memcached plugin fix; innodb mentioned; no speed up mentioned
+  * 3f24cf2dbdc3885f47a3ea84fc6383d3007cc996: speed up mentioned
+  * A6c801438717b815288acb72513f5e42fe736b7b: speed up mentioned
+* Configuration option mentioned
 
 ## MySQL
 
@@ -583,35 +560,35 @@ Changelog for 5.7: https://dev.mysql.com/doc/relnotes/mysql/5.7/en/
 Changelog for 8.0: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
 
 5.6.26 (24.07.2015) - 5.7.9 (21.10.2015):
-Configuration options: binaryLog (slow down), binaryLog * delayedInnodbLogFlush (slow down)   -- they have a data dependency
-Changelog:Multiple changes and fixes are mentioned regarding the binary log; also work on delayedInnodbLogFlush is mentioned but not related to binarylog
-Commits:
-5ece4a68df: Logging code was refactored in logging and binlogging
-33ef855d4aaee: mentions flush and binary log together;
-f00337956cd21: same
-87c69291df1d422f9041645d9d27d2bccf6ff8a2: speed up mentioned
-0b56f8cb6084e443421488902bc57b102683cd5b: speed up mentioned
-Configuration option is mentioned
+* Configuration options/Interactions: binaryLog (slow down), binaryLog * delayedInnodbLogFlush (slow down)   -- they have a data dependency
+* Changelog: Multiple changes and fixes are mentioned regarding the binary log; also work on delayedInnodbLogFlush is mentioned but not related to binarylog
+* Commits:
+  * 5ece4a68df: Logging code was refactored in logging and binlogging
+  * 33ef855d4aaee: mentions flush and binary log together;
+  * f00337956cd21: same
+  * 87c69291df1d422f9041645d9d27d2bccf6ff8a2: speed up mentioned
+  * 0b56f8cb6084e443421488902bc57b102683cd5b: speed up mentioned
+* Configuration option is mentioned
 
 
 5.7.22 (19.04.2018) - 8.0.12 (27.07.2018):
-Configuration options: delayedInnodbFlush (speed up), delayedInnodbFlush * dsyncFlush (slow down), Flush * Write * dsyncFlush (speed up), dsyncFlush (slow down), directFlush (slow down), binaryLog (speed up), innodbBufferPoolSize (speed up), directFlush * innodbBufferPoolSize (speed up)
-Changelog: Mentions buffer size optimizations and speed ups in larger sorts
-215f4439e1da855: InnoDB startup refactoring; includes buffer_size
-2bd59f6e54cb152d539c46aa52a3b6507fb10bca: Speed-up mentioned
-c5768818b32fdc65aec9118b1fe7e63205eefd45: Speed-up mentioned
-71b0c585173257ff7a27f0cebe562f69ada2720a: Speed-up mentioned
-200bf464776319dd2619cd7dc398d53c5e2e958b: Speed-up mentioned
-79f49360dca75e6495cd104fc651a7db4212e6be: Speed-up mentioned
-Configuration option is mentioned
+* Configuration options/Interactions: delayedInnodbFlush (speed up), delayedInnodbFlush * dsyncFlush (slow down), Flush * Write * dsyncFlush (speed up), dsyncFlush (slow down), directFlush (slow down), binaryLog (speed up), innodbBufferPoolSize (speed up), directFlush * innodbBufferPoolSize (speed up)
+* Changelog: Mentions buffer size optimizations and speed ups in larger sorts
+  * 215f4439e1da855: InnoDB startup refactoring; includes buffer_size
+  * 2bd59f6e54cb152d539c46aa52a3b6507fb10bca: Speed-up mentioned
+  * c5768818b32fdc65aec9118b1fe7e63205eefd45: Speed-up mentioned
+  * 71b0c585173257ff7a27f0cebe562f69ada2720a: Speed-up mentioned
+  * 200bf464776319dd2619cd7dc398d53c5e2e958b: Speed-up mentioned
+  * 79f49360dca75e6495cd104fc651a7db4212e6be: Speed-up mentioned
+* Configuration option is mentioned
 
 8.0.13 - 8.0.15:
-Configuration options: delayedInnodbLogFlush (speedup), delayedInnodbLogFlush * dsyncFlush (slowdown), delayedInnodbLogFlush * directFlush (speedup)
-Changelog: Mentiones speedup
-Commits: 
-2809dd8df525: Speed-up mentioned
-b0955c74d4d027f2838ae6c48cd3dfbed639cbaf: Speed-up mentioned
-Configuration option is mentioned
+* Configuration options/Interactions: delayedInnodbLogFlush (speedup), delayedInnodbLogFlush * dsyncFlush (slowdown), delayedInnodbLogFlush * directFlush (speedup)
+* Changelog: Mentiones speedup
+* Commits: 
+  * 2809dd8df525: Speed-up mentioned
+  * b0955c74d4d027f2838ae6c48cd3dfbed639cbaf: Speed-up mentioned
+* Configuration option is mentioned
 
 ## VP8
 Shares the same repository with VP9.
