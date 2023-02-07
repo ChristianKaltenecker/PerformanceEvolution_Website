@@ -200,33 +200,33 @@ Some performance bugs (according to the change log) also happen when uncompressi
 * Configuration options/Interactions: compression levels 0,1,2,3,10,11
 * Changelog: made low quality compression faster; added quality level 0; 
 * Commits:
-  * 1f01d61bcf: Add two more fast modes (quality 0, 1); quality 1,2 were renamed to quality 2 and 3 and the old quality 3 is removed.
-  * f453b1bf36 [only memory]: Reduce memory usage
-  * 27688e605c: Faster entropy coding phase for quality 1
-  * 4dd9114c97: Partial Hasher initialization for small input data (does not apply; our data is bigger than only 1KB)
+  * [1f01d61bcf](https://github.com/google/brotli/commit/1f01d61bcf): Add two more fast modes (quality 0, 1); quality 1,2 were renamed to quality 2 and 3 and the old quality 3 is removed.
+  * [f453b1bf36](https://github.com/google/brotli/commit/f453b1bf36) [only memory]: Reduce memory usage
+  * [27688e605c](https://github.com/google/brotli/commit/27688e605c): Faster entropy coding phase for quality 1
+  * [4dd9114c97](https://github.com/google/brotli/commit/4dd9114c97): Partial Hasher initialization for small input data (does not apply; our data is bigger than only 1KB)
 * Configuration option mentioned regarding performance change
 
 0.4.0 - 0.5.2:
 * Configuration options/Interactions: compression levels 5-9, window sizes 10-11
 * Changelog: Nothing
 * Commits:
-  * 2048189048: new hasher; improved speed and reduced memory usage for q:5-9 w 10-16
+  * [2048189048](https://github.com/google/brotli/commit/2048189048): new hasher; improved speed and reduced memory usage for q:5-9 w 10-16
 * Configuration option mentioned
 
 0.5.2 - 0.6.0:
 * Configuration options/Interactions: compression level 10-11
 * Changelog: Nothing
 * Commits:
-  * 5db62dcc: Fix slow-down after a long copy (q10-11)
-  * 0a63f99db: Limit for window size for q0-1 and use fix shifts for the hashes
-  * 8a06e0293: Improve the compression
+  * [5db62dcc](https://github.com/google/brotli/commit/5db62dcc): Fix slow-down after a long copy (q10-11)
+  * [0a63f99db](https://github.com/google/brotli/commit/0a63f99db): Limit for window size for q0-1 and use fix shifts for the hashes
+  * [8a06e0293](https://github.com/google/brotli/commit/8a06e0293): Improve the compression
 * Configuration option mentioned
 
 0.6.0 - 1.0.0:
 * Configuration options/Interactions: compression level, window size
 * Changelog: Nothing
 * Commits:
-  * a629289e: speedup compression for RLEish (Run Length Encoding) data
+  * [a629289e](https://github.com/google/brotli/commit/a629289e): speedup compression for RLEish (Run Length Encoding) data
 * Configuration option not mentioned
 
 1.0.0 - 1.0.1 (only one day in between): 
@@ -240,29 +240,29 @@ Some performance bugs (according to the change log) also happen when uncompressi
 * Configuration options/Interactions: compression level, window size
 * Changelog: Nothing
 * Commits:
-  * 39ef4bbdc: add new (fast) dictionary generator "Sieve"
+  * [39ef4bbdc](https://github.com/google/brotli/commit/39ef4bbdc): add new (fast) dictionary generator "Sieve"
 * Configuration option not mentioned
 
 1.0.2 - 1.0.3:
 * Configuration options/Interactions: compression level, window size
 * Changelog: Improved compression ratio; Nothing related to performance
 * Commits:
-  * 35e69fc7c: New dictionary generator with the speed of "Sieve" and the quality of "DM" -> does not necessarily imply that the speed of the new dictionary generator is better than before.
-  * da254cffdb: Fix q=10 1-byte input compression
+  * [35e69fc7c](https://github.com/google/brotli/commit/35e69fc7c): New dictionary generator with the speed of "Sieve" and the quality of "DM" -> does not necessarily imply that the speed of the new dictionary generator is better than before.
+  * [da254cffdb](https://github.com/google/brotli/commit/da254cffdb): Fix q=10 1-byte input compression
 * Configuration option mentioned
 
 1.0.3 - 1.0.4 (1 month 1 week in between):
 * Configuration options/Interactions: compression level, window size
 * Changelog: better compression; Nothing related to performance
 * Commits:
-  * 0f3c84e7e: better compression (similar to changelog)
+  * [0f3c84e7e](https://github.com/google/brotli/commit/0f3c84e7e): better compression (similar to changelog)
 * Configuration option not mentioned
 
 1.0.4 - 1.0.5:
 * Configuration options/Interactions: compression level, window size
 * Changelog: q=1 compression on small files improved
 * Commits:
-  * 68db5c027: improve q=1 compression on small files
+  * [68db5c027](https://github.com/google/brotli/commit/68db5c027): improve q=1 compression on small files
 * Configuration option mentioned
 
 1.0.6 - 1.0.7:
