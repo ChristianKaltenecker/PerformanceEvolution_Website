@@ -167,7 +167,7 @@ Configuration Tau values:
 |0.7 -- 0.8 | 16 |
 |0.8 -- 0.9 | 41 |
 |0.9 -- 1.0 | 49 |
-|1.0 -- 1.1 | 8 |
+|1.0 -- 1.1 | 15 |
 
 ## RQ2.1: How frequent and how strong are changes of performance influences of individual configuration options and interactions between consecutive releases?
 
