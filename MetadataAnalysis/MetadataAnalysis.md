@@ -21,13 +21,13 @@ Is the case study that is abnormal in comparison to the other case studies since
 This case study is also interesting, because from version 4.5.0 to 4.6.0, all configurations change. A reason for this performance change could be that the behavior of optimization commands for the SMT2 command-line interface has changed in version 4.6.0. In the same version, a new linear real arithmetic solver was introduced. Interestingly, not only the overall performance changes, but also the performance of the configuration option proof is degraded by roughly 200%. 
 proof generates an object that provides more information about why a certain formula is valid or not (https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/nbjorner-iwil08.pdf).
 
-### Commit messages and changelog
+### Commit messages and Change log
 
-Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
+Change log: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.3.2 - 4.4.0:
 * Configuration options/Interactions: QF_LRA (Unquantified linear real arithmetic -- speedup), QF_LRA * proof (speedup)
-* Changelog: Reports changes on QF_FP; No speedup mentioned
+* Change log: Reports changes on QF_FP; No speedup mentioned
 * Commits: 
   * [1e30fd2c65d](https://github.com/Z3Prover/z3/commit/1e30fd2c65d)
   * [89c43676d5719](https://github.com/Z3Prover/z3/commit/89c43676d5719)
@@ -38,7 +38,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.4.0 - 4.4.1:
 * Configuration options/Interactions: QF_FP * proof (speedup)
-* Changelog: No speedup mentioned
+* Change log: No speedup mentioned
 * Commits:
   * [eeef4d29d8285](https://github.com/Z3Prover/z3/commit/eeef4d29d8285)
   * [759d80dfe371](https://github.com/Z3Prover/z3/commit/759d80dfe371)
@@ -54,7 +54,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.4.1 - 4.5.0:
 * Configuration options/Interactions: QF_FP * proof (slowdown), QF_FP (slowdown)
-* Changelog: Reports changes on LRA (new solver); no speedup reported
+* Change log: Reports changes on LRA (new solver); no speedup reported
 * Commits:
   * [cc6769c8664](https://github.com/Z3Prover/z3/commit/cc6769c8664)
   * [c1aa33339d2e95c](https://github.com/Z3Prover/z3/commit/c1aa33339d2e95c)
@@ -65,7 +65,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.5.0 - 4.6.0:
 * Configuration options/Interactions: QF_FP (speedup), QF_FP * proof (speedup), QF_LRA * proof (slowdown), QF_UFLRA (slowdown), QF_UFLRA * proof (slowdown)
-* Changelog: Mentions changes of a new linear arithmetic solver; no speedups reported
+* Change log: Mentions changes of a new linear arithmetic solver; no speedups reported
 * Commits:
   * [fbaee08](https://github.com/Z3Prover/z3/commit/fbaee08): fix performance regression introduced with theory_str; theory_str slows down things
   * [72c9134424c973](https://github.com/Z3Prover/z3/commit/72c9134424c973): fixing regressions introduced when reducing astm proof dependencies
@@ -74,7 +74,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.6.0 - 4.7.1:
 * Configuration options/Interactions: QF_UFLRA * proof (speedup), QF_LRA (speedup), QF_UFLRA (speedup)
-* Changelog: Reports breaking changes but no speedups
+* Change log: Reports breaking changes but no speedups
 * Commits: Nothing directly related to runtime performance
   * [9e8192e44811bcfad99866932480619d8e8512af](https://github.com/Z3Prover/z3/commit/9e8192e44811bcfad99866932480619d8e8512af) (Speed-up)
   * [b5d531f079d6b678dc8accf6fd165185361c18d6](https://github.com/Z3Prover/z3/commit/b5d531f079d6b678dc8accf6fd165185361c18d6) (Speed-up)
@@ -85,7 +85,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.7.1 - 4.8.1:
 * Configuration options/Interactions: QF_LRA * proof (speedup), QF_LRA (slowdown)
-* Changelog: No speedup reported
+* Change log: No speedup reported
 * Commits:
   * [49e94809282eee4d](https://github.com/Z3Prover/z3/commit/49e94809282eee4d)
   * [16d4e2f5d1b2de3](https://github.com/Z3Prover/z3/commit/16d4e2f5d1b2de3)
@@ -95,7 +95,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.8.3 - 4.8.4:
 * Configuration options/Interactions: QF_UFLRA * proof (slowdown)
-* Changelog: Speedups reported but not in relation to configuration option
+* Change log: Speedups reported but not in relation to configuration option
 * Commits: 
   * [9e5aaf074e248084](https://github.com/Z3Prover/z3/commit/9e5aaf074e248084)
   * [bfcea7a8198ef](https://github.com/Z3Prover/z3/commit/bfcea7a8198ef)
@@ -103,7 +103,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.8.4 - 4.8.5:
 * Configuration options/Interactions: QF_FP * proof (speedup), QF_LRA (speedup)
-* Changelog: Nothing relevant mentioned
+* Change log: Nothing relevant mentioned
 * Commits:
   * [73f6806371e494c](https://github.com/Z3Prover/z3/commit/73f6806371e494c) (speed-up mentioned)
   * [893e60459369e1b781c3d99015c03d2089dd8c5e](https://github.com/Z3Prover/z3/commit/893e60459369e1b781c3d99015c03d2089dd8c5e) (found configuration option proof)
@@ -111,21 +111,21 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.8.5 - 4.8.6:
 * Configuration options/Interactions: QF_UFLRA (slowdown), QF_UFLRA * proof (slowdown)
-* Changelog: Nothing relevant mentioned
+* Change log: Nothing relevant mentioned
 * Commits: 
   * [43a19cadf6c](https://github.com/Z3Prover/z3/commit/43a19cadf6c)
 * Configuration option mentioned
 
 4.8.6 - 4.8.7:
 * Configuration options/Interactions: Nothing
-* Changelog: Nothing relevant mentioned
+* Change log: Nothing relevant mentioned
 * Commits:
   * [18fe28c0f0db547e](https://github.com/Z3Prover/z3/commit/18fe28c0f0db547e)
 * Configuration option not mentioned
 
 4.8.7 - 4.8.8:
 * Configuration options/Interactions: QF_LRA * proof (speedup), QF_UFLRA * proof (speedup), QF_UFLRA * model_validate (slowdown), QF_UFLRA (slowdown)
-* Changelog: (PROBABLE REGRESSION REPORTED!) Only regression reported; no speedup
+* Change log: (PROBABLE REGRESSION REPORTED!) Only regression reported; no speedup
 * Commits:
   * [0f2c8c21ff955713a4](https://github.com/Z3Prover/z3/commit/0f2c8c21ff955713a4) (speed-up reported)
   * [140926e7c0ea0e52](https://github.com/Z3Prover/z3/commit/140926e7c0ea0e52) (perf regression reported)
@@ -135,7 +135,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.8.8 - 4.8.9:
 * Configuration options/Interactions: QF_UFLRA * model_validate * proof (speedup), QF_LRA * proof (speedup), QF_UFLRA * proof (slowdown), QF_UFLRA * model_validate (slowdown), QF_LRA (slowdown), QF_UFLRA (speedup)
-* Changelog: Another potential regression reported through a new arithmetic theory
+* Change log: Another potential regression reported through a new arithmetic theory
 * Commits:
   * [1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa](https://github.com/Z3Prover/z3/commit/1fd567d1e9a8bfeea2f7a72de7011b6e8d06edfa) (Speed-up reported)
   * [07a1aea689f9c2dff0f74a1b61940d04155cba39](https://github.com/Z3Prover/z3/commit/07a1aea689f9c2dff0f74a1b61940d04155cba39) (Configuration option proof mentioned)
@@ -143,7 +143,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.8.9 - 4.8.10:
 * Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA (slowdown)
-* Changelog: default solver replaced, but nothing regarding performance reported
+* Change log: default solver replaced, but nothing regarding performance reported
 * Commits:
   * [a95c35dadbfdcc86](https://github.com/Z3Prover/z3/commit/a95c35dadbfdcc86)
 * Configuration option mentioned
@@ -151,7 +151,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.8.10 - 4.8.11:
 * Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA * proof (speedup), QF_UFLRA * model_validate (speedup), QF_UFLRA (slowdown)
-* Changelog: Nothing directly related to performance is mentioned
+* Change log: Nothing directly related to performance is mentioned
 * Commits:
   * [52e67b0d3edb3f](https://github.com/Z3Prover/z3/commit/52e67b0d3edb3f)
   * [4a8ba8b1609044](https://github.com/Z3Prover/z3/commit/4a8ba8b1609044)
@@ -165,14 +165,14 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 4.8.11 - 4.8.12:
 * Configuration options/Interactions: QF_LRA (speedup)
-* Changelog: Nothing directly related to performance is mentioned
+* Change log: Nothing directly related to performance is mentioned
 * Commits: 
  * Nothing
 * Configuration options not mentioned
 
 4.8.12 - 4.8.13:
 * Configuration options/Interactions: QF_LRA * proof (slowdown), QF_UFLRA (speedup)
-* Changelog: Nothing directly related to performance is mentioned
+* Change log: Nothing directly related to performance is mentioned
 * Commits:
   * [ed27ce5526bb4b42](https://github.com/Z3Prover/z3/commit/ed27ce5526bb4b42)
   * [3e6ff768a58f072](https://github.com/Z3Prover/z3/commit/3e6ff768a58f072)
@@ -182,7 +182,7 @@ Changelog: https://github.com/Z3Prover/z3/blob/master/RELEASE_NOTES
 
 ## brotli
 
-This case study has multiple configuration options with numeric values. In one release and one single numeric value of a certain configuration option, there is a performance bug which is confirmed by the changelog.
+This case study has multiple configuration options with numeric values. In one release and one single numeric value of a certain configuration option, there is a performance bug which is confirmed by the Change log.
 The base code (i.e., all other code that is not related to window size or the compression level) shows no significant changes over time; only some configuration options and interactions.
 The most changes are between releases 0.3.0-0.4.0 and 0.4.0-0.5.2 with these three releases being the only significant in this case study.
 
@@ -196,9 +196,9 @@ This behavior is also visible in the performance-influence models.
 Some performance bugs (according to the change log) also happen when uncompressing a file. We, however, have measured only the time for compression.
 
 ## Commit messages
-0.3.0 - 0.4.0 (low quality compression also mentioned in the changelog):
+0.3.0 - 0.4.0 (low quality compression also mentioned in the Change log):
 * Configuration options/Interactions: compression levels 0,1,2,3,10,11
-* Changelog: made low quality compression faster; added quality level 0; 
+* Change log: made low quality compression faster; added quality level 0; 
 * Commits:
   * [1f01d61bcf](https://github.com/google/brotli/commit/1f01d61bcf): Add two more fast modes (quality 0, 1); quality 1,2 were renamed to quality 2 and 3 and the old quality 3 is removed.
   * [f453b1bf36](https://github.com/google/brotli/commit/f453b1bf36) [only memory]: Reduce memory usage
@@ -208,14 +208,14 @@ Some performance bugs (according to the change log) also happen when uncompressi
 
 0.4.0 - 0.5.2:
 * Configuration options/Interactions: compression levels 5-9, window sizes 10-11
-* Changelog: Nothing
+* Change log: Nothing
 * Commits:
   * [2048189048](https://github.com/google/brotli/commit/2048189048): new hasher; improved speed and reduced memory usage for q:5-9 w 10-16
 * Configuration option mentioned
 
 0.5.2 - 0.6.0:
 * Configuration options/Interactions: compression level 10-11
-* Changelog: Nothing
+* Change log: Nothing
 * Commits:
   * [5db62dcc](https://github.com/google/brotli/commit/5db62dcc): Fix slow-down after a long copy (q10-11)
   * [0a63f99db](https://github.com/google/brotli/commit/0a63f99db): Limit for window size for q0-1 and use fix shifts for the hashes
@@ -224,28 +224,28 @@ Some performance bugs (according to the change log) also happen when uncompressi
 
 0.6.0 - 1.0.0:
 * Configuration options/Interactions: compression level, window size
-* Changelog: Nothing
+* Change log: Nothing
 * Commits:
   * [a629289e](https://github.com/google/brotli/commit/a629289e): speedup compression for RLEish (Run Length Encoding) data
 * Configuration option not mentioned
 
 1.0.0 - 1.0.1 (only one day in between): 
 * Configuration options/Interactions: compression level, window size
-* Changelog: Nothing
+* Change log: Nothing
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 1.0.1 - 1.0.2 (changes of the terms are higher than 5% and therefore, this release was chosen):
 * Configuration options/Interactions: compression level, window size
-* Changelog: Nothing
+* Change log: Nothing
 * Commits:
   * [39ef4bbdc](https://github.com/google/brotli/commit/39ef4bbdc): add new (fast) dictionary generator "Sieve"
 * Configuration option not mentioned
 
 1.0.2 - 1.0.3:
 * Configuration options/Interactions: compression level, window size
-* Changelog: Improved compression ratio; Nothing related to performance
+* Change log: Improved compression ratio; Nothing related to performance
 * Commits:
   * [35e69fc7c](https://github.com/google/brotli/commit/35e69fc7c): New dictionary generator with the speed of "Sieve" and the quality of "DM" -> does not necessarily imply that the speed of the new dictionary generator is better than before.
   * [da254cffdb](https://github.com/google/brotli/commit/da254cffdb): Fix q=10 1-byte input compression
@@ -253,21 +253,21 @@ Some performance bugs (according to the change log) also happen when uncompressi
 
 1.0.3 - 1.0.4 (1 month 1 week in between):
 * Configuration options/Interactions: compression level, window size
-* Changelog: better compression; Nothing related to performance
+* Change log: better compression; Nothing related to performance
 * Commits:
-  * [0f3c84e7e](https://github.com/google/brotli/commit/0f3c84e7e): better compression (similar to changelog)
+  * [0f3c84e7e](https://github.com/google/brotli/commit/0f3c84e7e): better compression (similar to Change log)
 * Configuration option not mentioned
 
 1.0.4 - 1.0.5:
 * Configuration options/Interactions: compression level, window size
-* Changelog: q=1 compression on small files improved
+* Change log: q=1 compression on small files improved
 * Commits:
   * [68db5c027](https://github.com/google/brotli/commit/68db5c027): improve q=1 compression on small files
 * Configuration option mentioned
 
 1.0.6 - 1.0.7:
 * Configuration options/Interactions: compression level, window size
-* Changelog: focuses on ARM architecture; Nothing regarding x86 architecture
+* Change log: focuses on ARM architecture; Nothing regarding x86 architecture
 * Some speedup detected in configuration options: CompressionLevel_9 * WindowSize_24; CompressionLevel 9 * WindowSize_23; CompressionLEvel_9 * WindowSize_22; CompressionLEvel_10 * WindowSize_19
 * Commits:
  * Nothing
@@ -282,7 +282,7 @@ This case study (along with PostgreSQL) has a release (2.2.1 -- 2.2.2) where no 
 ### Commit messages
 2.2.2 - 2.3.0
 * Configuration options/Interaction: lzo (speed up); sha512 (speed up)
-* Changelog:
+* Change log:
   * Fix reconnection issues when push and UDP (we use tcp in our setup).
   * They also fixed some regressions happening in configuration options we do not use (e.g., --http-proxy).
   * Modified create_socket_tcp.
@@ -292,7 +292,7 @@ This case study (along with PostgreSQL) has a release (2.2.1 -- 2.2.2) where no 
 
 2.3.9 - 2.4.0:
 * Configuration options/Interaction: base (slow down); lzo and sha512 (speed up); SHA1 (slow down); SHA512 * LZO (slow down)
-* Changelog: 
+* Change log: 
   * In 2.3.10: Fix regression in setups without a client certificate
 * Commits:
   * [b59fc7f](https://github.com/OpenVPN/openvpn/commit/b59fc7f): Fix missing return value checks; should become faster
@@ -314,12 +314,12 @@ Just stable... no performance changes here.
 With 220 different configuration options and interactions thereof, it is hard to tell which configuration option or interaction caused the influence and whether it was positive/negative.
 This turns out to be a drawback since it makes tracking difficult.
 
-* Changelog: https://github.com/ckolivas/lrzip/blob/master/ChangeLog
+* Change log: https://github.com/ckolivas/lrzip/blob/master/Change log
 
 ### Releases
 530 - 543 (configurations stay the same or have a massive slow down):
 * Configuration options/Interactions: compression(Lzo,Gzip,Lzma) * processorCount(2,4,8), level 3-9; processorCount_4 slow down
-* Changelog: 540-543: fixes and speedup;
+* Change log: 540-543: fixes and speedup;
 * Commits:
   * [692949287](https://github.com/ckolivas/lrzip/commit/692949287): Sliding mmap was causing a slowdown of death
   * [2b08c6e280](https://github.com/ckolivas/lrzip/commit/2b08c6e280): Fix the output of zpaq compress and decompress
@@ -328,14 +328,14 @@ This turns out to be a drawback since it makes tracking difficult.
 
 543 - 544 (some configurations have a speed up, some a slow down -- major change):
 * Configuration options/Interaction: same as 530. processorCount_4 slowed down when using different compressions; reverts some changes from 543; some are even worse (compressionLZMA * processorCount_8); hard to tell
-* Changelog: speed ups are mentioned
+* Change log: speed ups are mentioned
 * Commits:
   * [688aa55c7930](https://github.com/ckolivas/lrzip/commit/688aa55c7930): Spawn threads in regular intervals; speeds up compression
 * Configuration option is mentioned regarding speed-up
 
 
 544 - 550 (configurations stay the same or are speeded up -- major change):
-* Changelog: speed up mentioned
+* Change log: speed up mentioned
 * Commits:
   * [8dd9b00](https://github.com/ckolivas/lrzip/commit/8dd9b00): Reverted 688aa55c7 because it was not only resuling in a speed up but also in a slow down
   * [50437a84](https://github.com/ckolivas/lrzip/commit/50437a84): Improves threading by bringing it higher up in the code.
@@ -343,64 +343,64 @@ This turns out to be a drawback since it makes tracking difficult.
 * Configuration option lzma and threading mentioned regarding speed-up
 
 551 - 552:
-* Changelog: no performance changes are reported.
+* Change log: no performance changes are reported.
 Focus on decompression.
 * Commits:
   * [8d110e3366d](https://github.com/ckolivas/lrzip/commit/8d110e3366d): Check that thread really exited before moving on
 * Configuration option mentioned
 
 552 - 560 (major change):
-* Changelog: speed ups reported
+* Change log: speed ups reported
 * Commits:
   * [7287ab8a6](https://github.com/ckolivas/lrzip/commit/7287ab8a6): md5 process bytes saving time
   * [4036125f947](https://github.com/ckolivas/lrzip/commit/4036125f947): Make the buffer sized, speedup
 * Configuration option not mentioned
 
 560 - 571 (speed up -- major change):
-* Changelog: 0.570: Multithreading speedup; 
+* Change log: 0.570: Multithreading speedup; 
 * Commits:
   * [f9f880908c](https://github.com/ckolivas/lrzip/commit/f9f880908c): Small slow down by removing fragile exponential growth buffer size
   * [bb33f7571cc](https://github.com/ckolivas/lrzip/commit/bb33f7571cc): Speeding up multi-threading
 * Configuration option mentioned regarding speed-up
 
 571 - 601 (slow down -- major change):
-* Changelog: no speed up/slow down reported
+* Change log: no speed up/slow down reported
 * Commits:
   * [643054ae](https://github.com/ckolivas/lrzip/commit/643054ae): Fix threading error (?)
 * Configuration option mentioned
 
 601 - 602:
-* Changelog: nothing relevant reported
+* Change log: nothing relevant reported
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 602 - 604:
-* Changelog: Nothing relevant reported
+* Change log: Nothing relevant reported
 * Commits:
   * [7ed977b1c1](https://github.com/ckolivas/lrzip/commit/7ed977b1c1): Detach threads from the compression side
 * Configuration option mentioned
 
 604 - 606:
-* Changelog: Nothing relevant supported
+* Change log: Nothing relevant supported
 * Commits:
   * [d033743e6f](https://github.com/ckolivas/lrzip/commit/d033743e6f): Reverts 
 * Configuration option not mentioned
 
 606 - 607 (speed up):
-* Changelog: Nothing relevant reported (except for the update to lzma 920)
+* Change log: Nothing relevant reported (except for the update to lzma 920)
 * Commits:
   * [71bb72f5da](https://github.com/ckolivas/lrzip/commit/71bb72f5da): Update to lzma 920 library
 * Configuration option mentioned
 
 607 - 608 (speed up):
-* Changelog: Speed up reported 2x
+* Change log: Speed up reported 2x
 * Commits:
   * [f496e0705](https://github.com/ckolivas/lrzip/commit/f496e0705): Speed up
 * Configuration option not mentioned
 
 608 - 611 (slow down and some speed up):
-* Changelog: Speed up reported
+* Change log: Speed up reported
 * Commits:
   * [f4165ec26](https://github.com/ckolivas/lrzip/commit/)
   * [2fada9fb](https://github.com/ckolivas/lrzip/commit/)
@@ -412,20 +412,20 @@ Focus on decompression.
 * Configuration option mentioned
 
 612 - 614:
-* Changelog: Nothing relevant reported
+* Change log: Nothing relevant reported
 * Commits:
   * [081265f](https://github.com/ckolivas/lrzip/commit/): No back end compression for blocks smaller than 64 bytes
 * Configuration option mentioned
 
 614 - 615:
-* Changelog: Multiple micro-optimizations and several fixes but no clear relation to performance
+* Change log: Multiple micro-optimizations and several fixes but no clear relation to performance
 * Commits:
   * [6f0410d28f](https://github.com/ckolivas/lrzip/commit/)
   * [87fe625829](https://github.com/ckolivas/lrzip/commit/)
 * Configuration option not mentioned
 
 620 - 621:
-* Changelog: Microoptiomisation is reported; but no clear speed up /slow down
+* Change log: Microoptiomisation is reported; but no clear speed up /slow down
 * Commits:
   * [9a17a54c](https://github.com/ckolivas/lrzip/commit/9a17a54c): make high buffer only one page size faster
   * [aa753fee](https://github.com/ckolivas/lrzip/commit/aa753fee): microoptimisation
@@ -433,12 +433,12 @@ Focus on decompression.
 
 ## HSQLDB
 
-Changelog: http://hsqldb.org/doc/2.0/changelist_2_0.txt
+Change log: http://hsqldb.org/doc/2.0/changelist_2_0.txt
 
-### Commit messages and changelog
+### Commit messages and Change log
 2.1.0 - 2.2.0 (slow down):
 * Configuration options/Interactions: logSize (slow-down)
-* Changelog: Only speed up reported (fixed regression)
+* Change log: Only speed up reported (fixed regression)
 * Commits:
   * Nothing
 * Configuration option not mentioned
@@ -446,28 +446,28 @@ Changelog: http://hsqldb.org/doc/2.0/changelist_2_0.txt
 
 2.2.1 - 2.2.2 (speed up of some configurations):
 * Configuration options/Interactions: blowfish, logSize * blowFish * defragLimit
-* Changelog: improved query speed
+* Change log: improved query speed
 * Commits:
   * [796fa0ccedc](https://github.com/ryenus/hsqldb/commit/796fa0ccedc): improved query speed
 * Configuration option not mentioned
 
 2.2.5 - 2.2.6 (slow down):
 * Configuration options/Interactions: mvcc
-* Changelog: Fix of MVCC is mentioned (but no slow down)
+* Change log: Fix of MVCC is mentioned (but no slow down)
 * Commits:
   * [04db897bbc6](https://github.com/ryenus/hsqldb/commit/04db897bbc6): optimization (only speed up?)
 * Configuration option mentioned
 
 2.2.6 - 2.2.7:
 * Configuration options/Interactions: None
-* Changelog: Nothing
+* Change log: Nothing
 * Commits:
   * [22f6fd2d8](https://github.com/ryenus/hsqldb/commit/22f6fd2d8)
 * Configuration option not mentioned
 
 2.2.9 - 2.3.0 (slow down and a few configurations sped up):
 * Configuration options/Interactions: blowFish * logSize_5 * defragLimit_50 (speed up); blowfish * defragLimit_100 * logSize 5 (slowdown) blowfish * cacheSize_10000 (slow down); blowfish * logSize_5 (speed up); blowfish (speed up)
-* Changelog: Speed up reported; few regressions fixed; no slow down reported
+* Change log: Speed up reported; few regressions fixed; no slow down reported
 * Commits:
   * Nothing
 * Configuration option not mentioned
@@ -475,37 +475,37 @@ Changelog: http://hsqldb.org/doc/2.0/changelist_2_0.txt
 
 2.3.0 - 2.3.1 (some slow down, some speed up -- no changes in performance-influence model visible):
 * Configuration options/Interactions: None
-* Changelog: Nothing mentioned
+* Change log: Nothing mentioned
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 2.3.1 - 2.3.2 (same configurations -- seems as changes are reverted -- no changes in performance-influence model visible):
 * Configuration options/Interactions: None
-* Changelog: Nothing mentioned
+* Change log: Nothing mentioned
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 2.3.2 - 2.3.3 (slow down of specific configurations):
 * Configuration options/Interactions: defragLimit_50 * logSize_5 * blowfish
-* Changelog: only regressions reported
+* Change log: only regressions reported
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 ## MariaDB
 
-Changelogs:
-5.5-series: https://mariadb.com/kb/en/mariadb-galera-55-changelogs/
-10.0-series: https://mariadb.com/kb/en/changelogs-mariadb-100-series/
-10.2-series: https://mariadb.com/kb/en/changelogs-mariadb-102-series/
+Change logs:
+5.5-series: https://mariadb.com/kb/en/mariadb-galera-55-Change logs/
+10.0-series: https://mariadb.com/kb/en/Change logs-mariadb-100-series/
+10.2-series: https://mariadb.com/kb/en/Change logs-mariadb-102-series/
 
 
-### Commit messages and changelog
+### Commit messages and Change log
 5.5.23 - 5.5.27:
 * Configuration options/Interactions: delayedInnodbFlush (slowdown), dsyncFlush (slowdown), delayedInnodbFlush * dsyncFlush (speedup)
-* Changelog: They mention 2 fixes regarding flush in 5.5.24; Mentions a problem on ext3/ext4 on Linux so that fdatasync does not correctly sync all data in 5.5.27
+* Change log: They mention 2 fixes regarding flush in 5.5.24; Mentions a problem on ext3/ext4 on Linux so that fdatasync does not correctly sync all data in 5.5.27
 * Commits:
   * [63f6c4e8fcd](https://github.com/MariaDB/server/commit/63f6c4e8fcd): change from fsync to fdatasync on Linux
   * [598bb174677207475e34eb3c0632cab91f6dea9a](https://github.com/MariaDB/server/commit/598bb174677207475e34eb3c0632cab91f6dea9a): speed-up mentioned
@@ -514,7 +514,7 @@ Changelogs:
 
 5.5.35 - 5.5.38:
 * Configuration options/Interactions: dsyncFlush (slowdown), directFlush (speedup), delayedInnodbLogWrite * dsyncFlush (slowdown)
-* Changelog: Nothing relevant mentioned
+* Change log: Nothing relevant mentioned
 * Commits:
   * [f01f49916b7a0](https://github.com/MariaDB/server/commit/f01f49916b7a0): speed up mentioned; innodb storage mentioned
   * [6db663d614](https://github.com/MariaDB/server/commit/6db663d614): speed up mentioned
@@ -523,7 +523,7 @@ Changelogs:
 
 5.5.40 (9.10.2014) - 10.0.17 (27.02.2015):
 * Configuration options/Interactions: delayedInnodbLogWrite * dsyncFlush (speed up), delayedInnodbLogFlush * dsyncFlush (slow down), delayedInnodbLogFlush (speed up), dsyncFlush (speed up)
-* Changelog: Hard to compare two major versions when they are developed in parallel; it seems that the changes from 5.5.23 - 5.5.27 are reversed (maybe the patch is missing?)
+* Change log: Hard to compare two major versions when they are developed in parallel; it seems that the changes from 5.5.23 - 5.5.27 are reversed (maybe the patch is missing?)
 * Commits: 11MB logs...
   * [476a8660e](https://github.com/MariaDB/server/commit/476a8660e): New version of InnoDB
   * [87f5261039](https://github.com/MariaDB/server/commit/87f5261039): Remove the innodb_flush_method fdatasync
@@ -535,7 +535,7 @@ Changelogs:
 
 10.1.16 (18.07.2016) - 10.2.6 (23.05.2017):
 * Configuration options/Interactions: delayedInnodbLogFlush (speed up)
-* Changelog: 10.2.4 mentions innodb and logging; for page compressed and encrypted tables log sequence number is not stored; this lead to a missmatch and some output in syslog
+* Change log: 10.2.4 mentions innodb and logging; for page compressed and encrypted tables log sequence number is not stored; this lead to a missmatch and some output in syslog
 * Commits: 
   * [2d656793](https://github.com/MariaDB/server/commit/2d656793): Fix an issue where the json writer produced extra members in output; Configuration option mentioned; no speed up mentioned
   * [fec844aca88](https://github.com/MariaDB/server/commit/fec844aca88): Newer version of InnoDB
@@ -544,7 +544,7 @@ Changelogs:
 
 10.2.7 (12.07.2017) - 10.2.11 (28.11.2017):
 * Configuration options/Interactions: delayedInnodbLogFlush (slow down)
-* Changelog: 10.2.8: Revert an InnoDB Memcached from MySQL 5.6.37; Flushes redo log too often; there are many changes to Innodb, but it is unclear which one leads to a regression
+* Change log: 10.2.8: Revert an InnoDB Memcached from MySQL 5.6.37; Flushes redo log too often; there are many changes to Innodb, but it is unclear which one leads to a regression
 * Commits:
   * [cb9648a6b5](https://github.com/MariaDB/server/commit/cb9648a6b5): Revert an InnoDB Memcached plugin fix; innodb mentioned; no speed up mentioned
   * [3f24cf2dbdc3885f47a3ea84fc6383d3007cc996](https://github.com/MariaDB/server/commit/3f24cf2dbdc3885f47a3ea84fc6383d3007cc996): speed up mentioned
@@ -553,15 +553,15 @@ Changelogs:
 
 ## MySQL
 
-### Commit messages and changelog
+### Commit messages and Change log
 
-Changelog for 5.6: https://dev.mysql.com/doc/relnotes/mysql/5.6/en/
-Changelog for 5.7: https://dev.mysql.com/doc/relnotes/mysql/5.7/en/
-Changelog for 8.0: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
+Change log for 5.6: https://dev.mysql.com/doc/relnotes/mysql/5.6/en/
+Change log for 5.7: https://dev.mysql.com/doc/relnotes/mysql/5.7/en/
+Change log for 8.0: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
 
 5.6.26 (24.07.2015) - 5.7.9 (21.10.2015):
 * Configuration options/Interactions: binaryLog (slow down), binaryLog * delayedInnodbLogFlush (slow down)   -- they have a data dependency
-* Changelog: Multiple changes and fixes are mentioned regarding the binary log; also work on delayedInnodbLogFlush is mentioned but not related to binarylog
+* Change log: Multiple changes and fixes are mentioned regarding the binary log; also work on delayedInnodbLogFlush is mentioned but not related to binarylog
 * Commits:
   * [5ece4a68df](https://github.com/mysql/mysql-server/commit/5ece4a68df): Logging code was refactored in logging and binlogging
   * [33ef855d4aaee](https://github.com/mysql/mysql-server/commit/33ef855d4aaee): mentions flush and binary log together;
@@ -573,7 +573,7 @@ Changelog for 8.0: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
 
 5.7.22 (19.04.2018) - 8.0.12 (27.07.2018):
 * Configuration options/Interactions: delayedInnodbFlush (speed up), delayedInnodbFlush * dsyncFlush (slow down), Flush * Write * dsyncFlush (speed up), dsyncFlush (slow down), directFlush (slow down), binaryLog (speed up), innodbBufferPoolSize (speed up), directFlush * innodbBufferPoolSize (speed up)
-* Changelog: Mentions buffer size optimizations and speed ups in larger sorts
+* Change log: Mentions buffer size optimizations and speed ups in larger sorts
   * [215f4439e1da855](https://github.com/mysql/mysql-server/commit/215f4439e1da855): InnoDB startup refactoring; includes buffer_size
   * [2bd59f6e54cb152d539c46aa52a3b6507fb10bca](https://github.com/mysql/mysql-server/commit/2bd59f6e54cb152d539c46aa52a3b6507fb10bca): Speed-up mentioned
   * [c5768818b32fdc65aec9118b1fe7e63205eefd45](https://github.com/mysql/mysql-server/commit/c5768818b32fdc65aec9118b1fe7e63205eefd45): Speed-up mentioned
@@ -584,7 +584,7 @@ Changelog for 8.0: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
 
 8.0.13 - 8.0.15:
 * Configuration options/Interactions: delayedInnodbLogFlush (speedup), delayedInnodbLogFlush * dsyncFlush (slowdown), delayedInnodbLogFlush * directFlush (speedup)
-* Changelog: Mentiones speedup
+* Change log: Mentiones speedup
 * Commits: 
   * [2809dd8df525](https://github.com/mysql/mysql-server/commit/2809dd8df525): Speed-up mentioned
   * [b0955c74d4d027f2838ae6c48cd3dfbed639cbaf](https://github.com/mysql/mysql-server/commit/b0955c74d4d027f2838ae6c48cd3dfbed639cbaf): Speed-up mentioned
@@ -593,10 +593,10 @@ Changelog for 8.0: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
 ## VP8
 Shares the same repository with VP9.
 
-### Commit messages and changelogs
+### Commit messages and Change logs
 0.9.1 - 0.9.2:
 * Configuration options/Interactions: twoPass (speed up), bestQuality (speed up), goodQuality(speed up), constantBitrate * twoPass (speed up), bestQuality * noAltRef (speed up), constantBitrage * threads * twoPass (slow down)...
-* Changelog: Mentions a fix of two-pass for y4m input, mentions speed improvements
+* Change log: Mentions a fix of two-pass for y4m input, mentions speed improvements
 * Commits:
   * [e105e245e](https://github.com/webmproject/libvpx/commit/e105e245e): Fix framrate for Y4M input; configuration option mentioned
 * Configuration option mentioned
@@ -604,7 +604,7 @@ Shares the same repository with VP9.
 
 0.9.2 - 0.9.5:
 * Configuration options/Interactions: constantBitrate * twoPass (speed up), twoPass (minor slow down)
-* Changelog: only minor speed improvements for encoder mentioned, but more in relation to bestQuality; mentions changes for two pass.
+* Change log: only minor speed improvements for encoder mentioned, but more in relation to bestQuality; mentions changes for two pass.
 * Commits:
   * [ff3068d6d](https://github.com/webmproject/libvpx/commit/ff3068d6d): Change on two pass.
   * [788c0eb5](https://github.com/webmproject/libvpx/commit/788c0eb5): Tune effect of motion in two pass
@@ -612,7 +612,7 @@ Shares the same repository with VP9.
 
 0.9.5 - 0.9.6:
 * Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up), twoPass (speed up), constantBitrate * goodQuality (speed up), bestQuality * constantBitrage (slow down)
-* Changelog: Mentions the speed improvement on bestQuality and goodQuality on x86 architecture
+* Change log: Mentions the speed improvement on bestQuality and goodQuality on x86 architecture
 * Commits:
   * [b095d9df3c](https://github.com/webmproject/libvpx/commit/b095d9df3c): Adjustment to boost calculation in two pass
   * [3c18a2bb2e](https://github.com/webmproject/libvpx/commit/3c18a2bb2e): Performance improvement in first pass
@@ -625,7 +625,7 @@ Shares the same repository with VP9.
 
 0.9.6 - 0.9.7:
 * Configuration options/Interactions: goodQuality (speed up), twoPass (speed up), bestQuality (speed up), constantBitrate * goodQuality (slow down), bestQuality * constantBitrage (slow down), quality * threads (speed up), constantBitrate * threads * twoPass (speed up)
-* Changelog: Mentions speed up for bestQuality, goodQuality and for one-pass.
+* Change log: Mentions speed up for bestQuality, goodQuality and for one-pass.
 * Commits:
   * [b5ea2fbc2](https://github.com/webmproject/libvpx/commit/b5ea2fbc2): Improved 1-pass CBR rate control
   * [6c565fada0820](https://github.com/webmproject/libvpx/commit/6c565fada0820)
@@ -635,14 +635,14 @@ Shares the same repository with VP9.
 
 0.9.7 - 0.9.7-p1:
 * Configuration options/Interactions: constantBitrate * goodQuality (speed up), bestQuality * constantBitrate (speed up)
-* Changelog: Doesn't mention speedups, only a few fixes.
+* Change log: Doesn't mention speedups, only a few fixes.
 * Commits:
   * [e96131705](https://github.com/webmproject/libvpx/commit/e96131705): Revers b5ea2fb because of loss of quality
 * Configuration option mentioned
 
 0.9.7-p1 - 1.0.0:
 * Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up)
-* Changelog: Reports performance improvements in different qualities
+* Change log: Reports performance improvements in different qualities
 * Commits:
   * [b9f19f8917](https://github.com/webmproject/libvpx/commit/b9f19f8917): speedup on quality
 * Configuration option mentioned
@@ -650,14 +650,14 @@ Shares the same repository with VP9.
 
 1.0.0 - 1.1.0:
 * Configuration options/Interactions: bestQuality (slow down), goodQuality (slow down), twoPass (speed up)
-* Changelog: A denoiser is added to the encoder; no slow down reported for "most material". twoPass speed up is reported
+* Change log: A denoiser is added to the encoder; no slow down reported for "most material". twoPass speed up is reported
 * Commits:
   * [019384f2d36](https://github.com/webmproject/libvpx/commit/019384f2d36): two pass optimization
 * Nothing found regarding goodQuality or bestQuality
 
 1.1.0 - 1.2.0:
 * Configuration options/Interactions: very minor changes; constantBitrate * twoPass (slow down)
-* Changelog: Does not clearly mention speed up or slow down
+* Change log: Does not clearly mention speed up or slow down
 * Commits:
   * [64075c9b0129e](https://github.com/webmproject/libvpx/commit/64075c9b0129e): Encoder denoiser performance improvement (nothing to slow down)
   * [7b0b6a2c414a7e8947d37c817d5b312a7ec844f7](https://github.com/webmproject/libvpx/commit/7b0b6a2c414a7e8947d37c817d5b312a7ec844f7): Configuration option mentioned
@@ -666,7 +666,7 @@ Shares the same repository with VP9.
 
 1.2.0 - 1.3.0:
 * Configuration options/Interactions: bestQuality (slow down), goodQuality (slow down), twoPass (slow down)
-* Changelog: Introduces VP9. Mentions speed optimizations but no slow downs.
+* Change log: Introduces VP9. Mentions speed optimizations but no slow downs.
 * Commits:
   * [ee2051f6500](https://github.com/webmproject/libvpx/commit/ee2051f6500): two pass rate control code changes
   * [e237fd7c](https://github.com/webmproject/libvpx/commit/e237fd7c): Two pass refactoring
@@ -677,7 +677,7 @@ Shares the same repository with VP9.
 
 1.3.0 - 1.4.0:
 * Configuration options/Interactions: twoPass (massive speed up), threads2/threads3/threads4 * twoPass (slow down), quality * constantBitrate * threads (speed up)
-* Changelog: Focuses on VP9; Vp8 is not mentioned at all
+* Change log: Focuses on VP9; Vp8 is not mentioned at all
 * Commits:
   * [0639b5cff](https://github.com/webmproject/libvpx/commit/0639b5cff): speed up in quality
   * [096ab11012](https://github.com/webmproject/libvpx/commit/096ab11012): Removing pass number check (the output file has been opened twice during two-pass encoding)
@@ -687,7 +687,7 @@ Shares the same repository with VP9.
 
 1.4.0 - 1.5.0:
 * Configuration options/Interactions: minor changes, bestQuality (speed up), goodQuality (speed up)
-* Changelog: Mentions VP9; combines some functions with VP9
+* Change log: Mentions VP9; combines some functions with VP9
 * Commits:
   * [8dd466edc84](https://github.com/webmproject/libvpx/commit/8dd466edc84): impact on quality of animated test sequence
 * Configuration option mentioned
@@ -695,7 +695,7 @@ Shares the same repository with VP9.
 
 1.5.0 - 1.6.1:
 * Configuration options/Interactions: constantBitrate * goodQuality (speed up), bestQuality * constantBitrate (speed up), quality * twoPass (slow down), quality * threads * twoPass (speed up)
-* Changelog: Mentions VP9 speed up (but only high-level)
+* Change log: Mentions VP9 speed up (but only high-level)
 * Commits:
   * [1cd987d9222a27f0f2dfb3b71bc2325313865b90](https://github.com/webmproject/libvpx/commit/1cd987d9222a27f0f2dfb3b71bc2325313865b90): Speed-up mentioned
   * [8ba98516](https://github.com/webmproject/libvpx/commit/8ba98516): Improve best quality settings speed
@@ -704,14 +704,14 @@ Shares the same repository with VP9.
 
 1.6.1 - 1.7.0:
 * Configuration options/Interactions: None
-* Changelog: Nothing regarding VP8
+* Change log: Nothing regarding VP8
 * Commits:
   * [c8678fb7f38024345462cfab3b34d649548ff445](https://github.com/webmproject/libvpx/commit/c8678fb7f38024345462cfab3b34d649548ff445): Speed-up mentioned
 * No configuration option found
 
 1.7.0 - 1.8.0:
 * Configuration options: None
-* Changelog: Focuses on VP9
+* Change log: Focuses on VP9
 * Commits:
   * [c176e6490](https://github.com/webmproject/libvpx/commit/c176e6490):  ~10% improvement on 64 bit
   * [ad0ed535a](https://github.com/webmproject/libvpx/commit/ad0ed535a): mentions it is faster
@@ -719,10 +719,10 @@ Shares the same repository with VP9.
 
 ## VP9
 
-### Commit messages and changelogs
+### Commit messages and Change logs
 1.3.0 - 1.4.0:
 * Configuration options/Interactions: columnTiling (massive slow down), bestQuality (massive slow down), goodQuality (slow down), quality * noAltRef (speed up), arnMaxFrames * quality (slow down), columnTiling * constantBitrate (speed up), bestQuality * columnTiling (high slow down)
-* Changelog:  Mentions only speed ups, no slow downs; 
+* Change log:  Mentions only speed ups, no slow downs; 
 * Commits:
   * [ea8aaf15b55](https://github.com/webmproject/libvpx/commit/ea8aaf15b55): 20% slower
   * [eba9c762a](https://github.com/webmproject/libvpx/commit/eba9c762a): tile-based multi-threaded encoder
@@ -731,7 +731,7 @@ Shares the same repository with VP9.
 
 1.4.0 - 1.5.0:
 * Configuration options/Interactions: goodQuality (massive speed up) but slow down when it comes to threading and column tiling
-* Changelog: Only mentions speed ups, no slow downs
+* Change log: Only mentions speed ups, no slow downs
 * Commits:
   * [9fd8abc54](https://github.com/webmproject/libvpx/commit/9fd8abc54): speed up compression for speed 5-8
   * [9cfba09ac0e5](https://github.com/webmproject/libvpx/commit/9cfba09ac0e5): Optimize vpx_quantize assembler
@@ -740,7 +740,7 @@ Shares the same repository with VP9.
 
 1.5.0 - 1.6.0:
 * Configuration options/Interactions: bestQuality (massive speed up -- probably fix of 1.4.0 slow down?), columnTiling * goodquality * threads (slow down)
-* Changelog: Instructions have been reordered for Intel processors. 
+* Change log: Instructions have been reordered for Intel processors. 
 * Commits:
   * [af7fb17c09](https://github.com/webmproject/libvpx/commit/af7fb17c09): Time savings on Xeon desktop
   * [74a679de](https://github.com/webmproject/libvpx/commit/74a679de): Port optimizations to vp9
@@ -748,7 +748,7 @@ Shares the same repository with VP9.
 
 1.6.0 - 1.6.1:
 * Configuration options/Interactions: bestQuality (slow down), goodQuality (speed up), goodQuality * columnTiling * threads (slow down)
-* Changelog:  Mentions only speed up
+* Change log:  Mentions only speed up
 * Commits:
   * [5d881770e59](https://github.com/webmproject/libvpx/commit/5d881770e59): Change default recode rule for good speed and best; mentioned speed-up
 * Configuration option mentioned
@@ -756,7 +756,7 @@ Shares the same repository with VP9.
 
 1.6.1 - 1.7.0:
 * Configuration options/Interactions: bestQuality (speed up), goodQuality (speed up), constantBitrate (speed up)
-* Changelog: VP9 high-bit performance reported
+* Change log: VP9 high-bit performance reported
 * Commits:
   * [9c2552a1c149cbc](https://github.com/webmproject/libvpx/commit/9c2552a1c149cbc): speed up 
   * [6557baf3363e](https://github.com/webmproject/libvpx/commit/6557baf3363e): speed up
@@ -766,7 +766,7 @@ Shares the same repository with VP9.
 
 1.7.0 - 1.8.0:
 * Configuration options/Interactions: bestQuality (slow down), constantBitrate (speed up), columnTiling * noAltRef (speed up), arnMaxFrames * quality (slow down)
-* Changelog: Mentions 2pass improvements in combination with auto-alt-ref; aso mentions improvements on real-time encoding.
+* Change log: Mentions 2pass improvements in combination with auto-alt-ref; aso mentions improvements on real-time encoding.
 * Commits:
   * [067457339bc](https://github.com/webmproject/libvpx/commit/067457339bc): Improvement of bitrate mentioned
   * [25d6542251a](https://github.com/webmproject/libvpx/commit/25d6542251a): Encoding speed a bit faster for lower quality settings
@@ -781,7 +781,7 @@ Shares the same repository with VP9.
 
 2016_06 - 2017_01: 
 * Configuration options/Interactions: collection_max_size * num_samples (slow-down), PDB (slow-down), shrink_fh (slow-down), lm_rhw (speed-up), landmark (speed-up)
-* Changelog: There was no changelog for this revision
+* Change log: There was no Change log for this revision
 * Commits:
   * [dfdccf815129f6d51d48cd502e5bdf77d4d0df97](https://github.com/aibasel/downward/commit/dfdccf815129f6d51d48cd502e5bdf77d4d0df97): fixed performance issue (speed-up)
   * [97944b49607d1e9967554cd8e3718a7326e7e185](https://github.com/aibasel/downward/commit/97944b49607d1e9967554cd8e3718a7326e7e185): configuration option 'landmark' mentioned
@@ -795,14 +795,14 @@ Shares the same repository with VP9.
 
 2017_01 - 2017_07: 
 * Configuration options/Interactions: collection_max_size * num_samples (slow-down), PDB (slow-down), shrink_fh (slow-down), lm_rhw (speed-up), blind (speed-up), hmax (slow-down)
-* Changelog: There was no changelog for this revision
+* Change log: There was no Change log for this revision
 * Commits:
   *  [f3fec8be30b4d7cebac842995df971550d2e06fc](https://github.com/aibasel/downward/commit/f3fec8be30b4d7cebac842995df971550d2e06fc): Configuration option 'landmark' mentioned
 * Configuration option mentioned
 
 2017_07 - 2018_01:
 * Configuration options/Interactions: collection_max_size * num_samples (speed-up), shrink_fh (speed-up), blind (speed-up), hmax (slow-down), cpdbs (speed-up), lmcut (slow-down)
-* Changelog: There was no changelog for this revision
+* Change log: There was no Change log for this revision
 * Commits:
   * [fb322500801caa48ae464b4d869aeac8d6dbace0](https://github.com/aibasel/downward/commit/fb322500801caa48ae464b4d869aeac8d6dbace0): Configuration option 'shrink_fh' mentioned
   * [153d579a697230741779dee1ad5bd5646f8e0141](https://github.com/aibasel/downward/commit/153d579a697230741779dee1ad5bd5646f8e0141): Configuration optoin 'shrink_fh' mentioned
@@ -812,14 +812,14 @@ Shares the same repository with VP9.
 
 2018_01 - 2018_07: 
 * Configuration options/Interactions: collection_max_size * min_improvement * num_samples (slow-down), collection_max_size * num_samples (speed-up), shrink_fh (speed-up), lm_hm (slow-down), blind (speed-up), hmax (slow-down), iPDB (slow-down), lm_rhw (slow-down)
-* Changelog: There was no changelog for this revision
+* Change log: There was no Change log for this revision
 * Commits:
   * Nothing
 * Configuration option not mentioned
 
 2018_07 - 2019_01:
 * Configuration options/Interactions: lm_rhw * no_orders (speed-up), shrink_fh (speed-up), lm_hm (speed-up)
-* Changelog: There was no changelog for this revision
+* Change log: There was no Change log for this revision
 * Commits:
   * [e4970b079d6a7fdbc04accf9ad7acd17907e6b87](https://github.com/aibasel/downward/commit/e4970b079d6a7fdbc04accf9ad7acd17907e6b87): Mentions performance tuning
   * [951e98f730f84c95771b72efe0b49fbdf05e9d7d](https://github.com/aibasel/downward/commit/951e98f730f84c95771b72efe0b49fbdf05e9d7d): 'landmark' mentioned
@@ -828,7 +828,7 @@ Shares the same repository with VP9.
 
 2019_01 - 2019_06:
 * Configuration options/Interactions: collection_max_size * min_improvement * num_samples (slow-down), collection_max_size * num_samples (speed-up), shrink_fh (slow-down), lm_hm (slow-down), lm_rhw (slow-down), iPDB (speed-up), min_improvement (slow-down)
-* Changelog: There was no changelog for this revision
+* Change log: There was no Change log for this revision
 * Commits:
   * [212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661](https://github.com/aibasel/downward/commit/212d1f4e8f3a32cd5a0a0a2dfc5759df203bd661): Slow-down reported (It is possible that the new code now uniquifies certain conditions
     multiple times, but there is no harm in that other than a slight
@@ -845,14 +845,14 @@ Shares the same repository with VP9.
 
 2019_06 - 2019_12:
 * Configuration options/Interactions: None
-* Changelog: Nothing relevant mentioned
+* Change log: Nothing relevant mentioned
 * Commits:
   * Nothing
 * No configuration options found
 
 2019_12 - 2020_06: 
 * Configuration options/Interactions: shrink_fh (speed-up), lm_hm (slow-down)
-* Changelog: Nothing relevant reported
+* Change log: Nothing relevant reported
 * Commits:
   * Nothiung
 * No configuration option mentioned
