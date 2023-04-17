@@ -810,7 +810,6 @@ class ResearchQuestion2(ResearchQuestion):
             for case_study_name in self.case_study_influence_distribution.keys():
                 self.influence_distribution[i] += self.case_study_influence_distribution[case_study_name][i]
             self.influence_distribution[i] /= len(self.case_study_influence_distribution.keys())
-        print(self.influence_distribution)
         # Compute the distance of all case studies
         distance = dict()
         for case_study_name in self.case_study_influence_distribution.keys():

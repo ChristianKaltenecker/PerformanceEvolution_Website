@@ -476,7 +476,7 @@ You should get a container id. If not, you can additionally use the following co
 
 Afterwards, you can copy the files using `docker cp` to your current directory:
 
-    sudo docker cp -r <containerID>:/app/PerformanceEvolution_Website/output .
+    sudo docker cp <containerID>:/app/PerformanceEvolution_Website/output .
 
 ### Manually
 

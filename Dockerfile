@@ -13,5 +13,5 @@ RUN git clone https://github.com/ChristianKaltenecker/PerformanceEvolution_Websi
   && pip install -r Scripts/requirements.txt
 # Execute the python scripts to generate all plots and data
 RUN cd /app/PerformanceEvolution_Website/Scripts \
-  && python ./main.py
-  && python ./cumulative_plots.py
+  && python3 ./main.py \
+  && python3 ./cumulative_plots.py
