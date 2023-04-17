@@ -1,0 +1,3 @@
+[submodule "SPLConqueror"]
+	path = SPLConqueror
+	url = https://github.com/se-sic/SPLConqueror
