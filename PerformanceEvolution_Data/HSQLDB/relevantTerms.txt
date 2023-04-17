@@ -1,0 +1,5 @@
+2.2.0: logSize_5;logSize_50;logSize_100;
+2.2.2: root; blowfish;blowfish * cacheSize_2500;blowfish * cacheSize_10000;
+2.2.6: root; mvcc;
+2.3.0: blowfish;blowfish * cacheSize_10000;blowfish * logSize_5;blowfish * defragLimit_50 * logSize_5;blowfish * defragLimit_100 * logSize_5;
+2.3.3: blowfish * defragLimit_50 * logSize_5;

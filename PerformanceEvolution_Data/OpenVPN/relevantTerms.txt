@@ -1,0 +1,2 @@
+2.3.0: root; lzo;auth_sha512;auth_rsa_sha512;
+2.4.0: root; lzo;auth_sha1;auth_sha512;auth_rsa_sha512;auth_sha512 * lzo;auth_rsa_sha512 * lzo;

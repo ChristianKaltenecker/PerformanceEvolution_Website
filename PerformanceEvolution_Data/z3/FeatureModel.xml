@@ -93,7 +93,7 @@
     </configurationOption>
     <configurationOption>
       <name>well_sorted_check</name>
-      <outputString>well_sorted_check</outputString>
+      <outputString>well_sorted_check=true</outputString>
       <prefix>
       </prefix>
       <postfix>
@@ -105,7 +105,7 @@
     </configurationOption>
     <configurationOption>
       <name>proof</name>
-      <outputString>proof</outputString>
+      <outputString>proof=true</outputString>
       <prefix>
       </prefix>
       <postfix>
@@ -117,7 +117,7 @@
     </configurationOption>
     <configurationOption>
       <name>model_validate</name>
-      <outputString>model_validate</outputString>
+      <outputString>model_validate=true</outputString>
       <prefix>
       </prefix>
       <postfix>
@@ -129,7 +129,7 @@
     </configurationOption>
     <configurationOption>
       <name>unsat_core</name>
-      <outputString>unsat_core</outputString>
+      <outputString>unsat_core=true</outputString>
       <prefix>
       </prefix>
       <postfix>
@@ -141,7 +141,7 @@
     </configurationOption>
     <configurationOption>
       <name>smtlib2_compliant</name>
-      <outputString>smtlib2_compliant</outputString>
+      <outputString>smtlib2_compliant=true</outputString>
       <prefix>
       </prefix>
       <postfix>
@@ -153,7 +153,7 @@
     </configurationOption>
     <configurationOption>
       <name>compact</name>
-      <outputString>model.compact</outputString>
+      <outputString>model.compact=true</outputString>
       <prefix>
       </prefix>
       <postfix>
@@ -165,7 +165,7 @@
     </configurationOption>
     <configurationOption>
       <name>partial</name>
-      <outputString>model.partial</outputString>
+      <outputString>model.partial=true</outputString>
       <prefix>
       </prefix>
       <postfix>
@@ -176,8 +176,8 @@
       <optional>True</optional>
     </configurationOption>
     <configurationOption>
-      <name>euclidean_solver</name>
-      <outputString>smt.arith.euclidean_solver</outputString>
+      <name>type_check</name>
+      <outputString>type_check=true</outputString>
       <prefix>
       </prefix>
       <postfix>

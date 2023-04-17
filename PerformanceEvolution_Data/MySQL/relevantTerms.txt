@@ -1,0 +1,2 @@
+5.7.9: binaryLog;binaryLog * delayedInnodbLogFlush;
+8.0.12: root; delayedInnodbLogFlush;delayedInnodbLogFlush * dsyncFlush;delayedInnodbLogFlush * delayedInnodbLogWrite * dsyncFlush;dsyncFlush;directFlush;delayedInnodbLogWrite * dsyncFlush;binaryLog;innodbBufferPoolSize_64;innodbBufferPoolSize_512;binaryLog * delayedInnodbLogFlush;directFlush * innodbBufferPoolSize_64;directFlush * innodbBufferPoolSize_512;

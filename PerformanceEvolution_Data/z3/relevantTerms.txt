@@ -1,0 +1,15 @@
+4.4.0: QF_LRA * proof;QF_LRA;
+4.4.1: QF_FP * proof;
+4.5.0: QF_FP * proof;QF_FP;
+4.6.0: QF_FP * proof;QF_LRA * proof;QF_UFLRA * proof;QF_FP;QF_UFLRA;
+4.7.1: QF_UFLRA * proof;QF_LRA;QF_UFLRA;
+4.8.1: QF_LRA * proof;QF_LRA;
+4.8.4: QF_UFLRA * proof;
+4.8.5: QF_FP * proof;QF_LRA;
+4.8.6: QF_UFLRA * proof;QF_UFLRA;
+4.8.8: QF_LRA * proof;QF_UFLRA * proof;QF_UFLRA * model_validate;QF_UFLRA;
+4.8.9: QF_UFLRA * model_validate * proof;QF_LRA * proof;QF_UFLRA * proof;QF_UFLRA * model_validate;QF_LRA;QF_UFLRA;
+4.8.10: QF_LRA * proof;QF_UFLRA;
+4.8.11: QF_LRA * proof;QF_UFLRA * proof;QF_UFLRA * model_validate;QF_UFLRA;
+4.8.12: QF_LRA * proof;
+4.8.13: QF_LRA * proof;QF_UFLRA;

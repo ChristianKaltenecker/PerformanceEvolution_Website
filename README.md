@@ -13,7 +13,8 @@ The data to all subject systems are included in the directory [PerformanceEvolut
 * *models/models.csv*: This file contains the performance models that we learned for each release. Note that we identified the relevant terms of all releases in a first step and afterwards, learned a consistent performance model containing all relevant terms for all releases. Only this way, we could ensure the comparability of performance models in between releases. 
 * *WorkloadDescriptions.txt*: This [file](./PerformanceEvolution_Data/WorkloadDescriptions.txt) contains the description of the used workloads.
 
-We used the given data to generate all our plots and results.
+We used the given data and the scripts in the directory [Scripts](./Scripts) to generate all our plots and results.
+If you are interested in reproducing our results, see the section Reproduction at the end of this README.
 
 ## RQ1.1: What is the fraction of configurations affected by performance changes between consecutive releases?
 
@@ -445,3 +446,86 @@ We have obtained the following Kendall Tau values:
 |0.8 -- 0.9 | 11 |
 |0.9 -- 1.0 | 15 |
 |1.0 -- 1.1 | 127 |
+
+## Reproduction
+
+For the reproduction of our results (this includes the data in this README and all plots), we provide two ways of doing so.
+
+### Docker
+
+You can use the [Dockerfile](./Dockerfile) we provide.
+Refer to [Docker installation site](https://docs.docker.com/get-docker/) if you have not already installed Docker.
+Make sure that your docker service is running.
+If you use systemd, you can use:
+
+    sudo systemctl start docker
+
+To build the docker image, execute the following from the root directory of this repository:
+
+    sudo docker build -t performance_evolution ./
+
+The build process takes some time since it does not only install but also execute all scripts.
+In the end, it produced all data and plots inside the folder `output`.
+To extract the folder, you have to start a container:
+
+    sudo docker run -d -t performance_evolution
+
+You should get a container id. If not, you can additionally use the following command to retrieve the docker container id:
+
+    sudo docker container ls
+
+Afterwards, you can copy the files using `docker cp` to your current directory:
+
+    sudo docker cp -r <containerID>:/app/PerformanceEvolution_Website/output .
+
+### Manually
+
+Alternatively, you can also run the scripts manually.
+Please make sure that you have installed `python3` on your system.
+First, switch via `cd` into the folder of this repository.
+Afterwards, create a virtual environment and activate it:
+
+    python3 -m venv ./venv
+    source ./venv/bin/activate
+
+In order to execute the python scripts, you have to install the scripts in the requirements:
+
+    pip install -r requirements.txt
+
+Create a new directory for the output:
+
+    mkdir -p ./output
+
+Afterwards, switch into the `Scripts` folder and execute the main python script:
+
+    cd Scripts
+    python ./main.py
+
+Note that this step may take a while. To additionally generate the cumulative plots (Figure 3 and Figure 5 in the paper), execute the script:
+
+    python ./cumulative_plots.py
+
+Now, your `output` directory contains all plots from the paper and several plots for each case study.
+
+#### Learning the models
+
+If you intend to learn the performance-influence models in addition, make sure that SPLConqueror is cloned into the repository.
+Therefore, execute the following command:
+
+    git submodule update --init --recursive
+
+Further, make sure that the JetBrains IDE `Rider` is installed on your system.
+Open the solution in the folder `SPLConqueror/SPLConqueror/SPLConqueror.sln` and compile the target `Release` on `Any CPU`.
+
+If this is done, you have to remove the folders called `models` inside the subject system in the [raw data folder](./PerformanceEvolution_Data/).
+Then, you can again execute the python script:
+
+    cd Scripts
+    python ./main.py
+
+This script will automatically detect the subject system where the folder `models` is missing and execute `SPLConqueror` to learn performance-influence models.
+Make sure to run the python script at least three times.
+The incentive behind this is that the learning procedure in each iteration can also be executed on other machines.
+In the first call, `SPLConqueror` will learn performance-influence models for each release independently.
+In the second run, the VIF analysis will be executed and a consistent model will be learned across different releases.
+In the third run, the newly learned model is processed and used while executing the scripts.
