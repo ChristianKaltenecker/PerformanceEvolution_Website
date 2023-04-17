@@ -1,0 +1,2 @@
+root;encryption;aes;blowfish;transactionControl;mvlocks;mvcc;locks;tableType;memoryTables;cachedTables;log;noLog;incrementalBackup;defrag;noDefrag;cacheSize_625;cacheSize_2500;cacheSize_10000;cacheSize;defragLimit_10;defragLimit_50;defragLimit_100;defragLimit;logSize_0;logSize_5;logSize_50;logSize_100;logSize
+1;0;0;0;1;0;0;1;1;1;0;0;1;0;0;1;0;0;1;1;0;0;1;1;1;0;0;0;1

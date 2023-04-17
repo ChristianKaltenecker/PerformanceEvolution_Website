@@ -1,0 +1,2 @@
+root;fsync;synchronousCommit;fullPageWrites;trackActivities;trackCounts;tempBuffers_2;tempBuffers_8;tempBuffers_32;tempBuffers;workMem_256;workMem_1024;workMem_4096;workMem
+1;1;1;1;1;1;0;1;0;1;1;0;0;1

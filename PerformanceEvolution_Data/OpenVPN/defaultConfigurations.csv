@@ -1,0 +1,2 @@
+root;tcp;compression;none;lzo;cipher;AES_256_CBC;AES_128_CBC;TCP_NODEAL;prng;prng_none;prng_rsa_sha512;prng_sha512;prng_sha1;auth;auth_none;auth_sha1;auth_sha512;auth_rsa_sha512
+1;1;1;1;0;1;1;0;0;1;0;0;0;1;1;0;1;0;0
