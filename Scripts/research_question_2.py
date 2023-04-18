@@ -698,13 +698,7 @@ class ResearchQuestion2(ResearchQuestion):
         fig = plt.figure(figsize=(15, 8))
         ax = fig.add_subplot(1, 1, 1)
         greatest_value = max(abs(np.amin(plot_data2)), abs(np.amax(plot_data2)))
-        # The following code is only needed for the pervolution renewal
-        if case_study.name == 'OpenVPN':
-            revisions = list(reversed(list(reversed(revisions))[2:7]))
-            plot_data2 = plot_data2[2:6, 0:8]
-            pass
         cm = ax.pcolormesh(plot_data2, cmap=cmap, vmin=-greatest_value, vmax=greatest_value)
-        # ax.set_title(case_study.name, fontsize=fontsize)
         ax.set_ylabel('Release', fontsize=fontsize)
         ax.set_xlabel('Configuration Choice', fontsize=fontsize)
         ax.set_yticks(range(0, len(revisions)))
